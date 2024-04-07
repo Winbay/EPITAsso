@@ -1,13 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import SideMenu from "@/components/SideMenu.vue";
 import TheHeader from "@/components/TheHeader.vue";
+import MainPanel from "@/components/MainPanel.vue";
 </script>
 
 <template>
   <TheHeader/>
 
-  <main class="h-full">
+  <main class="h-full flex">
     <SideMenu/>
+    <MainPanel/>
   </main>
 </template>
 
