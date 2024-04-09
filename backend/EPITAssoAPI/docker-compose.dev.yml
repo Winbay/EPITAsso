@@ -9,14 +9,14 @@ services:
       env_file:
         - .env.dev
 
-   backend:
+   django:
       build:
         context: .
         dockerfile: Dockerfile
       command: >
         sh -c "python3 manage.py makemigrations &&
-                   python3 manage.py migrate &&
-                   python3 manage.py runserver 0.0.0.0:8000"
+            python3 manage.py migrate &&
+            python3 manage.py runserver 0.0.0.0:8000"
       environment:
         ENV_FILE: .env.dev
       volumes:
