@@ -8,7 +8,7 @@ import MainPanel from "@/components/MainPanel.vue";
   <TheHeader/>
 
   <main class="h-full flex">
-    <SideMenu/>
+    <SideMenu :style="{ zIndex: 1 }"/>
     <MainPanel/>
   </main>
 </template>
