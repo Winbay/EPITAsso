@@ -7,13 +7,19 @@ import MainPanel from "@/components/MainPanel.vue";
 <template>
   <TheHeader/>
 
-  <main class="h-full flex">
-    <SideMenu :style="{ zIndex: 1 }"/>
+  <main class="flex main">
+    <SideMenu :style="{ zIndex: 1}"/>
     <MainPanel/>
   </main>
 </template>
 
 <style scoped>
+
+.main {
+  height: max-content;
+  background-color: #1f2937;
+}
+
 header {
   line-height: 1.5;
 }

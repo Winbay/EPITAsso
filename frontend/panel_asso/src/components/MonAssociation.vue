@@ -66,25 +66,21 @@
         <Dialog
             v-model:visible="showAddSocialNetworkDialog"
             modal
-            header="Ajouter un réseau social">
-          <div class="flex flex-col gap-5">
-            <div class="flex gap-3">
-              <label for="socialNetworkName" style="width: 50%">Nom du réseau social:</label>
-              <InputText id="socialNetworkName" v-model="newSocialNetwork.name"></InputText>
-            </div>
-            <div class="flex gap-3">
-              <label for="socialNetworkLink" style="width: 50%">Lien vers le réseau social:</label>
-              <InputText id="socialNetworkLink" v-model="newSocialNetwork.link"></InputText>
-            </div>
-            <div class="flex justify-end gap-2">
-              <Button type="button" label="Annuler" severity="secondary" @click="cancelAddSocialNetwork"></Button>
-              <Button type="button" label="Ajouter" @click="addSocialNetwork" :disabled="!isSocialNetworkFormValid" severity="success"></Button>
+            header="Ajouter un réseau social"
+            @hide="cancelAddSocialNetwork">
+          <div>
+            <InputText id="socialNetworkName" v-model="newSocialNetwork.name" placeholder="Nom du réseau social" class="input-field"/>
+            <InputText id="socialNetworkLink" v-model="newSocialNetwork.link" placeholder="Lien vers le réseau social" class="input-field"/>
+            <div class="button-container">
+              <Button label="Annuler" icon="pi pi-times" @click="cancelAddSocialNetwork" class="cancel-button" severity="secondary"/>
+              <Button label="Ajouter" icon="pi pi-check" @click="addSocialNetwork" :disabled="!isSocialNetworkFormValid" class="add-button" severity="success"/>
             </div>
           </div>
         </Dialog>
       </div>
     </div>
   </div>
+  <FAQ></FAQ>
 </template>
 
 <script setup lang="ts">
@@ -95,6 +91,7 @@ import Textarea from 'primevue/textarea';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
+import FAQ from "@/components/FAQ.vue";
 
 interface SocialNetwork {
   name: string;
@@ -224,7 +221,7 @@ const cancelChanges = () => {
 
 .association-header {
   width: fit-content;
-  height: 300px;
+  height: fit-content;
   padding-left: 50px;
   margin: 0 auto;
   display: flex;
@@ -237,7 +234,7 @@ const cancelChanges = () => {
   padding-right: 10px;
 }
 .association-title{
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 
@@ -285,8 +282,19 @@ const cancelChanges = () => {
   display: flex;
 }
 
-Button {
-  padding: 1%;
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.input-field {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.add-button, .cancel-button {
+  margin-left: 10px;
 }
 
 </style>
