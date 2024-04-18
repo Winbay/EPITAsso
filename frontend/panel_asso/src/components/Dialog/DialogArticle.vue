@@ -32,13 +32,13 @@ const props = defineProps({
 
 const toast = useToast()
 
-const currArticle = ref<ArticleCreation | ArticleModification>({ title: '', content: '', tags: [] })
+const currArticle = ref<ArticleCreation | ArticleModification>({title: "", content: "", tagIds: []});
 
 const createOrSave = async () => {
   if (props.article) {
     // Modification
     try {
-      await axios.put(`/api/articles/${props.article.id}`, currArticle.value)
+      await axios.put(`/api/posts/${props.article.id}/`, currArticle.value);
     } catch (error) {
       toast.add({
         severity: 'error',
@@ -52,7 +52,8 @@ const createOrSave = async () => {
   } else {
     // Creation
     try {
-      await axios.post(`/api/articles`, currArticle.value)
+      console.log(currArticle.value);
+      await axios.post(`/api/posts/`, currArticle.value, );
     } catch (error) {
       toast.add({
         severity: 'error',
@@ -74,7 +75,7 @@ const cancelDialog = () => {
   if (props.article) {
     currArticle.value = props.article
   } else {
-    currArticle.value = { title: '', content: '', tags: [] }
+    currArticle.value = {title: "", content: "", tagIds: []};
   }
   props.setHidden()
 }
@@ -112,7 +113,7 @@ onMounted(() => {
     <div class="mb-6 flex flex-col justify-start w-8/12">
       <label for="tags" class="mb-2 text-xl font-bold text-wrap">Tags</label>
       <MultiSelect
-        v-model="currArticle.tags"
+        v-model="currArticle.tagIds"
         :options="props.tags"
         option-label="name"
         option-value="id"
