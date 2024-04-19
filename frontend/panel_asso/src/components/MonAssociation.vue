@@ -3,84 +3,86 @@
     <Button label="Annuler" @click="cancelChanges" severity="secondary" raised />
     <Button label="Enregistrer" @click="saveChanges" severity="success" raised />
   </div>
-  <div class="association-header">
-    <div class="image-container border-round" @mouseover="showEditIcon = true" @mouseleave="showEditIcon = false">
-      <Image
-          :src="imageSrc"
-          @click.stop="handleImageClick"
-          width="250"
-          title="Logo Association"
-      ></Image>
-      <i v-if="showEditIcon" class="pi pi-pencil edit-icon"></i>
-    </div>
-    <div class="text-content">
-      <div v-if="isEditingTitle" class="association-title">
-        <InputText
-            v-model="associationName"
-            autofocus
-            @blur="toggleEditingTitle"
-            placeholder="Titre de l'association"
-        ></InputText>
+  <ScrollPanel style="width: 100%; height: 100%">
+    <div class="association-header">
+      <div class="image-container border-round" @mouseover="showEditIcon = true" @mouseleave="showEditIcon = false">
+        <Image
+            :src="imageSrc"
+            @click.stop="handleImageClick"
+            width="250"
+            title="Logo Association"
+        ></Image>
+        <i v-if="showEditIcon" class="pi pi-pencil edit-icon"></i>
       </div>
-      <div v-else class="association-title">
-        <p v-if="associationName.trim() === ''">
-          <Button @click="toggleEditingTitle" :style="{ margin: '10px' }">Ajouter un titre</Button>
-        </p>
-        <p v-else @click="toggleEditingTitle">{{ associationName }}</p>
-      </div>
-      <div v-if="isEditingDescription" class="association-description">
-        <Textarea
-            v-model="associationDescription"
-            autofocus
-            @blur="toggleEditingDescription"
-            placeholder="Description de l'association"
-            :rows="associationDescription.split('\n').length + 2"
-        ></Textarea>
-      </div>
-      <div v-else class="association-description">
-        <p v-if="associationDescription.trim() === ''">
-          <Button @click="toggleEditingDescription" :style="{ margin: '10px' }">Ajouter une description</Button>
-        </p>
-        <p v-else @click="toggleEditingDescription">{{ associationDescription }}</p>
-      </div>
-      <div class="social-network">
-        <div v-for="socialNetwork in socialNetworks" :key="socialNetwork.name">
-          <a :href="socialNetwork.link" target="_blank">
-            <Avatar
-                :image="getSocialNetworkImage(socialNetwork.link)"
-                class="mr-2"
-                size="medium"
-                shape="circle"
-                :title="socialNetwork.name"
-            ></Avatar>
-          </a>
+      <div class="text-content">
+        <div v-if="isEditingTitle" class="association-title">
+          <InputText
+              v-model="associationName"
+              autofocus
+              @blur="toggleEditingTitle"
+              placeholder="Titre de l'association"
+          ></InputText>
         </div>
-        <Avatar
-            image="/images/add-social-network-symbol.png"
-            class="mr-2 cursor-pointer"
-            size="medium"
-            shape="circle"
-            title="Add social network"
-            @click="showAddSocialNetworkDialog = true"
-        ></Avatar>
-        <Dialog
-            v-model:visible="showAddSocialNetworkDialog"
-            modal
-            header="Ajouter un réseau social"
-            @hide="cancelAddSocialNetwork">
-          <div>
-            <InputText id="socialNetworkName" v-model="newSocialNetwork.name" placeholder="Nom du réseau social" class="input-field"/>
-            <InputText id="socialNetworkLink" v-model="newSocialNetwork.link" placeholder="Lien vers le réseau social" class="input-field"/>
-            <div class="button-container">
-              <Button label="Annuler" icon="pi pi-times" @click="cancelAddSocialNetwork" class="cancel-button" severity="secondary"/>
-              <Button label="Ajouter" icon="pi pi-check" @click="addSocialNetwork" :disabled="!isSocialNetworkFormValid" class="add-button" severity="success"/>
-            </div>
+        <div v-else class="association-title">
+          <p v-if="associationName.trim() === ''">
+            <Button @click="toggleEditingTitle" :style="{ margin: '10px' }">Ajouter un titre</Button>
+          </p>
+          <p v-else @click="toggleEditingTitle">{{ associationName }}</p>
+        </div>
+        <div v-if="isEditingDescription" class="association-description">
+          <Textarea
+              v-model="associationDescription"
+              autofocus
+              @blur="toggleEditingDescription"
+              placeholder="Description de l'association"
+              autoResize rows="5"
+          ></Textarea>
+        </div>
+        <div v-else class="association-description">
+          <p v-if="associationDescription.trim() === ''">
+            <Button @click="toggleEditingDescription" :style="{ margin: '10px' }">Ajouter une description</Button>
+          </p>
+          <p v-else @click="toggleEditingDescription">{{ associationDescription }}</p>
+        </div>
+        <div class="social-network">
+          <div v-for="socialNetwork in socialNetworks" :key="socialNetwork.name">
+            <a :href="socialNetwork.link" target="_blank">
+              <Avatar
+                  :image="getSocialNetworkImage(socialNetwork.link)"
+                  class="mr-2"
+                  size="normal"
+                  shape="circle"
+                  :title="socialNetwork.name"
+              ></Avatar>
+            </a>
           </div>
-        </Dialog>
+          <Avatar
+              image="/images/add-social-network-symbol.png"
+              class="mr-2 cursor-pointer"
+              size="normal"
+              shape="circle"
+              title="Add social network"
+              @click="showAddSocialNetworkDialog = true"
+          ></Avatar>
+          <Dialog
+              v-model:visible="showAddSocialNetworkDialog"
+              modal
+              header="Ajouter un réseau social"
+              @hide="cancelAddSocialNetwork">
+            <div>
+              <InputText id="socialNetworkName" v-model="newSocialNetwork.name" placeholder="Nom du réseau social" class="input-field"/>
+              <InputText id="socialNetworkLink" v-model="newSocialNetwork.link" placeholder="Lien vers le réseau social" class="input-field"/>
+              <div class="button-container">
+                <Button label="Annuler" icon="pi pi-times" @click="cancelAddSocialNetwork" class="cancel-button" severity="secondary"/>
+                <Button label="Ajouter" icon="pi pi-check" @click="addSocialNetwork" :disabled="!isSocialNetworkFormValid" class="add-button" severity="success"/>
+              </div>
+            </div>
+          </Dialog>
+        </div>
       </div>
     </div>
-  </div>
-  <FAQ></FAQ>
+    <FAQ></FAQ>
+  </ScrollPanel>
 </template>
 
 <script setup lang="ts">
@@ -92,6 +94,7 @@ import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import FAQ from "@/components/FAQ.vue";
+import ScrollPanel from 'primevue/scrollpanel'
 
 interface SocialNetwork {
   name: string;
@@ -153,7 +156,11 @@ const handleImageClick = () => {
 };
 
 const handleImageChange = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files[0];
+  const input = event.target as HTMLInputElement;
+  if (!input || !input.files || input.files.length === 0) {
+    return;
+  }
+  const file = input.files[0];
   const reader = new FileReader();
 
   reader.onload = () => {
@@ -238,6 +245,14 @@ const cancelChanges = () => {
   font-weight: bold;
 }
 
+.association-title>p {
+  cursor: pointer;
+  border: 3px solid #29304e;
+  border-radius: 5px;
+  padding: 6px;
+  margin-bottom: 2px;
+}
+
 .association-description {
   font-size: 1rem;
   font-weight: normal;
@@ -246,6 +261,10 @@ const cancelChanges = () => {
 }
 .association-description>p {
   white-space: pre-wrap;
+  cursor: pointer;
+  border: 3px solid #29304e;
+  border-radius: 5px;
+  padding: 6px;
 }
 
 .association-description>Textarea {

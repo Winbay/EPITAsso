@@ -103,7 +103,7 @@ const cancelNewQuestion = () => {
   border: 2px solid #ccc;
   border-radius: 5px;
   padding: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 120px;
 }
 
 .question {
@@ -121,8 +121,6 @@ const cancelNewQuestion = () => {
 
 .question.last {
   border-bottom: none;
-  margin-bottom: 0;
-  padding-top: 10px;
 }
 
 h1 {
