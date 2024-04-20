@@ -1,18 +1,18 @@
 <template>
   <div class="faq">
-    <div class="faq-header">
+    <div class="flex justify-between items-center">
       <h1>FAQ</h1>
-      <Button label="Ajouter une question" icon="pi pi-plus" @click="showDialog = true" class="add-question-btn"/>
+      <Button label="Ajouter une question" icon="pi pi-plus" @click="showDialog = true" class="mb-5"/>
     </div>
-    <div v-if="questions.length !== 0" class="questions">
-      <div v-for="(item, index) in questions" :key="index" :class="{ 'question': true, 'last': index === questions.length - 1 }">
+    <div v-if="questions.length !== 0" class="border-2 border-gray-300 rounded-lg p-2 mb-20">
+      <div v-for="(item, index) in questions" :key="index" class="flex justify-between border-b border-gray-300 pb-2 last:border-none">
         <div>
           <h3>{{ item.question }}</h3>
           <p>{{ item.answer }}</p>
         </div>
-        <div class="action-buttons">
-          <Button icon="pi pi-pencil" @click="editQuestion(index)" class="edit-button" severity="info"/>
-          <Button icon="pi pi-trash" @click="deleteQuestion(index)" class="delete-button"  severity="danger"/>
+        <div class="action-buttons flex flex-col">
+          <Button icon="pi pi-pencil" @click="editQuestion(index)" class="mt-2 mr-5" severity="info"/>
+          <Button icon="pi pi-trash" @click="deleteQuestion(index)" class="mt-2"  severity="danger"/>
         </div>
       </div>
     </div>
@@ -22,11 +22,11 @@
         @hide="resetNewQuestion"
         modal>
       <div>
-        <InputText v-model="newQuestion.question" placeholder="Nouvelle question" class="input-field"/>
-        <Textarea v-model="newQuestion.answer" placeholder="Réponse" class="input-field"/>
-        <div class="button-container">
-          <Button label="Annuler" icon="pi pi-times" @click="cancelNewQuestion" class="cancel-button" severity="secondary"/>
-          <Button label="Poster" icon="pi pi-check" @click="addNewQuestion" :disabled="!isFormValid" class="add-button" severity="success"/>
+        <InputText v-model="newQuestion.question" placeholder="Nouvelle question" class="w-full mb-3 h-12"/>
+        <Textarea v-model="newQuestion.answer" placeholder="Réponse" rows="5" class="w-full min-h-32"/>
+        <div class="flex justify-end mt-5">
+          <Button label="Annuler" icon="pi pi-times" @click="cancelNewQuestion" class="p-button-secondary"/>
+          <Button label="Poster" icon="pi pi-check" @click="addNewQuestion" :disabled="!isFormValid" class="p-button-success ml-4"/>
         </div>
       </div>
     </Dialog>
@@ -78,6 +78,7 @@ const deleteQuestion = (index: number) => {
 };
 
 const resetNewQuestion = () => {
+  editingIndex.value = null;
   newQuestion.value = { question: '', answer: '' };
   showDialog.value = false;
 };
@@ -91,36 +92,6 @@ const cancelNewQuestion = () => {
 .faq {
   width: 800px;
   margin: 20px auto 0;
-}
-
-.faq-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.questions {
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 120px;
-}
-
-.question {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 10px;
-  width: 100%;
-}
-
-.question>.action-buttons {
-  display: flex;
-  flex-direction: column;
-}
-
-.question.last {
-  border-bottom: none;
 }
 
 h1 {
@@ -142,30 +113,5 @@ p {
   font-size: 1rem;
   margin-top: 5px;
   white-space: pre-wrap;
-}
-
-.input-field {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-.add-question-btn {
-  margin-bottom: 20px;
-}
-
-.add-button, .cancel-button {
-  margin-left: 10px;
-}
-
-.edit-button,
-.delete-button {
-  margin-top: 10px;
-  margin-right: 5px;
 }
 </style>

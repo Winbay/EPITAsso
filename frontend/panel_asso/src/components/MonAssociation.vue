@@ -1,21 +1,24 @@
 <template>
-  <div class="top-right-buttons">
-    <Button label="Annuler" @click="cancelChanges" severity="secondary" raised />
-    <Button label="Enregistrer" @click="saveChanges" severity="success" raised />
+  <div class="relative text-right">
+    <Button label="Annuler" @click="cancelChanges" severity="secondary" raised class="m-2"/>
+    <Button label="Enregistrer" @click="saveChanges" severity="success" raised class="m-2"/>
   </div>
   <ScrollPanel style="width: 100%; height: 100%">
     <div class="association-header">
-      <div class="image-container border-round" @mouseover="showEditIcon = true" @mouseleave="showEditIcon = false">
+      <div class="relative" @mouseover="showEditIcon = 'image'" @mouseleave="showEditIcon = ''">
         <Image
             :src="imageSrc"
-            @click.stop="handleImageClick"
             width="250"
             title="Logo Association"
         ></Image>
-        <i v-if="showEditIcon" class="pi pi-pencil edit-icon"></i>
+        <i
+          v-if="showEditIcon === 'image'"
+          class="absolute top-0 right-0 m-2 hover:text-blue-200 cursor-pointer pi pi-pencil"
+          @click.stop="handleImageClick"
+        ></i>
       </div>
-      <div class="text-content">
-        <div v-if="isEditingTitle" class="association-title">
+      <div class="flex flex-col ml-5 pr-2">
+        <div v-if="isEditingTitle" class="font-bold text-2xl">
           <InputText
               v-model="associationName"
               autofocus
@@ -23,11 +26,16 @@
               placeholder="Titre de l'association"
           ></InputText>
         </div>
-        <div v-else class="association-title">
+        <div v-else class="relative" @mouseover="showEditIcon = 'title'" @mouseleave="showEditIcon = ''">
           <p v-if="associationName.trim() === ''">
             <Button @click="toggleEditingTitle" :style="{ margin: '10px' }">Ajouter un titre</Button>
           </p>
-          <p v-else @click="toggleEditingTitle">{{ associationName }}</p>
+          <p v-else class="mb-2 font-bold text-2xl">{{ associationName }}</p>
+          <i
+            v-if="showEditIcon === 'title'"
+            class="absolute top-0 right-0 m-2 hover:text-blue-200 cursor-pointer pi pi-pencil"
+            @click.stop="toggleEditingTitle"
+          ></i>
         </div>
         <div v-if="isEditingDescription" class="association-description">
           <Textarea
@@ -35,16 +43,23 @@
               autofocus
               @blur="toggleEditingDescription"
               placeholder="Description de l'association"
-              autoResize rows="5"
+              autoResize
+              rows="5"
+              class="h-full w-full border-none resize-none"
           ></Textarea>
         </div>
-        <div v-else class="association-description">
+        <div v-else class="association-description relative" @mouseover="showEditIcon = 'description'" @mouseleave="showEditIcon = ''">
           <p v-if="associationDescription.trim() === ''">
             <Button @click="toggleEditingDescription" :style="{ margin: '10px' }">Ajouter une description</Button>
           </p>
-          <p v-else @click="toggleEditingDescription">{{ associationDescription }}</p>
+          <p v-else class="mb-2 whitespace-pre-wrap">{{ associationDescription }}</p>
+          <i
+            v-if="showEditIcon === 'description'"
+            class="absolute top-0 right-0 m-2 hover:text-blue-200 cursor-pointer pi pi-pencil"
+            @click.stop="toggleEditingDescription"
+          ></i>
         </div>
-        <div class="social-network">
+        <div class="flex pt-5">
           <div v-for="socialNetwork in socialNetworks" :key="socialNetwork.name">
             <a :href="socialNetwork.link" target="_blank">
               <Avatar
@@ -70,11 +85,11 @@
               header="Ajouter un réseau social"
               @hide="cancelAddSocialNetwork">
             <div>
-              <InputText id="socialNetworkName" v-model="newSocialNetwork.name" placeholder="Nom du réseau social" class="input-field"/>
-              <InputText id="socialNetworkLink" v-model="newSocialNetwork.link" placeholder="Lien vers le réseau social" class="input-field"/>
-              <div class="button-container">
-                <Button label="Annuler" icon="pi pi-times" @click="cancelAddSocialNetwork" class="cancel-button" severity="secondary"/>
-                <Button label="Ajouter" icon="pi pi-check" @click="addSocialNetwork" :disabled="!isSocialNetworkFormValid" class="add-button" severity="success"/>
+              <InputText id="socialNetworkName" v-model="newSocialNetwork.name" placeholder="Nom du réseau social" class="w-full mb-2 h-12"/>
+              <InputText id="socialNetworkLink" v-model="newSocialNetwork.link" placeholder="Lien vers le réseau social" class="w-full mb-2 h-12"/>
+              <div class="flex justify-end mt-5">
+                <Button label="Annuler" icon="pi pi-times" @click="cancelAddSocialNetwork" class="mx-2" severity="secondary"/>
+                <Button label="Ajouter" icon="pi pi-check" @click="addSocialNetwork" :disabled="!isSocialNetworkFormValid" class="mx-2" severity="success"/>
               </div>
             </div>
           </Dialog>
@@ -111,7 +126,7 @@ const initialAssociationDescription = 'Description de l\'association - Lorem ips
 const associationName = ref(initialAssociationName);
 const associationDescription = ref(initialAssociationDescription);
 
-const showEditIcon = ref(false);
+const showEditIcon = ref('');
 const isEditingTitle = ref(false);
 const isEditingDescription = ref(false);
 const showAddSocialNetworkDialog = ref(false);
@@ -217,15 +232,6 @@ const cancelChanges = () => {
 
 <style scoped>
 
-.top-right-buttons {
-  position: relative;
-  text-align: right;
-}
-
-.top-right-buttons>Button {
-  margin: 10px;
-}
-
 .association-header {
   width: fit-content;
   height: fit-content;
@@ -234,86 +240,11 @@ const cancelChanges = () => {
   display: flex;
 }
 
-.text-content {
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  padding-right: 10px;
-}
-.association-title{
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.association-title>p {
-  cursor: pointer;
-  border: 3px solid #29304e;
-  border-radius: 5px;
-  padding: 6px;
-  margin-bottom: 2px;
-}
-
 .association-description {
   font-size: 1rem;
   font-weight: normal;
   width: 800px;
   min-width: 700px;
-}
-.association-description>p {
-  white-space: pre-wrap;
-  cursor: pointer;
-  border: 3px solid #29304e;
-  border-radius: 5px;
-  padding: 6px;
-}
-
-.association-description>Textarea {
-  height: 100%;
-  width: 100%;
-  border: none;
-  resize: none;
-}
-
-.image-container {
-  position: relative;
-  height: fit-content;
-  cursor: pointer;
-}
-
-.edit-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 100%;
-  width: 100%;
-  transform: translate(-50%, -50%);
-  font-size: 5rem;
-  color: white;
-  transition: color 0.3s ease-in-out;
-  pointer-events: none;
-  text-align: center;
-  align-content: center;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-.social-network {
-  padding-top: 20px;
-  display: flex;
-}
-
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-.input-field {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.add-button, .cancel-button {
-  margin-left: 10px;
 }
 
 </style>
