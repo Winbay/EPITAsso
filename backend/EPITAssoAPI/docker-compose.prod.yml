@@ -22,7 +22,7 @@ services:
     environment:
       ENV_FILE: .env.prod
     volumes:
-      - static:/static
+      - static:/app/static
     ports:
       - "8000:8000"
     depends_on:
@@ -32,7 +32,7 @@ services:
     build: ./nginx
     restart: always
     volumes:
-      - static:/static
+      - static:/app/static
     ports:
       - "80:80"
     depends_on:
