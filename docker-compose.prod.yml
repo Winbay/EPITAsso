@@ -19,27 +19,30 @@ services:
     volumes:
       - static:/static
     environment:
-      ENV_FILE: .env.dev
+      ENV_FILE: .env.prod
     depends_on:
       - db
 
   asso:
     build:
       context: ./frontend/panel_asso
+      dockerfile: Dockerfile.prod
 
   etd:
     build:
       context: ./frontend/vitrine
+      dockerfile: Dockerfile.prod
 
   adm:
     build:
       context: ./frontend/panel_adm
+      dockerfile: Dockerfile.prod
 
   nginx:
     build: ./nginx
     restart: always
     volumes:
-      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf
       - static:/static
     ports:
       - "80:80"
