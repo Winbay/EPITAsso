@@ -2,6 +2,8 @@ services:
   db:
     image: postgres:16.2-alpine3.19
     restart: always
+    ports:
+      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     env_file:
@@ -44,7 +46,7 @@ services:
     build: ./nginx
     restart: always
     volumes:
-      - ./bginx/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
     depends_on:
