@@ -9,6 +9,7 @@ import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import { defineProps, defineEmits, ref, computed, watch } from 'vue'
 
+
 const props = defineProps<{
   visible: boolean
 }>()
@@ -48,6 +49,7 @@ const activites = ref<Activite[]>([
 const totalHeures = ref('');
 const totalJour = ref('');
 const selectedPoste = ref();
+
 const postes = ref(
   [
     { name: 'Membre', code: '1' },
@@ -87,6 +89,7 @@ const submit = () => {
 const isFormValid = computed(() => {
   return !(login.value === '' || nom.value === '' || prenom.value === '' || promotion.value === '' || selectedPoste.value === undefined);
 })
+
 
 </script>
 
