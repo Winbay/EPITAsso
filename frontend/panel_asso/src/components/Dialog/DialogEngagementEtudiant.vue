@@ -7,15 +7,32 @@ import Textarea from 'primevue/textarea'
 import Panel from 'primevue/panel'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
-import { defineProps, defineEmits, ref } from 'vue'
+import { defineProps, defineEmits, ref, computed, watch } from 'vue'
 
 const props = defineProps<{
   visible: boolean
 }>()
 
-const emits = defineEmits(['update:visible'])
+const emits = defineEmits(['update:visible', 'add:add-engagement-etudiant'])
 const hideDialog = () => {
+  resetDialog();
   emits('update:visible', false);
+}
+
+const resetDialog = () => {
+  login.value = '';
+  nom.value = '';
+  prenom.value = '';
+  promotion.value = '';
+  selectedPoste.value = undefined;
+  commentaire.value = '';
+  activites.value = [
+    { text: '', heures: "0" },
+    { text: '', heures: "0" },
+    { text: '', heures: "0" }
+  ];
+  totalHeures.value = '';
+  totalJour.value = '';
 }
 
 const login = ref('');
@@ -23,9 +40,14 @@ const nom = ref('');
 const prenom = ref('');
 const promotion = ref('');
 const commentaire = ref('');
+const activites = ref<Activite[]>([
+  { text: '', heures: "0" },
+  { text: '', heures: "0" },
+  { text: '', heures: "0" }
+]);
 const totalHeures = ref('');
 const totalJour = ref('');
-const selectedPoste  = ref();
+const selectedPoste = ref();
 const postes = ref(
   [
     { name: 'Membre', code: '1' },
@@ -35,18 +57,36 @@ const postes = ref(
   ]
 );
 
-interface activite {
+interface Activite {
   text: string;
   heures: string;
 }
 
-const activites = ref<activite[]>([
-  { text: '', heures: '' },
-  { text: '', heures: '' },
-  { text: '', heures: '' }
-]);
+watch(activites, (newValue) => {
+  const total = newValue.reduce((acc, activite) => acc + parseInt(activite.heures), 0);
+  totalHeures.value = total.toString();
+  totalJour.value = Math.floor(total / 7).toString();
+}, { deep: true});
 
+const submit = () => {
+  activites.value = activites.value.filter(activite => activite.text !== '' && activite.heures !== '0');
+  emits('add:add-engagement-etudiant', {
+    login: login.value,
+    nom: nom.value,
+    prenom: prenom.value,
+    promotion: promotion.value,
+    poste: selectedPoste.value.name,
+    commentaire: commentaire.value,
+    activites: activites.value,
+    totalHeures: totalHeures.value,
+    totalJour: totalJour.value
+  })
+  hideDialog();
+}
 
+const isFormValid = computed(() => {
+  return !(login.value === '' || nom.value === '' || prenom.value === '' || promotion.value === '' || selectedPoste.value === undefined);
+})
 
 </script>
 
@@ -96,49 +136,49 @@ const activites = ref<activite[]>([
             <label for="activite1.text">Description activité</label>
           </FloatLabel>
           <FloatLabel>
-            <InputText type="number" id="activite1.heures" v-model="activites[0].heures" />
+            <InputText type="number" id="activite1.heures" v-model="activites[0].heures" min="0"/>
             <label for="activite1.heures">Heures travaillées</label>
           </FloatLabel>
         </div>
       </Panel>
-      <Panel class="mt-2" header="Activité 2" toggleable>
+      <Panel class="mt-2" header="Activité 2" toggleable collapsed>
         <div class="mt-2 flex gap-5">
           <FloatLabel>
             <InputText id="activite2.text" v-model="activites[1].text" />
             <label for="activite2.text">Description activité</label>
           </FloatLabel>
           <FloatLabel>
-            <InputText type="number" id="activite2.heures" v-model="activites[1].heures" />
+            <InputText type="number" id="activite2.heures" v-model="activites[1].heures" min="0"/>
             <label for="activite2.heures">Heures travaillées</label>
           </FloatLabel>
         </div>
       </Panel>
-      <Panel class="mt-2" header="Activité 3" toggleable>
+      <Panel class="mt-2" header="Activité 3" toggleable collapsed>
         <div class="mt-2 flex gap-5">
           <FloatLabel>
             <InputText id="activite3.text" v-model="activites[2].text" />
             <label for="activite3.text">Description activité</label>
           </FloatLabel>
           <FloatLabel>
-            <InputText type="number" id="activite3.heures" v-model="activites[2].heures" />
+            <InputText type="number" id="activite3.heures" v-model="activites[2].heures" min="0"/>
             <label for="activite3.heures">Heures travaillées</label>
           </FloatLabel>
         </div>
       </Panel>
       <div class="flex justify-center gap-5 mt-8">
         <FloatLabel>
-          <InputText type="number" id="totalHeures" v-model="totalHeures" />
+          <InputText type="number" id="totalHeures" v-model="totalHeures" min="0"/>
           <label for="totalHeures">Total heures</label>
         </FloatLabel>
         <FloatLabel>
-          <InputText type="number" id="totalJour" v-model="totalJour" />
+          <InputText type="number" id="totalJour" v-model="totalJour" min="0"/>
           <label for="totalJour">Total jour</label>
         </FloatLabel>
       </div>
     </div>
     <div class="flex justify-end mt-5">
       <Button label="Annuler" icon="pi pi-times" class="mx-2" severity="secondary" @click="hideDialog" />
-      <Button label="Ajouter" icon="pi pi-check" class="mx-2" severity="success" />
+      <Button label="Ajouter" icon="pi pi-check" class="mx-2" severity="success" :disabled="!isFormValid" @click="submit"/>
     </div>
   </Dialog>
 </template>
