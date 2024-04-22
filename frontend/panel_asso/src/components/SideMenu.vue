@@ -9,7 +9,8 @@ const items = [
   },
   {
     label: "Mon association",
-    icon: "pi pi-info-circle"
+    icon: "pi pi-info-circle",
+    path: "mon-association"
   },
   {
     label: "Messagerie",
@@ -47,11 +48,11 @@ onMounted(() => {
   <div id="side-panel" class="absolute -left-56 h-full w-56">
     <PanelMenu :model="items" class="w-full h-full">
       <template #item="{ item }">
-        <a :Ripple="true" class="flex align-items-center px-3 py-2 cursor-pointer">
+        <router-link :to="`/${item.path || ''}`" :Ripple="true" class="flex align-items-center px-3 py-2 cursor-pointer">
           <span :class="[item.icon, 'text-primary text-lg']"/>
           <span :class="['ml-2 text-sm', { 'font-semibold': 'item.items'}]">{{ item.label }}</span>
           <span v-if="item.items" class="pi pi-angle-down text-primary ml-auto"/>
-        </a>
+        </router-link>
       </template>
     </PanelMenu>
   </div>

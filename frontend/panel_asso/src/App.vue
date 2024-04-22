@@ -13,6 +13,12 @@ import MainPanel from "@/components/MainPanel.vue";
 </template>
 
 <style scoped>
+
+.main {
+  height: max-content;
+  background-color: #1f2937;
+}
+
 header {
   line-height: 1.5;
 }
