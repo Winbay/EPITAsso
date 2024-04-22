@@ -17,7 +17,7 @@ services:
           gunicorn EPITAssoAPI.wsgi:application --bind 0.0.0.0:8000"
     restart: always
     volumes:
-      - static:/static
+      - static:/app/static
     environment:
       ENV_FILE: .env.prod
     depends_on:
@@ -43,7 +43,7 @@ services:
     restart: always
     volumes:
       - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf
-      - static:/static
+      - static:/app/static
     ports:
       - "80:80"
     depends_on:
