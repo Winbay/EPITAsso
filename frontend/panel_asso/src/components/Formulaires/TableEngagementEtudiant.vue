@@ -2,27 +2,12 @@
 
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-
-interface activite {
-  text: string;
-  heures: string;
-}
-
-interface EngagementEtudiant {
-  login: string;
-  nom: string;
-  prenom: string;
-  promotion: string;
-  poste: string;
-  commentaire: string;
-  activites: activite[];
-  totalHeures: number;
-  totalJour: number;
-}
+import type { EngagementEtudiant } from '@/stores/interfaceEngagementEtudiant'
 
 const props = defineProps<{
   engagementetudiants: EngagementEtudiant[]
 }>()
+
 
 </script>
 
