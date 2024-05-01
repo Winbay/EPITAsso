@@ -43,13 +43,25 @@ services:
     restart: always
     volumes:
       - static:/app/static
+      - ./certbot/www/:/var/www/certbot/
+      - ./certbot/conf/:/etc/letsencrypt/
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - django
       - asso
       - etd
       - adm
+      - certbot
+
+  certbot:
+    image: certbot/certbot:v2.10.0
+    volumes:
+      - ./certbot/www/:/var/www/certbot/
+      - ./certbot/conf/:/etc/letsencrypt/
+    command: certonly --standalone --agree-tos --register-unsafely-without-email -d api.{DOMAIN_NAME} -d association.{DOMAIN_NAME} -d etudiant.{DOMAIN_NAME} -d administration.{DOMAIN_NAME}
+
 
 volumes:
   db_data:
