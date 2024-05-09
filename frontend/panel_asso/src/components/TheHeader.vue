@@ -15,22 +15,17 @@ const associations = ref([
 ]);
 const selectedAsso = ref(associations.value[0]);
 
-function stateMenu() {
-  let sidePanel = document.getElementById("side-panel");
-  let classAdd, classRemove;
-  if (sidePanel.classList.contains("absolute")) {
-    sidePanel.classList.remove("-left-56");
-    sidePanel.classList.add("left-0");
-    setTimeout(() => {
-      sidePanel.classList.remove("absolute");
-      sidePanel.classList.add("static");
-    }, 800);
-    classAdd = ["static", "left-0"];
-    classRemove = ["absolute", "-left-56"];
-  } else {
-    ["static", "left-0"].forEach((className) => sidePanel.classList.remove(className));
-    ["absolute", "-left-56"].forEach((className) => sidePanel.classList.add(className));
+const stateMenu = () => {
+  let sidePanel = document.getElementById("main-content");
+  if (!sidePanel) {
+    return;
   }
+  if (sidePanel.classList.contains("panel-inactive")) {
+    sidePanel.classList.remove("panel-inactive")
+  } else {
+    sidePanel.classList.add("panel-inactive");
+  }
+
 }
 </script>
 

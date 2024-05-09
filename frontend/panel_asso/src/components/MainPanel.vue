@@ -3,11 +3,18 @@
 </script>
 
 <template>
-  <div class="flex-grow">
+  <div class="page-content flex-grow">
     <router-view></router-view>
   </div>
 </template>
 
-<style scoped>
+<style>
+#main-content > .page-content {
+  margin-left: 14rem;
+  transition: margin-left 0.2s;
+}
 
+#main-content.panel-inactive .page-content {
+  margin-left: 0;
+}
 </style>
