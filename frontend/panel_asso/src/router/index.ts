@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from "@/components/Home.vue";
 import Events from "@/views/Events.vue";
 import EventEdit from '@/components/Dialog/DialogEvent.vue'
-import Home from '@/components/Home.vue'
 import MonAssociation from '@/components/MonAssociation.vue'
 
 const router = createRouter({
