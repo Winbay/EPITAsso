@@ -2,25 +2,17 @@
 import SideMenu from "@/components/SideMenu.vue";
 import TheHeader from "@/components/TheHeader.vue";
 import MainPanel from "@/components/MainPanel.vue";
-import Toast from 'primevue/toast'
 </script>
 
 <template>
-  <Toast />
   <TheHeader/>
-  <main id="main-content" class="h-full flex flex-wrap overflow-auto">
+  <main class="h-full flex flex-wrap">
     <SideMenu/>
     <MainPanel/>
   </main>
 </template>
 
 <style scoped>
-
-.main {
-  height: max-content;
-  background-color: #1f2937;
-}
-
 header {
   line-height: 1.5;
 }
