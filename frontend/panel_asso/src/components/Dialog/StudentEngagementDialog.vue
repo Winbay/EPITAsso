@@ -8,10 +8,11 @@ import Panel from 'primevue/panel'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import { defineEmits, ref, computed, watch, reactive } from 'vue'
-import { type EngagementEtudiant, Poste } from '@/stores/interfaceEngagementEtudiant'
+import { type StudentEngagement, type Position } from '@/types/studentEngagementInterface'
 
 const props = defineProps<{
   visible: boolean
+  positions: Position[]
 }>()
 
 const emits = defineEmits(['update:visible', 'add:add-engagement-etudiant'])
@@ -20,88 +21,89 @@ const hideDialog = () => {
   emits('update:visible', false);
 }
 
-const engagementetudiant = reactive<EngagementEtudiant>({
+const engagementetudiant = reactive<StudentEngagement>({
+  id: -1,
   login: '',
-  nom: '',
-  prenom: '',
+  name: '',
+  firstname: '',
   promotion: '',
-  poste: null,
-  commentaire: '',
-  activites: [
-    { text: '', heures: null },
-    { text: '', heures: null },
-    { text: '', heures: null }
+  position: -1,
+  comment: '',
+  activities: [
+    { text: '', hours: null },
+    { text: '', hours: null },
+    { text: '', hours: null }
   ],
-  totalHeures: null,
-  totalJour: null
+  totalHours: null,
+  totalDays: null
 });
 
 const resetDialog = () => {
   engagementetudiant.login = '';
-  engagementetudiant.nom = '';
-  engagementetudiant.prenom = '';
+  engagementetudiant.name = '';
+  engagementetudiant.firstname = '';
   engagementetudiant.promotion = '';
-  engagementetudiant.poste = null;
-  engagementetudiant.commentaire = '';
-  engagementetudiant.activites = [
-    { text: '', heures: null },
-    { text: '', heures: null },
-    { text: '', heures: null }
+  engagementetudiant.position = -1;
+  engagementetudiant.comment = '';
+  engagementetudiant.activities = [
+    { text: '', hours: null },
+    { text: '', hours: null },
+    { text: '', hours: null }
   ];
-  engagementetudiant.totalHeures = null;
-  engagementetudiant.totalJour = null;
+  engagementetudiant.totalHours = null;
+  engagementetudiant.totalDays = null;
 }
 
 const postes = ref(
   [
-    { name: 'Membre', code: Poste.Membre },
-    { name: 'Président', code: Poste.President },
-    { name: 'Vice-président', code: Poste.VicePresident },
-    { name: 'Secrétaire', code: Poste.Secretaire },
-    { name: 'Trésorier', code: Poste.Tresorier },
+    { name: 'Membre', code: 1 },
+    { name: 'Président', code: 2 },
+    { name: 'Vice-président', code: 3 },
+    { name: 'Secrétaire', code: 4 },
+    { name: 'Trésorier', code: 5 },
   ]
 );
 const selectedPoste = ref(null);
 
-watch(engagementetudiant.activites, (newValue) => {
-  console.log("activites", newValue)
+watch(engagementetudiant.activities, (newValue) => {
   const total = newValue.reduce((acc, activite) => {
-    if (activite.heures === null || isNaN(activite.heures)) {
+    if (activite.hours === null || isNaN(activite.hours)) {
       return acc;
     }
-    return acc + parseInt(String(activite.heures));
+    return acc + parseInt(String(activite.hours));
   }, 0);
-  engagementetudiant.totalHeures = total;
+  engagementetudiant.totalHours = total;
   if (total === 0) {
-    engagementetudiant.totalJour = 0;
+    engagementetudiant.totalDays = 0;
     return;
   }
-  engagementetudiant.totalJour = Math.floor(total / 7 + 1);
+  engagementetudiant.totalDays = Math.floor(total / 7 + 1);
 }, { deep: true});
 
 const submit = () => {
-  engagementetudiant.activites = engagementetudiant.activites.filter(activite => activite.text !== '' && activite.heures !== 0);
-  const copyActivites = engagementetudiant.activites.map(activite => ({ ...activite }));
+  engagementetudiant.activities = engagementetudiant.activities.filter(activite => activite.text !== '' && activite.hours !== 0);
+  const copyActivites = engagementetudiant.activities.map(activite => ({ ...activite }));
   if (selectedPoste.value !== null) {
-    engagementetudiant.poste = selectedPoste.value.code;
+    engagementetudiant.position = selectedPoste.value.code;
   }
-  const body: EngagementEtudiant = {
+  const body: StudentEngagement = {
+    id: 0,
     login: engagementetudiant.login,
-    nom: engagementetudiant.nom,
-    prenom: engagementetudiant.prenom,
+    name: engagementetudiant.name,
+    firstname: engagementetudiant.firstname,
     promotion: engagementetudiant.promotion,
-    poste: engagementetudiant.poste,
-    commentaire: engagementetudiant.commentaire,
-    activites: copyActivites,
-    totalHeures: engagementetudiant.totalHeures,
-    totalJour: engagementetudiant.totalJour
+    position: engagementetudiant.position,
+    comment: engagementetudiant.comment,
+    activities: copyActivites,
+    totalHours: engagementetudiant.totalHours,
+    totalDays: engagementetudiant.totalDays
   }
   emits('add:add-engagement-etudiant', body);
   hideDialog();
 }
 
 const isFormValid = computed(() => {
-  return !(engagementetudiant.login === '' || engagementetudiant.nom === '' || engagementetudiant.prenom === '' || engagementetudiant.promotion === '' || selectedPoste.value === null);
+  return !(engagementetudiant.login === '' || engagementetudiant.name === '' || engagementetudiant.firstname === '' || engagementetudiant.promotion === '' || selectedPoste.value === null);
 })
 
 </script>
@@ -123,11 +125,11 @@ const isFormValid = computed(() => {
       </div>
       <div class="flex gap-5 mt-8">
         <FloatLabel class="w-1/2">
-          <InputText id="nom" v-model="engagementetudiant.nom" />
+          <InputText id="nom" v-model="engagementetudiant.name" />
           <label for="nom">Nom</label>
         </FloatLabel>
         <FloatLabel class="w-1/2">
-          <InputText id="prenom" v-model="engagementetudiant.prenom" class="w-full"/>
+          <InputText id="prenom" v-model="engagementetudiant.firstname" class="w-full"/>
           <label for="prenom">Prénom</label>
         </FloatLabel>
       </div>
@@ -142,17 +144,17 @@ const isFormValid = computed(() => {
         </FloatLabel>
       </div>
       <FloatLabel class="flex justify-center mt-8">
-        <Textarea v-model="engagementetudiant.commentaire" rows="5" cols="30" class="w-full"/>
+        <Textarea v-model="engagementetudiant.comment" rows="5" cols="30" class="w-full"/>
         <label for="commentaire">Commentaire sur l'investissement au sein de l'association</label>
       </FloatLabel>
       <Panel class="mt-5" header="Activité 1" toggleable>
         <div class="mt-2 flex gap-5">
           <FloatLabel>
-            <InputText id="activite1.text" v-model="engagementetudiant.activites[0].text" />
+            <InputText id="activite1.text" v-model="engagementetudiant.activities[0].text" />
             <label for="activite1.text">Description activité</label>
           </FloatLabel>
           <FloatLabel>
-            <InputText type="number" id="activite1.heures" v-model="engagementetudiant.activites[0].heures" min="0"/>
+            <InputText type="number" id="activite1.heures" v-model="engagementetudiant.activities[0].hours" min="0"/>
             <label for="activite1.heures">Heures travaillées</label>
           </FloatLabel>
         </div>
@@ -160,11 +162,11 @@ const isFormValid = computed(() => {
       <Panel class="mt-2" header="Activité 2" toggleable collapsed>
         <div class="mt-2 flex gap-5">
           <FloatLabel>
-            <InputText id="activite2.text" v-model="engagementetudiant.activites[1].text" />
+            <InputText id="activite2.text" v-model="engagementetudiant.activities[1].text" />
             <label for="activite2.text">Description activité</label>
           </FloatLabel>
           <FloatLabel>
-            <InputText type="number" id="activite2.heures" v-model="engagementetudiant.activites[1].heures" min="0"/>
+            <InputText type="number" id="activite2.heures" v-model="engagementetudiant.activities[1].hours" min="0"/>
             <label for="activite2.heures">Heures travaillées</label>
           </FloatLabel>
         </div>
@@ -172,22 +174,22 @@ const isFormValid = computed(() => {
       <Panel class="mt-2" header="Activité 3" toggleable collapsed>
         <div class="mt-2 flex gap-5">
           <FloatLabel>
-            <InputText id="activite3.text" v-model="engagementetudiant.activites[2].text" />
+            <InputText id="activite3.text" v-model="engagementetudiant.activities[2].text" />
             <label for="activite3.text">Description activité</label>
           </FloatLabel>
           <FloatLabel>
-            <InputText type="number" id="activite3.heures" v-model="engagementetudiant.activites[2].heures" min="0"/>
+            <InputText type="number" id="activite3.heures" v-model="engagementetudiant.activities[2].hours" min="0"/>
             <label for="activite3.heures">Heures travaillées</label>
           </FloatLabel>
         </div>
       </Panel>
       <div class="flex justify-center gap-5 mt-8">
         <FloatLabel>
-          <InputText type="number" id="totalHeures" v-model="engagementetudiant.totalHeures" :min="0" />
+          <InputText type="number" id="totalHeures" v-model="engagementetudiant.totalHours" :min="0" />
           <label for="totalHeures">Total heures</label>
         </FloatLabel>
         <FloatLabel>
-          <InputText type="number" id="totalJour" v-model="engagementetudiant.totalJour" min="0"/>
+          <InputText type="number" id="totalJour" v-model="engagementetudiant.totalDays" min="0"/>
           <label for="totalJour">Total jour</label>
         </FloatLabel>
       </div>

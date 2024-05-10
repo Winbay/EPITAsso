@@ -2,9 +2,11 @@
 import SideMenu from "@/components/SideMenu.vue";
 import TheHeader from "@/components/TheHeader.vue";
 import MainPanel from "@/components/MainPanel.vue";
+import Toast from 'primevue/toast'
 </script>
 
 <template>
+  <Toast />
   <TheHeader/>
   <main class="h-full flex flex-wrap">
     <SideMenu/>
