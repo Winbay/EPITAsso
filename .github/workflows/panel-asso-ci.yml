@@ -20,11 +20,11 @@ jobs:
         node-version: '20'
     - name: Install dependencies
       run: |
-        cd frontend/pannel_asso
+        cd frontend/panel_asso
         npm ci
     - name: Build
       run: |
-        cd frontend/pannel_asso
+        cd frontend/panel_asso
         npm run build
 
   test:
@@ -38,11 +38,11 @@ jobs:
         node-version: '20'
     - name: Install dependencies
       run: |
-        cd frontend/pannel_asso
+        cd frontend/panel_asso
         npm ci
     - name: Test
       run: |
-        cd frontend/pannel_asso
+        cd frontend/panel_asso
         npm run test:unit
 
   lint_and_format:
@@ -57,15 +57,15 @@ jobs:
         node-version: '20'
     - name: Install dependencies
       run: |
-        cd frontend/pannel_asso
+        cd frontend/panel_asso
         npm ci
     - name: Lint code
       run: |
-        cd frontend/pannel_asso
+        cd frontend/panel_asso
         npm run lint
     - name: Format code
       run: |
-        cd frontend/pannel_asso
+        cd frontend/panel_asso
         npm run format
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
