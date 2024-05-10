@@ -1,4 +1,4 @@
-name: Vitrine - Vue CI
+name: Panel adm - Vue CI
 on:
   push:
     branches:
@@ -20,11 +20,11 @@ jobs:
         node-version: '20'
     - name: Install dependencies
       run: |
-        cd frontend/vitrine
+        cd frontend/pannel_adm
         npm ci
     - name: Build
       run: |
-        cd frontend/vitrine
+        cd frontend/pannel_adm
         npm run build
 
   test:
@@ -38,11 +38,11 @@ jobs:
         node-version: '20'
     - name: Install dependencies
       run: |
-        cd frontend/vitrine
+        cd frontend/pannel_adm
         npm ci
     - name: Test
       run: |
-        cd frontend/vitrine
+        cd frontend/pannel_adm
         npm run test:unit
 
   lint_and_format:
@@ -57,19 +57,19 @@ jobs:
         node-version: '20'
     - name: Install dependencies
       run: |
-        cd frontend/vitrine
+        cd frontend/pannel_adm
         npm ci
     - name: Lint code
       run: |
-        cd frontend/vitrine
+        cd frontend/pannel_adm
         npm run lint
     - name: Format code
       run: |
-        cd frontend/vitrine
+        cd frontend/pannel_adm
         npm run format
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
       with:
-        message: "ci(vitrine): Format and lint code"
-        add: "frontend/vitrine"
+        message: "ci(panel_adm): Format and lint code"
+        add: "frontend/pannel_adm"
         author_name: "EPITAsso CI"
