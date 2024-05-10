@@ -48,6 +48,7 @@ jobs:
         run: python backend/EPITAssoAPI/manage.py test
 
   lint_and_format:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -65,7 +66,8 @@ jobs:
         args: format
         src: backend/EPITAssoAPI
     - name: Commit changes
-      run: |
-        git add backend/EPITAssoAPI
-        git commit -m "ci(backend): Lint and format code"
-        git push origin HEAD:${{ github.ref }}
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: "ci: Format and lint code with ruff"
+        add: "backend/EPITAssoAPI"
+        author_name: "EPITAsso CI"
