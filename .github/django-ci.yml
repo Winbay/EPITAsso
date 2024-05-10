@@ -1,0 +1,71 @@
+name: Django CI
+on:
+  push:
+    branches:
+      - develop
+      - master
+      - feat/ci-cd
+  pull_request:
+    branches:
+      - develop
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: backend/EPITAssoAPI
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/EPITAssoAPI/requirements.txt
+      - name: Build
+        run: python backend/EPITAssoAPI/manage.py check
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: backend/EPITAssoAPI
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/EPITAssoAPI/requirements.txt
+      - name: Set environment variable for CI
+        run: echo "CI=True" >> $GITHUB_ENV
+      - name: Run tests
+        run: python backend/EPITAssoAPI/manage.py test
+
+  lint_and_format:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        path: backend/EPITAssoAPI
+    - name: Lint with ruff
+      uses: chartboost/ruff-action@v1
+      with:
+        args: check --fix
+        src: backend/EPITAssoAPI
+    - name: Format with ruff
+      uses: chartboost/ruff-action@v1
+      with:
+        args: format
+        src: backend/EPITAssoAPI
+    - name: Commit changes
+      run: |
+        git add backend/EPITAssoAPI
+        git commit -m "ci(backend): Lint and format code"
+        git push origin HEAD:${{ github.ref }}
