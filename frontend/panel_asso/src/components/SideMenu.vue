@@ -23,7 +23,8 @@ const items = [
   },
   {
     label: "Articles",
-    icon: "pi pi-book"
+    icon: "pi pi-book",
+    path: "articles"
   },
   {
     label: "Formulaires",

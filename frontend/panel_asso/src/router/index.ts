@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from "@/components/Home.vue";
 import Events from "@/views/Events.vue";
-import EventEdit from '@/components/Dialog/DialogEvent.vue'
+import Articles from '@/views/Articles.vue'
 import MonAssociation from '@/components/MonAssociation.vue'
 
 const router = createRouter({
@@ -9,12 +9,7 @@ const router = createRouter({
   routes: [
     { path: '/', component: Home},
     { path: '/events', component: Events},
-    {
-      path: '/events/:id',
-      name: 'EventEdit',
-      component: EventEdit,
-      props: true
-    },
+    { path: '/articles', component: Articles},
     { path: '/mon-association', component: MonAssociation}
   ]
 })

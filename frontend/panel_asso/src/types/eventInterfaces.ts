@@ -1,6 +1,3 @@
-import type { EventTag } from '@/types/tagInterfaces';
-import { ref } from 'vue'
-
 export interface EventModification {
   id: number;
   title: string;
@@ -17,7 +14,7 @@ export interface EventModification {
 export interface EventCreation {
   title: string;
   content: string;
-  tags: EventTag[];
+  tags: number[];
   startDate: number;
   endDate: number;
   recurrent: boolean;
