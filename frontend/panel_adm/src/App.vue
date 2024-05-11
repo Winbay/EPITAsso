@@ -8,7 +8,7 @@ import Toast from 'primevue/toast'
 <template>
   <Toast />
   <TheHeader/>
-  <main class="h-full flex flex-wrap">
+  <main id="main-content" class="h-full flex flex-wrap overflow-auto">
     <SideMenu/>
     <MainPanel/>
   </main>

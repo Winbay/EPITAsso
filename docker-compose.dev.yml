@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16.2-alpine3.19
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - ./backend/EPITAssoAPI/.env.dev
+
+  django:
+    build:
+      context: ./backend/EPITAssoAPI
+    command: >
+      sh -c "python3 manage.py makemigrations &&
+          python3 manage.py migrate &&
+          python3 manage.py runserver 0.0.0.0:8000"
+    environment:
+      ENV_FILE: .env.dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  asso:
+    build:
+      context: ./frontend/panel_asso
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8081:8080"
+
+  etd:
+    build:
+      context: ./frontend/vitrine
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8082:8080"
+
+  adm:
+    build:
+      context: ./frontend/panel_adm
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8083:8080"
+
+volumes:
+  db_data:
