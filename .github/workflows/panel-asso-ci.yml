@@ -44,33 +44,3 @@ jobs:
       run: |
         cd frontend/panel_asso
         npm run test:unit
-
-  lint_and_format:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Use Node.js 20
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    - name: Install dependencies
-      run: |
-        cd frontend/panel_asso
-        npm ci
-    - name: Lint code
-      run: |
-        cd frontend/panel_asso
-        npm run lint
-    - name: Format code
-      run: |
-        cd frontend/panel_asso
-        npm run format
-    - name: Commit changes
-      uses: EndBug/add-and-commit@v9
-      with:
-        message: "ci(panel_asso): Format and lint code"
-        add: "frontend/panel_asso"
-        author_name: "EPITAsso CI"
-        tag_push: "--force-with-lease"
