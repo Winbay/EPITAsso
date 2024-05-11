@@ -9,7 +9,8 @@ const items = [
   },
   {
     label: "Mon association",
-    icon: "pi pi-info-circle"
+    icon: "pi pi-info-circle",
+    path: "mon-association"
   },
   {
     label: "Messagerie",
@@ -17,7 +18,8 @@ const items = [
   },
   {
     label: "Évènements",
-    icon: "pi pi-calendar"
+    icon: "pi pi-calendar",
+    path: "events"
   },
   {
     label: "Articles",
@@ -47,7 +49,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="side-panel" class="absolute -left-56 h-full w-56">
+  <div id="side-panel" class="h-full w-56">
     <PanelMenu :model="items" class="w-full h-full">
       <template #item="{ item }">
         <router-link :to="`/${item.path || ''}`" :Ripple="true" class="flex align-items-center px-3 py-2 cursor-pointer">
@@ -61,6 +63,18 @@ onMounted(() => {
 </template>
 
 <style>
+#side-panel {
+  background-color: #1F2937;
+  transition: transform 0.2s;
+  position: fixed;
+  top: 2.5rem;
+  left: 0;
+}
+
+#main-content.panel-inactive #side-panel {
+  transform: translateX(-100%);
+}
+
 .p-panelmenu-panel {
   margin: 0;
   border-radius: 0;
@@ -69,10 +83,5 @@ onMounted(() => {
 .p-panelmenu-header-content, .p-panelmenu-content {
   border: initial;
   border-radius: 0;
-}
-
-#side-panel {
-  background-color: #1F2937;
-  transition: left 0.8s;
 }
 </style>

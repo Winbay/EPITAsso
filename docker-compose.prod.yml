@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:16.2-alpine3.19
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - ./backend/EPITAssoAPI/.env.dev
+
+  django:
+    build:
+      context: ./backend/EPITAssoAPI
+    command: >
+      sh -c "python3 manage.py makemigrations &&
+          python3 manage.py migrate --noinput &&
+          python manage.py collectstatic --no-input &&
+          gunicorn EPITAssoAPI.wsgi:application --bind 0.0.0.0:8000"
+    restart: always
+    volumes:
+      - static:/app/static
+    environment:
+      ENV_FILE: .env.prod
+    depends_on:
+      - db
+
+  asso:
+    build:
+      context: ./frontend/panel_asso
+      dockerfile: Dockerfile.prod
+
+  etd:
+    build:
+      context: ./frontend/vitrine
+      dockerfile: Dockerfile.prod
+
+  adm:
+    build:
+      context: ./frontend/panel_adm
+      dockerfile: Dockerfile.prod
+
+  nginx:
+    build: ./nginx
+    restart: always
+    volumes:
+      - static:/app/static
+      - ./certbot/www/:/var/www/certbot/
+      - ./certbot/conf/:/etc/letsencrypt/
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - django
+      - asso
+      - etd
+      - adm
+      - certbot
+
+  certbot:
+    image: certbot/certbot:v2.10.0
+    volumes:
+      - ./certbot/www/:/var/www/certbot/
+      - ./certbot/conf/:/etc/letsencrypt/
+    command: certonly --standalone --agree-tos --register-unsafely-without-email -d api.{DOMAIN_NAME} -d association.{DOMAIN_NAME} -d etudiant.{DOMAIN_NAME} -d administration.{DOMAIN_NAME}
+
+
+volumes:
+  db_data:
+  static:

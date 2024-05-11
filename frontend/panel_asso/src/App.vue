@@ -8,13 +8,19 @@ import Toast from 'primevue/toast'
 <template>
   <Toast />
   <TheHeader/>
-  <main class="h-full flex flex-wrap">
+  <main id="main-content" class="h-full flex flex-wrap overflow-hidden">
     <SideMenu/>
     <MainPanel/>
   </main>
 </template>
 
 <style scoped>
+
+.main {
+  height: max-content;
+  background-color: #1f2937;
+}
+
 header {
   line-height: 1.5;
 }
