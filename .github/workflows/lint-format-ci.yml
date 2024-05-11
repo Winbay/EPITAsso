@@ -1,0 +1,86 @@
+name: Lint and format CI
+on:
+  push:
+    branches:
+      - develop
+      - master
+      - feat/ci-cd
+  pull_request:
+    branches:
+      - develop
+      - master
+jobs:
+  lint_and_format:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: backend - Lint with ruff
+      uses: chartboost/ruff-action@v1
+      with:
+        args: check --fix
+        src: backend/EPITAssoAPI
+    - name: backend - Format with ruff
+      uses: chartboost/ruff-action@v1
+      with:
+        args: format
+        src: backend/EPITAssoAPI
+
+    - name: panel_adm - Checkout code
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: panel_adm - Install dependencies
+      run: |
+        cd frontend/panel_adm
+        npm ci
+    - name: panel_adm - Lint code
+      run: |
+        cd frontend/panel_adm
+        npm run lint
+    - name: panel_adm - Format code
+      run: |
+        cd frontend/panel_adm
+        npm run format
+        
+    - name: panel_asso - Checkout code
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: panel_asso - Install dependencies
+      run: |
+        cd frontend/panel_asso
+        npm ci
+    - name: panel_asso - Lint code
+      run: |
+        cd frontend/panel_asso
+        npm run lint
+    - name: panel_asso - Format code
+      run: |
+        cd frontend/panel_asso
+        npm run format
+
+    - name: vitrine - Checkout code
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: vitrine - Install dependencies
+      run: |
+        cd frontend/vitrine
+        npm ci
+    - name: vitrine - Lint code
+      run: |
+        cd frontend/vitrine
+        npm run lint
+    - name: vitrine - Format code
+      run: |
+        cd frontend/vitrine
+        npm run format
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: "ci: Format and lint code"
+        author_name: "GitHub Action CI"
+    
