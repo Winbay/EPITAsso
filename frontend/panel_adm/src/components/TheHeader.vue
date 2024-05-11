@@ -3,12 +3,6 @@ import { ref } from "vue";
 import Avatar from 'primevue/avatar';
 import Dropdown from "primevue/dropdown";
 
-const items = ref([
-  {
-    icon: "pi pi-bars"
-  }
-])
-
 const associations = ref([
   { name: 'EPTV', logo: "eptv.jpg" },
   { name: 'Kraken', logo: "kraken.png" }
