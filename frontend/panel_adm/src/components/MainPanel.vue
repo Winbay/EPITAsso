@@ -13,6 +13,7 @@
   margin-left: 14rem;
   transition: margin-left 0.2s;
   background-color: #131923;
+  min-height: 100vh;
   height: 100%;
 }
 #main-content.panel-inactive .page-content {
