@@ -53,11 +53,11 @@ fixture('GET /api/events', () => {
 // });
 
 fixture('POST /api/events', (request, response) => {
-  let newEvent = request.data;
-  newEvent.id = events[events.length - 1].id + 1;
-  events.push(newEvent);
-  response(201);
-});
+  let newEvent = request.data
+  newEvent.id = events[events.length - 1].id + 1
+  events.push(newEvent)
+  response(201)
+})
 
 fixture('PUT /api/events/{id}', (request, response) => {
   const id = parseInt(request.data.id)

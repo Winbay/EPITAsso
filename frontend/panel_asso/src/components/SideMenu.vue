@@ -22,9 +22,9 @@ const items = [
     path: 'events'
   },
   {
-    label: "Articles",
-    icon: "pi pi-book",
-    path: "articles"
+    label: 'Articles',
+    icon: 'pi pi-book',
+    path: 'articles'
   },
   {
     label: 'Formulaires',
