@@ -1,103 +1,132 @@
 <script setup lang="ts">
-
-import '@/fixtures/studentEngagement';
-import Button from 'primevue/button';
+import '@/fixtures/studentEngagement'
+import Button from 'primevue/button'
 import StudentEngagementDialog from '@/components/Dialog/StudentEngagementDialog.vue'
 import StudentEngagementTable from '@/components/DataTable/StudentEngagementTable.vue'
-import { type StudentEngagement, type Position, type Status } from '@/types/studentEngagementInterface'
+import {
+  type StudentEngagement,
+  type Position,
+  type Status
+} from '@/types/studentEngagementInterface'
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import axios from 'axios'
 
-const displayDialog = ref(false);
-const studentId = ref<number | null>(null);
-const canEditDialog = ref(true);
-const setDisplayDialog = (value: {visible: boolean, id: number | null, canEdit: boolean}) => {
-  displayDialog.value = value.visible;
-  studentId.value = value.id;
-  canEditDialog.value = value.canEdit;
+const displayDialog = ref(false)
+const studentId = ref<number | null>(null)
+const canEditDialog = ref(true)
+const setDisplayDialog = (value: { visible: boolean; id: number | null; canEdit: boolean }) => {
+  displayDialog.value = value.visible
+  studentId.value = value.id
+  canEditDialog.value = value.canEdit
 }
 
-const addStudentEngagement = async (studentEngagement : StudentEngagement) => {
+const addStudentEngagement = async (studentEngagement: StudentEngagement) => {
   try {
-    await axios.post('/api/studentEngagements', studentEngagement);
-    toast.add({ severity: 'success', summary: 'Engagement étudiant',
-      detail: 'L\'engagement étudiant a bien été ajouté.', life: 3000 });
-    await reloadStudentEngagements();
-    displayDialog.value = false;
+    await axios.post('/api/studentEngagements', studentEngagement)
+    toast.add({
+      severity: 'success',
+      summary: 'Engagement étudiant',
+      detail: "L'engagement étudiant a bien été ajouté.",
+      life: 3000
+    })
+    await reloadStudentEngagements()
+    displayDialog.value = false
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Engagement étudiant',
-      detail: 'L\'engagement étudiant n\'a pas pu être ajouté.', life: 3000 });
-    console.log(error);
+    toast.add({
+      severity: 'error',
+      summary: 'Engagement étudiant',
+      detail: "L'engagement étudiant n'a pas pu être ajouté.",
+      life: 3000
+    })
+    console.log(error)
   }
 }
 
-const updateStudentEngagement = async (studentEngagement : StudentEngagement) => {
+const updateStudentEngagement = async (studentEngagement: StudentEngagement) => {
   try {
-    await axios.put(`/api/studentEngagements/${studentEngagement.id}`, studentEngagement);
-    toast.add({ severity: 'success', summary: 'Engagement étudiant',
-      detail: 'L\'engagement étudiant a bien été modifié.', life: 3000 });
-    await reloadStudentEngagements();
-    displayDialog.value = false;
+    await axios.put(`/api/studentEngagements/${studentEngagement.id}`, studentEngagement)
+    toast.add({
+      severity: 'success',
+      summary: 'Engagement étudiant',
+      detail: "L'engagement étudiant a bien été modifié.",
+      life: 3000
+    })
+    await reloadStudentEngagements()
+    displayDialog.value = false
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Engagement étudiant',
-      detail: 'L\'engagement étudiant n\'a pas pu être modifié.', life: 3000 });
-    console.log(error);
+    toast.add({
+      severity: 'error',
+      summary: 'Engagement étudiant',
+      detail: "L'engagement étudiant n'a pas pu être modifié.",
+      life: 3000
+    })
+    console.log(error)
   }
 }
 
-const toast = useToast();
+const toast = useToast()
 
-const positions = ref<Position[]>([]);
-const status = ref<Status[]>([]);
+const positions = ref<Position[]>([])
+const status = ref<Status[]>([])
 const studentEngagements = ref<StudentEngagement[]>([])
 
 async function loadPosition() {
   try {
-    const response = await axios.get<Position[]>('/api/studentEngagements/positions');
-    positions.value = response.data;
-    return true;
+    const response = await axios.get<Position[]>('/api/studentEngagements/positions')
+    positions.value = response.data
+    return true
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Engagements étudiant',
-      detail: 'La liste des tags des évènements n\'a pas pu être chargée.', life: 3000 });
-    console.log(error);
-    return false;
+    toast.add({
+      severity: 'error',
+      summary: 'Engagements étudiant',
+      detail: "La liste des tags des évènements n'a pas pu être chargée.",
+      life: 3000
+    })
+    console.log(error)
+    return false
   }
 }
 
 async function loadStatus() {
   try {
-    const response = await axios.get<Status[]>('/api/studentEngagements/status');
-    status.value = response.data;
-    return true;
+    const response = await axios.get<Status[]>('/api/studentEngagements/status')
+    status.value = response.data
+    return true
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Engagements étudiant',
-      detail: 'La liste des status des évènements n\'a pas pu être chargée.', life: 3000 });
-    console.log(error);
-    return false;
+    toast.add({
+      severity: 'error',
+      summary: 'Engagements étudiant',
+      detail: "La liste des status des évènements n'a pas pu être chargée.",
+      life: 3000
+    })
+    console.log(error)
+    return false
   }
 }
 
 async function reloadStudentEngagements() {
   try {
-    const response = await axios.get<StudentEngagement[]>('/api/studentEngagements');
-    studentEngagements.value = response.data;
-    return true;
-  }
-  catch (error) {
-    toast.add({ severity: 'error', summary: 'Engagements étudiant',
-      detail: 'La liste des engagements étudiant n\'a pas pu être chargée.', life: 3000 });
-    console.log(error);
-    return false;
+    const response = await axios.get<StudentEngagement[]>('/api/studentEngagements')
+    studentEngagements.value = response.data
+    return true
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Engagements étudiant',
+      detail: "La liste des engagements étudiant n'a pas pu être chargée.",
+      life: 3000
+    })
+    console.log(error)
+    return false
   }
 }
 
 onMounted(async () => {
-  if (await loadPosition() && await loadStatus()) {
-    await reloadStudentEngagements();
+  if ((await loadPosition()) && (await loadStatus())) {
+    await reloadStudentEngagements()
   }
-});
-
+})
 </script>
 
 <template>
@@ -111,7 +140,8 @@ onMounted(async () => {
           label="Ajouter un engagement étudiant"
           icon="pi pi-plus"
           @click="displayDialog = true"
-          raised />
+          raised
+        />
       </div>
       <StudentEngagementDialog
         :visible="displayDialog"
@@ -120,30 +150,29 @@ onMounted(async () => {
         :status="status"
         @update:visible="setDisplayDialog"
         @add:student-engagement="addStudentEngagement"
-        @update:studentEngagement="updateStudentEngagement"/>
+        @update:studentEngagement="updateStudentEngagement"
+      />
     </div>
     <div class="card flex justify-center">
       <StudentEngagementTable
         :studentEngagements="studentEngagements"
         :positions="positions"
         :status="status"
-        @update:visible="setDisplayDialog"/>
+        @update:visible="setDisplayDialog"
+      />
     </div>
   </div>
 </template>
 
 <style scoped>
-
 .student-engagement {
   background-color: #131923;
   padding: 20px;
-  height: 100%
+  height: 100%;
 }
 
 .header {
   flex-wrap: wrap;
   height: fit-content;
 }
-
-
 </style>

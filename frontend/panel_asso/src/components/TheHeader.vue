@@ -1,31 +1,24 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import Avatar from "primevue/avatar";
-import Dropdown from "primevue/dropdown";
-
-const items = ref([
-  {
-    icon: "pi pi-bars"
-  }
-])
+import { ref } from 'vue'
+import Avatar from 'primevue/avatar'
+import Dropdown from 'primevue/dropdown'
 
 const associations = ref([
-  { name: 'EPTV', logo: "eptv.jpg" },
-  { name: 'Kraken', logo: "kraken.png" }
-]);
-const selectedAsso = ref(associations.value[0]);
+  { name: 'EPTV', logo: 'eptv.jpg' },
+  { name: 'Kraken', logo: 'kraken.png' }
+])
+const selectedAsso = ref(associations.value[0])
 
 const stateMenu = () => {
-  let sidePanel = document.getElementById("main-content");
+  let sidePanel = document.getElementById('main-content')
   if (!sidePanel) {
-    return;
+    return
   }
-  if (sidePanel.classList.contains("panel-inactive")) {
-    sidePanel.classList.remove("panel-inactive")
+  if (sidePanel.classList.contains('panel-inactive')) {
+    sidePanel.classList.remove('panel-inactive')
   } else {
-    sidePanel.classList.add("panel-inactive");
+    sidePanel.classList.add('panel-inactive')
   }
-
 }
 </script>
 
@@ -36,23 +29,29 @@ const stateMenu = () => {
         <span class="ml-2 text-lg font-bold uppercase text-wrap">Panel Association</span>
       </div>
       <div class="btn-menu flex justify-center cursor-pointer" v-on:click="stateMenu">
-        <i class="pi pi-bars" style="font-size: 1.5rem;"/>
+        <i class="pi pi-bars" style="font-size: 1.5rem" />
       </div>
     </div>
     <div class="header-right flex justify-center items-center mr-10">
-      <Dropdown v-model="selectedAsso" :options="associations" optionLabel="name" placeholder="Select an Asso" class="h-10 w-full md:w-14rem bg-transparent border-0 shadow-none">
+      <Dropdown
+        v-model="selectedAsso"
+        :options="associations"
+        optionLabel="name"
+        placeholder="Select an Asso"
+        class="h-10 w-full md:w-14rem bg-transparent border-0 shadow-none"
+      >
         <template #value="slotProps">
           <div v-if="slotProps.value" class="flex align-items-center">
-            <Avatar :image="`/images/${slotProps.value.logo}`" class="mr-1" shape="circle"/>
+            <Avatar :image="`/images/${slotProps.value.logo}`" class="mr-1" shape="circle" />
             <div class="text-base flex items-center ml-1 mr-0">{{ slotProps.value.name }}</div>
           </div>
           <span v-else>
             {{ slotProps.placeholder }}
-        </span>
+          </span>
         </template>
         <template #option="slotProps">
           <div class="flex align-items-center">
-            <Avatar :image="`/images/${slotProps.option.logo}`" class="mr-1" shape="circle"/>
+            <Avatar :image="`/images/${slotProps.option.logo}`" class="mr-1" shape="circle" />
             <div class="text-base flex items-center ml-1">{{ slotProps.option.name }}</div>
           </div>
         </template>

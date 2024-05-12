@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import SideMenu from "@/components/SideMenu.vue";
-import TheHeader from "@/components/TheHeader.vue";
-import MainPanel from "@/components/MainPanel.vue";
+import SideMenu from '@/components/SideMenu.vue'
+import TheHeader from '@/components/TheHeader.vue'
+import MainPanel from '@/components/MainPanel.vue'
 import Toast from 'primevue/toast'
 </script>
 
 <template>
   <Toast />
-  <TheHeader/>
+  <TheHeader />
   <main id="main-content" class="h-full flex flex-wrap overflow-hidden">
-    <SideMenu/>
-    <MainPanel/>
+    <SideMenu />
+    <MainPanel />
   </main>
 </template>
 
 <style scoped>
-
 .main {
   height: max-content;
   background-color: #1f2937;
