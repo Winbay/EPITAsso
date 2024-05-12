@@ -30,7 +30,10 @@ const items = [
     label: "Formulaires",
     icon: "pi pi-list",
     items: [
-      {label: "Engagement étudiant"},
+      {
+        label: "Engagement étudiant",
+        path: "engagement-etudiant"
+      },
       {label: "Fiche évènement"},
       {label: "Création d'association"}
     ]
