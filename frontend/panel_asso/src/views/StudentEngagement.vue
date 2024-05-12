@@ -11,9 +11,11 @@ import axios from 'axios'
 
 const displayDialog = ref(false);
 const studentId = ref<number | null>(null);
-const setDisplayDialog = (value: {visible: boolean, id: number | null}) => {
+const canEditDialog = ref(true);
+const setDisplayDialog = (value: {visible: boolean, id: number | null, canEdit: boolean}) => {
   displayDialog.value = value.visible;
   studentId.value = value.id;
+  canEditDialog.value = value.canEdit;
 }
 
 const addStudentEngagement = async (studentEngagement : StudentEngagement) => {
@@ -40,19 +42,6 @@ const updateStudentEngagement = async (studentEngagement : StudentEngagement) =>
   } catch (error) {
     toast.add({ severity: 'error', summary: 'Engagement étudiant',
       detail: 'L\'engagement étudiant n\'a pas pu être modifié.', life: 3000 });
-    console.log(error);
-  }
-}
-
-const deleteStudentEngagement = async (studentEngagementId: number) => {
-  try {
-    await axios.delete(`/api/studentEngagements/${studentEngagementId}`);
-    toast.add({ severity: 'success', summary: 'Engagement étudiant',
-      detail: 'L\'engagement étudiant a bien été supprimé.', life: 3000 });
-    await reloadStudentEngagements();
-  } catch (error) {
-    toast.add({ severity: 'error', summary: 'Engagement étudiant',
-      detail: 'L\'engagement étudiant n\'a pas pu être supprimé.', life: 3000 });
     console.log(error);
   }
 }
@@ -127,6 +116,7 @@ onMounted(async () => {
       <StudentEngagementDialog
         :visible="displayDialog"
         :student-id="studentId"
+        :canEdit="canEditDialog"
         @update:visible="setDisplayDialog"
         @add:student-engagement="addStudentEngagement"
         @update:studentEngagement="updateStudentEngagement"/>
@@ -136,8 +126,7 @@ onMounted(async () => {
         :studentEngagements="studentEngagements"
         :positions="positions"
         :status="status"
-        @update:visible="setDisplayDialog"
-        @delete:studentEngagement="deleteStudentEngagement"/>
+        @update:visible="setDisplayDialog"/>
     </div>
   </div>
 </template>

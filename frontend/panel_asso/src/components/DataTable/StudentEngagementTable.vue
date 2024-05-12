@@ -4,11 +4,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag';
 import type { Position, Status, StudentEngagement } from '@/types/studentEngagementInterface'
-import { defineEmits, ref } from 'vue'
-import ConfirmPopup from 'primevue/confirmpopup'
-import { useConfirm } from 'primevue/useconfirm'
-const confirm = useConfirm();
-
+import { defineEmits } from 'vue'
 
 const props = defineProps<{
   studentEngagements: StudentEngagement[]
@@ -16,7 +12,7 @@ const props = defineProps<{
   status: Status[]
 }>()
 
-const emits = defineEmits(['update:visible', 'delete:student-engagement'])
+const emits = defineEmits(['update:visible'])
 
 const getPositionName = (positionId: number): string => {
   return props.positions.find(item => item.id === positionId)?.name ?? "";
@@ -42,29 +38,13 @@ const getStatusSeverity = (status: string) => {
 };
 
 const openDialog = (studentId: number) => {
-  emits('update:visible', {visible: true, id: studentId});
+  emits('update:visible', {visible: true, id: studentId, canEdit: false});
 }
-
-const confirmDelete = (event: Event, eventId: number) => {
-  confirm.require({
-    target: event.currentTarget as HTMLElement,
-    message: 'Êtes-vous sûr de vouloir supprimer cet engagement étudiant ?',
-    icon: 'pi pi-exclamation-triangle',
-    rejectClass: 'p-button-secondary p-button-outlined p-button-sm',
-    acceptClass: 'p-button-danger p-button-sm',
-    rejectLabel: 'Annuler',
-    acceptLabel: 'Supprimer',
-    accept: () => {
-      emits('delete:student-engagement', eventId);
-    },
-    reject: () => {}
-  });
-};
 
 </script>
 
 <template>
-  <div class="engagement-list">
+  <div class="engagement-list w-full">
     <DataTable :value="studentEngagements" show-gridlines striped-rows tableStyle="min-width: 50rem"
                size="small" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" removable-sort>
       <Column field="login" header="Login" :sortable="true"></Column>
@@ -85,9 +65,7 @@ const confirmDelete = (event: Event, eventId: number) => {
       <Column header="Actions">
         <template #body="slotProps">
           <div class="flex flex-col">
-            <a href="javascript:void(0)" class="hover:underline" @click="openDialog(slotProps.data.id)">Editer</a>
-            <ConfirmPopup></ConfirmPopup>
-            <a href="javascript:void(0)" @click="confirmDelete($event, slotProps.data.id)" class="hover:underline">Supprimer</a>
+            <a href="javascript:void(0)" class="hover:underline" @click="openDialog(slotProps.data.id)">Détails</a>
           </div>
         </template>
       </Column>

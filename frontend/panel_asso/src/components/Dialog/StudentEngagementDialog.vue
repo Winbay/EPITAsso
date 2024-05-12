@@ -17,16 +17,15 @@ const toast = useToast();
 const props = defineProps<{
   visible: boolean
   studentId: number | null
+  canEdit: boolean
 }>()
 
 const emits = defineEmits(['update:visible', 'add:student-engagement', 'update:student-engagement'])
 
 const hideDialog = () => {
   studentEngagementUtils.reset();
-  emits('update:visible', { visible: false, id: null });
+  emits('update:visible', { visible: false, id: null, canEdit: true});
 }
-
-const isEditing = computed(() => props.studentId !== null);
 
 async function loadStudentEngagement() {
   if (!props.visible || props.studentId === null) {
@@ -120,13 +119,7 @@ const submit = () => {
     studentEngagement.value.position = selectedPosition.value.code;
   }
   const body = { ...studentEngagement.value, totalHours, totalDays: (totalHours === 0) ? 0 : Math.floor(totalHours / 7 + 1), status: 2 };
-  if (isEditing.value) {
-    body.id = studentEngagement.value.id;
-    emits('update:student-engagement', body);
-  }
-  else {
-    emits('add:student-engagement', body);
-  }
+  emits('add:student-engagement', body);
   hideDialog();
 }
 
@@ -135,11 +128,11 @@ const submit = () => {
 <template>
   <Dialog
     class="w-fit"
-    :visible="props.visible"
-    :header="isEditing ? 'Modification de l\'engagement étudiant' : 'Ajout d\'un engagement étudiant'"
+    :visible="visible"
+    :header="canEdit ? 'Ajout d\'un engagement étudiant' : 'Détails'"
     modal
     @update:visible="hideDialog">
-    <div class="p-5">
+    <div class="p-5" :class="{ 'disabled': !canEdit }">
       <div class="flex justify-center">
         <FloatLabel>
           <InputText id="login" v-model="studentEngagement.login"/>
@@ -167,7 +160,7 @@ const submit = () => {
         </FloatLabel>
       </div>
       <FloatLabel class="flex justify-center mt-8">
-        <Textarea v-model="studentEngagement.comment" rows="5" cols="30" class="w-full"/>
+        <Textarea v-model="studentEngagement.comment" rows="5" cols="30" class="w-full" autoResize/>
         <label for="commentaire">Commentaire sur l'investissement au sein de l'association</label>
       </FloatLabel>
       <Panel v-for="(activity, index) in studentEngagement.activities" :key="index" class="mt-5" :header="'Activité ' + (index + 1)" toggleable>
@@ -182,23 +175,30 @@ const submit = () => {
           </FloatLabel>
         </div>
         <template #icons>
-          <button class="delete-activity p-panel-header-icon p-link mr-2" @click="studentEngagementUtils.removeActivity(index)">
+          <button class="delete-activity p-panel-header-icon p-link mr-2" @click="studentEngagementUtils.removeActivity(index)" v-show="canEdit">
             <span class="pi pi-trash"></span>
           </button>
         </template>
       </Panel>
-      <div class="mt-5">
+      <div class="mt-5" v-show="canEdit">
         <Button label="Ajouter une activité" icon="pi pi-plus" class="p-button-sm p-button-outlined p-button-rounded-none p-button-full-width" @click="studentEngagementUtils.addActivity()" />
       </div>
     </div>
-    <div class="flex justify-end mt-5">
+    <div class="flex justify-end mt-5" v-show="canEdit">
       <Button label="Annuler" icon="pi pi-times" class="mx-2" severity="secondary" @click="hideDialog" />
-      <Button :label="isEditing ? 'Sauvegarder' : 'Ajouter'" icon="pi pi-check" class="mx-2" severity="success" @click="submit"/>
+      <Button label="Ajouter" icon="pi pi-check" class="mx-2" severity="success" @click="submit"/>
     </div>
   </Dialog>
 </template>
 
 <style>
+
+.disabled {
+  input, textarea, .p-dropdown {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+}
 
 .delete-activity:hover {
   color: red;
