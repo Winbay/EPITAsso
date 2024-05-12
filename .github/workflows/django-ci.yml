@@ -1,10 +1,5 @@
 name: Django CI
 on:
-  push:
-    branches:
-      - develop
-      - master
-      - feat/ci-cd
   pull_request:
     branches:
       - develop
