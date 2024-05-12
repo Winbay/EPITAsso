@@ -31,11 +31,11 @@ const items = [
     icon: 'pi pi-list',
     items: [
       {
-        label: "Engagement étudiant",
-        path: "engagement-etudiant"
+        label: 'Engagement étudiant',
+        path: 'engagement-etudiant'
       },
-      {label: "Fiche évènement"},
-      {label: "Création d'association"}
+      { label: 'Fiche évènement' },
+      { label: "Création d'association" }
     ]
   },
   {
