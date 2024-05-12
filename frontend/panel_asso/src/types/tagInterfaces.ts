@@ -4,6 +4,6 @@ export interface EventTag {
 }
 
 export interface ArticleTag {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }

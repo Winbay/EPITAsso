@@ -12,12 +12,12 @@ export interface EventModification {
 }
 
 export interface EventCreation {
-  title: string;
-  content: string;
-  tags: number[];
-  startDate: number;
-  endDate: number;
-  recurrent: boolean;
-  frequency: number;
-  endRecurrence: number;
+  title: string
+  content: string
+  tags: number[]
+  startDate: number
+  endDate: number
+  recurrent: boolean
+  frequency: number
+  endRecurrence: number
 }
