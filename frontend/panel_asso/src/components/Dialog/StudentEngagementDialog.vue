@@ -247,7 +247,8 @@ const submit = () => {
               :min="1"
               :max="999"
               mode="decimal"
-              show-buttons/>
+              show-buttons
+            />
             <label :for="'activite' + index + '.heures'">Heures travaillées</label>
           </FloatLabel>
         </div>
