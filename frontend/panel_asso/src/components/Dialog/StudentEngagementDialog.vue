@@ -12,6 +12,7 @@ import { defineEmits, ref, watch } from 'vue'
 import { type Status, type StudentEngagement } from '@/types/studentEngagementInterface'
 import axios from 'axios'
 import Tag from 'primevue/tag'
+import InputNumber from 'primevue/inputnumber'
 
 const toast = useToast()
 
@@ -239,12 +240,14 @@ const submit = () => {
             <label :for="'activite' + index + '.text'">Description activité</label>
           </FloatLabel>
           <FloatLabel>
-            <InputText
-              type="number"
+            <InputNumber
               :id="'activite' + index + '.heures'"
               v-model="activity.hours"
-              min="0"
-            />
+              inputId="minmax-buttons"
+              :min="1"
+              :max="999"
+              mode="decimal"
+              show-buttons/>
             <label :for="'activite' + index + '.heures'">Heures travaillées</label>
           </FloatLabel>
         </div>

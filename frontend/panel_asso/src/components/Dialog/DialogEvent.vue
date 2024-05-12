@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
 import Editor from 'primevue/editor'
 import Button from 'primevue/button'
 import MultiSelect from 'primevue/multiselect'
@@ -178,7 +179,7 @@ onMounted(() => {
       </div>
       <div class="mb-8 flex justify-start items-center">
         <FloatLabel v-if="currEvent.recurrent" class="mr-4">
-          <InputText id="frequency" v-model="currEvent.frequency" type="number" min="1" />
+          <InputNumber id="frequency" v-model="currEvent.frequency" inputId="minmax-buttons" :min="1" :max="999" mode="decimal" show-buttons/>
           <label for="frequency">Fréquence (en jours)</label>
         </FloatLabel>
         <FloatLabel v-if="currEvent.recurrent" class="w-1/3">
