@@ -8,6 +8,11 @@ export interface Position {
   name: string;
 }
 
+export interface Status {
+  id: number;
+  name: string;
+}
+
 export interface StudentEngagement {
   id: number;
   login: string;
@@ -19,4 +24,5 @@ export interface StudentEngagement {
   activities: activity[];
   totalHours: number | null;
   totalDays: number | null;
+  status: number;
 }

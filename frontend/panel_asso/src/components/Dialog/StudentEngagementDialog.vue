@@ -7,21 +7,44 @@ import Textarea from 'primevue/textarea'
 import Panel from 'primevue/panel'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
+import { useToast } from 'primevue/usetoast'
 import { defineEmits, ref, computed, watch, reactive } from 'vue'
-import { type StudentEngagement, type Position } from '@/types/studentEngagementInterface'
+import { type StudentEngagement } from '@/types/studentEngagementInterface'
+import axios from 'axios'
+
+const toast = useToast();
 
 const props = defineProps<{
   visible: boolean
-  positions: Position[]
+  studentId: number | null
 }>()
 
-const emits = defineEmits(['update:visible', 'add:add-engagement-etudiant'])
+const emits = defineEmits(['update:visible', 'add:student-engagement', 'update:student-engagement'])
+
 const hideDialog = () => {
-  resetDialog();
-  emits('update:visible', false);
+  studentEngagementUtils.reset();
+  emits('update:visible', { visible: false, id: null });
 }
 
-const engagementetudiant = reactive<StudentEngagement>({
+const isEditing = computed(() => props.studentId !== null);
+
+async function loadStudentEngagement() {
+  if (!props.visible || props.studentId === null) {
+    return;
+  }
+  try {
+    const response = await axios.get<StudentEngagement>(`/api/studentEngagements/${props.studentId}`);
+    studentEngagementUtils.set(response.data);
+    return true;
+  } catch (error) {
+    toast.add({ severity: 'error', summary: 'Engagements étudiant',
+      detail: 'L\'engagement étudiant n\'a pas pu être chargée.', life: 3000 });
+    console.log(error);
+    return false;
+  }
+}
+
+const studentEngagement = ref<StudentEngagement>({
   id: -1,
   login: '',
   name: '',
@@ -30,31 +53,14 @@ const engagementetudiant = reactive<StudentEngagement>({
   position: -1,
   comment: '',
   activities: [
-    { text: '', hours: null },
-    { text: '', hours: null },
     { text: '', hours: null }
   ],
-  totalHours: null,
-  totalDays: null
+  totalHours: 0,
+  totalDays: 0,
+  status: -1
 });
 
-const resetDialog = () => {
-  engagementetudiant.login = '';
-  engagementetudiant.name = '';
-  engagementetudiant.firstname = '';
-  engagementetudiant.promotion = '';
-  engagementetudiant.position = -1;
-  engagementetudiant.comment = '';
-  engagementetudiant.activities = [
-    { text: '', hours: null },
-    { text: '', hours: null },
-    { text: '', hours: null }
-  ];
-  engagementetudiant.totalHours = null;
-  engagementetudiant.totalDays = null;
-}
-
-const postes = ref(
+const positions = ref(
   [
     { name: 'Membre', code: 1 },
     { name: 'Président', code: 2 },
@@ -63,48 +69,66 @@ const postes = ref(
     { name: 'Trésorier', code: 5 },
   ]
 );
-const selectedPoste = ref(null);
+const selectedPosition = ref<{ name: string; code: number } | undefined>(undefined);
 
-watch(engagementetudiant.activities, (newValue) => {
-  const total = newValue.reduce((acc, activite) => {
-    if (activite.hours === null || isNaN(activite.hours)) {
-      return acc;
-    }
-    return acc + parseInt(String(activite.hours));
-  }, 0);
-  engagementetudiant.totalHours = total;
-  if (total === 0) {
-    engagementetudiant.totalDays = 0;
-    return;
+const studentEngagementUtils = {
+  reset() {
+    studentEngagement.value = {
+      id: -1,
+      login: '',
+      name: '',
+      firstname: '',
+      promotion: '',
+      position: -1,
+      comment: '',
+      activities: [
+        { text: '', hours: null }
+      ],
+      totalHours: 0,
+      totalDays: 0,
+      status: -1
+    };
+    selectedPosition.value = undefined;
+  },
+  set(value: StudentEngagement) {
+    studentEngagement.value = { ...value };
+    selectedPosition.value = positions.value.find(position => position.code === value.position);
+  },
+  addActivity() {
+    studentEngagement.value.activities.push({ text: '', hours: null });
+  },
+  removeActivity(index: number) {
+    studentEngagement.value.activities.splice(index, 1);
   }
-  engagementetudiant.totalDays = Math.floor(total / 7 + 1);
-}, { deep: true});
+};
+
+watch(() => props.visible, async (newValue) => {
+  if (newValue) {
+    await loadStudentEngagement();
+  }
+});
 
 const submit = () => {
-  engagementetudiant.activities = engagementetudiant.activities.filter(activite => activite.text !== '' && activite.hours !== 0);
-  const copyActivites = engagementetudiant.activities.map(activite => ({ ...activite }));
-  if (selectedPoste.value !== null) {
-    engagementetudiant.position = selectedPoste.value.code;
+  studentEngagement.value.activities = studentEngagement.value.activities.filter(activity => activity.text !== '' && activity.hours !== 0);
+  const totalHours = studentEngagement.value.activities.reduce((acc, activity) => {
+    if (activity.hours === null || isNaN(activity.hours)) {
+      return acc;
+    }
+    return acc + parseInt(String(activity.hours));
+  }, 0);
+  if (selectedPosition.value !== undefined) {
+    studentEngagement.value.position = selectedPosition.value.code;
   }
-  const body: StudentEngagement = {
-    id: 0,
-    login: engagementetudiant.login,
-    name: engagementetudiant.name,
-    firstname: engagementetudiant.firstname,
-    promotion: engagementetudiant.promotion,
-    position: engagementetudiant.position,
-    comment: engagementetudiant.comment,
-    activities: copyActivites,
-    totalHours: engagementetudiant.totalHours,
-    totalDays: engagementetudiant.totalDays
+  const body = { ...studentEngagement.value, totalHours, totalDays: (totalHours === 0) ? 0 : Math.floor(totalHours / 7 + 1), status: 2 };
+  if (isEditing.value) {
+    body.id = studentEngagement.value.id;
+    emits('update:student-engagement', body);
   }
-  emits('add:add-engagement-etudiant', body);
+  else {
+    emits('add:student-engagement', body);
+  }
   hideDialog();
 }
-
-const isFormValid = computed(() => {
-  return !(engagementetudiant.login === '' || engagementetudiant.name === '' || engagementetudiant.firstname === '' || engagementetudiant.promotion === '' || selectedPoste.value === null);
-})
 
 </script>
 
@@ -112,95 +136,72 @@ const isFormValid = computed(() => {
   <Dialog
     class="w-fit"
     :visible="props.visible"
-    header="Engagement étudiant"
+    :header="isEditing ? 'Modification de l\'engagement étudiant' : 'Ajout d\'un engagement étudiant'"
     modal
     @update:visible="hideDialog">
-    <span class="p-text-secondary block mb-5">Ajout d'un engagement étudiant</span>
     <div class="p-5">
       <div class="flex justify-center">
         <FloatLabel>
-          <InputText id="login" v-model="engagementetudiant.login" />
+          <InputText id="login" v-model="studentEngagement.login"/>
           <label for="login">Login</label>
         </FloatLabel>
       </div>
       <div class="flex gap-5 mt-8">
         <FloatLabel class="w-1/2">
-          <InputText id="nom" v-model="engagementetudiant.name" />
+          <InputText id="nom" v-model="studentEngagement.name" />
           <label for="nom">Nom</label>
         </FloatLabel>
         <FloatLabel class="w-1/2">
-          <InputText id="prenom" v-model="engagementetudiant.firstname" class="w-full"/>
+          <InputText id="prenom" v-model="studentEngagement.firstname" class="w-full"/>
           <label for="prenom">Prénom</label>
         </FloatLabel>
       </div>
       <div class="flex gap-5 mt-8">
         <FloatLabel class="w-1/2">
-          <InputText id="promotion" v-model="engagementetudiant.promotion" />
+          <InputText id="promotion" v-model="studentEngagement.promotion" />
           <label for="promotion">Promotion</label>
         </FloatLabel>
         <FloatLabel class="w-1/2">
-          <Dropdown id="poste" v-model="selectedPoste" :options="postes" optionLabel="name" class="w-full"/>
+          <Dropdown id="poste" v-model="selectedPosition" :options="positions" optionLabel="name" class="w-full"/>
           <label for="poste">Poste dans l'association</label>
         </FloatLabel>
       </div>
       <FloatLabel class="flex justify-center mt-8">
-        <Textarea v-model="engagementetudiant.comment" rows="5" cols="30" class="w-full"/>
+        <Textarea v-model="studentEngagement.comment" rows="5" cols="30" class="w-full"/>
         <label for="commentaire">Commentaire sur l'investissement au sein de l'association</label>
       </FloatLabel>
-      <Panel class="mt-5" header="Activité 1" toggleable>
+      <Panel v-for="(activity, index) in studentEngagement.activities" :key="index" class="mt-5" :header="'Activité ' + (index + 1)" toggleable>
         <div class="mt-2 flex gap-5">
           <FloatLabel>
-            <InputText id="activite1.text" v-model="engagementetudiant.activities[0].text" />
-            <label for="activite1.text">Description activité</label>
+            <InputText :id="'activite' + index + '.text'" v-model="activity.text" />
+            <label :for="'activite' + index + '.text'">Description activité</label>
           </FloatLabel>
           <FloatLabel>
-            <InputText type="number" id="activite1.heures" v-model="engagementetudiant.activities[0].hours" min="0"/>
-            <label for="activite1.heures">Heures travaillées</label>
+            <InputText type="number" :id="'activite' + index + '.heures'" v-model="activity.hours" min="0"/>
+            <label :for="'activite' + index + '.heures'">Heures travaillées</label>
           </FloatLabel>
         </div>
+        <template #icons>
+          <button class="delete-activity p-panel-header-icon p-link mr-2" @click="studentEngagementUtils.removeActivity(index)">
+            <span class="pi pi-trash"></span>
+          </button>
+        </template>
       </Panel>
-      <Panel class="mt-2" header="Activité 2" toggleable collapsed>
-        <div class="mt-2 flex gap-5">
-          <FloatLabel>
-            <InputText id="activite2.text" v-model="engagementetudiant.activities[1].text" />
-            <label for="activite2.text">Description activité</label>
-          </FloatLabel>
-          <FloatLabel>
-            <InputText type="number" id="activite2.heures" v-model="engagementetudiant.activities[1].hours" min="0"/>
-            <label for="activite2.heures">Heures travaillées</label>
-          </FloatLabel>
-        </div>
-      </Panel>
-      <Panel class="mt-2" header="Activité 3" toggleable collapsed>
-        <div class="mt-2 flex gap-5">
-          <FloatLabel>
-            <InputText id="activite3.text" v-model="engagementetudiant.activities[2].text" />
-            <label for="activite3.text">Description activité</label>
-          </FloatLabel>
-          <FloatLabel>
-            <InputText type="number" id="activite3.heures" v-model="engagementetudiant.activities[2].hours" min="0"/>
-            <label for="activite3.heures">Heures travaillées</label>
-          </FloatLabel>
-        </div>
-      </Panel>
-      <div class="flex justify-center gap-5 mt-8">
-        <FloatLabel>
-          <InputText type="number" id="totalHeures" v-model="engagementetudiant.totalHours" :min="0" />
-          <label for="totalHeures">Total heures</label>
-        </FloatLabel>
-        <FloatLabel>
-          <InputText type="number" id="totalJour" v-model="engagementetudiant.totalDays" min="0"/>
-          <label for="totalJour">Total jour</label>
-        </FloatLabel>
+      <div class="mt-5">
+        <Button label="Ajouter une activité" icon="pi pi-plus" class="p-button-sm p-button-outlined p-button-rounded-none p-button-full-width" @click="studentEngagementUtils.addActivity()" />
       </div>
     </div>
     <div class="flex justify-end mt-5">
       <Button label="Annuler" icon="pi pi-times" class="mx-2" severity="secondary" @click="hideDialog" />
-      <Button label="Ajouter" icon="pi pi-check" class="mx-2" severity="success" :disabled="!isFormValid" @click="submit"/>
+      <Button :label="isEditing ? 'Sauvegarder' : 'Ajouter'" icon="pi pi-check" class="mx-2" severity="success" @click="submit"/>
     </div>
   </Dialog>
 </template>
 
-<style scoped>
+<style>
+
+.delete-activity:hover {
+  color: red;
+}
 
 </style>
