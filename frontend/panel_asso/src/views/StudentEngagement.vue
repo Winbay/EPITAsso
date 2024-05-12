@@ -117,6 +117,7 @@ onMounted(async () => {
         :visible="displayDialog"
         :student-id="studentId"
         :canEdit="canEditDialog"
+        :status="status"
         @update:visible="setDisplayDialog"
         @add:student-engagement="addStudentEngagement"
         @update:studentEngagement="updateStudentEngagement"/>

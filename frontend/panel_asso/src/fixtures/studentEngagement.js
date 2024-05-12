@@ -16,7 +16,7 @@ let studentEngagements = [
     ],
     totalHours: 12,
     totalDays: 1,
-    status: 1
+    status: { id: 1, comment: ""}
   },
   {
     id: 2,
@@ -28,12 +28,12 @@ let studentEngagements = [
     comment: 'Présidente de l\'association',
     activities: [
       { text: 'Vente crepes', hours: 2 },
-      { text: 'Afterwork 15/11', hours: 5 },
-      { text: 'JPO 17/12', hours: 5 }
+      { text: 'Afterwork 15/11', hours: 3 },
+      { text: 'JPO 17/12', hours: 3 }
     ],
     totalHours: 12,
     totalDays: 1,
-    status: 4
+    status: { id: 4, comment: "Activité 2 non validée"}
   }];
 
 

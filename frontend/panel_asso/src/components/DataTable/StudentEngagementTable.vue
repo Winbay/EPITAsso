@@ -59,7 +59,7 @@ const openDialog = (studentId: number) => {
       <Column field="totalHours" header="Total heures" :sortable="true"></Column>
       <Column field="status" header="Status" :sortable="true">
         <template #body="slotProps">
-          <Tag :value="getStatusName(slotProps.data.status)" :severity="getStatusSeverity(getStatusName(slotProps.data.status))"/>
+          <Tag :value="getStatusName(slotProps.data.status.id)" :severity="getStatusSeverity(getStatusName(slotProps.data.status.id))"/>
         </template>
       </Column>
       <Column header="Actions">

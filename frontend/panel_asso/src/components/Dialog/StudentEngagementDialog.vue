@@ -7,10 +7,12 @@ import Textarea from 'primevue/textarea'
 import Panel from 'primevue/panel'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
+import Divider from 'primevue/divider';
 import { useToast } from 'primevue/usetoast'
-import { defineEmits, ref, computed, watch, reactive } from 'vue'
-import { type StudentEngagement } from '@/types/studentEngagementInterface'
+import { defineEmits, ref, watch } from 'vue'
+import { type Status, type StudentEngagement } from '@/types/studentEngagementInterface'
 import axios from 'axios'
+import Tag from 'primevue/tag'
 
 const toast = useToast();
 
@@ -18,6 +20,7 @@ const props = defineProps<{
   visible: boolean
   studentId: number | null
   canEdit: boolean
+  status: Status[]
 }>()
 
 const emits = defineEmits(['update:visible', 'add:student-engagement', 'update:student-engagement'])
@@ -26,6 +29,25 @@ const hideDialog = () => {
   studentEngagementUtils.reset();
   emits('update:visible', { visible: false, id: null, canEdit: true});
 }
+
+const getStatusName = (statusId: number): string => {
+  return props.status.find(item => item.id === statusId)?.name ?? "";
+}
+
+const getStatusSeverity = (status: string) => {
+  switch (status) {
+    case 'Validé':
+      return 'success';
+    case 'En attente':
+      return 'warning';
+    case 'Validé avec modifications':
+      return 'info';
+    case 'Refusé':
+      return 'danger';
+    default:
+      return '';
+  }
+};
 
 async function loadStudentEngagement() {
   if (!props.visible || props.studentId === null) {
@@ -56,7 +78,7 @@ const studentEngagement = ref<StudentEngagement>({
   ],
   totalHours: 0,
   totalDays: 0,
-  status: -1
+  status: { id: -1, comment: ""}
 });
 
 const positions = ref(
@@ -85,7 +107,7 @@ const studentEngagementUtils = {
       ],
       totalHours: 0,
       totalDays: 0,
-      status: -1
+      status: { id: -1, comment: ""}
     };
     selectedPosition.value = undefined;
   },
@@ -118,7 +140,7 @@ const submit = () => {
   if (selectedPosition.value !== undefined) {
     studentEngagement.value.position = selectedPosition.value.code;
   }
-  const body = { ...studentEngagement.value, totalHours, totalDays: (totalHours === 0) ? 0 : Math.floor(totalHours / 7 + 1), status: 2 };
+  const body = { ...studentEngagement.value, totalHours, totalDays: (totalHours === 0) ? 0 : Math.floor(totalHours / 7 + 1), status: { id: 2, comment: ""} };
   emits('add:student-engagement', body);
   hideDialog();
 }
@@ -132,14 +154,22 @@ const submit = () => {
     :header="canEdit ? 'Ajout d\'un engagement étudiant' : 'Détails'"
     modal
     @update:visible="hideDialog">
-    <div class="p-5" :class="{ 'disabled': !canEdit }">
+    <div class="pl-5 pr-5 pb-5" :class="{ 'disabled': !canEdit, 'pt-5': canEdit }">
+      <div class="mb-8" v-show="!canEdit">
+          <Tag :value="getStatusName(studentEngagement.status.id)" :severity="getStatusSeverity(getStatusName(studentEngagement.status.id))"/>
+          <FloatLabel class="flex justify-center mt-8" v-show="studentEngagement.status.comment !== ''">
+            <Textarea v-model="studentEngagement.status.comment" rows="2" cols="30" class="w-full" autoResize/>
+            <label for="commentaire">Commentaire de l'administration</label>
+          </FloatLabel>
+        <Divider v-show="studentEngagement.status.comment !== ''"/>
+      </div>
       <div class="flex justify-center">
         <FloatLabel>
           <InputText id="login" v-model="studentEngagement.login"/>
           <label for="login">Login</label>
         </FloatLabel>
       </div>
-      <div class="flex gap-5 mt-8">
+      <div class="flex gap-5 mt-6">
         <FloatLabel class="w-1/2">
           <InputText id="nom" v-model="studentEngagement.name" />
           <label for="nom">Nom</label>
@@ -149,7 +179,7 @@ const submit = () => {
           <label for="prenom">Prénom</label>
         </FloatLabel>
       </div>
-      <div class="flex gap-5 mt-8">
+      <div class="flex gap-5 mt-6">
         <FloatLabel class="w-1/2">
           <InputText id="promotion" v-model="studentEngagement.promotion" />
           <label for="promotion">Promotion</label>

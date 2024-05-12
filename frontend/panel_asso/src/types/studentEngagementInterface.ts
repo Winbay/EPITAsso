@@ -24,5 +24,5 @@ export interface StudentEngagement {
   activities: activity[];
   totalHours: number | null;
   totalDays: number | null;
-  status: number;
+  status: { id: number; comment: string};
 }
