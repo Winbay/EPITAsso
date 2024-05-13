@@ -2,6 +2,7 @@
 import Dropdown from 'primevue/dropdown'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
 import Textarea from 'primevue/textarea'
 import Panel from 'primevue/panel'
 import Dialog from 'primevue/dialog'
@@ -12,7 +13,6 @@ import { defineEmits, ref, watch } from 'vue'
 import { type Status, type StudentEngagement } from '@/types/studentEngagementInterface'
 import axios from 'axios'
 import Tag from 'primevue/tag'
-import InputNumber from 'primevue/inputnumber'
 
 const toast = useToast()
 
