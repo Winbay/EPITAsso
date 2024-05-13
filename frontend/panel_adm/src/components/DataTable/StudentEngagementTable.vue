@@ -78,7 +78,7 @@ const openDialog = (studentId: number) => {
               href="javascript:void(0)"
               class="hover:underline"
               @click="openDialog(slotProps.data.id)"
-            >Détails</a
+              >Détails</a
             >
           </div>
         </template>

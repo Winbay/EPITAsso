@@ -113,7 +113,7 @@ const studentEngagementUtils = {
   set(value: StudentEngagement) {
     studentEngagement.value = { ...value }
     selectedPosition.value = positions.value.find((position) => position.code === value.position)
-  },
+  }
 }
 
 watch(
@@ -142,7 +142,13 @@ const submit = (validate: boolean) => {
     ...studentEngagement.value,
     totalHours,
     totalDays: totalHours === 0 ? 0 : Math.floor(totalHours / 7 + 1),
-    status: { id: validate ? 2 : 4, comment: (studentEngagement.value.status.comment === '') ? 'Aucun commentaire' : studentEngagement.value.status.comment}
+    status: {
+      id: validate ? 2 : 4,
+      comment:
+        studentEngagement.value.status.comment === ''
+          ? 'Aucun commentaire'
+          : studentEngagement.value.status.comment
+    }
   }
   emits('update:student-engagement', body)
   hideDialog()
@@ -163,9 +169,7 @@ const submit = (validate: boolean) => {
           :value="getStatusName(studentEngagement.status.id)"
           :severity="getStatusSeverity(studentEngagement.status.id)"
         />
-        <FloatLabel
-          class="flex justify-center mt-8"
-        >
+        <FloatLabel class="flex justify-center mt-8">
           <Textarea
             v-model="studentEngagement.status.comment"
             rows="2"
@@ -252,16 +256,17 @@ const submit = (validate: boolean) => {
         icon="pi pi-times"
         class="mx-2"
         severity="danger"
-        style="margin-right: auto;"
+        style="margin-right: auto"
         @click="submit(false)"
       />
+      <Button label="Annuler" class="mx-2" severity="secondary" @click="hideDialog" />
       <Button
-        label="Annuler"
+        label="Valider"
+        icon="pi pi-check"
         class="mx-2"
-        severity="secondary"
-        @click="hideDialog"
+        severity="success"
+        @click="submit(true)"
       />
-      <Button label="Valider" icon="pi pi-check" class="mx-2" severity="success" @click="submit(true)" />
     </div>
   </Dialog>
 </template>
@@ -275,5 +280,4 @@ const submit = (validate: boolean) => {
     opacity: 0.4;
   }
 }
-
 </style>

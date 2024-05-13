@@ -6,8 +6,8 @@ import StudentEngagement from '@/views/StudentEngagement.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', component: Home},
-    { path:'/engagement-etudiant', component: StudentEngagement}
+    { path: '/', component: Home },
+    { path: '/engagement-etudiant', component: StudentEngagement }
   ]
 })
 

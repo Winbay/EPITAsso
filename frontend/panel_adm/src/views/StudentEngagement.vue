@@ -27,21 +27,21 @@ const setDisplayDialog = (value: { visible: boolean; id: number | null; canEdit:
   }
 }
 
-const compareActivities = (activities1: {text: string, hours: number | null }[], activities2: {text: string, hours: number | null }[]) => {
+const compareActivities = (
+  activities1: { text: string; hours: number | null }[],
+  activities2: { text: string; hours: number | null }[]
+) => {
   if (activities1.length !== activities2.length) {
-    return false;
+    return false
   }
   for (let i = 0; i < activities1.length; i++) {
-    const activity1 = activities1[i];
-    const activity2 = activities2[i];
-    if (
-      activity1.text !== activity2.text ||
-      activity1.hours !== activity2.hours
-    ) {
-      return false;
+    const activity1 = activities1[i]
+    const activity2 = activities2[i]
+    if (activity1.text !== activity2.text || activity1.hours !== activity2.hours) {
+      return false
     }
   }
-  return true;
+  return true
 }
 
 const checkHasChanges = (studentEngagement: StudentEngagement) => {
@@ -66,10 +66,10 @@ const checkHasChanges = (studentEngagement: StudentEngagement) => {
 
 const updateStudentEngagement = async (studentEngagement: StudentEngagement) => {
   try {
-    let hasChanges = checkHasChanges(studentEngagement);
+    let hasChanges = checkHasChanges(studentEngagement)
 
     if (hasChanges && studentEngagement.status.id === 2) {
-      studentEngagement.status.id = 3;
+      studentEngagement.status.id = 3
     }
 
     await axios.put(`/api/studentEngagements/${studentEngagement.id}`, studentEngagement)
