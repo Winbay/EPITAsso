@@ -1,45 +1,45 @@
 <script setup lang="ts">
-import PanelMenu from "primevue/panelmenu";
-import {onMounted} from "vue";
+import PanelMenu from 'primevue/panelmenu'
+import { onMounted } from 'vue'
 
 const items = [
   {
-    label: "Tableau de bord",
+    label: 'Tableau de bord',
     icon: 'pi pi-building-columns'
   },
   {
-    label: "Mon association",
-    icon: "pi pi-info-circle"
+    label: 'Mon association',
+    icon: 'pi pi-info-circle'
   },
   {
-    label: "Messagerie",
-    icon: "pi pi-inbox"
+    label: 'Messagerie',
+    icon: 'pi pi-inbox'
   },
   {
-    label: "Évènements",
-    icon: "pi pi-calendar"
+    label: 'Évènements',
+    icon: 'pi pi-calendar'
   },
   {
-    label: "Articles",
-    icon: "pi pi-book"
+    label: 'Articles',
+    icon: 'pi pi-book'
   },
   {
-    label: "Formulaires",
-    icon: "pi pi-list",
+    label: 'Formulaires',
+    icon: 'pi pi-list',
     items: [
       {
         label: "Engagement étudiant",
         path: "engagement-etudiant"
       },
-      {label: "Fiche évènement"},
-      {label: "Création d'association"}
+      { label: "Fiche évènement" },
+      { label: "Création d'association" }
     ]
   },
   {
-    label: "Matériel",
-    icon: "pi pi-database"
+    label: 'Matériel',
+    icon: 'pi pi-database'
   }
-];
+]
 
 onMounted(() => {
   // document.getElementById("side-panel").classList.remove("-left-56");
@@ -62,7 +62,7 @@ onMounted(() => {
 
 <style>
 #side-panel {
-  background-color: #1F2937;
+  background-color: #1f2937;
   transition: transform 0.2s;
   position: fixed;
   top: 2.5rem;
@@ -77,7 +77,8 @@ onMounted(() => {
   border-radius: 0;
 }
 
-.p-panelmenu-header-content, .p-panelmenu-content {
+.p-panelmenu-header-content,
+.p-panelmenu-content {
   border: initial;
   border-radius: 0;
 }

@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="page-content flex-grow">
@@ -8,7 +6,7 @@
   </div>
 </template>
 
-<style >
+<style>
 #main-content > .page-content {
   margin-left: 14rem;
   transition: margin-left 0.2s;
