@@ -3,6 +3,7 @@ from rest_framework import generics
 from .models import User
 from .serializers import UserSerializer
 
+
 class UserView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -12,7 +13,7 @@ class UserView(generics.ListCreateAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
-    
+
     @swagger_auto_schema(
         operation_summary="Create an user",
     )

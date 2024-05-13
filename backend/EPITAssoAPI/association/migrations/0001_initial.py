@@ -6,24 +6,40 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('post', '__first__'),
+        ("post", "__first__"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Association',
+            name="Association",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('location', models.CharField(max_length=255)),
-                ('description', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='post.post')),
-                ('logo', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='post.image')),
-                ('members', models.ManyToManyField(blank=True, related_name='part_of_association', to=settings.AUTH_USER_MODEL)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("location", models.CharField(max_length=255)),
+                (
+                    "description",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="post.post"
+                    ),
+                ),
+                (
+                    "logo",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="post.image"
+                    ),
+                ),
+                (
+                    "members",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="part_of_association",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

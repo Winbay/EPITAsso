@@ -32,13 +32,17 @@ const props = defineProps({
 
 const toast = useToast()
 
-const currArticle = ref<ArticleCreation | ArticleModification>({title: "", content: "", tagIds: []});
+const currArticle = ref<ArticleCreation | ArticleModification>({
+  title: '',
+  content: '',
+  tagIds: []
+})
 
 const createOrSave = async () => {
   if (props.article) {
     // Modification
     try {
-      await axios.put(`/api/posts/${props.article.id}/`, currArticle.value);
+      await axios.put(`/api/posts/${props.article.id}/`, currArticle.value)
     } catch (error) {
       toast.add({
         severity: 'error',
@@ -52,8 +56,7 @@ const createOrSave = async () => {
   } else {
     // Creation
     try {
-      console.log(currArticle.value);
-      await axios.post(`/api/posts/`, currArticle.value, );
+      await axios.post(`/api/posts/`, currArticle.value)
     } catch (error) {
       toast.add({
         severity: 'error',
@@ -75,7 +78,7 @@ const cancelDialog = () => {
   if (props.article) {
     currArticle.value = props.article
   } else {
-    currArticle.value = {title: "", content: "", tagIds: []};
+    currArticle.value = { title: '', content: '', tagIds: [] }
   }
   props.setHidden()
 }

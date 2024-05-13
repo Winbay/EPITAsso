@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class EventSheet(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -24,17 +25,21 @@ class EventSheet(models.Model):
     def str(self):
         return f"{self.name} on {self.date}"
 
+
 class EventTaskList(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
 
+
 class Event(models.Model):
     id = models.BigAutoField(primary_key=True)
-    association = models.ForeignKey('association.Association', on_delete=models.SET_NULL, null=True)
+    association = models.ForeignKey(
+        "association.Association", on_delete=models.SET_NULL, null=True
+    )
     name = models.CharField(max_length=255)
 
-    description = models.ForeignKey('post.Post', on_delete=models.PROTECT)
+    description = models.ForeignKey("post.Post", on_delete=models.PROTECT)
 
     event_sheet = models.ForeignKey(EventSheet, on_delete=models.PROTECT)
     date = models.DateField()
@@ -43,10 +48,12 @@ class Event(models.Model):
     places_number = models.IntegerField()
     notes = models.TextField(blank=True, null=True)
 
-    staff_members = models.ManyToManyField('user.User', related_name='events_staff')
-    other_associations = models.ManyToManyField('association.Association', related_name='related_events', blank=True)
+    staff_members = models.ManyToManyField("user.User", related_name="events_staff")
+    other_associations = models.ManyToManyField(
+        "association.Association", related_name="related_events", blank=True
+    )
 
-    tasks = models.ManyToManyField(EventTaskList, related_name='events', blank=True)
+    tasks = models.ManyToManyField(EventTaskList, related_name="events", blank=True)
 
     def str(self):
         return self.name

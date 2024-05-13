@@ -1,12 +1,12 @@
-import type { ArticleTag } from "./tagInterfaces";
+import type { ArticleTag } from './tagInterfaces'
 
 export interface ArticleCreation {
-  title: string;
-  content: string;
-  tagIds: ArticleTag['id'][];
+  title: string
+  content: string
+  tagIds: ArticleTag['id'][]
 }
 
 export interface ArticleModification extends ArticleCreation {
-  id: number;
-  author: string;
-};
+  id: number
+  author: string
+}

@@ -43,14 +43,14 @@ const closeDialog = () => {
 }
 
 const getTagName = (tagId: number): string => {
-  return tagsRef.value.find(tag => tag.id === tagId)?.name ?? "";
+  return tagsRef.value.find((tag) => tag.id === tagId)?.name ?? ''
 }
 
 const loadTags = async () => {
   try {
-    const rep1 = await axios.get<ArticleTag[]>('/api/posts/tags');
-    tagsRef.value = rep1.data;
-    return true;
+    const rep1 = await axios.get<ArticleTag[]>('/api/posts/tags')
+    tagsRef.value = rep1.data
+    return true
   } catch (error) {
     toast.add({
       severity: 'error',

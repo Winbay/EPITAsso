@@ -4,16 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('association', '0001_initial'),
-        ('user', '0001_initial'),
+        ("association", "0001_initial"),
+        ("user", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='favorite_associations',
-            field=models.ManyToManyField(blank=True, related_name='favorited_by_user', to='association.association'),
+            model_name="user",
+            name="favorite_associations",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="favorited_by_user",
+                to="association.association",
+            ),
         ),
     ]
