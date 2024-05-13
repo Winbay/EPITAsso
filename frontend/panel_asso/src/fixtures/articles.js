@@ -17,7 +17,7 @@ let articles = [
   }
 ]
 
-fixture('GET /api/articles/tags', () => {
+fixture("GET /api/articles/tags", () => {
   return [
     { id: 1, name: 'Présentation' },
     { id: 2, name: 'Annonce' },
