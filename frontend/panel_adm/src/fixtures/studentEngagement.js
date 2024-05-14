@@ -23,7 +23,7 @@ let studentEngagements = [
     name: 'Doe',
     firstname: 'Jane',
     promotion: '2024',
-    position: { id: 2, name: 'Président'},
+    position: { id: 2, name: 'Président' },
     comment: "Présidente de l'association",
     activities: [
       { text: 'Vente crepes', hours: 2 },
@@ -60,10 +60,10 @@ let positions = [
 ]
 
 let status = [
-  { id: 1, name: 'En attente', comment: ''},
+  { id: 1, name: 'En attente', comment: '' },
   { id: 2, name: 'Validé', comment: '' },
   { id: 3, name: 'Validé avec modifications', comment: '' },
-  { id: 4, name: 'Refusé' , comment: ''}
+  { id: 4, name: 'Refusé', comment: '' }
 ]
 
 fixture('GET /api/studentEngagements', () => {

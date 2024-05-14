@@ -1,48 +1,52 @@
 <script setup lang="ts">
-
 import '@/fixtures/studentEngagement'
 import StudentEngagementTable from '@/components/DataTable/StudentEngagementTable.vue'
 import {
   type StudentEngagement,
   type Position,
-  type Status, StatusEnum
+  type Status,
+  StatusEnum
 } from '@/types/studentEngagementInterface'
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import StudentEngagementDialog from '@/components/Dialog/StudentEngagementDialog.vue'
 import { deepEqual } from '@/utils/studentEngagementUtils'
-import * as studentEngagementServices from '@/services/studentEngagementServices';
+import * as studentEngagementServices from '@/services/studentEngagementServices'
 
 const displayDialog = ref(false)
 const studentEngagement = ref<StudentEngagement | null>(null)
 const canEditDialog = ref(true)
-const setDisplayDialog = (value: { visible: boolean; student: StudentEngagement | null; canEdit: boolean }) => {
+const setDisplayDialog = (value: {
+  visible: boolean
+  student: StudentEngagement | null
+  canEdit: boolean
+}) => {
   displayDialog.value = value.visible
   studentEngagement.value = value.student
-  canEditDialog.value = value.canEdit;
+  canEditDialog.value = value.canEdit
 }
 
 const checkStudentEngagementModified = (studentEngagement: StudentEngagement) => {
-  const student = studentEngagements.value.find(s => s.id === studentEngagement.id);
+  const student = studentEngagements.value.find((s) => s.id === studentEngagement.id)
   if (!student) {
-    return false;
+    return false
   }
-  const studentEngagementKeys = Object.keys(studentEngagement) as Array<keyof StudentEngagement>;
+  const studentEngagementKeys = Object.keys(studentEngagement) as Array<keyof StudentEngagement>
 
-  return !studentEngagementKeys.every(key => {
-    const studentValue = student[key];
-    const engagementValue = studentEngagement[key];
+  return !studentEngagementKeys.every((key) => {
+    const studentValue = student[key]
+    const engagementValue = studentEngagement[key]
 
-    if (key === 'status'){
-      return true;
+    if (key === 'status') {
+      return true
     }
 
     if (typeof studentValue === 'object' && typeof engagementValue === 'object') {
-      return deepEqual(studentValue, engagementValue);
+      return deepEqual(studentValue, engagementValue)
     } else {
-      return studentValue === engagementValue;
+      return studentValue === engagementValue
     }
-  });
+  })
 }
 
 const toast = useToast()
@@ -52,51 +56,54 @@ const status = ref<Status[]>([])
 const studentEngagements = ref<StudentEngagement[]>([])
 
 async function loadPosition() {
-  return await studentEngagementServices.loadPosition(toast)
+  return await studentEngagementServices
+    .loadPosition(toast)
     .then((response) => {
-      positions.value = response || [];
-      return response;
+      positions.value = response || []
+      return response
     })
     .catch((error) => {
-      console.error("Erreur lors du chargement des positions :", error);
-      return false;
-    });
+      console.error('Erreur lors du chargement des positions :', error)
+      return false
+    })
 }
 
 async function loadStatus() {
-  return await studentEngagementServices.loadStatus(toast)
+  return await studentEngagementServices
+    .loadStatus(toast)
     .then((response) => {
-      status.value = response || [];
-      return response;
+      status.value = response || []
+      return response
     })
     .catch((error) => {
-      console.error("Erreur lors du chargement des status :", error);
-      return false;
-    });
+      console.error('Erreur lors du chargement des status :', error)
+      return false
+    })
 }
 
 async function reloadStudentEngagements() {
-  await studentEngagementServices.loadStudentEngagements(toast).then(
-    (response) => {
-      if (response) {
-        studentEngagements.value = response
-      }
+  await studentEngagementServices.loadStudentEngagements(toast).then((response) => {
+    if (response) {
+      studentEngagements.value = response
     }
-  )
+  })
 }
 
-async function updateStudentEngagement (studentEngagement: StudentEngagement) {
-  if (studentEngagement.status.name === StatusEnum.VALIDATED && checkStudentEngagementModified(studentEngagement)) {
+async function updateStudentEngagement(studentEngagement: StudentEngagement) {
+  if (
+    studentEngagement.status.name === StatusEnum.VALIDATED &&
+    checkStudentEngagementModified(studentEngagement)
+  ) {
     studentEngagement.status.name = StatusEnum.VALIDATED_WITH_MODIFICATIONS
   }
-  await studentEngagementServices.updateStudentEngagement(studentEngagement, toast).then(
-    (response) => {
+  await studentEngagementServices
+    .updateStudentEngagement(studentEngagement, toast)
+    .then((response) => {
       if (response) {
         reloadStudentEngagements()
         displayDialog.value = false
       }
-    }
-  )
+    })
 }
 
 onMounted(async () => {

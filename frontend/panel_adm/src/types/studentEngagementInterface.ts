@@ -2,7 +2,7 @@ export enum StatusEnum {
   WAITING = 'En attente',
   VALIDATED = 'Validé',
   VALIDATED_WITH_MODIFICATIONS = 'Validé avec modifications',
-  REFUSED = 'Refusé',
+  REFUSED = 'Refusé'
 }
 
 export interface Activity {

@@ -2,7 +2,12 @@
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
-import { type Position, type Status, StatusEnum, type StudentEngagement } from '@/types/studentEngagementInterface'
+import {
+  type Position,
+  type Status,
+  StatusEnum,
+  type StudentEngagement
+} from '@/types/studentEngagementInterface'
 import { defineEmits } from 'vue'
 import { getStatusSeverity } from '@/utils/studentEngagementUtils'
 
@@ -15,7 +20,11 @@ defineProps<{
 const emits = defineEmits(['update:visible'])
 
 const openDialog = (studentEngagement: StudentEngagement | null) => {
-  emits('update:visible', { visible: true, student: studentEngagement, canEdit: studentEngagement?.status.name === StatusEnum.WAITING })
+  emits('update:visible', {
+    visible: true,
+    student: studentEngagement,
+    canEdit: studentEngagement?.status.name === StatusEnum.WAITING
+  })
 }
 </script>
 
@@ -53,10 +62,7 @@ const openDialog = (studentEngagement: StudentEngagement | null) => {
       <Column header="Actions">
         <template #body="slotProps">
           <div class="flex flex-col">
-            <a
-              href="javascript:void(0)"
-              class="hover:underline"
-              @click="openDialog(slotProps.data)"
+            <a href="javascript:void(0)" class="hover:underline" @click="openDialog(slotProps.data)"
               >Détails</a
             >
           </div>

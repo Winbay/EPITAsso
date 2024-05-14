@@ -9,7 +9,12 @@ import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import Divider from 'primevue/divider'
 import { defineEmits, ref, watch } from 'vue'
-import { type Position, type Status, StatusEnum, type StudentEngagement } from '@/types/studentEngagementInterface'
+import {
+  type Position,
+  type Status,
+  StatusEnum,
+  type StudentEngagement
+} from '@/types/studentEngagementInterface'
 import Tag from 'primevue/tag'
 import { getDefaultStudentEngagement, getStatusSeverity } from '@/utils/studentEngagementUtils'
 
@@ -30,7 +35,7 @@ const hideDialog = () => {
 
 const studentEngagement = ref<StudentEngagement>(getDefaultStudentEngagement())
 
-function getDropdownPositionsValue() : {name: string; code: number}[] {
+function getDropdownPositionsValue(): { name: string; code: number }[] {
   return props.positions.map((position) => {
     return { name: position.name, code: position.id }
   })
@@ -46,7 +51,7 @@ function setDialog() {
     resetDialog()
     return
   }
-  studentEngagement.value = JSON.parse(JSON.stringify(props.student));
+  studentEngagement.value = JSON.parse(JSON.stringify(props.student))
   selectedPosition.value = {
     name: props.student.position.name,
     code: props.student.position.id
@@ -54,9 +59,15 @@ function setDialog() {
 }
 
 const submit = (isValid: boolean) => {
-  const totalHours = studentEngagement.value.activities.reduce((acc, activity) => acc + activity.hours, 0)
+  const totalHours = studentEngagement.value.activities.reduce(
+    (acc, activity) => acc + activity.hours,
+    0
+  )
   if (selectedPosition.value !== undefined) {
-    studentEngagement.value.position = { id: selectedPosition.value.code, name: selectedPosition.value.name }
+    studentEngagement.value.position = {
+      id: selectedPosition.value.code,
+      name: selectedPosition.value.name
+    }
   }
   const body = {
     ...studentEngagement.value,
@@ -81,7 +92,6 @@ watch(
     }
   }
 )
-
 </script>
 
 <template>
