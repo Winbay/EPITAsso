@@ -5,7 +5,7 @@ from django.conf import settings
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    color = models.CharField(max_length=7, null=True)  # Hexadecimal color
+    color = models.CharField(max_length=7, blank=True, null=True)  # Hexadecimal color
 
     def __str__(self):
         return self.name
@@ -14,9 +14,6 @@ class Tag(models.Model):
 class Image(models.Model):
     id = models.BigAutoField(primary_key=True)
     link = models.TextField()  # Replace by "URLField" from Django ?
-    post = models.ForeignKey(
-        "post.Post", on_delete=models.CASCADE, null=True, related_name="images"
-    )
 
     def __str__(self):
         return self.link
@@ -41,7 +38,8 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     content = models.TextField()
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
+    images = models.ManyToManyField(Image, blank=True)
 
     def __str__(self):
         return self.title

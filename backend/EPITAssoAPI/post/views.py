@@ -2,14 +2,12 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
 from .models import Tag, Post, Image
 from .serializers import TagSerializer, PostSerializer, ImageSerializer
-from rest_framework.permissions import IsAuthenticated
 from user.permissions import IsCustomAdmin
 
 
 class TagListView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(operation_summary="List all Tags")
     def get(self, request, *args, **kwargs):
@@ -23,7 +21,7 @@ class TagListView(generics.ListCreateAPIView):
 class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticated, IsCustomAdmin]
+    permission_classes = [IsCustomAdmin]
 
     @swagger_auto_schema(operation_summary="Retrieve a Tag")
     def get(self, request, *args, **kwargs):
@@ -41,7 +39,6 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
 class PostListView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(operation_summary="List all Posts")
     def get(self, request, *args, **kwargs):
@@ -59,7 +56,6 @@ class PostListView(generics.ListCreateAPIView):
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(operation_summary="Retrieve a Post")
     def get(self, request, *args, **kwargs):
