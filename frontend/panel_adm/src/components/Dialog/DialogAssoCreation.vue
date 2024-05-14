@@ -2,10 +2,10 @@
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
-import SelectButton from 'primevue/selectbutton';
-import Textarea from 'primevue/textarea';
-import axios from 'axios';
-import { type FsValidationResult } from 'vue-file-selector/dist';
+import SelectButton from 'primevue/selectbutton'
+import Textarea from 'primevue/textarea'
+import axios from 'axios'
+import { type FsValidationResult } from 'vue-file-selector/dist'
 
 import { ref, defineProps } from 'vue'
 import type { AssociationCreation, LogoAsso } from '@/types/assoInterfaces'
@@ -25,29 +25,32 @@ const props = defineProps({
 const toast = useToast()
 
 const currAsso = ref<AssociationCreation>({
-  name: '', description: '', location: "KB", logo: 0
+  name: '',
+  description: '',
+  location: 'KB',
+  logo: 0
 })
-const currLogo = ref<{file: File | null, url: string}>({file: null, url: ""});
-const isLoading = ref<boolean>(false);
+const currLogo = ref<{ file: File | null; url: string }>({ file: null, url: '' })
+const isLoading = ref<boolean>(false)
 
 const createAsso = async () => {
-  if (currAsso.value.name === "" || !currLogo.value.file) {
+  if (currAsso.value.name === '' || !currLogo.value.file) {
     toast.add({
       severity: 'error',
       summary: 'Association',
-      detail: "Veuillez au moins ajouter un nom et un logo pour créer une association.",
+      detail: 'Veuillez au moins ajouter un nom et un logo pour créer une association.',
       life: 3000
-    });
-    return false;
+    })
+    return false
   }
   // First upload image
   try {
-    const formData = new FormData();
-    formData.append('image', currLogo.value.file);
+    const formData = new FormData()
+    formData.append('image', currLogo.value.file)
     const rep = await axios.post<LogoAsso>(`/api/images`, formData, {
-      headers: {'Content-Type': 'multipart/form-data'}
-    });
-    currAsso.value.logo = rep.data["id"];
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    currAsso.value.logo = rep.data['id']
   } catch (error) {
     toast.add({
       severity: 'error',
@@ -68,17 +71,17 @@ const createAsso = async () => {
     })
     return false
   }
-  currAsso.value = {name: '', description: '', location: "KB", logo: 0};
-  currLogo.value = {file: null, url: ""};
+  currAsso.value = { name: '', description: '', location: 'KB', logo: 0 }
+  currLogo.value = { file: null, url: '' }
   await props.reloadAssos()
   props.setHidden()
   return true
 }
 
 const cancelDialog = () => {
-  currAsso.value = {name: '', description: '', location: "KB", logo: 0};
-  currLogo.value = {file: null, url: ""};
-  props.setHidden();
+  currAsso.value = { name: '', description: '', location: 'KB', logo: 0 }
+  currLogo.value = { file: null, url: '' }
+  props.setHidden()
 }
 
 function handleFilesValidated(result: FsValidationResult, files: File[]) {
@@ -86,41 +89,41 @@ function handleFilesValidated(result: FsValidationResult, files: File[]) {
 }
 
 async function handleFilesChanged(files: File[]) {
-  isLoading.value = true;
-  const promiseArr = files.map(f => loadImgAsDataUrl(f));
-  const imgs = await Promise.all(promiseArr);
-  currLogo.value = {file: files[0], url: imgs[0]};
-  isLoading.value = false;
+  isLoading.value = true
+  const promiseArr = files.map((f) => loadImgAsDataUrl(f))
+  const imgs = await Promise.all(promiseArr)
+  currLogo.value = { file: files[0], url: imgs[0] }
+  isLoading.value = false
 }
 
 async function loadImgAsDataUrl(file: File) {
   const url: string = await new Promise((resolve) => {
-    const reader = new FileReader();
+    const reader = new FileReader()
 
-    reader.readAsDataURL(file);
-    reader.onload = (e) => resolve(e.target?.result as string);
-  });
+    reader.readAsDataURL(file)
+    reader.onload = (e) => resolve(e.target?.result as string)
+  })
 
-  return url || '';
+  return url || ''
 }
 </script>
 
 <template>
   <Dialog
-      class="dialog-event h-full"
-      modal
-      @update:visible="cancelDialog"
-      header="Création d'une association"
+    class="dialog-event h-full"
+    modal
+    @update:visible="cancelDialog"
+    header="Création d'une association"
   >
     <div class="name mb-6 flex flex-col justify-start">
       <label for="name" class="mb-2 text-2xl font-bold text-wrap">Nom de l'association</label>
       <InputText
-          id="name"
-          v-model="currAsso.name"
-          aria-describedby="username-help"
-          placeholder="Nom de l'association"
-          maxlength="255"
-          class="max-w-3xl"
+        id="name"
+        v-model="currAsso.name"
+        aria-describedby="username-help"
+        placeholder="Nom de l'association"
+        maxlength="255"
+        class="max-w-3xl"
       />
     </div>
     <div class="description mb-6 flex flex-col justify-start">
@@ -130,17 +133,23 @@ async function loadImgAsDataUrl(file: File) {
     </div>
     <div class="mb-6 flex flex-col justify-start w-8/12">
       <label class="mb-2 text-xl font-bold text-wrap">Campus</label>
-      <SelectButton v-model="currAsso.location" :options="['KB', 'VJ']" aria-labelledby="basic" :allow-empty="false" />
+      <SelectButton
+        v-model="currAsso.location"
+        :options="['KB', 'VJ']"
+        aria-labelledby="basic"
+        :allow-empty="false"
+      />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <label class="mb-2 text-xl font-bold text-wrap">Logo</label>
       <FileSelector
-          accept-extensions=".jpg,.svg,.png,.jpeg,.webp"
-          :multiple="false"
-          :is-loading="isLoading"
-          :max-file-size="5 * 1024 * 1024"
-          @validated="handleFilesValidated"
-          @changed="handleFilesChanged">
+        accept-extensions=".jpg,.svg,.png,.jpeg,.webp"
+        :multiple="false"
+        :is-loading="isLoading"
+        :max-file-size="5 * 1024 * 1024"
+        @validated="handleFilesValidated"
+        @changed="handleFilesChanged"
+      >
         Sélectionner une image
 
         <template #top>
@@ -148,20 +157,24 @@ async function loadImgAsDataUrl(file: File) {
             <p class="mb-4">
               Vous pouvez cliquer sur le bouton ci-dessous ou déposer un fichier dans cette zone.
             </p>
-            Taille maximum autorisée : 5 MB.<br/>
+            Taille maximum autorisée : 5 MB.<br />
             Extensions de fichier : JPG, JPEG, PNG, WEBP, SVG.
           </div>
         </template>
 
         <template #bottom>
           <div v-if="currLogo.file" class="section-bottom mt-4">
-            <img :src="currLogo.url" :alt="currLogo.file?.name ?? 'logo asso'" style="width: 200px"/>
+            <img
+              :src="currLogo.url"
+              :alt="currLogo.file?.name ?? 'logo asso'"
+              style="width: 200px"
+            />
           </div>
         </template>
 
         <template #loader>
           <div class="section-loader mt-4">
-            Vérification des fichiers<br/>
+            Vérification des fichiers<br />
             veuillez attendre...
           </div>
         </template>
@@ -170,7 +183,7 @@ async function loadImgAsDataUrl(file: File) {
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">
         <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />
-        <Button label="Créer" severity="success" class="w-1/4" @click="createAsso"/>
+        <Button label="Créer" severity="success" class="w-1/4" @click="createAsso" />
       </div>
     </div>
   </Dialog>

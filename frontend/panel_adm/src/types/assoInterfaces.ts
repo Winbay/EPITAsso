@@ -1,19 +1,19 @@
 export interface AssociationCreation {
-    name: string
-    description: string
-    location: "KB" | "VJ",
-    logo: LogoAsso["id"]  // Image id
+  name: string
+  description: string
+  location: 'KB' | 'VJ'
+  logo: LogoAsso['id'] // Image id
 }
 
 export interface LogoAsso {
-    id: number;
-    url: string;
+  id: number
+  url: string
 }
 
 export interface Association {
-    id: number;
-    name: string;
-    description: string;
-    location: "KB" | "VJ";
-    logo: LogoAsso
+  id: number
+  name: string
+  description: string
+  location: 'KB' | 'VJ'
+  logo: LogoAsso
 }
