@@ -11,7 +11,6 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import DialogArticle from '@/components/Dialog/DialogArticle.vue'
 import { type ArticleModification } from '@/types/articleInterfaces'
-import '@/fixtures/articles'
 import type { ArticleTag } from '@/types/tagInterfaces'
 
 const tagsRef = ref<ArticleTag[]>([])
@@ -44,12 +43,12 @@ const closeDialog = () => {
 }
 
 const getTagName = (tagId: number): string => {
-  return tagsRef.value.find((item) => item.id === tagId)?.name ?? ''
+  return tagsRef.value.find((tag) => tag.id === tagId)?.name ?? ''
 }
 
 const loadTags = async () => {
   try {
-    const rep1 = await axios.get<ArticleTag[]>('/api/articles/tags')
+    const rep1 = await axios.get<ArticleTag[]>('/api/posts/tags')
     tagsRef.value = rep1.data
     return true
   } catch (error) {
@@ -66,7 +65,7 @@ const loadTags = async () => {
 
 async function reloadArticles() {
   try {
-    const rep2 = await axios.get<ArticleModification[]>('/api/articles')
+    const rep2 = await axios.get<ArticleModification[]>('/api/posts/')
     articles.value = rep2.data
     return true
   } catch (error) {
@@ -83,7 +82,7 @@ async function reloadArticles() {
 
 async function deleteArticle(articleId: number) {
   try {
-    await axios.delete(`/api/articles/${articleId}`)
+    await axios.delete(`/api/posts/${articleId}`)
     toast.add({
       severity: 'info',
       summary: 'Suppression',
@@ -139,7 +138,7 @@ onMounted(async () => {
           <Tag
             v-for="(tag, index) in slotProps.data.tags"
             :key="index"
-            :value="getTagName(tag)"
+            :value="getTagName(tag.id)"
             severity="primary"
             class="mx-1 my-0.5"
           />
