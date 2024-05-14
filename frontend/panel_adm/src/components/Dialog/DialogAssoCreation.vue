@@ -55,7 +55,6 @@ const createAsso = async () => {
       detail: "L'image n'a pas pu être uploadée.",
       life: 3000
     })
-    console.log(error)
     return false
   }
   try {
@@ -67,7 +66,6 @@ const createAsso = async () => {
       detail: "L'association n'a pas pu être créé.",
       life: 3000
     })
-    console.log(error)
     return false
   }
   currAsso.value = {name: '', description: '', location: "KB", logo: 0};
@@ -84,7 +82,7 @@ const cancelDialog = () => {
 }
 
 function handleFilesValidated(result: FsValidationResult, files: File[]) {
-  console.log('Validation result: ', result, files);
+  return;
 }
 
 async function handleFilesChanged(files: File[]) {
@@ -128,7 +126,7 @@ async function loadImgAsDataUrl(file: File) {
     <div class="description mb-6 flex flex-col justify-start">
       <label for="description" class="mb-2 text-2xl font-bold text-wrap">Description</label>
       <Textarea id="description" v-model="currAsso.description" rows="6" cols="50" />
-      <Button label="Display" @click="console.log(currLogo)"></Button>
+<!--      <Button label="Display" @click="console.log(currLogo)"></Button>-->
     </div>
     <div class="mb-6 flex flex-col justify-start w-8/12">
       <label class="mb-2 text-xl font-bold text-wrap">Campus</label>

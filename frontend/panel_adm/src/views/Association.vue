@@ -31,7 +31,6 @@ async function reloadAssos() {
       detail: "La liste des associations n'a pas pu être chargée.",
       life: 3000
     })
-    console.log(error)
     return false
   }
 }
