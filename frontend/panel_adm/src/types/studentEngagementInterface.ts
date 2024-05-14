@@ -5,7 +5,7 @@ export enum Status {
   REFUSED = 'Refusé'
 }
 
-export type Severity = 'warning' | 'success' | 'danger';
+export type Severity = 'warning' | 'success' | 'danger'
 
 export interface Activity {
   text: string

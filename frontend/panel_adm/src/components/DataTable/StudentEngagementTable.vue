@@ -23,7 +23,7 @@ const openDialog = (studentEngagement: StudentEngagement | null) => {
   emits('update:visible', {
     visible: true,
     student: studentEngagement,
-    canEdit: (!studentEngagement) ? true : studentEngagement?.status.name === Status.WAITING
+    canEdit: !studentEngagement ? true : studentEngagement?.status.name === Status.WAITING
   })
 }
 </script>

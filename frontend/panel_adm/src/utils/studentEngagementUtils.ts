@@ -43,4 +43,4 @@ export const statusSeverity: Record<string, Severity | ''> = {
   [Status.VALIDATED]: 'success',
   [Status.VALIDATED_WITH_MODIFICATIONS]: 'success',
   [Status.REFUSED]: 'danger'
-};
+}

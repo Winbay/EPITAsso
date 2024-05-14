@@ -26,7 +26,7 @@ const setDisplayDialog = (value: {
   canEditDialog.value = value.canEdit
 }
 
-const isStudentEngagementModified = (studentEngagement: StudentEngagement) : boolean => {
+const isStudentEngagementModified = (studentEngagement: StudentEngagement): boolean => {
   const student = studentEngagements.value.find((s) => s.id === studentEngagement.id)
   if (!student) {
     return false
