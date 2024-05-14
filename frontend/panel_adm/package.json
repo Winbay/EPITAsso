@@ -20,6 +20,7 @@
     "primeicons": "^7.0.0",
     "primevue": "^3.52.0",
     "vue": "^3.4.21",
+    "vue-file-selector": "^2.0.2",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

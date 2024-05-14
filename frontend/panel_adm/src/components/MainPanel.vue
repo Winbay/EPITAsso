@@ -9,10 +9,10 @@
 <style>
 #main-content > .page-content {
   margin-left: 14rem;
+  height: 100%;
+  min-height: calc(100vh - 40px);
   transition: margin-left 0.2s;
   background-color: #131923;
-  min-height: 100vh;
-  height: 100%;
 }
 #main-content.panel-inactive .page-content {
   margin-left: 0;
