@@ -7,7 +7,7 @@ let studentEngagements = [
     name: 'Doe',
     firstname: 'John',
     promotion: '2024',
-    position: 1,
+    position: { id: 1, name: 'Membre' },
     comment: "Très investis dans l'association",
     activities: [
       { text: 'Vente crepes', hours: 2 },
@@ -15,8 +15,7 @@ let studentEngagements = [
       { text: 'JPO 17/12', hours: 5 }
     ],
     totalHours: 12,
-    totalDays: 1,
-    status: { id: 1, comment: '' }
+    status: { id: 1, name: 'En attente', comment: '' }
   },
   {
     id: 2,
@@ -24,7 +23,7 @@ let studentEngagements = [
     name: 'Doe',
     firstname: 'Jane',
     promotion: '2024',
-    position: 2,
+    position: { id: 2, name: 'Président'},
     comment: "Présidente de l'association",
     activities: [
       { text: 'Vente crepes', hours: 2 },
@@ -32,8 +31,7 @@ let studentEngagements = [
       { text: 'JPO 17/12', hours: 3 }
     ],
     totalHours: 12,
-    totalDays: 1,
-    status: { id: 4, comment: 'Activité 2 non validée' }
+    status: { id: 4, name: 'Refusé', comment: 'Activité 2 non validée' }
   },
   {
     id: 3,
@@ -41,7 +39,7 @@ let studentEngagements = [
     name: 'Smith',
     firstname: 'John',
     promotion: '2024',
-    position: 3,
+    position: { id: 3, name: 'Vice-Président' },
     comment: "Vice-président de l'association",
     activities: [
       { text: 'Vente crepes', hours: 2 },
@@ -49,9 +47,23 @@ let studentEngagements = [
       { text: 'JPO 17/12', hours: 3 }
     ],
     totalHours: 12,
-    totalDays: 1,
-    status: { id: 2, comment: '' }
+    status: { id: 2, name: 'Validé', comment: '' }
   }
+]
+
+let positions = [
+  { id: 1, name: 'Membre' },
+  { id: 2, name: 'Président' },
+  { id: 3, name: 'Vice-Président' },
+  { id: 4, name: 'Secrétaire' },
+  { id: 5, name: 'Trésorier' }
+]
+
+let status = [
+  { id: 1, name: 'En attente', comment: ''},
+  { id: 2, name: 'Validé', comment: '' },
+  { id: 3, name: 'Validé avec modifications', comment: '' },
+  { id: 4, name: 'Refusé' , comment: ''}
 ]
 
 fixture('GET /api/studentEngagements', () => {
@@ -64,22 +76,16 @@ fixture('GET /api/studentEngagements/{id}', (request) => {
 })
 
 fixture('GET /api/studentEngagements/positions', () => {
-  return [
-    { id: 1, name: 'Membre' },
-    { id: 2, name: 'Président' },
-    { id: 3, name: 'Vice-Président' },
-    { id: 4, name: 'Secrétaire' },
-    { id: 5, name: 'Trésorier' }
-  ]
+  return positions
+})
+
+fixture('GET /api/studentEngagements/positions/{id}', (request) => {
+  const id = parseInt(request.data.id)
+  return positions.find((position) => position.id === id)
 })
 
 fixture('GET /api/studentEngagements/status', () => {
-  return [
-    { id: 1, name: 'En attente' },
-    { id: 2, name: 'Validé' },
-    { id: 3, name: 'Validé avec modifications' },
-    { id: 4, name: 'Refusé' }
-  ]
+  return status
 })
 
 fixture('POST /api/studentEngagements', (request, response) => {

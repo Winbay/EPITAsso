@@ -1,6 +1,13 @@
-interface activity {
+export enum StatusEnum {
+  WAITING = 'En attente',
+  VALIDATED = 'Validé',
+  VALIDATED_WITH_MODIFICATIONS = 'Validé avec modifications',
+  REFUSED = 'Refusé',
+}
+
+export interface Activity {
   text: string
-  hours: number | null
+  hours: number
 }
 
 export interface Position {
@@ -9,8 +16,8 @@ export interface Position {
 }
 
 export interface Status {
-  id: number
   name: string
+  comment: string
 }
 
 export interface StudentEngagement {
@@ -19,10 +26,9 @@ export interface StudentEngagement {
   name: string
   firstname: string
   promotion: string
-  position: number
+  position: Position
   comment: string
-  activities: activity[]
-  totalHours: number | null
-  totalDays: number | null
-  status: { id: number; comment: string }
+  activities: Activity[]
+  totalHours: number
+  status: Status
 }

@@ -8,142 +8,61 @@ import Panel from 'primevue/panel'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import Divider from 'primevue/divider'
-import { useToast } from 'primevue/usetoast'
 import { defineEmits, ref, watch } from 'vue'
-import { type Status, type StudentEngagement } from '@/types/studentEngagementInterface'
-import axios from 'axios'
+import { type Position, type Status, StatusEnum, type StudentEngagement } from '@/types/studentEngagementInterface'
 import Tag from 'primevue/tag'
-
-const toast = useToast()
+import { getDefaultStudentEngagement, getStatusSeverity } from '@/utils/studentEngagementUtils'
 
 const props = defineProps<{
   visible: boolean
-  studentId: number | null
+  student: StudentEngagement | null
   canEdit: boolean
   status: Status[]
+  positions: Position[]
 }>()
 
 const emits = defineEmits(['update:visible', 'update:student-engagement'])
 
 const hideDialog = () => {
-  studentEngagementUtils.reset()
-  emits('update:visible', { visible: false, id: null, canEdit: true })
+  resetDialog()
+  emits('update:visible', { visible: false, student: null, canEdit: true })
 }
 
-const getStatusName = (statusId: number): string => {
-  return props.status.find((item) => item.id === statusId)?.name ?? ''
+const studentEngagement = ref<StudentEngagement>(getDefaultStudentEngagement())
+
+function getDropdownPositionsValue() : {name: string; code: number}[] {
+  return props.positions.map((position) => {
+    return { name: position.name, code: position.id }
+  })
 }
-
-const getStatusSeverity = (status: number) => {
-  switch (status) {
-    case 1:
-      return 'warning'
-    case 2:
-    case 3:
-      return 'success'
-    case 4:
-      return 'danger'
-    default:
-      return ''
-  }
-}
-
-async function loadStudentEngagement() {
-  if (!props.visible || props.studentId === null) {
-    return
-  }
-  try {
-    const response = await axios.get<StudentEngagement>(
-      `/api/studentEngagements/${props.studentId}`
-    )
-    studentEngagementUtils.set(response.data)
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Engagements étudiant',
-      detail: "L'engagement étudiant n'a pas pu être chargée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
-}
-
-const studentEngagement = ref<StudentEngagement>({
-  id: -1,
-  login: '',
-  name: '',
-  firstname: '',
-  promotion: '',
-  position: -1,
-  comment: '',
-  activities: [{ text: '', hours: null }],
-  totalHours: 0,
-  totalDays: 0,
-  status: { id: -1, comment: '' }
-})
-
-const positions = ref([
-  { name: 'Membre', code: 1 },
-  { name: 'Président', code: 2 },
-  { name: 'Vice-président', code: 3 },
-  { name: 'Secrétaire', code: 4 },
-  { name: 'Trésorier', code: 5 }
-])
 const selectedPosition = ref<{ name: string; code: number } | undefined>(undefined)
 
-const studentEngagementUtils = {
-  reset() {
-    studentEngagement.value = {
-      id: -1,
-      login: '',
-      name: '',
-      firstname: '',
-      promotion: '',
-      position: -1,
-      comment: '',
-      activities: [{ text: '', hours: null }],
-      totalHours: 0,
-      totalDays: 0,
-      status: { id: -1, comment: '' }
-    }
-    selectedPosition.value = undefined
-  },
-  set(value: StudentEngagement) {
-    studentEngagement.value = { ...value }
-    selectedPosition.value = positions.value.find((position) => position.code === value.position)
+function resetDialog() {
+  studentEngagement.value = getDefaultStudentEngagement()
+  selectedPosition.value = undefined
+}
+function setDialog() {
+  if (props.student === null) {
+    resetDialog()
+    return
+  }
+  studentEngagement.value = JSON.parse(JSON.stringify(props.student));
+  selectedPosition.value = {
+    name: props.student.position.name,
+    code: props.student.position.id
   }
 }
 
-watch(
-  () => props.visible,
-  async (newValue) => {
-    if (newValue) {
-      await loadStudentEngagement()
-    }
-  }
-)
-
-const submit = (validate: boolean) => {
-  studentEngagement.value.activities = studentEngagement.value.activities.filter(
-    (activity) => activity.text !== '' && activity.hours !== 0
-  )
-  const totalHours = studentEngagement.value.activities.reduce((acc, activity) => {
-    if (activity.hours === null || isNaN(activity.hours)) {
-      return acc
-    }
-    return acc + parseInt(String(activity.hours))
-  }, 0)
+const submit = (isValid: boolean) => {
+  const totalHours = studentEngagement.value.activities.reduce((acc, activity) => acc + activity.hours, 0)
   if (selectedPosition.value !== undefined) {
-    studentEngagement.value.position = selectedPosition.value.code
+    studentEngagement.value.position = { id: selectedPosition.value.code, name: selectedPosition.value.name }
   }
   const body = {
     ...studentEngagement.value,
     totalHours,
-    totalDays: totalHours === 0 ? 0 : Math.floor(totalHours / 7 + 1),
     status: {
-      id: validate ? 2 : 4,
+      name: isValid ? StatusEnum.VALIDATED : StatusEnum.REFUSED,
       comment:
         studentEngagement.value.status.comment === ''
           ? 'Aucun commentaire'
@@ -153,6 +72,16 @@ const submit = (validate: boolean) => {
   emits('update:student-engagement', body)
   hideDialog()
 }
+
+watch(
+  () => props.visible,
+  async (newValue) => {
+    if (newValue) {
+      setDialog()
+    }
+  }
+)
+
 </script>
 
 <template>
@@ -166,8 +95,8 @@ const submit = (validate: boolean) => {
     <div class="pl-5 pr-5 pb-5" :class="{ disabled: !canEdit }">
       <div class="mb-8">
         <Tag
-          :value="getStatusName(studentEngagement.status.id)"
-          :severity="getStatusSeverity(studentEngagement.status.id)"
+          :value="studentEngagement.status.name"
+          :severity="getStatusSeverity(studentEngagement.status)"
         />
         <FloatLabel class="flex justify-center mt-8">
           <Textarea
@@ -206,7 +135,7 @@ const submit = (validate: boolean) => {
           <Dropdown
             id="poste"
             v-model="selectedPosition"
-            :options="positions"
+            :options="getDropdownPositionsValue()"
             optionLabel="name"
             class="w-full"
           />

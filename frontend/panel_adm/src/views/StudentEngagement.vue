@@ -1,95 +1,48 @@
 <script setup lang="ts">
+
 import '@/fixtures/studentEngagement'
 import StudentEngagementTable from '@/components/DataTable/StudentEngagementTable.vue'
 import {
   type StudentEngagement,
   type Position,
-  type Status
+  type Status, StatusEnum
 } from '@/types/studentEngagementInterface'
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import axios from 'axios'
 import StudentEngagementDialog from '@/components/Dialog/StudentEngagementDialog.vue'
+import { deepEqual } from '@/utils/studentEngagementUtils'
+import * as studentEngagementServices from '@/services/studentEngagementServices';
 
 const displayDialog = ref(false)
-const studentId = ref<number | null>(null)
+const studentEngagement = ref<StudentEngagement | null>(null)
 const canEditDialog = ref(true)
-const setDisplayDialog = (value: { visible: boolean; id: number | null; canEdit: boolean }) => {
+const setDisplayDialog = (value: { visible: boolean; student: StudentEngagement | null; canEdit: boolean }) => {
   displayDialog.value = value.visible
-  studentId.value = value.id
-  canEditDialog.value = value.canEdit
-
-  for (const studentEngagement of studentEngagements.value) {
-    if (studentEngagement.id === value.id && studentEngagement.status.id !== 1) {
-      canEditDialog.value = false
-      break
-    }
-  }
+  studentEngagement.value = value.student
+  canEditDialog.value = value.canEdit;
 }
 
-const compareActivities = (
-  activities1: { text: string; hours: number | null }[],
-  activities2: { text: string; hours: number | null }[]
-) => {
-  if (activities1.length !== activities2.length) {
-    return false
+const checkStudentEngagementModified = (studentEngagement: StudentEngagement) => {
+  const student = studentEngagements.value.find(s => s.id === studentEngagement.id);
+  if (!student) {
+    return false;
   }
-  for (let i = 0; i < activities1.length; i++) {
-    const activity1 = activities1[i]
-    const activity2 = activities2[i]
-    if (activity1.text !== activity2.text || activity1.hours !== activity2.hours) {
-      return false
-    }
-  }
-  return true
-}
+  const studentEngagementKeys = Object.keys(studentEngagement) as Array<keyof StudentEngagement>;
 
-const checkHasChanges = (studentEngagement: StudentEngagement) => {
-  for (const student of studentEngagements.value) {
-    if (student.id === studentEngagement.id) {
-      if (
-        student.login !== studentEngagement.login ||
-        student.name !== studentEngagement.name ||
-        student.firstname !== studentEngagement.firstname ||
-        student.promotion !== studentEngagement.promotion ||
-        student.position !== studentEngagement.position ||
-        student.comment !== studentEngagement.comment ||
-        !compareActivities(student.activities, studentEngagement.activities)
-      ) {
-        return true
-      }
-      break
-    }
-  }
-  return false
-}
+  return !studentEngagementKeys.every(key => {
+    const studentValue = student[key];
+    const engagementValue = studentEngagement[key];
 
-const updateStudentEngagement = async (studentEngagement: StudentEngagement) => {
-  try {
-    let hasChanges = checkHasChanges(studentEngagement)
-
-    if (hasChanges && studentEngagement.status.id === 2) {
-      studentEngagement.status.id = 3
+    if (key === 'status'){
+      return true;
     }
 
-    await axios.put(`/api/studentEngagements/${studentEngagement.id}`, studentEngagement)
-    toast.add({
-      severity: 'success',
-      summary: 'Engagement étudiant',
-      detail: "L'engagement étudiant a bien été modifié.",
-      life: 3000
-    })
-    await reloadStudentEngagements()
-    displayDialog.value = false
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Engagement étudiant',
-      detail: "L'engagement étudiant n'a pas pu être modifié.",
-      life: 3000
-    })
-    console.log(error)
-  }
+    if (typeof studentValue === 'object' && typeof engagementValue === 'object') {
+      return deepEqual(studentValue, engagementValue);
+    } else {
+      return studentValue === engagementValue;
+    }
+  });
 }
 
 const toast = useToast()
@@ -99,54 +52,51 @@ const status = ref<Status[]>([])
 const studentEngagements = ref<StudentEngagement[]>([])
 
 async function loadPosition() {
-  try {
-    const response = await axios.get<Position[]>('/api/studentEngagements/positions')
-    positions.value = response.data
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Engagements étudiant',
-      detail: "La liste des tags des évènements n'a pas pu être chargée.",
-      life: 3000
+  return await studentEngagementServices.loadPosition(toast)
+    .then((response) => {
+      positions.value = response || [];
+      return response;
     })
-    console.log(error)
-    return false
-  }
+    .catch((error) => {
+      console.error("Erreur lors du chargement des positions :", error);
+      return false;
+    });
 }
 
 async function loadStatus() {
-  try {
-    const response = await axios.get<Status[]>('/api/studentEngagements/status')
-    status.value = response.data
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Engagements étudiant',
-      detail: "La liste des status des évènements n'a pas pu être chargée.",
-      life: 3000
+  return await studentEngagementServices.loadStatus(toast)
+    .then((response) => {
+      status.value = response || [];
+      return response;
     })
-    console.log(error)
-    return false
-  }
+    .catch((error) => {
+      console.error("Erreur lors du chargement des status :", error);
+      return false;
+    });
 }
 
 async function reloadStudentEngagements() {
-  try {
-    const response = await axios.get<StudentEngagement[]>('/api/studentEngagements')
-    studentEngagements.value = response.data
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Engagements étudiant',
-      detail: "La liste des engagements étudiant n'a pas pu être chargée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
+  await studentEngagementServices.loadStudentEngagements(toast).then(
+    (response) => {
+      if (response) {
+        studentEngagements.value = response
+      }
+    }
+  )
+}
+
+async function updateStudentEngagement (studentEngagement: StudentEngagement) {
+  if (studentEngagement.status.name === StatusEnum.VALIDATED && checkStudentEngagementModified(studentEngagement)) {
+    studentEngagement.status.name = StatusEnum.VALIDATED_WITH_MODIFICATIONS
   }
+  await studentEngagementServices.updateStudentEngagement(studentEngagement, toast).then(
+    (response) => {
+      if (response) {
+        reloadStudentEngagements()
+        displayDialog.value = false
+      }
+    }
+  )
 }
 
 onMounted(async () => {
@@ -164,9 +114,10 @@ onMounted(async () => {
       </div>
       <StudentEngagementDialog
         :visible="displayDialog"
-        :student-id="studentId"
+        :student="studentEngagement"
         :canEdit="canEditDialog"
         :status="status"
+        :positions="positions"
         @update:visible="setDisplayDialog"
         @update:studentEngagement="updateStudentEngagement"
       />

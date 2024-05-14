@@ -2,10 +2,11 @@
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
-import type { Position, Status, StudentEngagement } from '@/types/studentEngagementInterface'
+import { type Position, type Status, StatusEnum, type StudentEngagement } from '@/types/studentEngagementInterface'
 import { defineEmits } from 'vue'
+import { getStatusSeverity } from '@/utils/studentEngagementUtils'
 
-const props = defineProps<{
+defineProps<{
   studentEngagements: StudentEngagement[]
   positions: Position[]
   status: Status[]
@@ -13,30 +14,8 @@ const props = defineProps<{
 
 const emits = defineEmits(['update:visible'])
 
-const getPositionName = (positionId: number): string => {
-  return props.positions.find((item) => item.id === positionId)?.name ?? ''
-}
-
-const getStatusName = (statusId: number): string => {
-  return props.status.find((item) => item.id === statusId)?.name ?? ''
-}
-
-const getStatusSeverity = (status: number) => {
-  switch (status) {
-    case 1:
-      return 'warning'
-    case 2:
-    case 3:
-      return 'success'
-    case 4:
-      return 'danger'
-    default:
-      return ''
-  }
-}
-
-const openDialog = (studentId: number) => {
-  emits('update:visible', { visible: true, id: studentId, canEdit: true })
+const openDialog = (studentEngagement: StudentEngagement | null) => {
+  emits('update:visible', { visible: true, student: studentEngagement, canEdit: studentEngagement?.status.name === StatusEnum.WAITING })
 }
 </script>
 
@@ -59,15 +38,15 @@ const openDialog = (studentId: number) => {
       <Column field="promotion" header="Promotion" :sortable="true"></Column>
       <Column field="position" header="Poste dans l'association" :sortable="true">
         <template #body="slotProps">
-          {{ getPositionName(slotProps.data.position) }}
+          {{ slotProps.data.position.name }}
         </template>
       </Column>
       <Column field="totalHours" header="Total heures" :sortable="true"></Column>
-      <Column field="status.id" header="Status" :sortable="true">
+      <Column field="status.name" header="Status" :sortable="true">
         <template #body="slotProps">
           <Tag
-            :value="getStatusName(slotProps.data.status.id)"
-            :severity="getStatusSeverity(slotProps.data.status.id)"
+            :value="slotProps.data.status.name"
+            :severity="getStatusSeverity(slotProps.data.status)"
           />
         </template>
       </Column>
@@ -77,7 +56,7 @@ const openDialog = (studentId: number) => {
             <a
               href="javascript:void(0)"
               class="hover:underline"
-              @click="openDialog(slotProps.data.id)"
+              @click="openDialog(slotProps.data)"
               >Détails</a
             >
           </div>
