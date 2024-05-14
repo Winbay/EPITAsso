@@ -6,4 +6,5 @@ export interface EventTag {
 export interface ArticleTag {
   id: number
   name: string
+  color: string
 }

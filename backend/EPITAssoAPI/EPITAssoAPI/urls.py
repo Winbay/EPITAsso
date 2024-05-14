@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -43,5 +43,20 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    # Admin Django
     path("admin/", admin.site.urls),
+    # API endpoints
+    path(
+        "api/",
+        include(
+            [
+                path("", include("user.urls")),
+                path("", include("association.urls")),
+                path("", include("event.urls")),
+                path("", include("post.urls")),
+                path("", include("equipment.urls")),
+                path("", include("messaging.urls")),
+            ]
+        ),
+    ),
 ]

@@ -27,7 +27,10 @@ const items = [
     label: 'Formulaires',
     icon: 'pi pi-list',
     items: [
-      { label: 'Engagement étudiant' },
+      {
+        label: 'Engagement étudiant',
+        path: 'engagement-etudiant'
+      },
       { label: 'Fiche évènement' },
       { label: "Création d'association", path: "associations" }
     ]
@@ -48,9 +51,9 @@ onMounted(() => {
     <PanelMenu :model="items" class="w-full h-full">
       <template #item="{ item }">
         <router-link
-            :to="`/${item.path || ''}`"
-            :Ripple="true"
-            class="flex align-items-center px-3 py-2 cursor-pointer"
+          :to="`/${item.path || ''}`"
+          :Ripple="true"
+          class="flex align-items-center px-3 py-2 cursor-pointer"
         >
           <span :class="[item.icon, 'text-primary text-lg']" />
           <span :class="['ml-2 text-sm', { 'font-semibold': 'item.items' }]">{{ item.label }}</span>
