@@ -10,7 +10,7 @@ import DialogAssoCreation from '@/components/Dialog/DialogAssoCreation.vue'
 import type { Association } from '@/types/assoInterfaces'
 import '@/fixtures/associations'
 
-const assos = ref<Association[]>([]);
+const assos = ref<Association[]>([])
 
 const visibleCreation = ref(false)
 const toast = useToast()
@@ -36,7 +36,6 @@ async function reloadAssos() {
   }
 }
 
-
 onMounted(async () => {
   await reloadAssos()
 })
@@ -48,25 +47,28 @@ onMounted(async () => {
       <span class="mr-4 text-2xl font-bold text-wrap">Associations</span>
       <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="visibleCreation = true" />
       <DialogAssoCreation
-          v-model:visible="visibleCreation"
-          :set-hidden="closeDialog"
-          :reload-assos="reloadAssos"
+        v-model:visible="visibleCreation"
+        :set-hidden="closeDialog"
+        :reload-assos="reloadAssos"
       />
     </div>
     <DataTable
-        :value="assos"
-        show-gridlines
-        striped-rows
-        size="small"
-        paginator
-        :rows="5"
-        :rowsPerPageOptions="[5, 10, 20, 50]"
-        removableSort
+      :value="assos"
+      show-gridlines
+      striped-rows
+      size="small"
+      paginator
+      :rows="5"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      removableSort
     >
       <Column field="date" header="Logo" class="max-w-28" sortable>
         <template #body="slotProps">
-          <img :src="slotProps.data.logo.url" :alt="`logo ${slotProps.data.name}`"
-          style="width: 100px;"/>
+          <img
+            :src="slotProps.data.logo.url"
+            :alt="`logo ${slotProps.data.name}`"
+            style="width: 100px"
+          />
         </template>
       </Column>
       <Column field="name" header="Nom" sortable></Column>

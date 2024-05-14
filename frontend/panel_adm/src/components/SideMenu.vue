@@ -32,7 +32,7 @@ const items = [
         path: 'engagement-etudiant'
       },
       { label: 'Fiche évènement' },
-      { label: "Création d'association", path: "associations" }
+      { label: "Création d'association", path: 'associations' }
     ]
   },
   {
