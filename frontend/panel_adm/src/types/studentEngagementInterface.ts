@@ -1,9 +1,11 @@
-export enum StatusEnum {
+export enum Status {
   WAITING = 'En attente',
   VALIDATED = 'Validé',
   VALIDATED_WITH_MODIFICATIONS = 'Validé avec modifications',
   REFUSED = 'Refusé'
 }
+
+export type Severity = 'warning' | 'success' | 'danger';
 
 export interface Activity {
   text: string
@@ -15,7 +17,7 @@ export interface Position {
   name: string
 }
 
-export interface Status {
+export interface StatusDetails {
   name: string
   comment: string
 }
@@ -30,5 +32,5 @@ export interface StudentEngagement {
   comment: string
   activities: Activity[]
   totalHours: number
-  status: Status
+  status: StatusDetails
 }

@@ -4,8 +4,8 @@ import StudentEngagementTable from '@/components/DataTable/StudentEngagementTabl
 import {
   type StudentEngagement,
   type Position,
-  type Status,
-  StatusEnum
+  type StatusDetails,
+  Status
 } from '@/types/studentEngagementInterface'
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
@@ -26,7 +26,7 @@ const setDisplayDialog = (value: {
   canEditDialog.value = value.canEdit
 }
 
-const checkStudentEngagementModified = (studentEngagement: StudentEngagement) => {
+const isStudentEngagementModified = (studentEngagement: StudentEngagement) : boolean => {
   const student = studentEngagements.value.find((s) => s.id === studentEngagement.id)
   if (!student) {
     return false
@@ -52,7 +52,7 @@ const checkStudentEngagementModified = (studentEngagement: StudentEngagement) =>
 const toast = useToast()
 
 const positions = ref<Position[]>([])
-const status = ref<Status[]>([])
+const status = ref<StatusDetails[]>([])
 const studentEngagements = ref<StudentEngagement[]>([])
 
 async function loadPosition() {
@@ -91,10 +91,10 @@ async function reloadStudentEngagements() {
 
 async function updateStudentEngagement(studentEngagement: StudentEngagement) {
   if (
-    studentEngagement.status.name === StatusEnum.VALIDATED &&
-    checkStudentEngagementModified(studentEngagement)
+    studentEngagement.status.name === Status.VALIDATED &&
+    isStudentEngagementModified(studentEngagement)
   ) {
-    studentEngagement.status.name = StatusEnum.VALIDATED_WITH_MODIFICATIONS
+    studentEngagement.status.name = Status.VALIDATED_WITH_MODIFICATIONS
   }
   await studentEngagementServices
     .updateStudentEngagement(studentEngagement, toast)

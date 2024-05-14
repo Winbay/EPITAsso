@@ -11,18 +11,18 @@ import Divider from 'primevue/divider'
 import { defineEmits, ref, watch } from 'vue'
 import {
   type Position,
-  type Status,
-  StatusEnum,
+  type StatusDetails,
+  Status,
   type StudentEngagement
 } from '@/types/studentEngagementInterface'
 import Tag from 'primevue/tag'
-import { getDefaultStudentEngagement, getStatusSeverity } from '@/utils/studentEngagementUtils'
+import { getDefaultStudentEngagement, statusSeverity } from '@/utils/studentEngagementUtils'
 
 const props = defineProps<{
   visible: boolean
   student: StudentEngagement | null
   canEdit: boolean
-  status: Status[]
+  status: StatusDetails[]
   positions: Position[]
 }>()
 
@@ -73,7 +73,7 @@ const submit = (isValid: boolean) => {
     ...studentEngagement.value,
     totalHours,
     status: {
-      name: isValid ? StatusEnum.VALIDATED : StatusEnum.REFUSED,
+      name: isValid ? Status.VALIDATED : Status.REFUSED,
       comment:
         studentEngagement.value.status.comment === ''
           ? 'Aucun commentaire'
@@ -106,7 +106,7 @@ watch(
       <div class="mb-8">
         <Tag
           :value="studentEngagement.status.name"
-          :severity="getStatusSeverity(studentEngagement.status)"
+          :severity="statusSeverity[studentEngagement.status.name]"
         />
         <FloatLabel class="flex justify-center mt-8">
           <Textarea

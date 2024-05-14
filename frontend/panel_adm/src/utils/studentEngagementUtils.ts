@@ -1,4 +1,4 @@
-import { type Status, StatusEnum, type StudentEngagement } from '@/types/studentEngagementInterface'
+import { type Severity, Status, type StudentEngagement } from '@/types/studentEngagementInterface'
 
 export function getDefaultStudentEngagement(): StudentEngagement {
   return {
@@ -38,16 +38,9 @@ export function deepEqual(obj1: any, obj2: any): boolean {
   return obj1 === obj2
 }
 
-export function getStatusSeverity(status: Status): 'warning' | 'success' | 'danger' | '' {
-  switch (status.name) {
-    case StatusEnum.WAITING:
-      return 'warning'
-    case StatusEnum.VALIDATED:
-    case StatusEnum.VALIDATED_WITH_MODIFICATIONS:
-      return 'success'
-    case StatusEnum.REFUSED:
-      return 'danger'
-    default:
-      return ''
-  }
-}
+export const statusSeverity: Record<string, Severity | ''> = {
+  [Status.WAITING]: 'warning',
+  [Status.VALIDATED]: 'success',
+  [Status.VALIDATED_WITH_MODIFICATIONS]: 'success',
+  [Status.REFUSED]: 'danger'
+};

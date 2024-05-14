@@ -4,17 +4,17 @@ import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import {
   type Position,
-  type Status,
-  StatusEnum,
+  type StatusDetails,
+  Status,
   type StudentEngagement
 } from '@/types/studentEngagementInterface'
 import { defineEmits } from 'vue'
-import { getStatusSeverity } from '@/utils/studentEngagementUtils'
+import { statusSeverity } from '@/utils/studentEngagementUtils'
 
 defineProps<{
   studentEngagements: StudentEngagement[]
   positions: Position[]
-  status: Status[]
+  status: StatusDetails[]
 }>()
 
 const emits = defineEmits(['update:visible'])
@@ -23,7 +23,7 @@ const openDialog = (studentEngagement: StudentEngagement | null) => {
   emits('update:visible', {
     visible: true,
     student: studentEngagement,
-    canEdit: studentEngagement?.status.name === StatusEnum.WAITING
+    canEdit: (!studentEngagement) ? true : studentEngagement?.status.name === Status.WAITING
   })
 }
 </script>
@@ -55,7 +55,7 @@ const openDialog = (studentEngagement: StudentEngagement | null) => {
         <template #body="slotProps">
           <Tag
             :value="slotProps.data.status.name"
-            :severity="getStatusSeverity(slotProps.data.status)"
+            :severity="statusSeverity[slotProps.data.status.name]"
           />
         </template>
       </Column>

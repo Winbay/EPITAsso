@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios'
-import type { Position, Status, StudentEngagement } from '@/types/studentEngagementInterface'
+import type { Position, StatusDetails, StudentEngagement } from '@/types/studentEngagementInterface'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 
 interface ApiResponse<T> {
@@ -49,7 +49,7 @@ export async function loadPosition(toast: ToastServiceMethods) {
 
 export async function loadStatus(toast: ToastServiceMethods) {
   try {
-    const response = await axios.get<Status[]>('/api/studentEngagements/status')
+    const response = await axios.get<StatusDetails[]>('/api/studentEngagements/status')
     return response.data
   } catch (error) {
     handleApiError(error, toast, "La liste des status n'a pas pu être chargée.")
