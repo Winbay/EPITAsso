@@ -9,7 +9,7 @@ import { ref, onMounted, defineProps, type PropType } from 'vue'
 import type { ArticleTag } from '@/types/tagInterfaces'
 import type { ArticleCreation, ArticleModification } from '@/types/articleInterfaces'
 import { useToast } from 'primevue/usetoast'
-import djangoApi from '@/services/api';
+import djangoApi from '@/services/api'
 
 const props = defineProps({
   setHidden: {

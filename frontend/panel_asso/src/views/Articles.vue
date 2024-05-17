@@ -11,7 +11,7 @@ import { useToast } from 'primevue/usetoast'
 import DialogArticle from '@/components/Dialog/DialogArticle.vue'
 import { type ArticleModification } from '@/types/articleInterfaces'
 import type { ArticleTag } from '@/types/tagInterfaces'
-import djangoApi from '@/services/api';
+import djangoApi from '@/services/api'
 
 const tagsRef = ref<ArticleTag[]>([])
 const articles = ref<ArticleModification[]>([])
