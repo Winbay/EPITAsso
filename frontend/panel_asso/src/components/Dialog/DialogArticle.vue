@@ -4,12 +4,12 @@ import Editor from 'primevue/editor'
 import Button from 'primevue/button'
 import MultiSelect from 'primevue/multiselect'
 import Dialog from 'primevue/dialog'
-import axios from 'axios'
 
 import { ref, onMounted, defineProps, type PropType } from 'vue'
 import type { ArticleTag } from '@/types/tagInterfaces'
 import type { ArticleCreation, ArticleModification } from '@/types/articleInterfaces'
 import { useToast } from 'primevue/usetoast'
+import djangoApi from '@/services/api'
 
 const props = defineProps({
   setHidden: {
@@ -42,7 +42,7 @@ const createOrSave = async () => {
   if (props.article) {
     // Modification
     try {
-      await axios.put(`/api/posts/${props.article.id}/`, currArticle.value)
+      await djangoApi.put(`/api/posts/${props.article.id}/`, currArticle.value)
     } catch (error) {
       toast.add({
         severity: 'error',
@@ -56,7 +56,7 @@ const createOrSave = async () => {
   } else {
     // Creation
     try {
-      await axios.post(`/api/posts/`, currArticle.value)
+      await djangoApi.post(`/api/posts/`, currArticle.value)
     } catch (error) {
       toast.add({
         severity: 'error',

@@ -4,7 +4,6 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import ConfirmPopup from 'primevue/confirmpopup'
-import axios from 'axios'
 
 import { ref, onMounted } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
@@ -12,6 +11,7 @@ import { useToast } from 'primevue/usetoast'
 import DialogArticle from '@/components/Dialog/DialogArticle.vue'
 import { type ArticleModification } from '@/types/articleInterfaces'
 import type { ArticleTag } from '@/types/tagInterfaces'
+import djangoApi from '@/services/api'
 
 const tagsRef = ref<ArticleTag[]>([])
 const articles = ref<ArticleModification[]>([])
@@ -48,7 +48,7 @@ const getTagName = (tagId: number): string => {
 
 const loadTags = async () => {
   try {
-    const rep1 = await axios.get<ArticleTag[]>('/api/posts/tags')
+    const rep1 = await djangoApi.get<ArticleTag[]>('/api/posts/tags')
     tagsRef.value = rep1.data
     return true
   } catch (error) {
@@ -65,7 +65,7 @@ const loadTags = async () => {
 
 async function reloadArticles() {
   try {
-    const rep2 = await axios.get<ArticleModification[]>('/api/posts/')
+    const rep2 = await djangoApi.get<ArticleModification[]>('/api/posts/')
     articles.value = rep2.data
     return true
   } catch (error) {
@@ -82,7 +82,7 @@ async function reloadArticles() {
 
 async function deleteArticle(articleId: number) {
   try {
-    await axios.delete(`/api/posts/${articleId}`)
+    await djangoApi.delete(`/api/posts/${articleId}`)
     toast.add({
       severity: 'info',
       summary: 'Suppression',

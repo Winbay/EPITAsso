@@ -1,0 +1,91 @@
+[
+{
+  "model": "post.tag",
+  "pk": 1,
+  "fields": {
+    "name": "SPORT",
+    "color": "000000"
+  }
+},
+{
+  "model": "post.tag",
+  "pk": 2,
+  "fields": {
+    "name": "VJ",
+    "color": null
+  }
+},
+{
+  "model": "post.tag",
+  "pk": 3,
+  "fields": {
+    "name": "KB",
+    "color": null
+  }
+},
+{
+  "model": "post.tag",
+  "pk": 4,
+  "fields": {
+    "name": "Soiree",
+    "color": null
+  }
+},
+{
+  "model": "post.tag",
+  "pk": 5,
+  "fields": {
+    "name": "Code",
+    "color": null
+  }
+},
+{
+  "model": "post.tag",
+  "pk": 6,
+  "fields": {
+    "name": "Afterwork",
+    "color": null
+  }
+},
+{
+  "model": "post.image",
+  "pk": 1,
+  "fields": {
+    "link": "test.com"
+  }
+},
+{
+  "model": "post.post",
+  "pk": 3,
+  "fields": {
+    "title": "Annonce Soiree",
+    "author": 1,
+    "last_author": 1,
+    "created_at": "2024-05-17T15:18:50.669Z",
+    "updated_at": "2024-05-17T15:18:50.669Z",
+    "content": "c'est une jolie soiree qui se prepare ...",
+    "tags": [
+      3,
+      4
+    ],
+    "images": []
+  }
+},
+{
+  "model": "post.post",
+  "pk": 4,
+  "fields": {
+    "title": "Annonce AW",
+    "author": 1,
+    "last_author": 1,
+    "created_at": "2024-05-17T15:18:50.669Z",
+    "updated_at": "2024-05-17T15:18:50.669Z",
+    "content": "c'est une un bel aw qui se prepare ...",
+    "tags": [
+      2,
+      6
+    ],
+    "images": []
+  }
+}
+]

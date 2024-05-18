@@ -4,7 +4,7 @@ from .models import Association
 
 @admin.register(Association)
 class AssociationAdmin(admin.ModelAdmin):
-    list_display = ("name", "location")
+    list_display = ("name", "id", "location")
     search_fields = ("name", "location")
     filter_horizontal = ("members",)
     # list_filter = ('location',) # TODO uncomment this line once location is an enum or object
