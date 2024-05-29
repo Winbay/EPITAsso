@@ -11,13 +11,14 @@ import Toast from 'primevue/toast'
   <main id="main-content" class="h-full flex flex-wrap overflow-hidden">
     <SideMenu />
     <MainPanel />
+<!--    <Login />-->
   </main>
 </template>
 
 <style scoped>
-.main {
+main {
   height: max-content;
-  background-color: #1f2937;
+  background-color: #131923;
 }
 
 header {
