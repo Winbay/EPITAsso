@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 from corsheaders.defaults import default_headers
@@ -32,6 +33,12 @@ DEBUG = os.getenv("DEBUG") == "True"
 
 ALLOWED_HOSTS = ["*"]
 
+MICROSOFT_CLIENT_ID = os.getenv("MICROSOFT_CLIENT_ID")
+MICROSOFT_OBJECT_ID = os.getenv("MICROSOFT_OBJECT_ID")
+MICROSOFT_TENANT_ID = os.getenv("MICROSOFT_TENANT_ID")
+MICROSOFT_REDIRECT_URI = os.getenv("MICROSOFT_REDIRECT_URI")
+MICROSOFT_CLIENT_SECRET= os.getenv("MICROSOFT_CLIENT_SECRET")
+MICROSOFT_SCOPES = ['User.Read']
 
 # Application definition
 
@@ -43,7 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
     "drf_yasg",
     "user",
     "association",
@@ -152,9 +159,16 @@ AUTH_USER_MODEL = "user.User"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'SIGNING_KEY': SECRET_KEY,
 }
 
 CSRF_TRUSTED_ORIGINS = [
