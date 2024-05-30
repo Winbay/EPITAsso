@@ -1,9 +1,6 @@
-import base64
-import hashlib
-import os
 from django.conf import settings
 from django.http import JsonResponse
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -18,6 +15,9 @@ AUTH_BASE_URL = f"https://login.microsoftonline.com/{settings.MICROSOFT_TENANT_I
 TOKEN_URL = f"https://login.microsoftonline.com/{settings.MICROSOFT_TENANT_ID}/oauth2/v2.0/token"
 USER_INFO_URL = 'https://graph.microsoft.com/v1.0/me'
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+@extend_schema(summary="Microsoft authentication")
 def microsoft_login(request):
     code_verifier, code_challenge = generate_pkce_pair()
     request.session['code_verifier'] = code_verifier
@@ -27,6 +27,9 @@ def microsoft_login(request):
     request.session['oauth_state'] = state
     return redirect(authorization_url)
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+@extend_schema(summary="Microsoft authentication callback")
 def microsoft_callback(request):
     code_verifier = request.session.get('code_verifier')
     if not code_verifier:
@@ -48,6 +51,7 @@ def get_school_from_email(email):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+@extend_schema(summary="Complete Microsoft authentication")
 def microsoft_auth_complete(request):
     oauth = OAuth2Session(settings.MICROSOFT_CLIENT_ID, token=request.session['oauth_token'])
     user_info = oauth.get(USER_INFO_URL).json()
@@ -86,12 +90,12 @@ def microsoft_auth_complete(request):
 
     return JsonResponse({'error': 'Failed to retrieve user info from Microsoft Graph'}, status=400)
 
-class UserView(generics.ListCreateAPIView):
+class UserView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @swagger_auto_schema(
-        operation_summary="List all users",
+    @extend_schema(
+        summary="List all users",
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)

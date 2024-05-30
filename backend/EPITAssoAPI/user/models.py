@@ -16,5 +16,3 @@ class User(AbstractUser):
     def str(self):
         return self.login
 
-    class Meta(AbstractUser.Meta):
-        swappable = "AUTH_USER_MODEL"
