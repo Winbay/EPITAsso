@@ -70,7 +70,7 @@ async function checkLoginAndFetchUser(): Promise<void> {
     let userData = await fetchUserDetails()
     userStore.setUser(userData)
     isLoggedIn.value = true
-    await router.push('/')
+    await router.push(router.currentRoute.value.path)
   } else {
     const queryParams = new URLSearchParams(window.location.search)
     const code = queryParams.get('code')
@@ -79,7 +79,7 @@ async function checkLoginAndFetchUser(): Promise<void> {
       const success = await handleTokenFetch(code)
       if (success) {
         isLoggedIn.value = true
-        await router.push('/')
+        await router.push(router.currentRoute.value.path)
       }
     }
   }

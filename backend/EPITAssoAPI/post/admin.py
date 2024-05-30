@@ -28,6 +28,5 @@ class ImageAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     list_display = (
         "name",
-        "color",
     )
     search_fields = ("name",)

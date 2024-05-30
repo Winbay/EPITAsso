@@ -5,7 +5,8 @@ from django.conf import settings
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    color = models.CharField(max_length=7, blank=True, null=True)  # Hexadecimal color
+    text_color = models.CharField(max_length=7, blank=True, null=True)
+    background_color = models.CharField(max_length=7, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -22,6 +23,14 @@ class Image(models.Model):
 class Post(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=255)
+
+    association = models.ForeignKey(
+        "association.Association",
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="posts",
+    )
+
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -39,7 +48,6 @@ class Post(models.Model):
 
     content = models.TextField()
     tags = models.ManyToManyField(Tag, blank=True)
-    images = models.ManyToManyField(Image, blank=True)
 
     def __str__(self):
         return self.title

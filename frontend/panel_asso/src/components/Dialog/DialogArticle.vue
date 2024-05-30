@@ -9,7 +9,7 @@ import { ref, onMounted, defineProps, type PropType } from 'vue'
 import type { ArticleTag } from '@/types/tagInterfaces'
 import type { ArticleCreation, ArticleModification } from '@/types/articleInterfaces'
 import { useToast } from 'primevue/usetoast'
-import djangoApi from '@/services/api'
+import PostService from '@/services/post/post'
 
 const props = defineProps({
   setHidden: {
@@ -31,106 +31,86 @@ const props = defineProps({
 })
 
 const toast = useToast()
+const postService: PostService = new PostService(toast)
 
-const currArticle = ref<ArticleCreation | ArticleModification>({
+const getDefaultArticle = (): ArticleCreation | ArticleModification => ({
   title: '',
   content: '',
-  tagIds: []
-})
+  tags: []
+});
 
-const createOrSave = async () => {
+const currArticleRef = ref<ArticleCreation | ArticleModification>(getDefaultArticle())
+
+const editOrCreate = async (): Promise<void> => {
   if (props.article) {
-    // Modification
-    try {
-      await djangoApi.put(`/api/posts/${props.article.id}/`, currArticle.value)
-    } catch (error) {
-      toast.add({
-        severity: 'error',
-        summary: 'Articles',
-        detail: "L'article n'a pas pu être modifié.",
-        life: 3000
-      })
-      console.log(error)
-      return false
-    }
+    await postService.updatePost(currArticleRef.value as ArticleModification)
   } else {
-    // Creation
-    try {
-      await djangoApi.post(`/api/posts/`, currArticle.value)
-    } catch (error) {
-      toast.add({
-        severity: 'error',
-        summary: 'Articles',
-        detail: "L'article n'a pas pu être créé.",
-        life: 3000
-      })
-      console.log(error)
-      return false
-    }
+    await postService.createPost(currArticleRef.value)
   }
-  await props.reloadArticles()
-  props.setHidden()
-  return true
-}
+  await props.reloadArticles();
+  props.setHidden();
+};
+
 
 const cancelDialog = () => {
-  // Reset all local values
   if (props.article) {
-    currArticle.value = props.article
+    currArticleRef.value = props.article
   } else {
-    currArticle.value = { title: '', content: '', tagIds: [] }
+    currArticleRef.value = getDefaultArticle()
   }
   props.setHidden()
 }
 
 onMounted(() => {
   if (props.article) {
-    currArticle.value = props.article
+    currArticleRef.value = props.article
   }
 })
 </script>
 
 <template>
-  <Dialog
-    class="dialog-event h-full"
-    modal
-    @update:visible="cancelDialog"
+  <Dialog 
+    class="dialog-event h-full" 
+    modal @update:visible="cancelDialog"
     :header="props.article ? 'Modification de l\'article' : 'Création d\'un article'"
   >
     <div class="title mb-6 flex flex-col justify-start">
       <label for="title" class="mb-2 text-2xl font-bold text-wrap">Titre</label>
-      <InputText
-        id="title"
-        v-model="currArticle.title"
+      <InputText 
+        id="title" 
+        v-model="currArticleRef.title" 
         aria-describedby="username-help"
-        placeholder="Titre de l'article"
-        maxlength="255"
-        class="max-w-3xl"
+        placeholder="Titre de l'article" 
+        maxlength="255" 
+        class="max-w-3xl" 
       />
     </div>
     <div class="content mb-6 flex flex-col justify-start">
       <label for="content" class="mb-2 text-2xl font-bold text-wrap">Contenu</label>
-      <Editor id="content" v-model="currArticle.content" editorStyle="height: 320px" />
-      <!--      <Button label="Display" @click="console.log(currArticle)"></Button>-->
+      <Editor id="content" v-model="currArticleRef.content" editorStyle="height: 320px" />
     </div>
     <div class="mb-6 flex flex-col justify-start w-8/12">
       <label for="tags" class="mb-2 text-xl font-bold text-wrap">Tags</label>
-      <MultiSelect
-        v-model="currArticle.tagIds"
-        :options="props.tags"
-        option-label="name"
-        option-value="id"
-        display="chip"
+      <MultiSelect 
+        v-model="currArticleRef.tags" 
+        :options="props.tags" 
+        option-label="name" 
+        display="chip" 
       />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">
-        <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />
-        <Button
-          :label="props.article ? 'Sauvegarder' : 'Créer'"
-          severity="success"
+        <Button 
+          label="Annuler" 
+          severity="secondary" 
+          class="w-1/4 mr-4" 
+          @click="cancelDialog" 
+        />
+        <Button 
+          :label="props.article ? 'Sauvegarder' : 'Créer'" 
+          severity="success" 
           class="w-1/4"
-          @click="createOrSave"
+          @click="editOrCreate" 
         />
       </div>
     </div>

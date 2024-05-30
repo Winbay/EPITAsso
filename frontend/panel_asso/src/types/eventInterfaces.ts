@@ -1,23 +1,32 @@
-export interface EventModification {
+import type { EventTag } from "./tagInterfaces"
+
+export interface Event {
   id: number
-  title: string
-  content: string
   author: string
-  tags: number[]
-  startDate: number
-  endDate: number
+  name: string
+  content: string
+  tags: EventTag[]
+  startDate: Date
+  endDate: Date
   recurrent: boolean
   frequency: number
-  endRecurrence: number
+  endRecurrence: Date
+
+  // association: Association
+  // placesNumber: number
+  // notes: undefined
+  // staffMembers: undefined[]
+  // otherAssociations: Association[]
+  // tasks: undefined[]
 }
 
-export interface EventCreation {
-  title: string
-  content: string
-  tags: number[]
-  startDate: number
-  endDate: number
-  recurrent: boolean
-  frequency: number
-  endRecurrence: number
+export interface EventCreation extends
+  Omit<
+    Event,
+    | 'id'
+    | 'author'
+  > {
+}
+
+export interface EventModification extends Event {
 }

@@ -8,8 +8,8 @@ import Accordion from 'primevue/accordion'
 import Divider from 'primevue/divider'
 import AccordionTab from 'primevue/accordiontab'
 import { useToast } from 'primevue/usetoast'
-import type { FAQItem } from '@/types/associationInterfaces'
-import * as associationServices from '@/services/associationServices'
+import type { Faq } from '@/types/associationInterfaces'
+import FaqService from '@/services/association/faq'
 
 const toast = useToast()
 
@@ -17,68 +17,48 @@ const props = defineProps<{
   associationId: number
 }>()
 
-const faqItems = ref<FAQItem[]>([])
-const newQuestion = ref<FAQItem>({ id: -1, question: '', answer: '' })
+const faqService = new FaqService(toast, props.associationId)
+
+const faqItemsRef = ref<Faq[]>([])
+const newFaqItemRef = ref<Faq>({ id: -1, question: '', answer: '' })
 const showDialog = ref(false)
 const editingIndex = ref<number | null>(null)
 
 const isFormValid = computed(() => {
-  return newQuestion.value.question.trim() && newQuestion.value.answer.trim()
+  return newFaqItemRef.value.question.trim() && newFaqItemRef.value.answer.trim()
 })
 
-async function addNewQuestion(): Promise<void> {
+const addNewQuestion = async (): Promise<void> =>{
   if (editingIndex.value !== null) {
-    const response = await associationServices.updateFaqItem(
-      props.associationId,
-      { ...newQuestion.value },
-      toast
-    )
-    if (response) {
-      faqItems.value[editingIndex.value] = { ...response }
-    }
+    await faqService.updateFaq(newFaqItemRef.value)
   } else {
-    const response = await associationServices.addFaqItem(
-      props.associationId,
-      { ...newQuestion.value },
-      toast
-    )
-    if (response) {
-      faqItems.value.push({ ...response })
-    }
+    await faqService.createFaq(newFaqItemRef.value)
   }
   hideFAQDialog()
 }
 
-function editQuestion(index: number): void {
+const editQuestion = (index: number): void => {
   editingIndex.value = index
-  newQuestion.value = { ...faqItems.value[index] }
+  newFaqItemRef.value = { ...faqItemsRef.value[index] }
   showDialog.value = true
 }
 
-async function deleteQuestion(index: number): Promise<void> {
-  const response = await associationServices.deleteFaqItem(
-    props.associationId,
-    faqItems.value[index].id,
-    toast
-  )
-  if (response) {
-    const index = faqItems.value.findIndex((item) => item.id === response)
-    faqItems.value.splice(index, 1)
-  }
+const deleteQuestion = async (index: number): Promise<void> => {
+  await faqService.deleteFaq(faqItemsRef.value[index].id)
+  faqItemsRef.value.splice(index, 1)
 }
 
-function hideFAQDialog(): void {
+const hideFAQDialog = (): void => {
   editingIndex.value = null
-  newQuestion.value = { id: -1, question: '', answer: '' }
+  newFaqItemRef.value = { id: -1, question: '', answer: '' }
   showDialog.value = false
 }
 
-async function fetchQuestions(): Promise<void> {
-  await associationServices.getFaqByAssociationId(props.associationId, toast).then((response) => {
-    if (response) {
-      faqItems.value = response
-    }
-  })
+const fetchQuestions = async (): Promise<void> => {
+  const response = await faqService.getFaqs()
+  if (response) {
+    faqItemsRef.value = response
+  }
 }
 
 onMounted(async () => {
@@ -99,12 +79,12 @@ onMounted(async () => {
       />
     </div>
     <Divider class="mt-0"></Divider>
-    <div v-if="faqItems?.length === 0" class="p-20 text-center">
+    <div v-if="faqItemsRef?.length === 0" class="p-20 text-center">
       <h3>Pas encore de questions</h3>
     </div>
     <div v-else class="card">
       <Accordion :activeIndex="0">
-        <AccordionTab v-for="(question, index) in faqItems" :key="question.question">
+        <AccordionTab v-for="(question, index) in faqItemsRef" :key="question.question">
           <template #header>
             <div class="flex justify-between h-fit w-full items-center">
               <span>{{ question.question }}</span>
@@ -133,12 +113,12 @@ onMounted(async () => {
     <Dialog v-model:visible="showDialog" header="Nouvelle question" @hide="hideFAQDialog" modal>
       <div>
         <InputText
-          v-model="newQuestion.question"
+          v-model="newFaqItemRef.question"
           placeholder="Nouvelle question"
           class="w-full mb-3 h-12"
         />
         <Textarea
-          v-model="newQuestion.answer"
+          v-model="newFaqItemRef.answer"
           placeholder="Réponse"
           rows="5"
           class="w-full min-h-32"
