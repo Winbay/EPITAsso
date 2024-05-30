@@ -5,55 +5,67 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0001_initial'),
+        ("association", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EventSheet',
+            name="EventSheet",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('date', models.DateField()),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
-                ('recurrence', models.BooleanField(default=False)),
-                ('resp', models.CharField(max_length=255)),
-                ('tutor', models.CharField(max_length=255)),
-                ('students_number', models.IntegerField()),
-                ('members_number', models.IntegerField()),
-                ('externals_number', models.IntegerField()),
-                ('public_liability', models.BooleanField(default=False)),
-                ('place', models.CharField(max_length=255)),
-                ('rooms_provided', models.CharField(blank=True, max_length=255, null=True)),
-                ('present_equipments', models.CharField(blank=True, max_length=255, null=True)),
-                ('drinks', models.CharField(blank=True, max_length=255, null=True)),
-                ('special_comments', models.TextField(blank=True, null=True)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("date", models.DateField()),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
+                ("recurrence", models.BooleanField(default=False)),
+                ("resp", models.CharField(max_length=255)),
+                ("tutor", models.CharField(max_length=255)),
+                ("students_number", models.IntegerField()),
+                ("members_number", models.IntegerField()),
+                ("externals_number", models.IntegerField()),
+                ("public_liability", models.BooleanField(default=False)),
+                ("place", models.CharField(max_length=255)),
+                (
+                    "rooms_provided",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                (
+                    "present_equipments",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                ("drinks", models.CharField(blank=True, max_length=255, null=True)),
+                ("special_comments", models.TextField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='EventTaskList',
+            name="EventTaskList",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('status', models.BooleanField(default=False)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("status", models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('date', models.DateField()),
-                ('start_time', models.DateTimeField()),
-                ('end_time', models.DateTimeField()),
-                ('places_number', models.IntegerField()),
-                ('notes', models.TextField(blank=True, null=True)),
-                ('association', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='association.association')),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("date", models.DateField()),
+                ("start_time", models.DateTimeField()),
+                ("end_time", models.DateTimeField()),
+                ("places_number", models.IntegerField()),
+                ("notes", models.TextField(blank=True, null=True)),
+                (
+                    "association",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
     ]

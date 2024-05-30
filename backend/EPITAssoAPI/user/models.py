@@ -4,7 +4,14 @@ from django.db import models
 
 
 class User(AbstractUser):
-    id = models.UUIDField(primary_key=True, unique=True, editable=False, blank=False, null=False, default=uuid.uuid4)
+    id = models.UUIDField(
+        primary_key=True,
+        unique=True,
+        editable=False,
+        blank=False,
+        null=False,
+        default=uuid.uuid4,
+    )
     login = models.CharField(max_length=255, unique=True)
     school = models.CharField(max_length=255)
     microsoft_id = models.CharField(max_length=255, blank=True, null=True)
@@ -17,4 +24,3 @@ class User(AbstractUser):
 
     def str(self):
         return self.login
-

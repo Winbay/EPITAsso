@@ -5,24 +5,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0002_initial'),
-        ('event', '0001_initial'),
-        ('post', '0001_initial'),
+        ("association", "0002_initial"),
+        ("event", "0001_initial"),
+        ("post", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='description',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='post.post'),
+            model_name="event",
+            name="description",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT, to="post.post"
+            ),
         ),
         migrations.AddField(
-            model_name='event',
-            name='other_associations',
-            field=models.ManyToManyField(blank=True, related_name='related_events', to='association.association'),
+            model_name="event",
+            name="other_associations",
+            field=models.ManyToManyField(
+                blank=True, related_name="related_events", to="association.association"
+            ),
         ),
     ]

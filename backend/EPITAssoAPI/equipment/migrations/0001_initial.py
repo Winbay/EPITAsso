@@ -5,23 +5,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0001_initial'),
+        ("association", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Equipment',
+            name="Equipment",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('borrowing_date', models.DateField()),
-                ('due_date', models.DateField()),
-                ('quantity', models.IntegerField(null=True)),
-                ('borrower', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='borrowed_equipment', to='association.association')),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("borrowing_date", models.DateField()),
+                ("due_date", models.DateField()),
+                ("quantity", models.IntegerField(null=True)),
+                (
+                    "borrower",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="borrowed_equipment",
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
     ]

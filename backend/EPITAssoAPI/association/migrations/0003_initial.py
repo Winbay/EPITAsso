@@ -5,18 +5,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0002_initial'),
+        ("association", "0002_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='association',
-            name='members',
-            field=models.ManyToManyField(blank=True, related_name='part_of_association', to=settings.AUTH_USER_MODEL),
+            model_name="association",
+            name="members",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="part_of_association",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

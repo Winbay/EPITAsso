@@ -5,30 +5,42 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0001_initial'),
+        ("association", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Conversation',
+            name="Conversation",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('last_sent_at', models.DateTimeField(auto_now=True)),
-                ('associations_in_conversation', models.ManyToManyField(related_name='conversations', to='association.association')),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("last_sent_at", models.DateTimeField(auto_now=True)),
+                (
+                    "associations_in_conversation",
+                    models.ManyToManyField(
+                        related_name="conversations", to="association.association"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Message',
+            name="Message",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('content', models.TextField()),
-                ('sent_at', models.DateTimeField(auto_now_add=True)),
-                ('association_sender', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='messages', to='association.association')),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("content", models.TextField()),
+                ("sent_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "association_sender",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="messages",
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
     ]
