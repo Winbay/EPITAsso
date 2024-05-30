@@ -189,19 +189,6 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
     'SECURITY': [
         {
-            'OAuth2': {
-                'type': 'oauth2',
-                'flows': {
-                    'authorizationCode': {
-                        'authorizationUrl': 'https://login.microsoftonline.com/{settings.MICROSOFT_TENANT_ID}/oauth2/v2.0/authorize',
-                        'tokenUrl': 'https://login.microsoftonline.com/{settings.MICROSOFT_TENANT_ID}/oauth2/v2.0/token',
-                        'scopes': {
-                            'read': 'Read access',
-                            'write': 'Write access',
-                        }
-                    }
-                }
-            },
             'Bearer': {
                 'type': 'http',
                 'scheme': 'bearer',
