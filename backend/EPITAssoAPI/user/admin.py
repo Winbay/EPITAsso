@@ -1,16 +1,17 @@
 from django.contrib import admin
 from .models import User
-
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = (
-        "login",
-        "email",
-        "first_name",
-        "last_name",
-        "school",
-        "is_custom_admin",
+class UserAdmin(BaseUserAdmin):
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'login', 'school', 'microsoft_id')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_custom_admin', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
-    search_fields = ("login", "email", "name", "last_name", "first_name", "school")
-    list_filter = ("is_custom_admin",)
+    list_display = (
+        'email', 'login', 'first_name', 'last_name', 'school', 'is_custom_admin', 'is_staff', 'is_superuser'
+    )
+    search_fields = ('login', 'email', 'first_name', 'last_name', 'school')
+    list_filter = ('is_custom_admin', 'is_staff', 'is_superuser', 'school')
