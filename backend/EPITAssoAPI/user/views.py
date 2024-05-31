@@ -88,20 +88,16 @@ class MicrosoftAuthCompleteView(APIView):
 
             user, created = User.objects.get_or_create(
                 microsoft_id=microsoft_id,
-                defaults={
-                    "email": email,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                },
             )
 
-            if not created:
+            if created:
                 user.email = email
                 user.first_name = first_name
                 user.last_name = last_name
                 user.login = email.split("@")[0]
                 user.school = get_school_from_email(email)
                 user.save()
+            
 
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
