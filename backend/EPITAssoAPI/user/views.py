@@ -97,7 +97,6 @@ class MicrosoftAuthCompleteView(APIView):
                 user.login = email.split("@")[0]
                 user.school = get_school_from_email(email)
                 user.save()
-            
 
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
