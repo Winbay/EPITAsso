@@ -1,4 +1,4 @@
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from .models import Tag, Post, Image
 from .serializers import TagSerializer, PostSerializer, ImageSerializer
@@ -9,11 +9,11 @@ class TagListView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
-    @swagger_auto_schema(operation_summary="List all Tags")
+    @extend_schema(summary="List all Tags")
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_summary="Create a Tag")
+    @extend_schema(summary="Create a Tag")
     def post(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 
@@ -23,15 +23,15 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TagSerializer
     permission_classes = [IsCustomAdmin]
 
-    @swagger_auto_schema(operation_summary="Retrieve a Tag")
+    @extend_schema(summary="Retrieve a Tag")
     def get(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_summary="Update a Tag")
+    @extend_schema(summary="Update a Tag")
     def put(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_summary="Delete a Tag")
+    @extend_schema(summary="Delete a Tag")
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
@@ -40,11 +40,11 @@ class PostListView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    @swagger_auto_schema(operation_summary="List all Posts")
+    @extend_schema(summary="List all Posts")
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_summary="Create a Post")
+    @extend_schema(summary="Create a Post")
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
@@ -57,15 +57,15 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    @swagger_auto_schema(operation_summary="Retrieve a Post")
+    @extend_schema(summary="Retrieve a Post")
     def get(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_summary="Update a Post")
+    @extend_schema(summary="Update a Post")
     def put(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-    @swagger_auto_schema(operation_summary="Delete a Post")
+    @extend_schema(summary="Delete a Post")
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
@@ -77,7 +77,7 @@ class ImageListView(generics.ListAPIView):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
 
-    @swagger_auto_schema(operation_summary="List all Images")
+    @extend_schema(summary="List all Images")
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -86,6 +86,6 @@ class ImageDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
 
-    @swagger_auto_schema(operation_summary="Create an Image")
+    @extend_schema(summary="Create an Image")
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
