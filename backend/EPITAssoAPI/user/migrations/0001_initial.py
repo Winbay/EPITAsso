@@ -99,7 +99,7 @@ class Migration(migrations.Migration):
                         unique=True,
                     ),
                 ),
-                ("login", models.CharField(max_length=255, unique=True)),
+                ("login", models.CharField(max_length=255)),
                 ("school", models.CharField(max_length=255)),
                 (
                     "microsoft_id",
