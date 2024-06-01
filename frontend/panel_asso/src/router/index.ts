@@ -7,6 +7,7 @@ import Articles from '@/views/Articles.vue'
 import Login from '@/components/Login.vue'
 import MyAssociation from '@/views/MyAssociation.vue'
 import Profile from '@/views/Profile.vue'
+import Messaging from '@/views/Messaging.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +18,8 @@ const router = createRouter({
     { path: '/articles', component: Articles },
     { path: '/mon-association', component: MyAssociation },
     { path: '/login', component: Login },
-    { path: '/profile', component: Profile }
+    { path: '/profile', component: Profile },
+    { path: '/messaging', component: Messaging }
   ]
 })
 

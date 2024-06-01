@@ -14,7 +14,8 @@ const items = [
   },
   {
     label: 'Messagerie',
-    icon: 'pi pi-inbox'
+    icon: 'pi pi-inbox',
+    path: 'messaging'
   },
   {
     label: 'Évènements',
