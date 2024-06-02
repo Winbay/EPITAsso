@@ -14,5 +14,5 @@ urlpatterns = [
     path("users/<uuid:pk>", UserDetailView.as_view(), name="user-detail"),
     path("auth/authorize", MicrosoftLoginView.as_view(), name="microsoft-login"),
     path("auth/token", MicrosoftTokenView.as_view(), name="microsoft-token"),
-    path("auth/refresh", TokenRefreshView.as_view(), name="token-refresh")
+    path("auth/refresh", TokenRefreshView.as_view(), name="token-refresh"),
 ]

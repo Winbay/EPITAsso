@@ -15,29 +15,30 @@ AUTH_BASE_URL = f"https://login.microsoftonline.com/{settings.MICROSOFT_TENANT_I
 TOKEN_URL = f"https://login.microsoftonline.com/{settings.MICROSOFT_TENANT_ID}/oauth2/v2.0/token"
 USER_INFO_URL = "https://graph.microsoft.com/v1.0/me"
 
+
 class MicrosoftLoginView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
         summary="Microsoft authentication",
         parameters=[
-            OpenApiParameter(name='redirect_uri', description='redirect URI', required=True, type=str)
+            OpenApiParameter(
+                name="redirect_uri", description="redirect URI", required=True, type=str
+            )
         ],
-        responses={(302, 'application/json' ): inline_serializer(
-            name="RedirectResponse",
-            fields={
-                "redirect": serializers.CharField(help_text="Redirect URL")
-            }
-        ),
-        (400, 'application/json' ): inline_serializer(
-            name="LoginErrorResponse",
-            fields={
-                "error": serializers.CharField(help_text="Error message")
-            }
-        )}
+        responses={
+            (302, "application/json"): inline_serializer(
+                name="RedirectResponse",
+                fields={"redirect": serializers.CharField(help_text="Redirect URL")},
+            ),
+            (400, "application/json"): inline_serializer(
+                name="LoginErrorResponse",
+                fields={"error": serializers.CharField(help_text="Error message")},
+            ),
+        },
     )
     def get(self, request):
-        redirect_uri = request.GET.get('redirect_uri')
+        redirect_uri = request.GET.get("redirect_uri")
         if not redirect_uri:
             return JsonResponse({"error": "Missing redirect_uri"}, status=400)
 
@@ -46,10 +47,9 @@ class MicrosoftLoginView(APIView):
             redirect_uri=redirect_uri,
             scope=settings.MICROSOFT_SCOPES,
         )
-        authorization_url, _ = oauth.authorization_url(
-            AUTH_BASE_URL
-        )
+        authorization_url, _ = oauth.authorization_url(AUTH_BASE_URL)
         return redirect(authorization_url)
+
 
 class MicrosoftTokenView(APIView):
     permission_classes = [AllowAny]
@@ -60,34 +60,36 @@ class MicrosoftTokenView(APIView):
             name="TokenRequest",
             fields={
                 "code": serializers.CharField(help_text="Authorization code"),
-                "redirect_uri": serializers.CharField(help_text="Redirect URI")
-            }
+                "redirect_uri": serializers.CharField(help_text="Redirect URI"),
+            },
         ),
-        responses={(200, 'application/json' ): inline_serializer(
-            name="TokenResponse",
-            fields={
-                "token_type": serializers.CharField(help_text="Type of token"),
-                "access_token": serializers.CharField(help_text="Access token"),
-                "refresh_token": serializers.CharField(help_text="Refresh token"),
-                "expires_in": serializers.IntegerField(help_text="Token lifetime in seconds"),
-            }
-        ),
-        (400, 'application/json' ): inline_serializer(
-            name="TokenErrorResponse",
-            fields={
-                "error": serializers.CharField(help_text="Error message")
-            }
-        )}
+        responses={
+            (200, "application/json"): inline_serializer(
+                name="TokenResponse",
+                fields={
+                    "token_type": serializers.CharField(help_text="Type of token"),
+                    "access_token": serializers.CharField(help_text="Access token"),
+                    "refresh_token": serializers.CharField(help_text="Refresh token"),
+                    "expires_in": serializers.IntegerField(
+                        help_text="Token lifetime in seconds"
+                    ),
+                },
+            ),
+            (400, "application/json"): inline_serializer(
+                name="TokenErrorResponse",
+                fields={"error": serializers.CharField(help_text="Error message")},
+            ),
+        },
     )
     def post(self, request):
-        code = request.data.get('code')
+        code = request.data.get("code")
 
         if not code:
             return JsonResponse({"error": "Authorization code is required"}, status=400)
-        
+
         oauth = OAuth2Session(
             settings.MICROSOFT_CLIENT_ID,
-            redirect_uri=request.POST.get('redirect_uri'),
+            redirect_uri=request.POST.get("redirect_uri"),
         )
         try:
             token = oauth.fetch_token(
@@ -95,12 +97,12 @@ class MicrosoftTokenView(APIView):
                 code=code,
                 client_secret=settings.MICROSOFT_CLIENT_SECRET,
             )
-        except Exception as e:
-            return JsonResponse({"error": "Failed to fetch token from Microsoft"}, status=400)
+        except Exception:
+            return JsonResponse(
+                {"error": "Failed to fetch token from Microsoft"}, status=400
+            )
 
-        oauth = OAuth2Session(
-            settings.MICROSOFT_CLIENT_ID, token=token
-        )
+        oauth = OAuth2Session(settings.MICROSOFT_CLIENT_ID, token=token)
         user_info = oauth.get(USER_INFO_URL).json()
 
         if "id" in user_info:
@@ -115,7 +117,7 @@ class MicrosoftTokenView(APIView):
                 user = User.objects.get(login=login)
             except User.DoesNotExist:
                 user = None
-        
+
             if user:
                 user.microsoft_id = microsoft_id
                 user.username = username
@@ -125,9 +127,15 @@ class MicrosoftTokenView(APIView):
                 user.school = get_school_from_email(email)
                 user.save()
             else:
-                user = User.objects.create_user(login=login, email=email, first_name=first_name, last_name=last_name, school=get_school_from_email(email), username=username)
+                user = User.objects.create_user(
+                    login=login,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    school=get_school_from_email(email),
+                    username=username,
+                )
                 user.save()
-
 
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
@@ -145,6 +153,7 @@ class MicrosoftTokenView(APIView):
             {"error": "Failed to retrieve user info from Microsoft Graph"}, status=400
         )
 
+
 class UserView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -154,7 +163,8 @@ class UserView(generics.ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
-    
+
+
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = DetailUserSerializer
@@ -164,6 +174,7 @@ class UserDetailView(generics.RetrieveAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
 
 class UserLoggedDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
