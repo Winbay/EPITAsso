@@ -1,20 +1,18 @@
 from django.urls import path
 from .views import (
     UserView,
+    UserDetailView,
+    UserLoggedDetailView,
     MicrosoftLoginView,
-    MicrosoftCallbackView,
-    MicrosoftAuthCompleteView,
+    MicrosoftTokenView,
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path("users/", UserView.as_view(), name="user-list"),
+    path("users/me", UserLoggedDetailView.as_view(), name="user-me"),
+    path("users/<uuid:pk>", UserDetailView.as_view(), name="user-detail"),
     path("auth/login", MicrosoftLoginView.as_view(), name="microsoft-login"),
-    path(
-        "auth/complete",
-        MicrosoftAuthCompleteView.as_view(),
-        name="microsoft-auth-complete",
-    ),
-    path("auth/callback", MicrosoftCallbackView.as_view(), name="microsoft-callback"),
-    path("token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
+    path("auth/token", MicrosoftTokenView.as_view(), name="microsoft-token"),
+    path("auth/refresh", TokenRefreshView.as_view(), name="token-refresh")
 ]
