@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.http import JsonResponse
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.openapi import OpenApiParameter
-from rest_framework import generics
+from drf_spectacular.utils import extend_schema, OpenApiParameter, inline_serializer
+from rest_framework import generics, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from .models import User
@@ -24,7 +23,18 @@ class MicrosoftLoginView(APIView):
         parameters=[
             OpenApiParameter(name='redirect_uri', description='redirect URI', required=True, type=str)
         ],
-        responses={200: {"redirect": "URL to Microsoft login page"}}
+        responses={(302, 'application/json' ): inline_serializer(
+            name="RedirectResponse",
+            fields={
+                "redirect": serializers.CharField(help_text="Redirect URL")
+            }
+        ),
+        (400, 'application/json' ): inline_serializer(
+            name="LoginErrorResponse",
+            fields={
+                "error": serializers.CharField(help_text="Error message")
+            }
+        )}
     )
     def get(self, request):
         redirect_uri = request.GET.get('redirect_uri')
@@ -46,21 +56,35 @@ class MicrosoftTokenView(APIView):
 
     @extend_schema(
         summary="Microsoft token retrieval",
-        parameters=[
-            OpenApiParameter(name='code', description='Authorization code', required=True, type=str)
-        ],
-        responses={200: {"token_type": "Bearer", "access_token": "access token", "refresh_token": "refresh token", "expires_in": "expiration time"},
-                   400: {"error": "error message"}}
+        request=inline_serializer(
+            name="TokenRequest",
+            fields={
+                "code": serializers.CharField(help_text="Authorization code"),
+                "redirect_uri": serializers.CharField(help_text="Redirect URI")
+            }
+        ),
+        responses={(200, 'application/json' ): inline_serializer(
+            name="TokenResponse",
+            fields={
+                "token_type": serializers.CharField(help_text="Type of token"),
+                "access_token": serializers.CharField(help_text="Access token"),
+                "refresh_token": serializers.CharField(help_text="Refresh token"),
+                "expires_in": serializers.IntegerField(help_text="Token lifetime in seconds"),
+            }
+        ),
+        (400, 'application/json' ): inline_serializer(
+            name="TokenErrorResponse",
+            fields={
+                "error": serializers.CharField(help_text="Error message")
+            }
+        )}
     )
     def post(self, request):
-        print(request.session)
         code = request.data.get('code')
 
         if not code:
             return JsonResponse({"error": "Authorization code is required"}, status=400)
         
-        print(request.POST.get('redirect_uri'))
-
         oauth = OAuth2Session(
             settings.MICROSOFT_CLIENT_ID,
             redirect_uri=request.POST.get('redirect_uri'),
@@ -72,12 +96,10 @@ class MicrosoftTokenView(APIView):
                 client_secret=settings.MICROSOFT_CLIENT_SECRET,
             )
         except Exception as e:
-            print(e)
             return JsonResponse({"error": "Failed to fetch token from Microsoft"}, status=400)
 
-        request.session["oauth_token"] = token
         oauth = OAuth2Session(
-            settings.MICROSOFT_CLIENT_ID, token=request.session["oauth_token"]
+            settings.MICROSOFT_CLIENT_ID, token=token
         )
         user_info = oauth.get(USER_INFO_URL).json()
 

@@ -27,16 +27,19 @@ services:
     build:
       context: ./frontend/panel_asso
       dockerfile: Dockerfile.prod
+    restart: always
 
   etd:
     build:
       context: ./frontend/vitrine
       dockerfile: Dockerfile.prod
+    restart: always
 
   adm:
     build:
       context: ./frontend/panel_adm
       dockerfile: Dockerfile.prod
+    restart: always
 
   nginx:
     build: ./nginx
