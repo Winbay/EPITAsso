@@ -45,7 +45,7 @@ class MicrosoftTokenView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        summary="Complete Microsoft authentication",
+        summary="Microsoft token retrieval",
         parameters=[
             OpenApiParameter(name='code', description='Authorization code', required=True, type=str)
         ],
