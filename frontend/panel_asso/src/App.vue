@@ -6,6 +6,7 @@ import TheHeader from '@/components/TheHeader.vue'
 import MainPanel from '@/components/MainPanel.vue'
 import SideMenu from '@/components/SideMenu.vue'
 import Login from '@/components/Login.vue'
+import type { FetchedUser } from '@/types/userInterfaces'
 
 import Toast from 'primevue/toast'
 import ProgressSpinner from 'primevue/progressspinner'
@@ -58,7 +59,7 @@ async function refreshAccessToken(refreshToken: string) {
   }
 }
 
-async function fetchUserDetails(accessToken: string) {
+async function fetchUserDetails(accessToken: string): Promise<FetchedUser | null> {
   try {
     const response = await fetch(`${API_URL}/api/users/me`, {
       headers: { Authorization: `Bearer ${accessToken}` }

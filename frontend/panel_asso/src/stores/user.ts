@@ -1,18 +1,17 @@
 import { defineStore } from 'pinia'
-
-interface User {}
+import type { FetchedUser } from '@/types/userInterfaces'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    user: null as User | null
+    user: null as FetchedUser | null
   }),
   actions: {
-    setUser(user: User) {
+    setUser(user: FetchedUser) {
       this.user = user
     }
   },
   getters: {
-    getUser(): User | null {
+    getUser(): FetchedUser | null {
       return this.user
     }
   }
