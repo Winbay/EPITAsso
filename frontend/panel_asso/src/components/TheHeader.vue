@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import Avatar from 'primevue/avatar'
 import Dropdown from 'primevue/dropdown'
+import Login from '@/components/Login.vue'
 
 const associations = ref([
   { name: 'EPTV', logo: 'eptv.jpg' },
