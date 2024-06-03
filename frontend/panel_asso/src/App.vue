@@ -2,7 +2,12 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import djangoApi, { ACCESS_TOKEN_KEY, getTokenExpiry, REDIRECT_URI, REFRESH_TOKEN_KEY } from '@/services/api'
+import djangoApi, {
+  ACCESS_TOKEN_KEY,
+  getTokenExpiry,
+  REDIRECT_URI,
+  REFRESH_TOKEN_KEY
+} from '@/services/api'
 import TheHeader from '@/components/TheHeader.vue'
 import MainPanel from '@/components/MainPanel.vue'
 import SideMenu from '@/components/SideMenu.vue'
@@ -77,7 +82,7 @@ async function checkLoginAndFetchUser(): Promise<void> {
   if (accessToken && refreshToken) {
     const refreshTokenExpiry = getTokenExpiry(refreshToken)
     const now = new Date().getTime()
-    if (refreshTokenExpiry &&  now >= refreshTokenExpiry) {
+    if (refreshTokenExpiry && now >= refreshTokenExpiry) {
       isLoggedIn.value = false
       await router.push('/login')
     } else {

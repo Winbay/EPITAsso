@@ -1,5 +1,5 @@
 import axios from 'axios'
-import * as JWT from 'jwt-decode';
+import * as JWT from 'jwt-decode'
 import { useUserStore } from '@/stores/user'
 
 const API_URL = import.meta.env.VITE_API_URL
