@@ -65,38 +65,23 @@ async function handleTokenFetch(code: string): Promise<boolean> {
 async function checkLoginAndFetchUser(): Promise<void> {
   let accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
   let refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
-  const queryParams = new URLSearchParams(window.location.search)
-  const code = queryParams.get('code')
 
-  if (code) {
-    const success = await handleTokenFetch(code)
-    if (success) {
-      isLoggedIn.value = true
-      accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
-      refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
-      await router.push('/')
-    } else {
-      await router.push('/login')
-    }
-  }
   if (accessToken && refreshToken) {
-    const refreshTokenExpiry = getTokenExpiry(refreshToken)
-    const now = new Date().getTime()
-    if (refreshTokenExpiry && now >= refreshTokenExpiry) {
-      isLoggedIn.value = false
-      await router.push('/login')
-    } else {
       let userData = await fetchUserDetails()
-      if (userData) {
-        userStore.setUser(userData)
+      userStore.setUser(userData)
+      isLoggedIn.value = true
+      await router.push('/')
+  } else {
+    const queryParams = new URLSearchParams(window.location.search)
+    const code = queryParams.get('code')
+
+    if (code) {
+      const success = await handleTokenFetch(code)
+      if (success) {
         isLoggedIn.value = true
         await router.push('/')
-      } else {
-        await router.push('/login')
       }
     }
-  } else {
-    await router.push('/login')
   }
   isLoading.value = false
 }
