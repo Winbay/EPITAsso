@@ -3,12 +3,12 @@ import type { FetchedUser } from '@/types/userInterfaces'
 import * as yup from 'yup'
 
 interface BackendUser {
-  id: string;
-  login: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  school: string;
+  id: string
+  login: string
+  email: string
+  first_name: string
+  last_name: string
+  school: string
 }
 
 const backendUserSchema = yup.object().shape({
@@ -35,7 +35,8 @@ export const useUserStore = defineStore('user', {
   }),
   actions: {
     setUser(user: FetchedUser | null) {
-      backendUserSchema.validate(user)
+      backendUserSchema
+        .validate(user)
         .then((validatedUser) => {
           this.user = transformBackendUser(validatedUser)
         })
