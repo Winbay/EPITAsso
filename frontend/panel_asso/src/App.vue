@@ -15,17 +15,19 @@ const router = useRouter()
 const isLoggedIn = ref(false)
 const isLoading = ref(true)
 
+const API_URL = import.meta.env.VITE_API_URL
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
 const ACCESS_TOKEN_KEY = 'accessToken'
 const REFRESH_TOKEN_KEY = 'refreshToken'
 
-async function fetchTokenWithCode(code: string, redirectUri: string) {
+async function fetchTokenWithCode(code: string) {
   try {
-    const response = await fetch('http://localhost:8000/api/auth/token', {
+    const response = await fetch(`${API_URL}/api/auth/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ code, redirect_uri: redirectUri })
+      body: JSON.stringify({ code, redirect_uri: REDIRECT_URI })
     })
     if (response.ok) {
       return await response.json()
@@ -39,7 +41,7 @@ async function fetchTokenWithCode(code: string, redirectUri: string) {
 
 async function refreshAccessToken(refreshToken: string) {
   try {
-    const response = await fetch('http://localhost:8000/api/auth/refresh', {
+    const response = await fetch(`${API_URL}/api/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: refreshToken })
@@ -58,7 +60,7 @@ async function refreshAccessToken(refreshToken: string) {
 
 async function fetchUserDetails(accessToken: string) {
   try {
-    const response = await fetch('http://localhost:8000/api/users/me', {
+    const response = await fetch(`${API_URL}/api/users/me`, {
       headers: { Authorization: `Bearer ${accessToken}` }
     })
     if (response.ok) {
@@ -72,8 +74,8 @@ async function fetchUserDetails(accessToken: string) {
   }
 }
 
-async function handleTokenFetchAndUserDetails(code: string, redirectUri: string) {
-  const tokenData = await fetchTokenWithCode(code, redirectUri)
+async function handleTokenFetchAndUserDetails(code: string) {
+  const tokenData = await fetchTokenWithCode(code)
   if (tokenData) {
     const { token_type, access_token, refresh_token } = tokenData
     if (token_type && access_token && refresh_token) {
@@ -94,10 +96,9 @@ async function checkLoginAndFetchUser() {
   const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
   const queryParams = new URLSearchParams(window.location.search)
   const code = queryParams.get('code')
-  const redirectUri = 'http://localhost:5173/'
 
   if (code) {
-    const success = await handleTokenFetchAndUserDetails(code, redirectUri)
+    const success = await handleTokenFetchAndUserDetails(code)
     if (success) {
       isLoggedIn.value = true
       await router.push('/')
@@ -133,7 +134,7 @@ onMounted(async () => {
 <template>
   <div>
     <div v-if="isLoading" class="spinner">
-      <ProgressSpinner />
+      <ProgressSpinner/>
     </div>
     <Login v-else-if="!isLoggedIn" />
     <div v-else>
@@ -141,7 +142,7 @@ onMounted(async () => {
       <TheHeader />
       <main id="main-content" class="h-full flex flex-wrap overflow-hidden">
         <SideMenu />
-        <MainPanel />
+        <MainPanel/>
       </main>
     </div>
   </div>
