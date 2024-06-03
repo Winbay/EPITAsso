@@ -2,8 +2,8 @@ interface User {
   id: string
   login: string
   email: string
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
   school: string
   isAdmin: boolean
 }

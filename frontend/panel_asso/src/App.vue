@@ -21,7 +21,7 @@ const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
 const ACCESS_TOKEN_KEY = 'accessToken'
 const REFRESH_TOKEN_KEY = 'refreshToken'
 
-async function fetchTokenWithCode(code: string) {
+async function fetchTokenWithCode(code: string): Promise<any> {
   try {
     const response = await djangoApi.post('/api/auth/token', { code, redirect_uri: REDIRECT_URI })
     if (response.status === 200) {
@@ -48,38 +48,37 @@ async function fetchUserDetails(): Promise<FetchedUser | null> {
   }
 }
 
-async function handleTokenFetchAndUserDetails(code: string) {
+async function handleTokenFetch(code: string): Promise<boolean> {
   const tokenData = await fetchTokenWithCode(code)
   if (tokenData) {
     const { token_type, access_token, refresh_token } = tokenData
     if (token_type && access_token && refresh_token) {
       localStorage.setItem(ACCESS_TOKEN_KEY, access_token)
       localStorage.setItem(REFRESH_TOKEN_KEY, refresh_token)
-      const userData = await fetchUserDetails()
-      if (userData) {
-        userStore.setUser(userData)
-        return true
-      }
+      return true
     }
   }
   return false
 }
 
-async function checkLoginAndFetchUser() {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
-  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+async function checkLoginAndFetchUser(): Promise<void> {
+  let accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
+  let refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
   const queryParams = new URLSearchParams(window.location.search)
   const code = queryParams.get('code')
 
   if (code) {
-    const success = await handleTokenFetchAndUserDetails(code)
+    const success = await handleTokenFetch(code)
     if (success) {
       isLoggedIn.value = true
+      accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
+      refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
       await router.push('/')
     } else {
       await router.push('/login')
     }
-  } else if (accessToken && refreshToken) {
+  }
+  if (accessToken && refreshToken) {
     let userData = await fetchUserDetails()
     if (userData) {
       userStore.setUser(userData)

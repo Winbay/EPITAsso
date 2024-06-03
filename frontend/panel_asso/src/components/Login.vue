@@ -2,9 +2,10 @@
 import Button from 'primevue/button'
 
 const handleMicrosoftLogin = () => {
-  const redirectUri = 'http://localhost:5173/'
-  window.location.href = `http://localhost:8000/api/auth/authorize?redirect_uri=${redirectUri}`
-}
+  const redirectUri = import.meta.env.VITE_REDIRECT_URI;
+  const apiUrl = import.meta.env.VITE_API_URL;
+  window.location.href = `${apiUrl}/api/auth/authorize?redirect_uri=${redirectUri}`;
+};
 </script>
 
 <template>
