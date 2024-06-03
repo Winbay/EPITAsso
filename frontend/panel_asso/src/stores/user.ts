@@ -1,7 +1,6 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
-interface User {
-}
+interface User {}
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -9,12 +8,12 @@ export const useUserStore = defineStore('user', {
   }),
   actions: {
     setUser(user: User) {
-      this.user = user;
+      this.user = user
     }
   },
   getters: {
     getUser(): User | null {
-      return this.user;
+      return this.user
     }
   }
-});
+})

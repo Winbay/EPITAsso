@@ -15,7 +15,7 @@ const router = createRouter({
     { path: '/events', component: Events },
     { path: '/articles', component: Articles },
     { path: '/mon-association', component: MonAssociation },
-    { path: '/login', component: Login },
+    { path: '/login', component: Login }
   ]
 })
 

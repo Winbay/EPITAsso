@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import TheHeader from '@/components/TheHeader.vue'
 import MainPanel from '@/components/MainPanel.vue'
@@ -10,13 +10,13 @@ import Login from '@/components/Login.vue'
 import Toast from 'primevue/toast'
 import ProgressSpinner from 'primevue/progressspinner'
 
-const userStore = useUserStore();
-const router = useRouter();
-const isLoggedIn = ref(false);
-const isLoading = ref(true);
+const userStore = useUserStore()
+const router = useRouter()
+const isLoggedIn = ref(false)
+const isLoading = ref(true)
 
-const ACCESS_TOKEN_KEY = 'accessToken';
-const REFRESH_TOKEN_KEY = 'refreshToken';
+const ACCESS_TOKEN_KEY = 'accessToken'
+const REFRESH_TOKEN_KEY = 'refreshToken'
 
 async function fetchTokenWithCode(code: string, redirectUri: string) {
   try {
@@ -26,14 +26,14 @@ async function fetchTokenWithCode(code: string, redirectUri: string) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ code, redirect_uri: redirectUri })
-    });
+    })
     if (response.ok) {
-      return await response.json();
+      return await response.json()
     }
-    throw new Error('Failed to fetch token with code');
+    throw new Error('Failed to fetch token with code')
   } catch (error) {
-    console.error('Failed to fetch token:', error);
-    return null;
+    console.error('Failed to fetch token:', error)
+    return null
   }
 }
 
@@ -43,16 +43,16 @@ async function refreshAccessToken(refreshToken: string) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: refreshToken })
-    });
+    })
     if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
-      return data.access_token;
+      const data = await response.json()
+      localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token)
+      return data.access_token
     }
-    throw new Error('Failed to refresh access token');
+    throw new Error('Failed to refresh access token')
   } catch (error) {
-    console.error('Error refreshing access token:', error);
-    return null;
+    console.error('Error refreshing access token:', error)
+    return null
   }
 }
 
@@ -60,80 +60,80 @@ async function fetchUserDetails(accessToken: string) {
   try {
     const response = await fetch('http://localhost:8000/api/users/me', {
       headers: { Authorization: `Bearer ${accessToken}` }
-    });
+    })
     if (response.ok) {
-      return await response.json();
+      return await response.json()
     }
-    console.error('Failed to fetch user details:', response.statusText);
-    return null;
+    console.error('Failed to fetch user details:', response.statusText)
+    return null
   } catch (error) {
-    console.error('Error fetching user details:', error);
-    return null;
+    console.error('Error fetching user details:', error)
+    return null
   }
 }
 
 async function handleTokenFetchAndUserDetails(code: string, redirectUri: string) {
-  const tokenData = await fetchTokenWithCode(code, redirectUri);
+  const tokenData = await fetchTokenWithCode(code, redirectUri)
   if (tokenData) {
-    const { token_type, access_token, refresh_token } = tokenData;
+    const { token_type, access_token, refresh_token } = tokenData
     if (token_type && access_token && refresh_token) {
-      localStorage.setItem(ACCESS_TOKEN_KEY, access_token);
-      localStorage.setItem(REFRESH_TOKEN_KEY, refresh_token);
-      const userData = await fetchUserDetails(access_token);
+      localStorage.setItem(ACCESS_TOKEN_KEY, access_token)
+      localStorage.setItem(REFRESH_TOKEN_KEY, refresh_token)
+      const userData = await fetchUserDetails(access_token)
       if (userData) {
-        userStore.setUser(userData);
-        return true;
+        userStore.setUser(userData)
+        return true
       }
     }
   }
-  return false;
+  return false
 }
 
 async function checkLoginAndFetchUser() {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
-  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-  const queryParams = new URLSearchParams(window.location.search);
-  const code = queryParams.get('code');
-  const redirectUri = 'http://localhost:5173/';
+  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+  const queryParams = new URLSearchParams(window.location.search)
+  const code = queryParams.get('code')
+  const redirectUri = 'http://localhost:5173/'
 
   if (code) {
-    const success = await handleTokenFetchAndUserDetails(code, redirectUri);
+    const success = await handleTokenFetchAndUserDetails(code, redirectUri)
     if (success) {
-      isLoggedIn.value = true;
-      await router.push('/');
+      isLoggedIn.value = true
+      await router.push('/')
     } else {
-      await router.push('/login');
+      await router.push('/login')
     }
   } else if (accessToken && refreshToken) {
-    let userData = await fetchUserDetails(accessToken);
+    let userData = await fetchUserDetails(accessToken)
     if (!userData) {
-      const newAccessToken = await refreshAccessToken(refreshToken);
+      const newAccessToken = await refreshAccessToken(refreshToken)
       if (newAccessToken) {
-        userData = await fetchUserDetails(newAccessToken);
+        userData = await fetchUserDetails(newAccessToken)
       }
     }
     if (userData) {
-      userStore.setUser(userData);
-      isLoggedIn.value = true;
-      await router.push('/');
+      userStore.setUser(userData)
+      isLoggedIn.value = true
+      await router.push('/')
     } else {
-      await router.push('/login');
+      await router.push('/login')
     }
   } else {
-    await router.push('/login');
+    await router.push('/login')
   }
-  isLoading.value = false;
+  isLoading.value = false
 }
 
 onMounted(async () => {
-  await checkLoginAndFetchUser();
-});
+  await checkLoginAndFetchUser()
+})
 </script>
 
 <template>
   <div>
     <div v-if="isLoading" class="spinner">
-      <ProgressSpinner/>
+      <ProgressSpinner />
     </div>
     <Login v-else-if="!isLoggedIn" />
     <div v-else>
@@ -141,7 +141,7 @@ onMounted(async () => {
       <TheHeader />
       <main id="main-content" class="h-full flex flex-wrap overflow-hidden">
         <SideMenu />
-        <MainPanel/>
+        <MainPanel />
       </main>
     </div>
   </div>

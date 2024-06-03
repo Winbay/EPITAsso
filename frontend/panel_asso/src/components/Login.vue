@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import Button from 'primevue/button';
+import Button from 'primevue/button'
 
 const handleMicrosoftLogin = () => {
-  const redirectUri = 'http://localhost:5173/';
-  window.location.href = `http://localhost:8000/api/auth/authorize?redirect_uri=${redirectUri}`;
-};
-
+  const redirectUri = 'http://localhost:5173/'
+  window.location.href = `http://localhost:8000/api/auth/authorize?redirect_uri=${redirectUri}`
+}
 </script>
 
 <template>
   <div class="login-container">
     <div class="card flex flex-col justify-center text-center p-6 rounded-lg w-96">
       <h1 class="text-2xl font-bold mb-6">LOG IN</h1>
-      <Button @click="handleMicrosoftLogin" severity="info" text class="mt-6 w-full justify-center" style="font-weight: bold;">
+      <Button
+        @click="handleMicrosoftLogin"
+        severity="info"
+        text
+        class="mt-6 w-full justify-center"
+        style="font-weight: bold"
+      >
         <img src="../assets/microsoft.png" alt="Microsoft Logo" class="w-6 h-6 mr-3" />
         Microsoft
       </Button>
@@ -21,7 +26,6 @@ const handleMicrosoftLogin = () => {
 </template>
 
 <style>
-
 .login-container {
   background-color: #131923;
   display: flex;
