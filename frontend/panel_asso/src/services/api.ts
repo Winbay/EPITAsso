@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL
 const djangoApi = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   },
   withCredentials: true // to include session cookie
 })
@@ -14,7 +14,7 @@ const djangoApi = axios.create({
 // to include csrf token in the header of each request
 djangoApi.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem('accessToken')
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`
     }
@@ -36,13 +36,15 @@ djangoApi.interceptors.response.use(
       const refreshToken = localStorage.getItem('refreshToken')
       if (refreshToken) {
         try {
-          const response = await axios.post(`${API_URL}/api/auth/refresh`, { refresh: refreshToken });
-          const access_token  = response.data.access;
-          localStorage.setItem('accessToken', access_token);
-          localStorage.setItem('refreshToken', response.data.refresh);
-          djangoApi.defaults.headers['Authorization'] = `Bearer ${access_token}`;
-          originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
-          return djangoApi(originalRequest);
+          const response = await axios.post(`${API_URL}/api/auth/refresh`, {
+            refresh: refreshToken
+          })
+          const access_token = response.data.access
+          localStorage.setItem('accessToken', access_token)
+          localStorage.setItem('refreshToken', response.data.refresh)
+          djangoApi.defaults.headers['Authorization'] = `Bearer ${access_token}`
+          originalRequest.headers['Authorization'] = `Bearer ${access_token}`
+          return djangoApi(originalRequest)
         } catch (refreshError) {
           console.error('Error refreshing token:', refreshError)
           const userStore = useUserStore()
