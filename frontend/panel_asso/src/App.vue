@@ -67,10 +67,10 @@ async function checkLoginAndFetchUser(): Promise<void> {
   let refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
 
   if (accessToken && refreshToken) {
-      let userData = await fetchUserDetails()
-      userStore.setUser(userData)
-      isLoggedIn.value = true
-      await router.push('/')
+    let userData = await fetchUserDetails()
+    userStore.setUser(userData)
+    isLoggedIn.value = true
+    await router.push('/')
   } else {
     const queryParams = new URLSearchParams(window.location.search)
     const code = queryParams.get('code')
