@@ -17,7 +17,8 @@ export const useUserStore = defineStore('user', {
   }),
   actions: {
     setUser(user: FetchedUser | null) {
-      userSchema.validate(user)
+      userSchema
+        .validate(user)
         .then((validatedUser) => {
           this.user = validatedUser as FetchedUser
         })
