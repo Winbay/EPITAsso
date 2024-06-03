@@ -89,7 +89,7 @@ class MicrosoftTokenView(APIView):
 
         oauth = OAuth2Session(
             settings.MICROSOFT_CLIENT_ID,
-            redirect_uri=request.POST.get("redirect_uri"),
+            redirect_uri=request.data.get("redirect_uri"),
         )
         try:
             token = oauth.fetch_token(
