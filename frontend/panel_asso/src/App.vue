@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import djangoApi from '@/services/api'
 import TheHeader from '@/components/TheHeader.vue'
 import MainPanel from '@/components/MainPanel.vue'
 import SideMenu from '@/components/SideMenu.vue'
@@ -16,22 +17,15 @@ const router = useRouter()
 const isLoggedIn = ref(false)
 const isLoading = ref(true)
 
-const API_URL = import.meta.env.VITE_API_URL
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
 const ACCESS_TOKEN_KEY = 'accessToken'
 const REFRESH_TOKEN_KEY = 'refreshToken'
 
 async function fetchTokenWithCode(code: string) {
   try {
-    const response = await fetch(`${API_URL}/api/auth/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code, redirect_uri: REDIRECT_URI })
-    })
-    if (response.ok) {
-      return await response.json()
+    const response = await djangoApi.post('/api/auth/token', { code, redirect_uri: REDIRECT_URI })
+    if (response.status === 200) {
+      return response.data
     }
     throw new Error('Failed to fetch token with code')
   } catch (error) {
@@ -40,32 +34,11 @@ async function fetchTokenWithCode(code: string) {
   }
 }
 
-async function refreshAccessToken(refreshToken: string) {
+async function fetchUserDetails(): Promise<FetchedUser | null> {
   try {
-    const response = await fetch(`${API_URL}/api/auth/refresh`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh_token: refreshToken })
-    })
-    if (response.ok) {
-      const data = await response.json()
-      localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token)
-      return data.access_token
-    }
-    throw new Error('Failed to refresh access token')
-  } catch (error) {
-    console.error('Error refreshing access token:', error)
-    return null
-  }
-}
-
-async function fetchUserDetails(accessToken: string): Promise<FetchedUser | null> {
-  try {
-    const response = await fetch(`${API_URL}/api/users/me`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
-    if (response.ok) {
-      return await response.json()
+    const response = await djangoApi.get('/api/users/me')
+    if (response.status === 200) {
+      return response.data
     }
     console.error('Failed to fetch user details:', response.statusText)
     return null
@@ -82,7 +55,7 @@ async function handleTokenFetchAndUserDetails(code: string) {
     if (token_type && access_token && refresh_token) {
       localStorage.setItem(ACCESS_TOKEN_KEY, access_token)
       localStorage.setItem(REFRESH_TOKEN_KEY, refresh_token)
-      const userData = await fetchUserDetails(access_token)
+      const userData = await fetchUserDetails()
       if (userData) {
         userStore.setUser(userData)
         return true
@@ -107,13 +80,7 @@ async function checkLoginAndFetchUser() {
       await router.push('/login')
     }
   } else if (accessToken && refreshToken) {
-    let userData = await fetchUserDetails(accessToken)
-    if (!userData) {
-      const newAccessToken = await refreshAccessToken(refreshToken)
-      if (newAccessToken) {
-        userData = await fetchUserDetails(newAccessToken)
-      }
-    }
+    let userData = await fetchUserDetails()
     if (userData) {
       userStore.setUser(userData)
       isLoggedIn.value = true

@@ -6,7 +6,7 @@ export const useUserStore = defineStore('user', {
     user: null as FetchedUser | null
   }),
   actions: {
-    setUser(user: FetchedUser) {
+    setUser(user: FetchedUser | null) {
       this.user = user
     }
   },
