@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import djangoApi from '@/services/api'
+import djangoApi, { ACCESS_TOKEN_KEY, getTokenExpiry, REDIRECT_URI, REFRESH_TOKEN_KEY } from '@/services/api'
 import TheHeader from '@/components/TheHeader.vue'
 import MainPanel from '@/components/MainPanel.vue'
 import SideMenu from '@/components/SideMenu.vue'
@@ -16,10 +16,6 @@ const userStore = useUserStore()
 const router = useRouter()
 const isLoggedIn = ref(false)
 const isLoading = ref(true)
-
-const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
-const ACCESS_TOKEN_KEY = 'accessToken'
-const REFRESH_TOKEN_KEY = 'refreshToken'
 
 async function fetchTokenWithCode(code: string): Promise<any> {
   try {
@@ -79,13 +75,20 @@ async function checkLoginAndFetchUser(): Promise<void> {
     }
   }
   if (accessToken && refreshToken) {
-    let userData = await fetchUserDetails()
-    if (userData) {
-      userStore.setUser(userData)
-      isLoggedIn.value = true
-      await router.push('/')
-    } else {
+    const refreshTokenExpiry = getTokenExpiry(refreshToken)
+    const now = new Date().getTime()
+    if (refreshTokenExpiry &&  now >= refreshTokenExpiry) {
+      isLoggedIn.value = false
       await router.push('/login')
+    } else {
+      let userData = await fetchUserDetails()
+      if (userData) {
+        userStore.setUser(userData)
+        isLoggedIn.value = true
+        await router.push('/')
+      } else {
+        await router.push('/login')
+      }
     }
   } else {
     await router.push('/login')
