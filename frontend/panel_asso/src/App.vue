@@ -134,7 +134,7 @@ onMounted(async () => {
 <template>
   <div>
     <div v-if="isLoading" class="spinner">
-      <ProgressSpinner/>
+      <ProgressSpinner />
     </div>
     <Login v-else-if="!isLoggedIn" />
     <div v-else>
@@ -142,7 +142,7 @@ onMounted(async () => {
       <TheHeader />
       <main id="main-content" class="h-full flex flex-wrap overflow-hidden">
         <SideMenu />
-        <MainPanel/>
+        <MainPanel />
       </main>
     </div>
   </div>
