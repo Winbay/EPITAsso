@@ -93,7 +93,11 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-main {
+#main-content {
+  height: calc(100% - 40px);
+}
+
+.main {
   height: max-content;
   background-color: #131923;
 }

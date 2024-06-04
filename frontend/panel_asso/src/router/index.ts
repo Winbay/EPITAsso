@@ -8,6 +8,7 @@ import Login from '@/components/Login.vue'
 import MyAssociation from '@/views/MyAssociation.vue'
 import Profile from '@/views/Profile.vue'
 import Messaging from '@/views/Messaging.vue'
+import Equipment from '@/views/Equipment.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,7 +20,8 @@ const router = createRouter({
     // { path: '/mon-association', component: MyAssociation },
     { path: '/login', component: Login },
     { path: '/profile', component: Profile },
-    { path: '/messaging', component: Messaging }
+    { path: '/messaging', component: Messaging },
+    { path: '/equipment', component: Equipment },
   ]
 })
 
