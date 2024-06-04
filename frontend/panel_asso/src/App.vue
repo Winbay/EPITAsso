@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import djangoApi, {
   ACCESS_TOKEN_KEY,
-  getTokenExpiry,
   REDIRECT_URI,
   REFRESH_TOKEN_KEY
 } from '@/services/api'
@@ -62,15 +61,19 @@ async function handleTokenFetch(code: string): Promise<boolean> {
   return false
 }
 
+async function login(): Promise<void>{
+  let userData = await fetchUserDetails()
+  userStore.setUser(userData)
+  isLoggedIn.value = true
+  await router.push(router.currentRoute.value.path)
+}
+
 async function checkLoginAndFetchUser(): Promise<void> {
   let accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
   let refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
 
   if (accessToken && refreshToken) {
-    let userData = await fetchUserDetails()
-    userStore.setUser(userData)
-    isLoggedIn.value = true
-    await router.push(router.currentRoute.value.path)
+    await login()
   } else {
     const queryParams = new URLSearchParams(window.location.search)
     const code = queryParams.get('code')
@@ -78,8 +81,7 @@ async function checkLoginAndFetchUser(): Promise<void> {
     if (code) {
       const success = await handleTokenFetch(code)
       if (success) {
-        isLoggedIn.value = true
-        await router.push(router.currentRoute.value.path)
+        await login()
       }
     }
   }
