@@ -16,6 +16,7 @@ const props = defineProps<{
 
 const user_sender_obj = ref<User | null>(null);
 const association_sender_obj = ref<Association | null>(null);
+const showDate = ref(false)
 
 const isUserMessage = computed(() => {
   return props.message.user_sender === props.user.id;
@@ -43,11 +44,20 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="user_sender_obj && association_sender_obj" class="flex mb-4" :class="{ 'justify-end': isUserMessage, 'justify-start': !isUserMessage }">
-    <div class="flex flex-col flex-start mb-1" :class="{ 'flex-end': isUserMessage, 'flex-start': !isUserMessage }">
-      <div class="flex justify-between w-full px-2">
-        <span class="font-bold mr-2">{{ user_sender_obj.name }} ({{ association_sender_obj.name }})</span>
-        <span class="text-gray-500 text-sm flex items-center justify-center">{{ formatDate(message.sent_date) }}</span>
+  <div
+    v-if="user_sender_obj && association_sender_obj"
+    class="flex mb-4"
+    :class="{ 'justify-end': isUserMessage, 'justify-start': !isUserMessage }"
+  >
+    <div
+      class="flex flex-col flex-start mb-1 relative"
+      :class="{ 'flex-end': isUserMessage, 'flex-start': !isUserMessage }"
+      @mouseover="showDate = true"
+      @mouseleave="showDate = false"
+    >
+      <span v-if="showDate" class="text-gray-500 text-sm absolute px-2" style="bottom: 4.5rem;">{{ formatDate(message.sent_date) }}</span> <!-- Positionnement absolu de la date -->
+      <div class="flex flex-col justify-between w-full px-2">
+        <span class="font-bold mr-2">{{ user_sender_obj.firstName }} {{ user_sender_obj.lastName }} ({{ association_sender_obj.name }})</span>
       </div>
       <div class="message-bubble" :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
         <div class="message-content">

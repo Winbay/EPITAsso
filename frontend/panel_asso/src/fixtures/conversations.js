@@ -12,7 +12,7 @@ export let conversations = [
   {
     id: 2,
     name: 'Conversation 2',
-    associations: [associations[0]],
+    associations: [associations[0], associations[2]],
     messages: [messages[2], messages[3]]
   }
 ]

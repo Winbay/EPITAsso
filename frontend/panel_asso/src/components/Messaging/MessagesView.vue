@@ -6,6 +6,8 @@ import '@/fixtures/messages'
 import djangoApi from '@/services/api'
 import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
 
+import ProgressSpinner from 'primevue/progressspinner';
+
 import Divider from 'primevue/divider';
 import Chip from "primevue/chip";
 import InputText from "primevue/inputtext";
@@ -90,7 +92,9 @@ onBeforeMount(() => {
 
 <template>
   <div class="flex flex-col h-full p-4 rounded-lg shadow-md">
-    <div v-if="isLoading" class="text-center">Loading...</div>
+    <div v-if="isLoading" class="content-center text-center h-full">
+      <ProgressSpinner />
+    </div>
     <div v-else class="flex flex-col h-full">
       <div class="flex-grow">
         <h1 class="text-lg font-semibold">{{ conversation!.name }}</h1>
@@ -117,7 +121,7 @@ onBeforeMount(() => {
 #messagesContainer {
   width: 100%;
   max-height: calc(90vh - 190px);
-  padding: 10px;
+  padding: 25px 10px 10px;
   display: flex;
   overflow-y: auto;
   flex-direction: column-reverse;
