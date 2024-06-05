@@ -2,9 +2,9 @@ import fixture from 'can-fixture'
 
 let faqItems = [
   { id: 1, question: 'Question 1', answer: 'Réponse 1' },
-  { id: 2, question: "Question 2", answer: "Réponse 2" },
-  { id: 3, question: "Question 3", answer: "Réponse 3" },
-  { id: 4, question: "Question 4", answer: "Réponse 4" },
+  { id: 2, question: 'Question 2', answer: 'Réponse 2' },
+  { id: 3, question: 'Question 3', answer: 'Réponse 3' },
+  { id: 4, question: 'Question 4', answer: 'Réponse 4' }
 ]
 
 let images = [

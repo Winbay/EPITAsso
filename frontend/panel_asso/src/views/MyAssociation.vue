@@ -38,7 +38,7 @@ const isEditingDescription = ref(false)
 const showAddSocialNetworkDialog = ref(false)
 
 const isNameEmpty = computed(() => {
-  if (myAssociation.value.name.trim()  === '') {
+  if (myAssociation.value.name.trim() === '') {
     return true
   }
   return false
@@ -133,20 +133,17 @@ async function saveChanges() {
 }
 
 async function loadMyAssociation() {
-  await associationServices.getAssociationById(1, toast)
-    .then((response) => {
-      if (response) {
-        myAssociation.value = response
-      }
-    })
+  await associationServices.getAssociationById(1, toast).then((response) => {
+    if (response) {
+      myAssociation.value = response
+    }
+  })
 }
 
 onMounted(async () => {
   await loadMyAssociation()
 })
-
 </script>
-
 
 <template>
   <Button
@@ -156,14 +153,18 @@ onMounted(async () => {
     style="color: white; z-index: 5"
     size="large"
   />
-  <ScrollPanel class="flex content-center" style="width: 100%; height: calc(100vh - 1.25rem - 20px)">
+  <ScrollPanel
+    class="flex content-center"
+    style="width: 100%; height: calc(100vh - 1.25rem - 20px)"
+  >
     <div class="flex gap-5 mt-5 pl-20 pr-20">
-      <div
-        class="relative"
-        @mouseover="showEditIcon('image')"
-        @mouseleave="showEditIcon(null)"
-      >
-        <Image :src="myAssociation.logo.url" width="250" height="250" title="Logo Association"></Image>
+      <div class="relative" @mouseover="showEditIcon('image')" @mouseleave="showEditIcon(null)">
+        <Image
+          :src="myAssociation.logo.url"
+          width="250"
+          height="250"
+          title="Logo Association"
+        ></Image>
         <i
           v-if="activeEditElement === 'image'"
           class="absolute top-0 right-0 m-2 hover:text-blue-200 cursor-pointer pi pi-pencil"
@@ -186,10 +187,7 @@ onMounted(async () => {
           @mouseleave="showEditIcon(null)"
         >
           <div v-if="isNameEmpty">
-            <Button
-              @click="toggleEditingName"
-              outlined
-            >Ajouter un titre</Button>
+            <Button @click="toggleEditingName" outlined>Ajouter un titre</Button>
           </div>
           <h1 v-else>{{ myAssociation.name }}</h1>
           <i
@@ -216,10 +214,7 @@ onMounted(async () => {
           @mouseleave="showEditIcon(null)"
         >
           <div v-if="isDescriptionEmpty" class="mt-2">
-            <Button
-              @click="toggleEditingDescription"
-              outlined
-            >Ajouter une description</Button>
+            <Button @click="toggleEditingDescription" outlined>Ajouter une description</Button>
           </div>
           <p v-else class="mb-2 whitespace-pre-wrap">{{ myAssociation.description }}</p>
           <i
@@ -297,7 +292,4 @@ onMounted(async () => {
   </ScrollPanel>
 </template>
 
-
-
-<style scoped>
-</style>
+<style scoped></style>

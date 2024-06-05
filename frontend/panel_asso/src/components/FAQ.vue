@@ -18,7 +18,6 @@ const emit = defineEmits<{
   (event: 'delete-question', payload: number): void
 }>()
 
-
 const newQuestion = ref<FAQItem>({ id: -1, question: '', answer: '' })
 const showDialog = ref(false)
 const editingIndex = ref<number | null>(null)
@@ -71,10 +70,7 @@ const cancelNewQuestion = () => {
     </div>
     <div class="card">
       <Accordion :activeIndex="0">
-        <AccordionTab
-          v-for="(question, index) in questions"
-          :key="question.question"
-        >
+        <AccordionTab v-for="(question, index) in questions" :key="question.question">
           <template #header>
             <div class="flex justify-between h-fit w-full items-center">
               <span>{{ question.question }}</span>
@@ -160,7 +156,7 @@ p {
   white-space: pre-wrap;
 }
 
-.p-accordion-content{
+.p-accordion-content {
   background-color: transparent;
 }
 </style>
