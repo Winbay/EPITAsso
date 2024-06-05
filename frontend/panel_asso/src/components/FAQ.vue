@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Accordion from 'primevue/accordion'
+import Divider from 'primevue/divider'
 import AccordionTab from 'primevue/accordiontab'
 import type { FAQItem } from '@/types/associationInterfaces'
+import * as associationServices from '@/services/associationServices'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
 
 const props = defineProps<{
-  questions: FAQItem[]
+  associationId: number
 }>()
 
 const emit = defineEmits<{
@@ -18,6 +23,7 @@ const emit = defineEmits<{
   (event: 'delete-question', payload: number): void
 }>()
 
+const faqItems = ref<FAQItem[]>()
 const newQuestion = ref<FAQItem>({ id: -1, question: '', answer: '' })
 const showDialog = ref(false)
 const editingIndex = ref<number | null>(null)
@@ -28,8 +34,10 @@ const isFormValid = computed(() => {
 
 const addNewQuestion = () => {
   if (editingIndex.value !== null) {
+    faqItems.value![editingIndex.value] = { ...newQuestion.value }
     emit('update-question', { index: editingIndex.value, question: { ...newQuestion.value } })
   } else {
+    faqItems.value!.push({ ...newQuestion.value })
     emit('add-question', { ...newQuestion.value })
   }
   resetNewQuestion()
@@ -37,11 +45,14 @@ const addNewQuestion = () => {
 
 const editQuestion = (index: number) => {
   editingIndex.value = index
-  newQuestion.value = { ...props.questions[index] }
+  if (faqItems.value) {
+    newQuestion.value = { ...faqItems.value[index] }
+  }
   showDialog.value = true
 }
 
 const deleteQuestion = (index: number) => {
+  faqItems.value!.splice(index, 1)
   emit('delete-question', index)
 }
 
@@ -54,6 +65,18 @@ const resetNewQuestion = () => {
 const cancelNewQuestion = () => {
   resetNewQuestion()
 }
+
+async function fetchQuestions() {
+  await associationServices.getFaqByAssociationId(props.associationId, toast).then((response) => {
+    if (response) {
+      faqItems.value = response
+    }
+  })
+}
+
+onMounted(async () => {
+  await fetchQuestions()
+})
 </script>
 
 <template>
@@ -68,9 +91,13 @@ const cancelNewQuestion = () => {
         outlined
       />
     </div>
-    <div class="card">
+    <Divider class="mt-0"></Divider>
+    <div v-if="faqItems?.length === 0" class="p-20 text-center">
+      <h3>Pas encore de questions</h3>
+    </div>
+    <div v-else class="card">
       <Accordion :activeIndex="0">
-        <AccordionTab v-for="(question, index) in questions" :key="question.question">
+        <AccordionTab v-for="(question, index) in faqItems" :key="question.question">
           <template #header>
             <div class="flex justify-between h-fit w-full items-center">
               <span>{{ question.question }}</span>

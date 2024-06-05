@@ -1,6 +1,6 @@
 import fixture from 'can-fixture'
 
-let faqItems = [
+let faq_items = [
   { id: 1, question: 'Question 1', answer: 'Réponse 1' },
   { id: 2, question: 'Question 2', answer: 'Réponse 2' },
   { id: 3, question: 'Question 3', answer: 'Réponse 3' },
@@ -15,7 +15,7 @@ let images = [
   { id: 2, url: 'https://bdekraken.fr/assets/kraken.png' }
 ]
 
-let socialNetworks = [
+let social_networks = [
   {
     id: 1,
     name: 'Instagram',
@@ -35,8 +35,9 @@ let associations = [
     description: 'Ceci est une description.',
     location: 'VJ',
     logo: images[0],
-    socialNetworks: [socialNetworks[0], socialNetworks[1]],
-    faq: [faqItems[0], faqItems[1]]
+    members: [],
+    social_networks: [social_networks[0], social_networks[1]],
+    faq: [faq_items[0], faq_items[1]]
   },
   {
     id: 2,
@@ -45,8 +46,9 @@ let associations = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
     location: 'KB',
     logo: images[1],
-    socialNetworks: [socialNetworks[1]],
-    faq: [faqItems[2], faqItems[3]]
+    members: [],
+    social_networks: [social_networks[0]],
+    faq: [faq_items[2], faq_items[3]]
   }
 ]
 
@@ -88,6 +90,11 @@ fixture('PUT /api/associations/{id}', (request, response) => {
     associations.splice(index, 1, newAsso)
   }
   response(201)
+})
+
+fixture('GET /api/associations/{id}/faq', (request) => {
+  const id = parseInt(request.data.id)
+  return associations.find((asso) => asso.id === id).faq
 })
 
 export default fixture

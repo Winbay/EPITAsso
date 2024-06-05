@@ -1,9 +1,12 @@
+import type { FetchedUser } from '@/types/userInterfaces'
+
 export interface Association {
   id: number
   name: string
   description: string
-  location: 'KB' | 'VJ'
+  location: string
   logo: LogoAsso
+  members: FetchedUser[]
   socialNetworks: SocialNetwork[]
   faq: FAQItem[]
 }
