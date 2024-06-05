@@ -20,12 +20,7 @@ export interface FAQItem {
   answer: string
 }
 
-export interface AssociationCreation {
-  name: string
-  description: string
-  location: 'KB' | 'VJ'
-  logo: LogoAsso['id']
-}
+export interface AssociationCreation extends Omit<Association, 'id' | 'socialNetwork' | 'faq'> {}
 
 export interface LogoAsso {
   id: number
