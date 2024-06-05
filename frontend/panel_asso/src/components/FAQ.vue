@@ -1,79 +1,11 @@
-<template>
-  <div class="faq">
-    <div class="flex justify-between items-center">
-      <h1>FAQ</h1>
-      <Button
-        label="Ajouter une question"
-        icon="pi pi-plus"
-        @click="showDialog = true"
-        class="mb-5"
-      />
-    </div>
-    <div v-if="questions.length !== 0" class="border-2 border-gray-300 rounded-lg p-2 mb-20">
-      <div
-        v-for="(item, index) in questions"
-        :key="index"
-        class="flex justify-between border-b border-gray-300 pb-2 last:border-none"
-      >
-        <div>
-          <h3>{{ item.question }}</h3>
-          <p>{{ item.answer }}</p>
-        </div>
-        <div class="action-buttons flex flex-col">
-          <Button
-            icon="pi pi-pencil"
-            @click="editQuestion(index)"
-            class="mt-2 mr-5"
-            severity="info"
-          />
-          <Button
-            icon="pi pi-trash"
-            @click="deleteQuestion(index)"
-            class="mt-2"
-            severity="danger"
-          />
-        </div>
-      </div>
-    </div>
-    <Dialog v-model:visible="showDialog" header="Nouvelle question" @hide="resetNewQuestion" modal>
-      <div>
-        <InputText
-          v-model="newQuestion.question"
-          placeholder="Nouvelle question"
-          class="w-full mb-3 h-12"
-        />
-        <Textarea
-          v-model="newQuestion.answer"
-          placeholder="Réponse"
-          rows="5"
-          class="w-full min-h-32"
-        />
-        <div class="flex justify-end mt-5">
-          <Button
-            label="Annuler"
-            icon="pi pi-times"
-            @click="cancelNewQuestion"
-            class="p-button-secondary"
-          />
-          <Button
-            label="Poster"
-            icon="pi pi-check"
-            @click="addNewQuestion"
-            :disabled="!isFormValid"
-            class="p-button-success ml-4"
-          />
-        </div>
-      </div>
-    </Dialog>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
+import Accordion from 'primevue/accordion'
+import AccordionTab from 'primevue/accordiontab'
 
 interface FAQItem {
   question: string
@@ -81,8 +13,10 @@ interface FAQItem {
 }
 
 const questions = ref<FAQItem[]>([
-  { question: 'Question 1', answer: 'Réponse 1' }
-  // { question: "Question 2", answer: "Réponse 2" },
+  { question: 'Question 1', answer: 'Réponse 1' },
+  { question: "Question 2", answer: "Réponse 2" },
+  { question: "Question 3", answer: "Réponse 3" },
+  { question: "Question 4", answer: "Réponse 4" },
 ])
 
 const newQuestion = ref({ question: '', answer: '' })
@@ -123,10 +57,86 @@ const cancelNewQuestion = () => {
 }
 </script>
 
-<style scoped>
+<template>
+  <div class="faq">
+    <div class="flex justify-between items-center">
+      <h1>FAQ</h1>
+      <Button
+        label="Ajouter une question"
+        icon="pi pi-plus"
+        @click="showDialog = true"
+        class="mb-5"
+        outlined
+      />
+    </div>
+    <div class="card">
+      <Accordion :activeIndex="0">
+        <AccordionTab
+          v-for="(question, index) in questions"
+          :key="question.question"
+        >
+          <template #header>
+            <div class="flex justify-between h-fit w-full items-center">
+              <span>{{ question.question }}</span>
+              <div>
+                <Button
+                  icon="pi pi-pencil"
+                  @click.stop="editQuestion(index)"
+                  class="ml-2"
+                  severity="info"
+                  text
+                />
+                <Button
+                  icon="pi pi-trash"
+                  @click.stop="deleteQuestion(index)"
+                  class="ml-2"
+                  severity="danger"
+                  text
+                />
+              </div>
+            </div>
+          </template>
+          <p class="m-0">{{ question.answer }}</p>
+        </AccordionTab>
+      </Accordion>
+    </div>
+    <Dialog v-model:visible="showDialog" header="Nouvelle question" @hide="resetNewQuestion" modal>
+      <div>
+        <InputText
+          v-model="newQuestion.question"
+          placeholder="Nouvelle question"
+          class="w-full mb-3 h-12"
+        />
+        <Textarea
+          v-model="newQuestion.answer"
+          placeholder="Réponse"
+          rows="5"
+          class="w-full min-h-32"
+        />
+        <div class="flex justify-end mt-5">
+          <Button
+            label="Annuler"
+            icon="pi pi-times"
+            @click="cancelNewQuestion"
+            class="p-button-secondary"
+          />
+          <Button
+            label="Poster"
+            icon="pi pi-check"
+            @click="addNewQuestion"
+            :disabled="!isFormValid"
+            class="p-button-success ml-4"
+          />
+        </div>
+      </div>
+    </Dialog>
+  </div>
+</template>
+
+<style>
 .faq {
   width: 800px;
-  margin: 20px auto 0;
+  margin: 20px auto;
 }
 
 h1 {
@@ -148,5 +158,9 @@ p {
   font-size: 1rem;
   margin-top: 5px;
   white-space: pre-wrap;
+}
+
+.p-accordion-content{
+  background-color: transparent;
 }
 </style>

@@ -31,19 +31,41 @@ const myAssociation = ref<Association>({
 
 const newSocialNetwork = ref({ id: -1, name: '', link: '' })
 
-const showEditIcon = ref('')
-const isEditingTitle = ref(false)
+const activeEditElement = ref<string | null>(null)
+const isEditingName = ref(false)
 const isEditingDescription = ref(false)
 const showAddSocialNetworkDialog = ref(false)
 
-const toggleEditingTitle = () => {
-  isEditingTitle.value = !isEditingTitle.value
+const isNameEmpty = computed(() => {
+  if (myAssociation.value.name.trim()  === '') {
+    return true
+  }
+  return false
+})
+
+const isDescriptionEmpty = computed(() => {
+  if (myAssociation.value.description.trim() === '') {
+    return true
+  }
+  return false
+})
+
+const showEditIcon = (value: string | null, show: boolean = true) => {
+  if (show) {
+    activeEditElement.value = value
+  } else {
+    activeEditElement.value = null
+  }
+}
+
+const toggleEditingName = () => {
+  isEditingName.value = !isEditingName.value
   isEditingDescription.value = false
 }
 
 const toggleEditingDescription = () => {
   isEditingDescription.value = !isEditingDescription.value
-  isEditingTitle.value = false
+  isEditingName.value = false
 
   if (!isEditingDescription.value) {
     myAssociation.value.description = myAssociation.value.description.trim()
@@ -116,50 +138,55 @@ onMounted(async () => {
 
 <template>
   <Button
-    label="Enregistrer"
     icon="pi pi-save"
     @click="saveChanges"
-    class="p-button-rounded p-button-text p-button-sm absolute top-10 right-0 mt-2 mr-2"
-    style="background-color: #f0f0f0; color: #333; z-index: 5"
+    class="p-button-rounded p-button-text absolute top-10 right-0 mt-5 mr-5"
+    style="color: white; z-index: 5"
+    size="large"
   />
-  <ScrollPanel class="mt-5" style="width: 100%; height: 100%">
-    <div class="association-header">
-      <div class="relative" @mouseover="showEditIcon = 'image'" @mouseleave="showEditIcon = ''">
-        <Image :src="myAssociation.logo.url" width="250" title="Logo Association"></Image>
+  <ScrollPanel class="pt-5 flex content-center" style="width: 100%; height: calc(100vh - 1.25rem - 20px)">
+    <div class="flex gap-5 pl-20 pr-20">
+      <div
+        class="relative"
+        @mouseover="showEditIcon('image')"
+        @mouseleave="showEditIcon(null)"
+      >
+        <Image :src="myAssociation.logo.url" width="250" height="250" title="Logo Association"></Image>
         <i
-          v-if="showEditIcon === 'image'"
+          v-if="activeEditElement === 'image'"
           class="absolute top-0 right-0 m-2 hover:text-blue-200 cursor-pointer pi pi-pencil"
           @click.stop="handleImageClick"
         ></i>
       </div>
-      <div class="flex flex-col ml-5 pr-2">
-        <div v-if="isEditingTitle" class="font-bold text-2xl">
+      <div class="flex flex-col w-full">
+        <div v-if="isEditingName" class="font-bold text-2xl">
           <InputText
             v-model="myAssociation.name"
             autofocus
-            @blur="toggleEditingTitle"
+            @blur="toggleEditingName"
             placeholder="Titre de l'association"
           ></InputText>
         </div>
         <div
           v-else
           class="relative"
-          @mouseover="showEditIcon = 'title'"
-          @mouseleave="showEditIcon = ''"
+          @mouseover="showEditIcon('name', !isNameEmpty)"
+          @mouseleave="showEditIcon(null)"
         >
-          <p v-if="myAssociation.name.trim() === ''">
-            <Button @click="toggleEditingTitle" :style="{ margin: '10px' }"
-              >Ajouter un titre</Button
-            >
+          <p v-if="isNameEmpty">
+            <Button
+              @click="toggleEditingName"
+              outlined
+            >Ajouter un titre</Button>
           </p>
           <p v-else class="mb-2 font-bold text-2xl">{{ myAssociation.name }}</p>
           <i
-            v-if="showEditIcon === 'title'"
+            v-if="activeEditElement === 'name'"
             class="absolute top-0 right-0 m-2 hover:text-blue-200 cursor-pointer pi pi-pencil"
-            @click.stop="toggleEditingTitle"
+            @click.stop="toggleEditingName"
           ></i>
         </div>
-        <div v-if="isEditingDescription" class="association-description">
+        <div v-if="isEditingDescription">
           <Textarea
             v-model="myAssociation.description"
             autofocus
@@ -173,17 +200,18 @@ onMounted(async () => {
         <div
           v-else
           class="association-description relative"
-          @mouseover="showEditIcon = 'description'"
-          @mouseleave="showEditIcon = ''"
+          @mouseover="showEditIcon('description', !isDescriptionEmpty)"
+          @mouseleave="showEditIcon(null)"
         >
-          <p v-if="myAssociation.description.trim() === ''">
-            <Button @click="toggleEditingDescription" :style="{ margin: '10px' }"
-              >Ajouter une description</Button
-            >
+          <p v-if="isDescriptionEmpty">
+            <Button
+              @click="toggleEditingDescription"
+              outlined
+            >Ajouter une description</Button>
           </p>
           <p v-else class="mb-2 whitespace-pre-wrap">{{ myAssociation.description }}</p>
           <i
-            v-if="showEditIcon === 'description'"
+            v-if="activeEditElement === 'description'"
             class="absolute top-0 right-0 m-2 hover:text-blue-200 cursor-pointer pi pi-pencil"
             @click.stop="toggleEditingDescription"
           ></i>
@@ -256,19 +284,4 @@ onMounted(async () => {
 
 
 <style scoped>
-.association-header {
-  width: fit-content;
-  height: fit-content;
-  padding-left: 50px;
-  padding-right: 150px;
-  margin: 0 auto;
-  display: flex;
-}
-
-.association-description {
-  font-size: 1rem;
-  font-weight: normal;
-  width: 800px;
-  min-width: 700px;
-}
 </style>
