@@ -1,5 +1,12 @@
 import fixture from 'can-fixture'
 
+let faqItems = [
+  { id: 1, question: 'Question 1', answer: 'Réponse 1' },
+  { id: 2, question: "Question 2", answer: "Réponse 2" },
+  { id: 3, question: "Question 3", answer: "Réponse 3" },
+  { id: 4, question: "Question 4", answer: "Réponse 4" },
+]
+
 let images = [
   {
     id: 1,
@@ -28,7 +35,8 @@ let associations = [
     description: 'Ceci est une description.',
     location: 'VJ',
     logo: images[0],
-    socialNetworks: [socialNetworks[0], socialNetworks[1]]
+    socialNetworks: [socialNetworks[0], socialNetworks[1]],
+    faq: [faqItems[0], faqItems[1]]
   },
   {
     id: 2,
@@ -37,7 +45,8 @@ let associations = [
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
     location: 'KB',
     logo: images[1],
-    socialNetworks: [socialNetworks[1]]
+    socialNetworks: [socialNetworks[1]],
+    faq: [faqItems[2], faqItems[3]]
   }
 ]
 

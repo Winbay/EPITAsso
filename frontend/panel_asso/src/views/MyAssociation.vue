@@ -10,7 +10,7 @@ import Button from 'primevue/button'
 import ScrollPanel from 'primevue/scrollpanel'
 import FAQ from '@/components/FAQ.vue'
 
-import type { Association } from '@/types/associationInterfaces'
+import type { Association, FAQItem } from '@/types/associationInterfaces'
 import * as associationServices from '@/services/associationServices'
 import { useToast } from 'primevue/usetoast'
 import '@/fixtures/associations'
@@ -26,7 +26,8 @@ const myAssociation = ref<Association>({
     id: -1,
     url: ''
   },
-  socialNetworks: []
+  socialNetworks: [],
+  faq: []
 })
 
 const newSocialNetwork = ref({ id: -1, name: '', link: '' })
@@ -115,6 +116,18 @@ const cancelAddSocialNetwork = () => {
   showAddSocialNetworkDialog.value = false
 }
 
+const handleUpdateQuestion = ({ index, question }: { index: number; question: FAQItem }) => {
+  myAssociation.value.faq[index] = question
+}
+
+const handleAddQuestion = (question: FAQItem) => {
+  myAssociation.value.faq.push(question)
+}
+
+const handleDeleteQuestion = (index: number) => {
+  myAssociation.value.faq.splice(index, 1)
+}
+
 async function saveChanges() {
   await associationServices.updateAssociation(myAssociation.value, toast)
 }
@@ -129,7 +142,6 @@ async function loadMyAssociation() {
 }
 
 onMounted(async () => {
-  console.log('mounted')
   await loadMyAssociation()
 })
 
@@ -144,8 +156,8 @@ onMounted(async () => {
     style="color: white; z-index: 5"
     size="large"
   />
-  <ScrollPanel class="pt-5 flex content-center" style="width: 100%; height: calc(100vh - 1.25rem - 20px)">
-    <div class="flex gap-5 pl-20 pr-20">
+  <ScrollPanel class="flex content-center" style="width: 100%; height: calc(100vh - 1.25rem - 20px)">
+    <div class="flex gap-5 mt-5 pl-20 pr-20">
       <div
         class="relative"
         @mouseover="showEditIcon('image')"
@@ -173,13 +185,13 @@ onMounted(async () => {
           @mouseover="showEditIcon('name', !isNameEmpty)"
           @mouseleave="showEditIcon(null)"
         >
-          <p v-if="isNameEmpty">
+          <div v-if="isNameEmpty">
             <Button
               @click="toggleEditingName"
               outlined
             >Ajouter un titre</Button>
-          </p>
-          <p v-else class="mb-2 font-bold text-2xl">{{ myAssociation.name }}</p>
+          </div>
+          <h1 v-else>{{ myAssociation.name }}</h1>
           <i
             v-if="activeEditElement === 'name'"
             class="absolute top-0 right-0 m-2 hover:text-blue-200 cursor-pointer pi pi-pencil"
@@ -203,12 +215,12 @@ onMounted(async () => {
           @mouseover="showEditIcon('description', !isDescriptionEmpty)"
           @mouseleave="showEditIcon(null)"
         >
-          <p v-if="isDescriptionEmpty">
+          <div v-if="isDescriptionEmpty" class="mt-2">
             <Button
               @click="toggleEditingDescription"
               outlined
             >Ajouter une description</Button>
-          </p>
+          </div>
           <p v-else class="mb-2 whitespace-pre-wrap">{{ myAssociation.description }}</p>
           <i
             v-if="activeEditElement === 'description'"
@@ -228,14 +240,13 @@ onMounted(async () => {
               ></Avatar>
             </a>
           </div>
-          <Avatar
-            image="/images/add-social-network-symbol.png"
-            class="mr-2 cursor-pointer"
-            size="normal"
-            shape="circle"
-            title="Add social network"
+          <Button
+            icon="pi pi-plus"
+            class="w-8 h-8"
+            rounded
             @click="showAddSocialNetworkDialog = true"
-          ></Avatar>
+            outlined
+          ></Button>
           <Dialog
             v-model:visible="showAddSocialNetworkDialog"
             modal
@@ -277,7 +288,12 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <FAQ></FAQ>
+    <FAQ
+      :questions="myAssociation.faq"
+      @update-question="handleUpdateQuestion"
+      @add-question="handleAddQuestion"
+      @delete-question="handleDeleteQuestion"
+    ></FAQ>
   </ScrollPanel>
 </template>
 

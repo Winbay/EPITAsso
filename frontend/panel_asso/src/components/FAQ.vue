@@ -6,20 +6,20 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'
+import type { FAQItem } from '@/types/associationInterfaces'
 
-interface FAQItem {
-  question: string
-  answer: string
-}
+const props = defineProps<{
+  questions: FAQItem[]
+}>()
 
-const questions = ref<FAQItem[]>([
-  { question: 'Question 1', answer: 'Réponse 1' },
-  { question: "Question 2", answer: "Réponse 2" },
-  { question: "Question 3", answer: "Réponse 3" },
-  { question: "Question 4", answer: "Réponse 4" },
-])
+const emit = defineEmits<{
+  (event: 'update-question', payload: { index: number; question: FAQItem }): void
+  (event: 'add-question', payload: FAQItem): void
+  (event: 'delete-question', payload: number): void
+}>()
 
-const newQuestion = ref({ question: '', answer: '' })
+
+const newQuestion = ref<FAQItem>({ id: -1, question: '', answer: '' })
 const showDialog = ref(false)
 const editingIndex = ref<number | null>(null)
 
@@ -29,26 +29,26 @@ const isFormValid = computed(() => {
 
 const addNewQuestion = () => {
   if (editingIndex.value !== null) {
-    questions.value[editingIndex.value] = { ...newQuestion.value }
+    emit('update-question', { index: editingIndex.value, question: { ...newQuestion.value } })
   } else {
-    questions.value.push({ ...newQuestion.value })
+    emit('add-question', { ...newQuestion.value })
   }
   resetNewQuestion()
 }
 
 const editQuestion = (index: number) => {
   editingIndex.value = index
-  newQuestion.value = { ...questions.value[index] }
+  newQuestion.value = { ...props.questions[index] }
   showDialog.value = true
 }
 
 const deleteQuestion = (index: number) => {
-  questions.value.splice(index, 1)
+  emit('delete-question', index)
 }
 
 const resetNewQuestion = () => {
   editingIndex.value = null
-  newQuestion.value = { question: '', answer: '' }
+  newQuestion.value = { id: -1, question: '', answer: '' }
   showDialog.value = false
 }
 
