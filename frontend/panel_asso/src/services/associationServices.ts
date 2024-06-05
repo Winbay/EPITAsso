@@ -7,47 +7,66 @@ import { type ApiResponse, handleApiError } from '@/services/apiErrorHandler'
 interface BackendAssociation {
   id: number
   name: string
-  logo: {id: number, url: string}
+  logo: { id: number; url: string }
   description: string
   location: string
-  members: {id: string, login: string, email: string, firstName: string, lastName: string, school: string}[],
-  social_networks: {id: number, name: string, link: string}[],
-  faq: {id: number, question: string, answer: string}[]
+  members: {
+    id: string
+    login: string
+    email: string
+    firstName: string
+    lastName: string
+    school: string
+  }[]
+  social_networks: { id: number; name: string; link: string }[]
+  faq: { id: number; question: string; answer: string }[]
 }
 
 const backendAssociationSchema = yup.object().shape({
   id: yup.number().required(),
   name: yup.string().required(),
-  logo: yup.object().shape({
-    id: yup.number().required(),
-    url: yup.string().required()
-  }).required(),
+  logo: yup
+    .object()
+    .shape({
+      id: yup.number().required(),
+      url: yup.string().required()
+    })
+    .required(),
   description: yup.string().required(),
   location: yup.string().required(),
-  members: yup.array().of(
-    yup.object().shape({
-      id: yup.string().required(),
-      login: yup.string().required(),
-      email: yup.string().required(),
-      firstName: yup.string().required(),
-      lastName: yup.string().required(),
-      school: yup.string().required()
-    })
-  ).required(),
-  social_networks: yup.array().of(
-    yup.object().shape({
-      id: yup.number().required(),
-      name: yup.string().required(),
-      link: yup.string().required()
-    })
-  ).required(),
-  faq: yup.array().of(
-    yup.object().shape({
-      id: yup.number().required(),
-      question: yup.string().required(),
-      answer: yup.string().required()
-    })
-  ).required()
+  members: yup
+    .array()
+    .of(
+      yup.object().shape({
+        id: yup.string().required(),
+        login: yup.string().required(),
+        email: yup.string().required(),
+        firstName: yup.string().required(),
+        lastName: yup.string().required(),
+        school: yup.string().required()
+      })
+    )
+    .required(),
+  social_networks: yup
+    .array()
+    .of(
+      yup.object().shape({
+        id: yup.number().required(),
+        name: yup.string().required(),
+        link: yup.string().required()
+      })
+    )
+    .required(),
+  faq: yup
+    .array()
+    .of(
+      yup.object().shape({
+        id: yup.number().required(),
+        question: yup.string().required(),
+        answer: yup.string().required()
+      })
+    )
+    .required()
 })
 
 const transformBackendAssociation = (backendAssociation: BackendAssociation): Association => ({
@@ -59,7 +78,7 @@ const transformBackendAssociation = (backendAssociation: BackendAssociation): As
     id: backendAssociation.logo.id,
     url: backendAssociation.logo.url
   },
-  members: backendAssociation.members.map(member => ({
+  members: backendAssociation.members.map((member) => ({
     id: member.id,
     login: member.login,
     email: member.email,
@@ -67,12 +86,12 @@ const transformBackendAssociation = (backendAssociation: BackendAssociation): As
     lastName: member.lastName,
     school: member.school
   })),
-  socialNetworks: backendAssociation.social_networks.map(socialNetwork => ({
+  socialNetworks: backendAssociation.social_networks.map((socialNetwork) => ({
     id: socialNetwork.id,
     name: socialNetwork.name,
     link: socialNetwork.link
   })),
-  faq: backendAssociation.faq.map(faqItem => ({
+  faq: backendAssociation.faq.map((faqItem) => ({
     id: faqItem.id,
     question: faqItem.question,
     answer: faqItem.answer
@@ -82,36 +101,48 @@ const transformBackendAssociation = (backendAssociation: BackendAssociation): As
 const associationSchema = yup.object().shape({
   id: yup.number().required(),
   name: yup.string().required(),
-  logo: yup.object().shape({
-    id: yup.number().required(),
-    url: yup.string().required()
-  }).required(),
+  logo: yup
+    .object()
+    .shape({
+      id: yup.number().required(),
+      url: yup.string().required()
+    })
+    .required(),
   description: yup.string().required(),
   location: yup.string().required(),
-  members: yup.array().of(
-    yup.object().shape({
-      id: yup.string().required(),
-      login: yup.string().required(),
-      email: yup.string().required(),
-      firstName: yup.string().required(),
-      lastName: yup.string().required(),
-      school: yup.string().required()
-    })
-  ).required(),
-  socialNetworks: yup.array().of(
-    yup.object().shape({
-      id: yup.number().required(),
-      name: yup.string().required(),
-      link: yup.string().required()
-    })
-  ).required(),
-  faq: yup.array().of(
-    yup.object().shape({
-      id: yup.number().required(),
-      question: yup.string().required(),
-      answer: yup.string().required()
-    })
-  ).required()
+  members: yup
+    .array()
+    .of(
+      yup.object().shape({
+        id: yup.string().required(),
+        login: yup.string().required(),
+        email: yup.string().required(),
+        firstName: yup.string().required(),
+        lastName: yup.string().required(),
+        school: yup.string().required()
+      })
+    )
+    .required(),
+  socialNetworks: yup
+    .array()
+    .of(
+      yup.object().shape({
+        id: yup.number().required(),
+        name: yup.string().required(),
+        link: yup.string().required()
+      })
+    )
+    .required(),
+  faq: yup
+    .array()
+    .of(
+      yup.object().shape({
+        id: yup.number().required(),
+        question: yup.string().required(),
+        answer: yup.string().required()
+      })
+    )
+    .required()
 })
 
 const transformAssociation = (association: Association): BackendAssociation => ({
@@ -123,7 +154,7 @@ const transformAssociation = (association: Association): BackendAssociation => (
     id: association.logo.id,
     url: association.logo.url
   },
-  members: association.members.map(member => ({
+  members: association.members.map((member) => ({
     id: member.id,
     login: member.login,
     email: member.email,
@@ -131,12 +162,12 @@ const transformAssociation = (association: Association): BackendAssociation => (
     lastName: member.lastName,
     school: member.school
   })),
-  social_networks: association.socialNetworks.map(socialNetwork => ({
+  social_networks: association.socialNetworks.map((socialNetwork) => ({
     id: socialNetwork.id,
     name: socialNetwork.name,
     link: socialNetwork.link
   })),
-  faq: association.faq.map(faqItem => ({
+  faq: association.faq.map((faqItem) => ({
     id: faqItem.id,
     question: faqItem.question,
     answer: faqItem.answer
@@ -146,7 +177,10 @@ const transformAssociation = (association: Association): BackendAssociation => (
 export async function getAssociations(toast: ToastServiceMethods) {
   try {
     const response = await axios.get<BackendAssociation[]>('/api/associations')
-    const validatedAssociations = await yup.array().of(backendAssociationSchema).validate(response.data, { abortEarly: false })
+    const validatedAssociations = await yup
+      .array()
+      .of(backendAssociationSchema)
+      .validate(response.data, { abortEarly: false })
     return validatedAssociations!.map(transformBackendAssociation)
   } catch (error) {
     handleApiError(error, toast, "La liste des associations n'a pas pu être chargée.")
@@ -157,7 +191,9 @@ export async function getAssociations(toast: ToastServiceMethods) {
 export async function getAssociationById(id: number, toast: ToastServiceMethods) {
   try {
     const response = await axios.get<ApiResponse<BackendAssociation>>(`/api/associations/${id}`)
-    const validatedAssociation = await backendAssociationSchema.validate(response.data, { abortEarly: false })
+    const validatedAssociation = await backendAssociationSchema.validate(response.data, {
+      abortEarly: false
+    })
     return transformBackendAssociation(validatedAssociation)
   } catch (error) {
     if (error instanceof yup.ValidationError) {
@@ -180,7 +216,9 @@ export async function getFaqByAssociationId(id: number, toast: ToastServiceMetho
 
 export async function updateAssociation(association: Association, toast: ToastServiceMethods) {
   try {
-    const validatedAssociation = await associationSchema.validate(association, { abortEarly: false })
+    const validatedAssociation = await associationSchema.validate(association, {
+      abortEarly: false
+    })
     const backendAssociation = transformAssociation(validatedAssociation)
     await axios.put<BackendAssociation>(`/api/associations/${association.id}`, backendAssociation)
     toast.add({

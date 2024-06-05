@@ -8,7 +8,7 @@ import InputText from 'primevue/inputtext'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import ScrollPanel from 'primevue/scrollpanel'
-import ProgressSpinner from 'primevue/progressspinner';
+import ProgressSpinner from 'primevue/progressspinner'
 
 import FAQ from '@/components/FAQ.vue'
 
