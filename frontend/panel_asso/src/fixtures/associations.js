@@ -124,7 +124,7 @@ fixture('POST /api/associations/{id}/faq', (request, response) => {
 fixture('PUT /api/associations/{id}/faq/{faq_id}', (request, response) => {
   const id = parseInt(request.data.id)
   const faq_id = parseInt(request.data.faq_id)
-  const newFaqItem  = { id: faq_id, question: request.data.question, answer: request.data.answer }
+  const newFaqItem = { id: faq_id, question: request.data.question, answer: request.data.answer }
   const index = associations.findIndex((asso) => asso.id === id)
   if (index !== -1) {
     const faq_index = associations[index].faq.findIndex((faq) => faq.id === faq_id)
