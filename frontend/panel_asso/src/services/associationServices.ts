@@ -69,10 +69,7 @@ const backendAssociationSchema = yup.object().shape({
       })
     )
     .required(),
-  faq: yup
-    .array()
-    .of(backendFAQItemSchema)
-    .required()
+  faq: yup.array().of(backendFAQItemSchema).required()
 })
 
 const mapBackendFAQItemToFrontend = (backendFAQItem: BackendFAQItem): FAQItem => ({
@@ -147,10 +144,7 @@ const associationSchema = yup.object().shape({
       })
     )
     .required(),
-  faq: yup
-    .array()
-    .of(faqItemSchema)
-    .required()
+  faq: yup.array().of(faqItemSchema).required()
 })
 
 const mapFrontendFAQItemToBackend = (faqItem: FAQItem): BackendFAQItem => ({
@@ -262,7 +256,10 @@ export async function addFaqItem(
   try {
     const validatedFaqItem = await faqItemSchema.validate(faqItem, { abortEarly: false })
     const backendFaqItem = mapFrontendFAQItemToBackend(validatedFaqItem)
-    const response = await axios.post<BackendFAQItem>(`/api/associations/${associationId}/faq`, backendFaqItem)
+    const response = await axios.post<BackendFAQItem>(
+      `/api/associations/${associationId}/faq`,
+      backendFaqItem
+    )
     return mapBackendFAQItemToFrontend(response.data)
   } catch (error) {
     if (error instanceof yup.ValidationError) {
@@ -281,7 +278,10 @@ export async function updateFaqItem(
   try {
     const validatedFaqItem = await faqItemSchema.validate(faqItem, { abortEarly: false })
     const backendFaqItem = mapFrontendFAQItemToBackend(validatedFaqItem)
-    const response = await axios.put<BackendFAQItem>(`/api/associations/${associationId}/faq/${faqItem.id}`, backendFaqItem)
+    const response = await axios.put<BackendFAQItem>(
+      `/api/associations/${associationId}/faq/${faqItem.id}`,
+      backendFaqItem
+    )
     return mapBackendFAQItemToFrontend(response.data)
   } catch (error) {
     if (error instanceof yup.ValidationError) {
