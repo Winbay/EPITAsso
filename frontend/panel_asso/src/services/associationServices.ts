@@ -4,6 +4,12 @@ import type { Association, FAQItem } from '@/types/associationInterfaces'
 import * as yup from 'yup'
 import { type ApiResponse, handleApiError } from '@/services/apiErrorHandler'
 
+interface BackendFAQItem {
+  id: number
+  question: string
+  answer: string
+}
+
 interface BackendAssociation {
   id: number
   name: string
@@ -14,13 +20,19 @@ interface BackendAssociation {
     id: string
     login: string
     email: string
-    firstName: string
-    lastName: string
+    first_name: string
+    last_name: string
     school: string
   }[]
   social_networks: { id: number; name: string; link: string }[]
-  faq: { id: number; question: string; answer: string }[]
+  faq: BackendFAQItem[]
 }
+
+const backendFAQItemSchema = yup.object().shape({
+  id: yup.number().required(),
+  question: yup.string().required(),
+  answer: yup.string().required()
+})
 
 const backendAssociationSchema = yup.object().shape({
   id: yup.number().required(),
@@ -41,8 +53,8 @@ const backendAssociationSchema = yup.object().shape({
         id: yup.string().required(),
         login: yup.string().required(),
         email: yup.string().required(),
-        firstName: yup.string().required(),
-        lastName: yup.string().required(),
+        first_name: yup.string().required(),
+        last_name: yup.string().required(),
         school: yup.string().required()
       })
     )
@@ -59,17 +71,17 @@ const backendAssociationSchema = yup.object().shape({
     .required(),
   faq: yup
     .array()
-    .of(
-      yup.object().shape({
-        id: yup.number().required(),
-        question: yup.string().required(),
-        answer: yup.string().required()
-      })
-    )
+    .of(backendFAQItemSchema)
     .required()
 })
 
-const transformBackendAssociation = (backendAssociation: BackendAssociation): Association => ({
+const mapBackendFAQItemToFrontend = (backendFAQItem: BackendFAQItem): FAQItem => ({
+  id: backendFAQItem.id,
+  question: backendFAQItem.question,
+  answer: backendFAQItem.answer
+})
+
+const mapBackendAssociationToFrontend = (backendAssociation: BackendAssociation): Association => ({
   id: backendAssociation.id,
   name: backendAssociation.name,
   description: backendAssociation.description,
@@ -82,8 +94,8 @@ const transformBackendAssociation = (backendAssociation: BackendAssociation): As
     id: member.id,
     login: member.login,
     email: member.email,
-    firstName: member.firstName,
-    lastName: member.lastName,
+    firstName: member.first_name,
+    lastName: member.last_name,
     school: member.school
   })),
   socialNetworks: backendAssociation.social_networks.map((socialNetwork) => ({
@@ -91,11 +103,13 @@ const transformBackendAssociation = (backendAssociation: BackendAssociation): As
     name: socialNetwork.name,
     link: socialNetwork.link
   })),
-  faq: backendAssociation.faq.map((faqItem) => ({
-    id: faqItem.id,
-    question: faqItem.question,
-    answer: faqItem.answer
-  }))
+  faq: backendAssociation.faq.map(mapBackendFAQItemToFrontend)
+})
+
+const faqItemSchema = yup.object().shape({
+  id: yup.number().required(),
+  question: yup.string().required(),
+  answer: yup.string().required()
 })
 
 const associationSchema = yup.object().shape({
@@ -135,17 +149,17 @@ const associationSchema = yup.object().shape({
     .required(),
   faq: yup
     .array()
-    .of(
-      yup.object().shape({
-        id: yup.number().required(),
-        question: yup.string().required(),
-        answer: yup.string().required()
-      })
-    )
+    .of(faqItemSchema)
     .required()
 })
 
-const transformAssociation = (association: Association): BackendAssociation => ({
+const mapFrontendFAQItemToBackend = (faqItem: FAQItem): BackendFAQItem => ({
+  id: faqItem.id,
+  question: faqItem.question,
+  answer: faqItem.answer
+})
+
+const mapFrontendAssociationToBackend = (association: Association): BackendAssociation => ({
   id: association.id,
   name: association.name,
   description: association.description,
@@ -158,8 +172,8 @@ const transformAssociation = (association: Association): BackendAssociation => (
     id: member.id,
     login: member.login,
     email: member.email,
-    firstName: member.firstName,
-    lastName: member.lastName,
+    first_name: member.firstName,
+    last_name: member.lastName,
     school: member.school
   })),
   social_networks: association.socialNetworks.map((socialNetwork) => ({
@@ -167,11 +181,7 @@ const transformAssociation = (association: Association): BackendAssociation => (
     name: socialNetwork.name,
     link: socialNetwork.link
   })),
-  faq: association.faq.map((faqItem) => ({
-    id: faqItem.id,
-    question: faqItem.question,
-    answer: faqItem.answer
-  }))
+  faq: association.faq.map(mapFrontendFAQItemToBackend)
 })
 
 export async function getAssociations(toast: ToastServiceMethods) {
@@ -181,7 +191,7 @@ export async function getAssociations(toast: ToastServiceMethods) {
       .array()
       .of(backendAssociationSchema)
       .validate(response.data, { abortEarly: false })
-    return validatedAssociations!.map(transformBackendAssociation)
+    return validatedAssociations!.map(mapBackendAssociationToFrontend)
   } catch (error) {
     handleApiError(error, toast, "La liste des associations n'a pas pu être chargée.")
     throw error
@@ -194,7 +204,7 @@ export async function getAssociationById(id: number, toast: ToastServiceMethods)
     const validatedAssociation = await backendAssociationSchema.validate(response.data, {
       abortEarly: false
     })
-    return transformBackendAssociation(validatedAssociation)
+    return mapBackendAssociationToFrontend(validatedAssociation)
   } catch (error) {
     if (error instanceof yup.ValidationError) {
       console.error('Validation error:', error.errors)
@@ -209,7 +219,7 @@ export async function updateAssociation(association: Association, toast: ToastSe
     const validatedAssociation = await associationSchema.validate(association, {
       abortEarly: false
     })
-    const backendAssociation = transformAssociation(validatedAssociation)
+    const backendAssociation = mapFrontendAssociationToBackend(validatedAssociation)
     await axios.put<BackendAssociation>(`/api/associations/${association.id}`, backendAssociation)
     toast.add({
       severity: 'success',
@@ -219,6 +229,9 @@ export async function updateAssociation(association: Association, toast: ToastSe
     })
     return true
   } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      console.error('Validation error:', error.errors)
+    }
     handleApiError(error, toast, "L'association n'a pas pu être mise à jour.")
     throw error
   }
@@ -226,9 +239,16 @@ export async function updateAssociation(association: Association, toast: ToastSe
 
 export async function getFaqByAssociationId(id: number, toast: ToastServiceMethods) {
   try {
-    const response = await axios.get<FAQItem[]>(`/api/associations/${id}/faq`)
-    return response.data
+    const response = await axios.get<BackendFAQItem[]>(`/api/associations/${id}/faq`)
+    const validatedFaq = await yup
+      .array()
+      .of(backendFAQItemSchema)
+      .validate(response.data, { abortEarly: false })
+    return validatedFaq!.map(mapBackendFAQItemToFrontend)
   } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      console.error('Validation error:', error.errors)
+    }
     handleApiError(error, toast, "La FAQ n'a pas pu être chargée.")
     throw error
   }
@@ -240,9 +260,14 @@ export async function addFaqItem(
   toast: ToastServiceMethods
 ) {
   try {
-    const response = await axios.post<FAQItem>(`/api/associations/${associationId}/faq`, faqItem)
-    return response.data
+    const validatedFaqItem = await faqItemSchema.validate(faqItem, { abortEarly: false })
+    const backendFaqItem = mapFrontendFAQItemToBackend(validatedFaqItem)
+    const response = await axios.post<BackendFAQItem>(`/api/associations/${associationId}/faq`, backendFaqItem)
+    return mapBackendFAQItemToFrontend(response.data)
   } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      console.error('Validation error:', error.errors)
+    }
     handleApiError(error, toast, "La question n'a pas pu être ajoutée.")
     throw error
   }
@@ -254,12 +279,14 @@ export async function updateFaqItem(
   toast: ToastServiceMethods
 ) {
   try {
-    const response = await axios.put<FAQItem>(
-      `/api/associations/${associationId}/faq/${faqItem.id}`,
-      faqItem
-    )
-    return response.data
+    const validatedFaqItem = await faqItemSchema.validate(faqItem, { abortEarly: false })
+    const backendFaqItem = mapFrontendFAQItemToBackend(validatedFaqItem)
+    const response = await axios.put<BackendFAQItem>(`/api/associations/${associationId}/faq/${faqItem.id}`, backendFaqItem)
+    return mapBackendFAQItemToFrontend(response.data)
   } catch (error) {
+    if (error instanceof yup.ValidationError) {
+      console.error('Validation error:', error.errors)
+    }
     handleApiError(error, toast, "La question n'a pas pu être mise à jour.")
     throw error
   }
