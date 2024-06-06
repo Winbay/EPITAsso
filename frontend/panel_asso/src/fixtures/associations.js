@@ -113,8 +113,7 @@ fixture('POST /api/associations/{id}/faq', (request, response) => {
     const newFaq = request.data
     if (associations[index].faq.length === 0) {
       newFaq.id = 1
-    }
-    else {
+    } else {
       newFaq.id = associations[index].faq[associations[index].faq.length - 1].id + 1
     }
     associations[index].faq.push(newFaq)
@@ -160,8 +159,7 @@ fixture('POST /api/associations/{id}/members', (request, response) => {
     const newMember = request.data
     if (associations[index].members.length === 0) {
       newMember.id = 1
-    }
-    else {
+    } else {
       newMember.id = associations[index].members[associations[index].members.length - 1].id + 1
     }
     associations[index].members.push(newMember)

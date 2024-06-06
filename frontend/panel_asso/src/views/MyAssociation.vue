@@ -7,7 +7,7 @@ import InputText from 'primevue/inputtext'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import ScrollPanel from 'primevue/scrollpanel'
-import ProgressSpinner from 'primevue/progressspinner';
+import ProgressSpinner from 'primevue/progressspinner'
 import { useToast } from 'primevue/usetoast'
 import FAQ from '@/components/FAQ.vue'
 import type { Association } from '@/types/associationInterfaces'
@@ -41,18 +41,18 @@ const isEditingDescription = ref(false)
 const showAddSocialNetworkDialog = ref(false)
 
 const isNameEmpty = computed(() => {
-  return myAssociation.value.name.trim() === '';
+  return myAssociation.value.name.trim() === ''
 })
 
 const isDescriptionEmpty = computed(() => {
-  return myAssociation.value.description.trim() === '';
+  return myAssociation.value.description.trim() === ''
 })
 
 const isSocialNetworkFormValid = computed(() => {
   return newSocialNetwork.value.name.trim() !== '' && newSocialNetwork.value.link.trim() !== ''
 })
 
-function showEditIcon(value: string | null, show: boolean = true): void{
+function showEditIcon(value: string | null, show: boolean = true): void {
   if (show) {
     activeEditElement.value = value
   } else {
@@ -273,9 +273,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <FAQ
-        :association-id="myAssociation.id"
-      ></FAQ>
+      <FAQ :association-id="myAssociation.id"></FAQ>
     </ScrollPanel>
   </div>
 </template>

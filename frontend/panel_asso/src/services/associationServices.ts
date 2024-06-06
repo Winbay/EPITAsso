@@ -224,7 +224,6 @@ export async function updateAssociation(association: Association, toast: ToastSe
   }
 }
 
-
 export async function getFaqByAssociationId(id: number, toast: ToastServiceMethods) {
   try {
     const response = await axios.get<FAQItem[]>(`/api/associations/${id}/faq`)
@@ -235,7 +234,11 @@ export async function getFaqByAssociationId(id: number, toast: ToastServiceMetho
   }
 }
 
-export async function addFaqItem(associationId: number, faqItem: FAQItem, toast: ToastServiceMethods) {
+export async function addFaqItem(
+  associationId: number,
+  faqItem: FAQItem,
+  toast: ToastServiceMethods
+) {
   try {
     const response = await axios.post<FAQItem>(`/api/associations/${associationId}/faq`, faqItem)
     return response.data
@@ -245,9 +248,16 @@ export async function addFaqItem(associationId: number, faqItem: FAQItem, toast:
   }
 }
 
-export async function updateFaqItem(associationId: number, faqItem: FAQItem, toast: ToastServiceMethods) {
+export async function updateFaqItem(
+  associationId: number,
+  faqItem: FAQItem,
+  toast: ToastServiceMethods
+) {
   try {
-    const response = await axios.put<FAQItem>(`/api/associations/${associationId}/faq/${faqItem.id}`, faqItem)
+    const response = await axios.put<FAQItem>(
+      `/api/associations/${associationId}/faq/${faqItem.id}`,
+      faqItem
+    )
     return response.data
   } catch (error) {
     handleApiError(error, toast, "La question n'a pas pu être mise à jour.")
@@ -255,7 +265,11 @@ export async function updateFaqItem(associationId: number, faqItem: FAQItem, toa
   }
 }
 
-export async function deleteFaqItem(associationId: number, faqItemId: number, toast: ToastServiceMethods) {
+export async function deleteFaqItem(
+  associationId: number,
+  faqItemId: number,
+  toast: ToastServiceMethods
+) {
   try {
     const response = await axios.delete(`/api/associations/${associationId}/faq/${faqItemId}`)
     return response.data

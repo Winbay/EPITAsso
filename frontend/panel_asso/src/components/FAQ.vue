@@ -26,14 +26,22 @@ const isFormValid = computed(() => {
   return newQuestion.value.question.trim() && newQuestion.value.answer.trim()
 })
 
-async function addNewQuestion() : Promise<void>{
+async function addNewQuestion(): Promise<void> {
   if (editingIndex.value !== null) {
-    const response = await associationServices.updateFaqItem(props.associationId, { ...newQuestion.value }, toast)
+    const response = await associationServices.updateFaqItem(
+      props.associationId,
+      { ...newQuestion.value },
+      toast
+    )
     if (response) {
       faqItems.value[editingIndex.value] = { ...response }
     }
   } else {
-    const response = await associationServices.addFaqItem(props.associationId, { ...newQuestion.value }, toast)
+    const response = await associationServices.addFaqItem(
+      props.associationId,
+      { ...newQuestion.value },
+      toast
+    )
     if (response) {
       faqItems.value.push({ ...response })
     }
@@ -41,27 +49,31 @@ async function addNewQuestion() : Promise<void>{
   hideFAQDialog()
 }
 
-function editQuestion(index: number) : void {
+function editQuestion(index: number): void {
   editingIndex.value = index
   newQuestion.value = { ...faqItems.value[index] }
   showDialog.value = true
 }
 
-async function deleteQuestion(index: number) : Promise<void> {
-  const response = await associationServices.deleteFaqItem(props.associationId, faqItems.value[index].id, toast)
+async function deleteQuestion(index: number): Promise<void> {
+  const response = await associationServices.deleteFaqItem(
+    props.associationId,
+    faqItems.value[index].id,
+    toast
+  )
   if (response) {
     const index = faqItems.value.findIndex((item) => item.id === response)
     faqItems.value.splice(index, 1)
   }
 }
 
-function hideFAQDialog() : void {
+function hideFAQDialog(): void {
   editingIndex.value = null
   newQuestion.value = { id: -1, question: '', answer: '' }
   showDialog.value = false
 }
 
-async function fetchQuestions() : Promise<void>{
+async function fetchQuestions(): Promise<void> {
   await associationServices.getFaqByAssociationId(props.associationId, toast).then((response) => {
     if (response) {
       faqItems.value = response
