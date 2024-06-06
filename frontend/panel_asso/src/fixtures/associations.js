@@ -92,9 +92,107 @@ fixture('PUT /api/associations/{id}', (request, response) => {
   response(201)
 })
 
+fixture('DELETE /api/associations/{id}', (request, response) => {
+  let id = parseInt(request.data.id)
+  const index = associations.findIndex((item) => item.id === id)
+  if (index !== -1) {
+    associations.splice(index, 1)
+  }
+  response(204)
+})
+
 fixture('GET /api/associations/{id}/faq', (request) => {
   const id = parseInt(request.data.id)
   return associations.find((asso) => asso.id === id).faq
+})
+
+fixture('POST /api/associations/{id}/faq', (request, response) => {
+  const id = parseInt(request.data.id)
+  const index = associations.findIndex((asso) => asso.id === id)
+  if (index !== -1) {
+    const newFaq = request.data
+    if (associations[index].faq.length === 0) {
+      newFaq.id = 1
+    }
+    else {
+      newFaq.id = associations[index].faq[associations[index].faq.length - 1].id + 1
+    }
+    associations[index].faq.push(newFaq)
+  }
+  response(201, request.data)
+})
+
+fixture('PUT /api/associations/{id}/faq/{faq_id}', (request, response) => {
+  const id = parseInt(request.data.id)
+  const faq_id = parseInt(request.data.faq_id)
+  const index = associations.findIndex((asso) => asso.id === id)
+  if (index !== -1) {
+    const faq_index = associations[index].faq.findIndex((faq) => faq.id === faq_id)
+    if (faq_index !== -1) {
+      associations[index].faq.splice(faq_index, 1, request.data)
+    }
+  }
+  response(201, request.data)
+})
+
+fixture('DELETE /api/associations/{id}/faq/{faq_id}', (request, response) => {
+  const id = parseInt(request.data.id)
+  const faq_id = parseInt(request.data.faq_id)
+  const index = associations.findIndex((asso) => asso.id === id)
+  if (index !== -1) {
+    const faq_index = associations[index].faq.findIndex((faq) => faq.id === faq_id)
+    if (faq_index !== -1) {
+      associations[index].faq.splice(faq_index, 1)
+    }
+  }
+  response(204, faq_id)
+})
+
+fixture('GET /api/associations/{id}/members', (request) => {
+  const id = parseInt(request.data.id)
+  return associations.find((asso) => asso.id === id).members
+})
+
+fixture('POST /api/associations/{id}/members', (request, response) => {
+  const id = parseInt(request.data.id)
+  const index = associations.findIndex((asso) => asso.id === id)
+  if (index !== -1) {
+    const newMember = request.data
+    if (associations[index].members.length === 0) {
+      newMember.id = 1
+    }
+    else {
+      newMember.id = associations[index].members[associations[index].members.length - 1].id + 1
+    }
+    associations[index].members.push(newMember)
+  }
+  response(201, request.data)
+})
+
+fixture('PUT /api/associations/{id}/members/{member_id}', (request, response) => {
+  const id = parseInt(request.data.id)
+  const member_id = parseInt(request.data.member_id)
+  const index = associations.findIndex((asso) => asso.id === id)
+  if (index !== -1) {
+    const member_index = associations[index].members.findIndex((member) => member.id === member_id)
+    if (member_index !== -1) {
+      associations[index].members.splice(member_index, 1, request.data)
+    }
+  }
+  response(201, request.data)
+})
+
+fixture('DELETE /api/associations/{id}/members/{member_id}', (request, response) => {
+  const id = parseInt(request.data.id)
+  const member_id = parseInt(request.data.member_id)
+  const index = associations.findIndex((asso) => asso.id === id)
+  if (index !== -1) {
+    const member_index = associations[index].members.findIndex((member) => member.id === member_id)
+    if (member_index !== -1) {
+      associations[index].members.splice(member_index, 1)
+    }
+  }
+  response(204, member_id)
 })
 
 export default fixture

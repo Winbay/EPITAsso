@@ -204,16 +204,6 @@ export async function getAssociationById(id: number, toast: ToastServiceMethods)
   }
 }
 
-export async function getFaqByAssociationId(id: number, toast: ToastServiceMethods) {
-  try {
-    const response = await axios.get<FAQItem[]>(`/api/associations/${id}/faq`)
-    return response.data
-  } catch (error) {
-    handleApiError(error, toast, "La FAQ n'a pas pu être chargée.")
-    throw error
-  }
-}
-
 export async function updateAssociation(association: Association, toast: ToastServiceMethods) {
   try {
     const validatedAssociation = await associationSchema.validate(association, {
@@ -230,6 +220,47 @@ export async function updateAssociation(association: Association, toast: ToastSe
     return true
   } catch (error) {
     handleApiError(error, toast, "L'association n'a pas pu être mise à jour.")
+    throw error
+  }
+}
+
+
+export async function getFaqByAssociationId(id: number, toast: ToastServiceMethods) {
+  try {
+    const response = await axios.get<FAQItem[]>(`/api/associations/${id}/faq`)
+    return response.data
+  } catch (error) {
+    handleApiError(error, toast, "La FAQ n'a pas pu être chargée.")
+    throw error
+  }
+}
+
+export async function addFaqItem(associationId: number, faqItem: FAQItem, toast: ToastServiceMethods) {
+  try {
+    const response = await axios.post<FAQItem>(`/api/associations/${associationId}/faq`, faqItem)
+    return response.data
+  } catch (error) {
+    handleApiError(error, toast, "La question n'a pas pu être ajoutée.")
+    throw error
+  }
+}
+
+export async function updateFaqItem(associationId: number, faqItem: FAQItem, toast: ToastServiceMethods) {
+  try {
+    const response = await axios.put<FAQItem>(`/api/associations/${associationId}/faq/${faqItem.id}`, faqItem)
+    return response.data
+  } catch (error) {
+    handleApiError(error, toast, "La question n'a pas pu être mise à jour.")
+    throw error
+  }
+}
+
+export async function deleteFaqItem(associationId: number, faqItemId: number, toast: ToastServiceMethods) {
+  try {
+    const response = await axios.delete(`/api/associations/${associationId}/faq/${faqItemId}`)
+    return response.data
+  } catch (error) {
+    handleApiError(error, toast, "La question n'a pas pu être supprimée.")
     throw error
   }
 }

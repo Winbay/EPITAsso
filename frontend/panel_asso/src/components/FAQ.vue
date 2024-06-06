@@ -7,9 +7,9 @@ import Textarea from 'primevue/textarea'
 import Accordion from 'primevue/accordion'
 import Divider from 'primevue/divider'
 import AccordionTab from 'primevue/accordiontab'
+import { useToast } from 'primevue/usetoast'
 import type { FAQItem } from '@/types/associationInterfaces'
 import * as associationServices from '@/services/associationServices'
-import { useToast } from 'primevue/usetoast'
 
 const toast = useToast()
 
@@ -17,13 +17,7 @@ const props = defineProps<{
   associationId: number
 }>()
 
-const emit = defineEmits<{
-  (event: 'update-question', payload: { index: number; question: FAQItem }): void
-  (event: 'add-question', payload: FAQItem): void
-  (event: 'delete-question', payload: number): void
-}>()
-
-const faqItems = ref<FAQItem[]>()
+const faqItems = ref<FAQItem[]>([])
 const newQuestion = ref<FAQItem>({ id: -1, question: '', answer: '' })
 const showDialog = ref(false)
 const editingIndex = ref<number | null>(null)
@@ -32,41 +26,42 @@ const isFormValid = computed(() => {
   return newQuestion.value.question.trim() && newQuestion.value.answer.trim()
 })
 
-const addNewQuestion = () => {
+async function addNewQuestion() : Promise<void>{
   if (editingIndex.value !== null) {
-    faqItems.value![editingIndex.value] = { ...newQuestion.value }
-    emit('update-question', { index: editingIndex.value, question: { ...newQuestion.value } })
+    const response = await associationServices.updateFaqItem(props.associationId, { ...newQuestion.value }, toast)
+    if (response) {
+      faqItems.value[editingIndex.value] = { ...response }
+    }
   } else {
-    faqItems.value!.push({ ...newQuestion.value })
-    emit('add-question', { ...newQuestion.value })
+    const response = await associationServices.addFaqItem(props.associationId, { ...newQuestion.value }, toast)
+    if (response) {
+      faqItems.value.push({ ...response })
+    }
   }
-  resetNewQuestion()
+  hideFAQDialog()
 }
 
-const editQuestion = (index: number) => {
+function editQuestion(index: number) : void {
   editingIndex.value = index
-  if (faqItems.value) {
-    newQuestion.value = { ...faqItems.value[index] }
-  }
+  newQuestion.value = { ...faqItems.value[index] }
   showDialog.value = true
 }
 
-const deleteQuestion = (index: number) => {
-  faqItems.value!.splice(index, 1)
-  emit('delete-question', index)
+async function deleteQuestion(index: number) : Promise<void> {
+  const response = await associationServices.deleteFaqItem(props.associationId, faqItems.value[index].id, toast)
+  if (response) {
+    const index = faqItems.value.findIndex((item) => item.id === response)
+    faqItems.value.splice(index, 1)
+  }
 }
 
-const resetNewQuestion = () => {
+function hideFAQDialog() : void {
   editingIndex.value = null
   newQuestion.value = { id: -1, question: '', answer: '' }
   showDialog.value = false
 }
 
-const cancelNewQuestion = () => {
-  resetNewQuestion()
-}
-
-async function fetchQuestions() {
+async function fetchQuestions() : Promise<void>{
   await associationServices.getFaqByAssociationId(props.associationId, toast).then((response) => {
     if (response) {
       faqItems.value = response
@@ -123,7 +118,7 @@ onMounted(async () => {
         </AccordionTab>
       </Accordion>
     </div>
-    <Dialog v-model:visible="showDialog" header="Nouvelle question" @hide="resetNewQuestion" modal>
+    <Dialog v-model:visible="showDialog" header="Nouvelle question" @hide="hideFAQDialog" modal>
       <div>
         <InputText
           v-model="newQuestion.question"
@@ -140,7 +135,7 @@ onMounted(async () => {
           <Button
             label="Annuler"
             icon="pi pi-times"
-            @click="cancelNewQuestion"
+            @click="hideFAQDialog"
             class="p-button-secondary"
           />
           <Button

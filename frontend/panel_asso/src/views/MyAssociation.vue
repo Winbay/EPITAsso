@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-
 import Image from 'primevue/image'
 import Avatar from 'primevue/avatar'
 import Textarea from 'primevue/textarea'
@@ -8,15 +7,14 @@ import InputText from 'primevue/inputtext'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import ScrollPanel from 'primevue/scrollpanel'
-import ProgressSpinner from 'primevue/progressspinner'
-
-import FAQ from '@/components/FAQ.vue'
-
-import type { Association, FAQItem } from '@/types/associationInterfaces'
-import * as associationServices from '@/services/associationServices'
+import ProgressSpinner from 'primevue/progressspinner';
 import { useToast } from 'primevue/usetoast'
-import '@/fixtures/associations'
+import FAQ from '@/components/FAQ.vue'
+import type { Association } from '@/types/associationInterfaces'
+import * as associationServices from '@/services/associationServices'
 import { getSocialNetworkImage } from '@/utils/associationUtils'
+import '@/fixtures/associations'
+
 const toast = useToast()
 
 const isLoading = ref(true)
@@ -43,20 +41,18 @@ const isEditingDescription = ref(false)
 const showAddSocialNetworkDialog = ref(false)
 
 const isNameEmpty = computed(() => {
-  if (myAssociation.value.name.trim() === '') {
-    return true
-  }
-  return false
+  return myAssociation.value.name.trim() === '';
 })
 
 const isDescriptionEmpty = computed(() => {
-  if (myAssociation.value.description.trim() === '') {
-    return true
-  }
-  return false
+  return myAssociation.value.description.trim() === '';
 })
 
-const showEditIcon = (value: string | null, show: boolean = true) => {
+const isSocialNetworkFormValid = computed(() => {
+  return newSocialNetwork.value.name.trim() !== '' && newSocialNetwork.value.link.trim() !== ''
+})
+
+function showEditIcon(value: string | null, show: boolean = true): void{
   if (show) {
     activeEditElement.value = value
   } else {
@@ -64,12 +60,12 @@ const showEditIcon = (value: string | null, show: boolean = true) => {
   }
 }
 
-const toggleEditingName = () => {
+function toggleEditingName(): void {
   isEditingName.value = !isEditingName.value
   isEditingDescription.value = false
 }
 
-const toggleEditingDescription = () => {
+function toggleEditingDescription(): void {
   isEditingDescription.value = !isEditingDescription.value
   isEditingName.value = false
 
@@ -78,7 +74,7 @@ const toggleEditingDescription = () => {
   }
 }
 
-const handleImageClick = () => {
+function handleImageClick(): void {
   const input = document.createElement('input')
   input.type = 'file'
   input.accept = 'image/*'
@@ -86,7 +82,7 @@ const handleImageClick = () => {
   input.click()
 }
 
-const handleImageChange = (event: Event) => {
+function handleImageChange(event: Event): void {
   const input = event.target as HTMLInputElement
   if (!input || !input.files || input.files.length === 0) {
     return
@@ -105,43 +101,27 @@ const handleImageChange = (event: Event) => {
   }
 }
 
-const isSocialNetworkFormValid = computed(() => {
-  return newSocialNetwork.value.name.trim() !== '' && newSocialNetwork.value.link.trim() !== ''
-})
-
-const addSocialNetwork = () => {
+function addSocialNetwork(): void {
   if (isSocialNetworkFormValid.value) {
     myAssociation.value.socialNetworks.push({ ...newSocialNetwork.value })
     cancelAddSocialNetwork()
   }
 }
 
-const cancelAddSocialNetwork = () => {
+function cancelAddSocialNetwork(): void {
   newSocialNetwork.value = { id: -1, name: '', link: '' }
   showAddSocialNetworkDialog.value = false
 }
 
-const handleUpdateQuestion = ({ index, question }: { index: number; question: FAQItem }) => {
-  myAssociation.value.faq[index] = question
-}
-
-const handleAddQuestion = (question: FAQItem) => {
-  myAssociation.value.faq.push(question)
-}
-
-const handleDeleteQuestion = (index: number) => {
-  myAssociation.value.faq.splice(index, 1)
-}
-
-async function saveChanges() {
+async function saveChanges(): Promise<void> {
   await associationServices.updateAssociation(myAssociation.value, toast)
 }
 
-async function loadMyAssociation() {
+async function loadMyAssociation(): Promise<void> {
   await associationServices.getAssociationById(1, toast).then((response) => {
     if (response) {
-      myAssociation.value = response
       isLoading.value = false
+      myAssociation.value = response
     }
   })
 }
@@ -295,9 +275,6 @@ onMounted(async () => {
       </div>
       <FAQ
         :association-id="myAssociation.id"
-        @update-question="handleUpdateQuestion"
-        @add-question="handleAddQuestion"
-        @delete-question="handleDeleteQuestion"
       ></FAQ>
     </ScrollPanel>
   </div>
