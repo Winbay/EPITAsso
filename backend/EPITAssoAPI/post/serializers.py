@@ -27,13 +27,13 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.author.login
 
     def create(self, validated_data):
-        tags_data = validated_data.pop('tags', [])
+        tags_data = validated_data.pop("tags", [])
         post = Post.objects.create(**validated_data)
         post.tags.set(self._get_tag_instances(tags_data))
         return post
 
     def update(self, instance, validated_data):
-        tags_data = validated_data.pop('tags', [])
+        tags_data = validated_data.pop("tags", [])
 
         for attr, value in validated_data.items():
             if attr in self.get_fields():
@@ -46,7 +46,7 @@ class PostSerializer(serializers.ModelSerializer):
             instance.tags.clear()
 
         return instance
-    
+
     def _get_tag_instances(self, tags_data):
-        tag_names = [tag['name'] for tag in tags_data if 'name' in tag]
+        tag_names = [tag["name"] for tag in tags_data if "name" in tag]
         return Tag.objects.filter(name__in=tag_names)

@@ -6,27 +6,57 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0001_initial'),
+        ("association", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Equipment',
+            name="Equipment",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('borrowing_date', models.DateField()),
-                ('due_date', models.DateField()),
-                ('quantity', models.IntegerField(default=1)),
-                ('borrower', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='borrowed_equipment', to='association.association')),
-                ('borrower_resp', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='borrowed_equipment', to=settings.AUTH_USER_MODEL)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='owned_equipment', to='association.association')),
-                ('owner_resp', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='owned_equipment', to=settings.AUTH_USER_MODEL)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("borrowing_date", models.DateField()),
+                ("due_date", models.DateField()),
+                ("quantity", models.IntegerField(default=1)),
+                (
+                    "borrower",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="borrowed_equipment",
+                        to="association.association",
+                    ),
+                ),
+                (
+                    "borrower_resp",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="borrowed_equipment",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="owned_equipment",
+                        to="association.association",
+                    ),
+                ),
+                (
+                    "owner_resp",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="owned_equipment",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

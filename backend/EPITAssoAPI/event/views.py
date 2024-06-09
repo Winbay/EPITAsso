@@ -4,6 +4,7 @@ from .models import Event, Tag
 from .serializers import EventSerializer, TagSerializer
 from user.permissions import IsCustomAdmin
 
+
 class TagListView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
@@ -34,6 +35,7 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
+
 class EventListView(generics.ListCreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
@@ -45,9 +47,10 @@ class EventListView(generics.ListCreateAPIView):
     @extend_schema(summary="Create an Event")
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
-    
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
 
 class EventDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()

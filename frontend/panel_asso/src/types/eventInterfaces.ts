@@ -1,4 +1,4 @@
-import type { EventTag } from "./tagInterfaces"
+import type { EventTag } from './tagInterfaces'
 
 export interface Event {
   id: number
@@ -20,13 +20,6 @@ export interface Event {
   // tasks: undefined[]
 }
 
-export interface EventCreation extends
-  Omit<
-    Event,
-    | 'id'
-    | 'author'
-  > {
-}
+export interface EventCreation extends Omit<Event, 'id' | 'author'> {}
 
-export interface EventModification extends Event {
-}
+export interface EventModification extends Event {}

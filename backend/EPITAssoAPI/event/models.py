@@ -26,6 +26,7 @@ class EventSheet(models.Model):
     def str(self):
         return f"{self.name} on {self.date}"
 
+
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -45,7 +46,10 @@ class EventTaskList(models.Model):
 class Event(models.Model):
     id = models.BigAutoField(primary_key=True)
     author = models.ForeignKey(
-        "user.User", on_delete=models.SET_NULL, null=True, related_name="events_authored"
+        "user.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="events_authored",
     )
     name = models.CharField(max_length=255)
     content = models.TextField()
@@ -63,7 +67,9 @@ class Event(models.Model):
     )
     places_number = models.IntegerField(default=0)
     notes = models.TextField(blank=True, null=True)
-    staff_members = models.ManyToManyField("user.User", related_name="events_staff", blank=True)
+    staff_members = models.ManyToManyField(
+        "user.User", related_name="events_staff", blank=True
+    )
     other_associations = models.ManyToManyField(
         "association.Association", related_name="related_events", blank=True
     )

@@ -1,10 +1,12 @@
 from django.contrib import admin
 from .models import Association, AssociateUserAndAssociation
 
+
 @admin.register(AssociateUserAndAssociation)
 class AssociateUserAndAssociationAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "association", "role")
     search_fields = ("user", "association", "role")
+
 
 @admin.register(Association)
 class AssociationAdmin(admin.ModelAdmin):

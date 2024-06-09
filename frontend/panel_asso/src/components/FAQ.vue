@@ -28,7 +28,7 @@ const isFormValid = computed(() => {
   return newFaqItemRef.value.question.trim() && newFaqItemRef.value.answer.trim()
 })
 
-const addNewQuestion = async (): Promise<void> =>{
+const addNewQuestion = async (): Promise<void> => {
   if (editingIndex.value !== null) {
     await faqService.updateFaq(newFaqItemRef.value)
   } else {

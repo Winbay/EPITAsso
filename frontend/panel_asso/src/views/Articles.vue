@@ -35,7 +35,7 @@ const confirmDelete = (event: Event, articleId: number) => {
     acceptLabel: 'Supprimer',
     accept: async () => {
       await deleteArticle(articleId)
-    },
+    }
   })
 }
 
@@ -46,13 +46,13 @@ const closeDialog = () => {
 
 const loadTags = async () => {
   tagsRef.value = await tagService.getTags()
-};
+}
 
 const reloadArticles = async () => {
   articlesRef.value = await postService.getPosts()
-};
+}
 
-const deleteArticle = async (articleId: number) =>{
+const deleteArticle = async (articleId: number) => {
   await postService.deletePost(articleId)
   await reloadArticles()
 }
@@ -68,31 +68,64 @@ onMounted(async () => {
     <div class="articles-list-header h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Articles</span>
       <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="visibleDialogRef = true" />
-      <DialogArticle v-model:visible="visibleDialogRef" :set-hidden="closeDialog" :reload-articles="reloadArticles"
-        :tags="tagsRef" />
+      <DialogArticle
+        v-model:visible="visibleDialogRef"
+        :set-hidden="closeDialog"
+        :reload-articles="reloadArticles"
+        :tags="tagsRef"
+      />
     </div>
-    <DataTable :value="articlesRef" show-gridlines striped-rows tableStyle="min-width: 50rem" size="small" paginator
-      :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" removableSort>
+    <DataTable
+      :value="articlesRef"
+      show-gridlines
+      striped-rows
+      tableStyle="min-width: 50rem"
+      size="small"
+      paginator
+      :rows="5"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      removableSort
+    >
       <Column field="title" header="Titre" sortable></Column>
       <Column field="author" header="Auteur" sortable></Column>
       <Column header="Tags" class="max-w-60">
         <template #body="slotProps">
-          <Tag v-for="(tag, index) in slotProps.data.tags" :key="index" :value="tag.name" :style="{
-            backgroundColor: tag.backgroundColor ?? 'var(--primary-color)',
-            color: tag.textColor ?? ''
-          }" severity="primary" class="mx-1 my-0.5" />
+          <Tag
+            v-for="(tag, index) in slotProps.data.tags"
+            :key="index"
+            :value="tag.name"
+            :style="{
+              backgroundColor: tag.backgroundColor ?? 'var(--primary-color)',
+              color: tag.textColor ?? ''
+            }"
+            severity="primary"
+            class="mx-1 my-0.5"
+          />
         </template>
       </Column>
       <Column header="Actions">
         <template #body="slotProps">
           <div class="flex flex-col">
-            <a href="javascript:void(0)" class="hover:underline"
-              @click="selectedArticleRef = slotProps.data.id">Editer</a>
-            <DialogArticle :visible="selectedArticleRef === slotProps.data.id" :set-hidden="closeDialog"
-              :reload-articles="reloadArticles" :tags="tagsRef" :article="JSON.parse(JSON.stringify(slotProps.data))" />
+            <a
+              href="javascript:void(0)"
+              class="hover:underline"
+              @click="selectedArticleRef = slotProps.data.id"
+              >Editer</a
+            >
+            <DialogArticle
+              :visible="selectedArticleRef === slotProps.data.id"
+              :set-hidden="closeDialog"
+              :reload-articles="reloadArticles"
+              :tags="tagsRef"
+              :article="JSON.parse(JSON.stringify(slotProps.data))"
+            />
             <ConfirmPopup></ConfirmPopup>
-            <a href="javascript:void(0)" @click="confirmDelete($event, slotProps.data.id)"
-              class="hover:underline">Supprimer</a>
+            <a
+              href="javascript:void(0)"
+              @click="confirmDelete($event, slotProps.data.id)"
+              class="hover:underline"
+              >Supprimer</a
+            >
           </div>
         </template>
       </Column>

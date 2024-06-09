@@ -5,8 +5,6 @@ export interface Tag {
   textColor: string | null
 }
 
-export interface EventTag extends Tag {
-}
+export interface EventTag extends Tag {}
 
-export interface ArticleTag extends Tag {
-}
+export interface ArticleTag extends Tag {}

@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
-import InputNumber from 'primevue/inputnumber';
-import Editor from 'primevue/editor';
-import Button from 'primevue/button';
-import MultiSelect from 'primevue/multiselect';
-import Dialog from 'primevue/dialog';
-import Checkbox from 'primevue/checkbox';
-import Calendar from 'primevue/calendar';
-import FloatLabel from 'primevue/floatlabel';
+import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import Editor from 'primevue/editor'
+import Button from 'primevue/button'
+import MultiSelect from 'primevue/multiselect'
+import Dialog from 'primevue/dialog'
+import Checkbox from 'primevue/checkbox'
+import Calendar from 'primevue/calendar'
+import FloatLabel from 'primevue/floatlabel'
 
-import { ref, onMounted, defineProps, type PropType } from 'vue';
-import type { EventTag } from '@/types/tagInterfaces';
-import type { EventCreation, EventModification } from '@/types/eventInterfaces';
-import { useToast } from 'primevue/usetoast';
-import EventService from '@/services/event/event';
+import { ref, onMounted, defineProps, type PropType } from 'vue'
+import type { EventTag } from '@/types/tagInterfaces'
+import type { EventCreation, EventModification } from '@/types/eventInterfaces'
+import { useToast } from 'primevue/usetoast'
+import EventService from '@/services/event/event'
 
 const props = defineProps({
   setHidden: {
@@ -32,10 +32,10 @@ const props = defineProps({
     type: Object as PropType<EventModification | null>,
     default: null
   }
-});
+})
 
-const toast = useToast();
-const eventService: EventService = new EventService(toast);
+const toast = useToast()
+const eventService: EventService = new EventService(toast)
 
 const getDefaultEvent = (): EventCreation | EventModification => ({
   name: '',
@@ -45,17 +45,17 @@ const getDefaultEvent = (): EventCreation | EventModification => ({
   endDate: new Date(),
   recurrent: false,
   frequency: 0,
-  endRecurrence: new Date(),
-});
+  endRecurrence: new Date()
+})
 
 const currEventRef = ref<EventCreation | EventModification>({
-  ...(getDefaultEvent()),
+  ...getDefaultEvent(),
   ...(props.event || {}) // Spread existing event if it's passed
-});
+})
 
-const startDate = ref(currEventRef.value.startDate);
-const endDate = ref(currEventRef.value.endDate);
-const endRecurrence = ref(currEventRef.value.endRecurrence);
+const startDate = ref(currEventRef.value.startDate)
+const endDate = ref(currEventRef.value.endDate)
+const endRecurrence = ref(currEventRef.value.endRecurrence)
 
 const editOrCreate = async (): Promise<void> => {
   if (props.event) {
@@ -63,9 +63,9 @@ const editOrCreate = async (): Promise<void> => {
   } else {
     await eventService.createEvent(currEventRef.value)
   }
-  await props.reloadEvents();
-  props.setHidden();
-};
+  await props.reloadEvents()
+  props.setHidden()
+}
 
 const cancelDialog = () => {
   if (props.event) {
@@ -73,18 +73,18 @@ const cancelDialog = () => {
   } else {
     currEventRef.value = getDefaultEvent()
   }
-  startDate.value = new Date(currEventRef.value.startDate);
-  endDate.value = new Date(currEventRef.value.endDate);
-  endRecurrence.value = new Date(currEventRef.value.endRecurrence);
-  props.setHidden();
-};
+  startDate.value = new Date(currEventRef.value.startDate)
+  endDate.value = new Date(currEventRef.value.endDate)
+  endRecurrence.value = new Date(currEventRef.value.endRecurrence)
+  props.setHidden()
+}
 
 onMounted(() => {
   if (props.event) {
     currEventRef.value = props.event
-    startDate.value = new Date(props.event.startDate);
-    endDate.value = new Date(props.event.endDate);
-    endRecurrence.value = new Date(props.event.endRecurrence);
+    startDate.value = new Date(props.event.startDate)
+    endDate.value = new Date(props.event.endDate)
+    endRecurrence.value = new Date(props.event.endRecurrence)
   }
 })
 </script>
@@ -137,11 +137,11 @@ onMounted(() => {
         <Calendar v-model="endDate" showTime hourFormat="24" dateFormat="dd/mm/yy" class="w-1/3" />
       </div>
       <div class="mb-8 flex justify-start items-center">
-        <Checkbox 
-          v-model="currEventRef.recurrent" 
-          :binary="true" 
-          class="mr-4" 
-          input-id="recurrent" 
+        <Checkbox
+          v-model="currEventRef.recurrent"
+          :binary="true"
+          class="mr-4"
+          input-id="recurrent"
         />
         <label for="recurrent" class="text-lg text-wrap">Évènement récurrent</label>
       </div>
@@ -172,12 +172,7 @@ onMounted(() => {
         </FloatLabel>
       </div>
       <div class="flex justify-start items-center">
-        <Button 
-          label="Annuler" 
-          severity="secondary" 
-          class="w-1/4 mr-4" 
-          @click="cancelDialog" 
-        />
+        <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />
         <Button
           :label="props.event ? 'Sauvegarder' : 'Créer'"
           severity="success"

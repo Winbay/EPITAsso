@@ -37,38 +37,38 @@ const confirmDelete = (event: Event, eventId: number) => {
     accept: async () => {
       await deleteEvent(eventId)
     }
-  });
-};
+  })
+}
 
 const closeDialog = () => {
-  visibleDialogRef.value = false;
-  selectedEventRef.value = null;
-};
+  visibleDialogRef.value = false
+  selectedEventRef.value = null
+}
 
 const loadTags = async () => {
   tagsRef.value = await tagService.getTags()
-};
+}
 
 const reloadEvents = async () => {
   eventsRef.value = await eventService.getEvents()
-};
+}
 
 const deleteEvent = async (eventId: number) => {
-  await eventService.deleteEvent(eventId);
-  await reloadEvents();
-};
+  await eventService.deleteEvent(eventId)
+  await reloadEvents()
+}
 
 onMounted(async () => {
-  await loadTags();
-  await reloadEvents();
-});
+  await loadTags()
+  await reloadEvents()
+})
 
 const formatDate = (date: Date): string => {
-  if (!date) return '';
-  const d = new Date(date);
-  const pad = (num: number) => num.toString().padStart(2, '0');
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-};
+  if (!date) return ''
+  const d = new Date(date)
+  const pad = (num: number) => num.toString().padStart(2, '0')
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
 </script>
 
 <template>
@@ -98,10 +98,17 @@ const formatDate = (date: Date): string => {
       <Column field="author" header="Auteur" sortable></Column>
       <Column header="Tags" class="max-w-60">
         <template #body="slotProps">
-          <Tag v-for="(tag, index) in slotProps.data.tags" :key="index" :value="tag.name" :style="{
-            backgroundColor: tag.backgroundColor ?? 'var(--primary-color)',
-            color: tag.textColor ?? ''
-          }" severity="primary" class="mx-1 my-0.5" />
+          <Tag
+            v-for="(tag, index) in slotProps.data.tags"
+            :key="index"
+            :value="tag.name"
+            :style="{
+              backgroundColor: tag.backgroundColor ?? 'var(--primary-color)',
+              color: tag.textColor ?? ''
+            }"
+            severity="primary"
+            class="mx-1 my-0.5"
+          />
         </template>
       </Column>
       <Column field="startDate" header="Date de l'évènement" class="max-w-48" sortable>

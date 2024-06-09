@@ -13,8 +13,6 @@ export interface Post {
   // updatedAt: Date
 }
 
-export interface ArticleCreation extends Omit<Post, 'id' | 'author'>{
-}
+export interface ArticleCreation extends Omit<Post, 'id' | 'author'> {}
 
-export interface ArticleModification extends Post{
-}
+export interface ArticleModification extends Post {}

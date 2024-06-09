@@ -60,7 +60,9 @@ const isDescriptionEmpty = computed(() => {
 })
 
 const isSocialNetworkFormValid = computed(() => {
-  return newSocialNetworkRef.value.name.trim() !== '' && newSocialNetworkRef.value.link.trim() !== ''
+  return (
+    newSocialNetworkRef.value.name.trim() !== '' && newSocialNetworkRef.value.link.trim() !== ''
+  )
 })
 
 const showEditIcon = (value: string | null, show: boolean = true): void => {

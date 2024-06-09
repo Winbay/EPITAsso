@@ -6,29 +6,40 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Association',
+            name="Association",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('content', models.TextField()),
-                ('location', models.CharField(max_length=255)),
-                ('logo', models.TextField(null=True, blank=True)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("content", models.TextField()),
+                ("location", models.CharField(max_length=255)),
+                ("logo", models.TextField(null=True, blank=True)),
             ],
         ),
         migrations.CreateModel(
-            name='AssociateUserAndAssociation',
+            name="AssociateUserAndAssociation",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('role', models.CharField(max_length=255)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('association', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='association.association')),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("role", models.CharField(max_length=255)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "association",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
     ]
