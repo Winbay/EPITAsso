@@ -81,6 +81,11 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
     await this.delete(id)
   }
 
+  async downloadEventPdf(id: Event['id']): Promise<string> {
+    // Not implemented
+    return "test"
+  }
+
   protected converterSchemaToInterface(event: yup.InferType<typeof eventSchema>): Event {
     return {
       id: event.id,

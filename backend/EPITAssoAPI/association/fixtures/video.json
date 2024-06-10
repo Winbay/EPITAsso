@@ -1,0 +1,22 @@
+[
+{
+  "model": "association.association",
+  "pk": 1,
+  "fields": {
+    "name": "BDE",
+    "content": "a",
+    "logo": null,
+    "location": "ici"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 2,
+  "fields": {
+    "name": "VJN",
+    "content": "a",
+    "logo": "",
+    "location": "par la bas"
+  }
+}
+]

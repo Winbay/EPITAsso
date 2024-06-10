@@ -4,6 +4,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import ConfirmPopup from 'primevue/confirmpopup'
+import Tooltip from 'primevue/tooltip'
 
 import { ref, onMounted } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
@@ -58,6 +59,28 @@ const deleteEvent = async (eventId: number) => {
   await reloadEvents()
 }
 
+const downloadPdf = async (eventId: number) => {
+  try {
+    const data = await eventService.downloadEventPdf(eventId);
+    const blob = new Blob([data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `fiche-event-${eventId}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Erreur de téléchargement',
+      detail: 'Impossible de télécharger le PDF',
+      life: 5000
+    });
+  }
+};
+
 onMounted(async () => {
   await loadTags()
   await reloadEvents()
@@ -90,8 +113,8 @@ const formatDate = (date: Date): string => {
       tableStyle="min-width: 50rem"
       size="small"
       paginator
-      :rows="5"
-      :rowsPerPageOptions="[5, 10, 20, 50]"
+      :rows="10"
+      :rowsPerPageOptions="[10, 20, 50]"
       removableSort
     >
       <Column field="name" header="Titre" sortable></Column>
@@ -118,13 +141,12 @@ const formatDate = (date: Date): string => {
       </Column>
       <Column header="Actions">
         <template #body="slotProps">
-          <div class="flex flex-col">
-            <a
-              href="javascript:void(0)"
-              class="hover:underline"
+          <div class="actions">
+            <Button
+              icon="pi pi-pen-to-square"
               @click="visibleDialogRef = slotProps.data.id"
-              >Editer</a
-            >
+              v-tooltip="'Editer l\'évènement'"
+            />
             <DialogEvent
               :visible="visibleDialogRef === slotProps.data.id"
               :set-hidden="closeDialog"
@@ -133,12 +155,16 @@ const formatDate = (date: Date): string => {
               :event="JSON.parse(JSON.stringify(slotProps.data))"
             />
             <ConfirmPopup></ConfirmPopup>
-            <a
-              href="javascript:void(0)"
+            <Button
+              icon="pi pi-trash"
               @click="confirmDelete($event, slotProps.data.id)"
-              class="hover:underline"
-              >Supprimer</a
-            >
+              v-tooltip="'Supprimer l\'évènement'"
+            />
+            <Button
+              icon="pi pi-download"
+              @click="downloadPdf(slotProps.data.id)"
+              v-tooltip="'Télécharger la fiche évent'"
+            />
           </div>
         </template>
       </Column>
@@ -161,5 +187,10 @@ const formatDate = (date: Date): string => {
 
 .events-list .p-paginator-rpp-options span.p-dropdown-label {
   align-content: center;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
 }
 </style>
