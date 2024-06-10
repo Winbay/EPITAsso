@@ -1,10 +1,9 @@
 import fixture from 'can-fixture'
 
 const assos = [
-    {id: 1, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"},
-    {id: 2, name: "Kraken", logo: "https://cdn.helloasso.com/img/logos/croppedimage-ee3265134a9e40a1bfb002d341feee5c.png", description: "", location: "KB"},
-    {id: 3, name: "Cristal", logo: "https://www.cristal.je/wp-content/uploads/2021/03/cropped-logo-colored-short-512.png",
-        description: "", location: "KB"}
+    {id: 1, name: "BDE", logo: "/images/kraken.png", description: "", location: "KB"},
+    {id: 2, name: "VJN", logo: "/images/vjn.png", description: "", location: "KB"},
+    {id: 3, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"},
 ]
 
 const users = [
@@ -21,35 +20,43 @@ const users = [
 ]
 
 let equipmentRequests = [
-    {id: 1, equipmentId: 2, equipmentName: 'Machine à café', userRespoOwner: users[0], assoBorrower: assos[1],
+    {id: 1, equipmentId: 2, equipmentName: 'Enceinte', userRespoOwner: users[0], assoBorrower: assos[1],
         userRespoBorrower: users[2], borrowingDate: 1717236000, dueDate: 1717840800, status: 'accepted',
         comment: 'C\'est bon pour nous, n\'oubliez pas de la nettoyer avant de la rendre.'},
     {id: 2, equipmentId: 7, equipmentName: 'Multi-prise', userRespoOwner: users[2], assoBorrower: assos[2],
         userRespoBorrower: users[4], borrowingDate: 1717495200, dueDate: 1718013600, status: 'accepted', comment: ''},
+    {id: 7, equipmentId: 6, equipmentName: 'Multi-prise', userRespoOwner: users[2], assoBorrower: assos[2],
+        userRespoBorrower: users[4], borrowingDate: 1717495200, dueDate: 1718013600, status: 'accepted', comment: ''},
     {id: 3, equipmentId: 11, equipmentName: 'Projecteur', userRespoOwner: users[4], assoBorrower: assos[0],
         userRespoBorrower: users[3], borrowingDate: 1717495200, dueDate: 1718186400, status: 'accepted', comment: ''},
-    {id: 4, equipmentId: 4, equipmentName: 'Tables', userRespoOwner: users[0], assoBorrower: assos[2],
+    {id: 4, equipmentId: 4, equipmentName: 'Bar', userRespoOwner: users[0], assoBorrower: assos[2],
         userRespoBorrower: users[4], borrowingDate: 1717236000, dueDate: 1717840800, status: 'refused',
-        comment: 'Impossible de prêter aussi longtemps, nous en avons aussi souvent besoin.'},
-    {id: 5, equipmentId: 3, equipmentName: 'Verres', userRespoOwner: users[0], assoBorrower: assos[2],
+        comment: 'Nous en avons besoin pour notre événement au même moment désolé.'},
+    {id: 5, equipmentId: 3, equipmentName: 'Ecocup WEI', userRespoOwner: users[0], assoBorrower: assos[2],
         userRespoBorrower: users[4], borrowingDate: 1717257600, dueDate: 1717344000, status: 'accepted',
         comment: ''},
-    {id: 6, equipmentId: 3, equipmentName: 'Verres', userRespoOwner: null, assoBorrower: assos[1],
+    {id: 6, equipmentId: 3, equipmentName: 'Ecocup WEI', userRespoOwner: null, assoBorrower: assos[1],
         userRespoBorrower: users[2], borrowingDate: 1718035200, dueDate: 1718208000, status: 'waiting', comment: ''},
+    {id: 8, equipmentId: 3, equipmentName: 'Crêpière grise', userRespoOwner: users[1], assoBorrower: assos[0],
+        userRespoBorrower: users[3], borrowingDate: 1718035200, dueDate: 1718208000, status: 'accepted', comment: 'Rendez la propre svp c:'},
 ]
 
 let equipment = [
-    {id: 1, name: "Machine à café", assoOwner: assos[0], quantity: 1, equipmentRequest: null},
-    {id: 2, name: "Machine à café", assoOwner: assos[0], quantity: 1, equipmentRequest: equipmentRequests[0]},
-    {id: 3, name: "Verres", assoOwner: assos[0], quantity: 50, equipmentRequest: null},
-    {id: 4, name: "Tables", assoOwner: assos[0], quantity: 4, equipmentRequest: null},
-    {id: 5, name: "Rallonge", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 6, name: "Multi-prise", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
+    {id: 1, name: "Talkie Walkie", assoOwner: assos[0], quantity: 15, equipmentRequest: null},
+    {id: 2, name: "Enceinte", assoOwner: assos[0], quantity: 1, equipmentRequest: equipmentRequests[0]},
+    {id: 3, name: "Ecocup WEI", assoOwner: assos[0], quantity: 200, equipmentRequest: null},
+    {id: 4, name: "Bar", assoOwner: assos[0], quantity: 3, equipmentRequest: null},
+    {id: 5, name: "Enrouleur", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
+    {id: 6, name: "Multi-prise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[2]},
     {id: 7, name: "Multi-prise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[1]},
-    {id: 8, name: "Friteuse bleu", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 9, name: "Crêpière verte", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 10, name: "Crêpière grise", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 11, name: "Projecteur", assoOwner: assos[2], quantity: 1, equipmentRequest: equipmentRequests[2]},
+    {id: 8, name: "Friteuse", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
+    {id: 14, name: "Gauffrière", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
+    {id: 15, name: "Glacière", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
+    {id: 9, name: "Crêpière grise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[7]},
+    {id: 10, name: "Crêpière verte n1", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
+    {id: 11, name: "Crêpière verte n2", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
+    {id: 12, name: "Projecteur", assoOwner: assos[2], quantity: 1, equipmentRequest: equipmentRequests[3]},
+    {id: 13, name: "Fond vert", assoOwner: assos[2], quantity: 1, equipmentRequest: null},
 ]
 
 fixture('GET /api/equipment', () => {
