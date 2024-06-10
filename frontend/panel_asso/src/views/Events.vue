@@ -61,25 +61,25 @@ const deleteEvent = async (eventId: number) => {
 
 const downloadPdf = async (eventId: number) => {
   try {
-    const data = await eventService.downloadEventPdf(eventId);
-    const blob = new Blob([data], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `fiche-event-${eventId}.pdf`);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode?.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    const data = await eventService.downloadEventPdf(eventId)
+    const blob = new Blob([data], { type: 'application/pdf' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `fiche-event-${eventId}.pdf`)
+    document.body.appendChild(link)
+    link.click()
+    link.parentNode?.removeChild(link)
+    window.URL.revokeObjectURL(url)
   } catch (error) {
     toast.add({
       severity: 'error',
       summary: 'Erreur de téléchargement',
       detail: 'Impossible de télécharger le PDF',
       life: 5000
-    });
+    })
   }
-};
+}
 
 onMounted(async () => {
   await loadTags()
