@@ -15,7 +15,7 @@ export interface Association {
   name: string
   description: string
   location: string
-  logoUrl: string
+  logo: string
 }
 
 export interface AssociationDetail extends Association {

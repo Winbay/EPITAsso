@@ -3,7 +3,7 @@ import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 import ApiService from '../apiService'
 
-const socialNetworkSchema = yup.object({
+export const socialNetworkSchema = yup.object({
   id: yup.number().required(),
   name: yup.string().required(),
   link: yup.string().required()
@@ -15,7 +15,7 @@ export default class SocialNetworkService extends ApiService<
   associationId: Association['id']
 
   constructor(toast: ToastServiceMethods, associationId: Association['id']) {
-    super(toast, `/api/associations/${associationId}/socialNetworks`, socialNetworkSchema)
+    super(toast, `/api/associations/${associationId}/socialNetworks/`, socialNetworkSchema)
     this.associationId = associationId
   }
 

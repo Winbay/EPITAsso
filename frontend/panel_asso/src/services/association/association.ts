@@ -7,7 +7,8 @@ const associationSchema = yup.object({
   id: yup.number().required(),
   name: yup.string().required(),
   description: yup.string().required(),
-  location: yup.string().required()
+  location: yup.string().required(),
+  logo: yup.string().required()
 })
 
 export default class AssociationService extends ApiService<
