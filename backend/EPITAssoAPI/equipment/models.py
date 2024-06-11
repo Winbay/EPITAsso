@@ -33,7 +33,7 @@ class Equipment(models.Model):
         related_name="borrowed_equipment",
     )
 
-    quantity = models.IntegerField(null=True)
+    quantity = models.IntegerField(default=1)
 
     def str(self):
         return self.name

@@ -16,9 +16,9 @@ class User(AbstractUser):
     school = models.CharField(max_length=255)
     microsoft_id = models.CharField(max_length=255, blank=True, null=True)
 
-    favorite_associations = models.ManyToManyField(
-        "association.Association", related_name="favorited_by_user", blank=True
-    )
+    # favorite_associations = models.ManyToManyField(
+    #     "association.Association", related_name="favorited_by_user", blank=True
+    # )
 
     is_custom_admin = models.BooleanField(default=False)
 

@@ -1,0 +1,134 @@
+[
+{
+  "model": "user.user",
+  "pk": "0186ee99-788b-4a92-b52d-302f74e38ad5",
+  "fields": {
+    "password": "!BTmi62FV4EDZCRUTpP3VQoXGZpYU3IyhnGOH4Kwr",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Mathis",
+    "first_name": "",
+    "last_name": "",
+    "email": "mathis.brahim@epita.fr",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-06-10T20:55:17Z",
+    "login": "mathis.brahim",
+    "school": "Epita",
+    "microsoft_id": null,
+    "is_custom_admin": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": "328257cf-357e-4d3a-bac9-617eb363f5dc",
+  "fields": {
+    "password": "!bQxzCqWuEeGWQgrrtp8jFUCgHthmbDIHlZH4xMte",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Matthieu",
+    "first_name": "",
+    "last_name": "",
+    "email": "matthieu1.dumont@epita.fr",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-06-10T20:54:17Z",
+    "login": "matthieu1.dumont",
+    "school": "Epita",
+    "microsoft_id": null,
+    "is_custom_admin": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": "5d1c1005-2286-46be-ba59-a6069993993b",
+  "fields": {
+    "password": "!keTjW97Savg20IR6KVMvVjjxgcN0mPIH0LGm6Eyh",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Thomas",
+    "first_name": "",
+    "last_name": "",
+    "email": "thomas.benzino@epita.fr",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-06-10T20:54:47Z",
+    "login": "thomas.benzino",
+    "school": "Epita",
+    "microsoft_id": null,
+    "is_custom_admin": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": "794aa599-fd5a-4713-a3db-dcf145f717fa",
+  "fields": {
+    "password": "!QIiQdZqBASG7wgT8uUKSJKnvTr2IrLWnc7VdoRbf",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Charles",
+    "first_name": "",
+    "last_name": "",
+    "email": "charles.maurice@epita.fr",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-06-10T20:53:52Z",
+    "login": "charles.maurice",
+    "school": "Epita",
+    "microsoft_id": null,
+    "is_custom_admin": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": "8bd62920-7a31-43e7-a553-7b13209ea8b0",
+  "fields": {
+    "password": "pbkdf2_sha256$720000$8znh8j5IzQuApZUfkxH5MR$2MBivDZ/zKtsVsB2cBbc0MRXPYE22HKjMbZ0UtDC0Lc=",
+    "last_login": "2024-06-09T23:46:10.812Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@test.test",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2024-06-05T15:23:50.468Z",
+    "login": "",
+    "school": "",
+    "microsoft_id": null,
+    "is_custom_admin": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "user.user",
+  "pk": "9f98ae50-4ade-4662-8559-85c205f99df9",
+  "fields": {
+    "password": "pbkdf2_sha256$720000$BrW8CM1YsszppwdlZ8YNZM$mh9tDT5gnXp+IS0i2rFBJfuoVmZKWMcN5aXG6SGNbec=",
+    "last_login": "2024-06-09T23:46:49.457Z",
+    "is_superuser": true,
+    "username": "Vincent Barbier",
+    "first_name": "Vincent",
+    "last_name": "Barbier",
+    "email": "vincent1.barbier@epita.fr",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2024-06-05T15:25:28Z",
+    "login": "vincent1.barbier",
+    "school": "epita",
+    "microsoft_id": "8b331170-a2e2-4265-83f9-6b7b0c8863c5",
+    "is_custom_admin": true,
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

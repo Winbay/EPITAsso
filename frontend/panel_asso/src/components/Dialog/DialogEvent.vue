@@ -8,12 +8,12 @@ import Dialog from 'primevue/dialog'
 import Checkbox from 'primevue/checkbox'
 import Calendar from 'primevue/calendar'
 import FloatLabel from 'primevue/floatlabel'
-import axios from 'axios'
 
 import { ref, onMounted, defineProps, type PropType } from 'vue'
 import type { EventTag } from '@/types/tagInterfaces'
 import type { EventCreation, EventModification } from '@/types/eventInterfaces'
 import { useToast } from 'primevue/usetoast'
+import EventService from '@/services/event/event'
 
 const props = defineProps({
   setHidden: {
@@ -35,92 +35,56 @@ const props = defineProps({
 })
 
 const toast = useToast()
+const eventService: EventService = new EventService(toast)
 
-const currEvent = ref<EventCreation | EventModification>({
-  title: '',
+const getDefaultEvent = (): EventCreation | EventModification => ({
+  name: '',
   content: '',
   tags: [],
-  startDate: Date.now() / 1000,
-  endDate: Date.now() / 1000,
+  startDate: new Date(),
+  endDate: new Date(),
   recurrent: false,
   frequency: 0,
-  endRecurrence: Date.now() / 1000
+  endRecurrence: new Date()
 })
 
-const startDate = ref(new Date(currEvent.value.startDate * 1000))
-const endDate = ref(new Date(currEvent.value.endDate * 1000))
-const endRecurrence = ref(new Date(currEvent.value.endRecurrence * 1000))
+const currEventRef = ref<EventCreation | EventModification>({
+  ...getDefaultEvent(),
+  ...(props.event || {}) // Spread existing event if it's passed
+})
 
-const createOrSave = async () => {
+const startDate = ref(currEventRef.value.startDate)
+const endDate = ref(currEventRef.value.endDate)
+const endRecurrence = ref(currEventRef.value.endRecurrence)
+
+const editOrCreate = async (): Promise<void> => {
   if (props.event) {
-    // Modification
-    try {
-      await axios.put(`/api/events/${props.event.id}`, {
-        ...currEvent.value,
-        startDate: startDate.value.getTime() / 1000,
-        endDate: endDate.value.getTime() / 1000,
-        endRecurrence: endRecurrence.value.getTime() / 1000
-      })
-    } catch (error) {
-      toast.add({
-        severity: 'error',
-        summary: 'Évènements',
-        detail: "L'évènement n'a pas pu être modifié.",
-        life: 3000
-      })
-      console.log(error)
-      return false
-    }
+    await eventService.updateEvent(currEventRef.value as EventModification)
   } else {
-    // Creation
-    try {
-      await axios.post(`/api/events`, {
-        ...currEvent.value,
-        startDate: startDate.value.getTime() / 1000,
-        endDate: endDate.value.getTime() / 1000,
-        endRecurrence: endRecurrence.value.getTime() / 1000
-      })
-    } catch (error) {
-      toast.add({
-        severity: 'error',
-        summary: 'Évènements',
-        detail: "L'évènement n'a pas pu être créé.",
-        life: 3000
-      })
-      console.log(error)
-      return false
-    }
+    await eventService.createEvent(currEventRef.value)
   }
   await props.reloadEvents()
   props.setHidden()
-  return true
 }
 
 const cancelDialog = () => {
-  // Reset all local values
   if (props.event) {
-    currEvent.value = props.event
+    currEventRef.value = props.event
   } else {
-    currEvent.value = {
-      title: '',
-      content: '',
-      tags: [],
-      startDate: Date.now() / 1000,
-      endDate: Date.now() / 1000,
-      recurrent: false,
-      frequency: 0,
-      endRecurrence: Date.now() / 1000
-    }
+    currEventRef.value = getDefaultEvent()
   }
-  startDate.value = new Date(currEvent.value.startDate * 1000)
-  endDate.value = new Date(currEvent.value.endDate * 1000)
-  endRecurrence.value = new Date(currEvent.value.endRecurrence * 1000)
+  startDate.value = new Date(currEventRef.value.startDate)
+  endDate.value = new Date(currEventRef.value.endDate)
+  endRecurrence.value = new Date(currEventRef.value.endRecurrence)
   props.setHidden()
 }
 
 onMounted(() => {
   if (props.event) {
-    currEvent.value = props.event
+    currEventRef.value = props.event
+    startDate.value = new Date(props.event.startDate)
+    endDate.value = new Date(props.event.endDate)
+    endRecurrence.value = new Date(props.event.endRecurrence)
   }
 })
 </script>
@@ -136,7 +100,7 @@ onMounted(() => {
       <label for="title" class="mb-2 text-2xl font-bold text-wrap">Titre</label>
       <InputText
         id="title"
-        v-model="currEvent.title"
+        v-model="currEventRef.name"
         aria-describedby="username-help"
         placeholder="Titre de l'évènement"
         maxlength="255"
@@ -145,16 +109,15 @@ onMounted(() => {
     </div>
     <div class="content mb-6 flex flex-col justify-start">
       <label for="content" class="mb-2 text-2xl font-bold text-wrap">Contenu</label>
-      <Editor id="content" v-model="currEvent.content" editorStyle="height: 320px" />
+      <Editor id="content" v-model="currEventRef.content" editorStyle="height: 320px" />
       <!--      <Button label="Display" @click="console.log(currEvent.frequency)"></Button>-->
     </div>
     <div class="mb-6 flex flex-col justify-start w-8/12">
       <label for="tags" class="mb-2 text-xl font-bold text-wrap">Tags</label>
       <MultiSelect
-        v-model="currEvent.tags"
+        v-model="currEventRef.tags"
         :options="props.tags"
         option-label="name"
-        option-value="id"
         display="chip"
       />
     </div>
@@ -174,14 +137,19 @@ onMounted(() => {
         <Calendar v-model="endDate" showTime hourFormat="24" dateFormat="dd/mm/yy" class="w-1/3" />
       </div>
       <div class="mb-8 flex justify-start items-center">
-        <Checkbox v-model="currEvent.recurrent" :binary="true" class="mr-4" input-id="recurrent" />
+        <Checkbox
+          v-model="currEventRef.recurrent"
+          :binary="true"
+          class="mr-4"
+          input-id="recurrent"
+        />
         <label for="recurrent" class="text-lg text-wrap">Évènement récurrent</label>
       </div>
       <div class="mb-8 flex justify-start items-center">
-        <FloatLabel v-if="currEvent.recurrent" class="mr-4">
+        <FloatLabel v-if="currEventRef.recurrent" class="mr-4">
           <InputNumber
             id="frequency"
-            v-model="currEvent.frequency"
+            v-model="currEventRef.frequency"
             inputId="minmax-buttons"
             :min="1"
             :max="999"
@@ -190,9 +158,9 @@ onMounted(() => {
           />
           <label for="frequency">Fréquence (en jours)</label>
         </FloatLabel>
-        <FloatLabel v-if="currEvent.recurrent" class="w-1/3">
+        <FloatLabel v-if="currEventRef.recurrent" class="w-1/3">
           <Calendar
-            v-if="currEvent.recurrent"
+            v-if="currEventRef.recurrent"
             dateFormat="dd/mm/yy"
             class="w-full"
             id="end-recurrence"
@@ -209,7 +177,7 @@ onMounted(() => {
           :label="props.event ? 'Sauvegarder' : 'Créer'"
           severity="success"
           class="w-1/4"
-          @click="createOrSave"
+          @click="editOrCreate"
         />
       </div>
     </div>

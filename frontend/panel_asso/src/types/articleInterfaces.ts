@@ -1,12 +1,18 @@
 import type { ArticleTag } from './tagInterfaces'
 
-export interface ArticleCreation {
+export interface Post {
+  id: number
   title: string
+  author: string
   content: string
-  tagIds: ArticleTag['id'][]
+  tags: ArticleTag[]
+
+  // association: string
+  // lastAuthor: string
+  // createdAt: Date
+  // updatedAt: Date
 }
 
-export interface ArticleModification extends ArticleCreation {
-  id: number
-  author: string
-}
+export interface ArticleCreation extends Omit<Post, 'id' | 'author'> {}
+
+export interface ArticleModification extends Post {}

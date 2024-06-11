@@ -11,17 +11,20 @@ import { useToast } from 'primevue/usetoast'
 import DialogArticle from '@/components/Dialog/DialogArticle.vue'
 import { type ArticleModification } from '@/types/articleInterfaces'
 import type { ArticleTag } from '@/types/tagInterfaces'
-import djangoApi from '@/services/api'
+import TagService from '@/services/tag'
+import PostService from '@/services/post/post'
 
 const tagsRef = ref<ArticleTag[]>([])
-const articles = ref<ArticleModification[]>([])
+const articlesRef = ref<ArticleModification[]>([])
 
-const visibleCreation = ref(false)
-const visibleModification = ref<number>(0)
+const visibleDialogRef = ref(false)
+const selectedArticleRef = ref<ArticleModification | null>(null)
 const confirm = useConfirm()
 const toast = useToast()
+const tagService: TagService = new TagService(toast, 'posts')
+const postService: PostService = new PostService(toast)
 
-const confirm1 = (event: Event, articleId: number) => {
+const confirmDelete = (event: Event, articleId: number) => {
   confirm.require({
     target: event.currentTarget as HTMLElement,
     message: 'Êtes-vous sûr de vouloir supprimer cet article ?',
@@ -32,96 +35,48 @@ const confirm1 = (event: Event, articleId: number) => {
     acceptLabel: 'Supprimer',
     accept: async () => {
       await deleteArticle(articleId)
-    },
-    reject: () => {}
+    }
   })
 }
 
 const closeDialog = () => {
-  visibleCreation.value = false
-  visibleModification.value = 0
-}
-
-const getTagName = (tagId: number): string => {
-  return tagsRef.value.find((tag) => tag.id === tagId)?.name ?? ''
+  visibleDialogRef.value = false
+  selectedArticleRef.value = null
 }
 
 const loadTags = async () => {
-  try {
-    const rep1 = await djangoApi.get<ArticleTag[]>('/api/posts/tags')
-    tagsRef.value = rep1.data
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Articles',
-      detail: "La liste des tags des articles n'a pas pu être chargée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+  tagsRef.value = await tagService.getTags()
 }
 
-async function reloadArticles() {
-  try {
-    const rep2 = await djangoApi.get<ArticleModification[]>('/api/posts/')
-    articles.value = rep2.data
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Articles',
-      detail: "La liste des articles n'a pas pu être chargée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+const reloadArticles = async () => {
+  articlesRef.value = await postService.getPosts()
 }
 
-async function deleteArticle(articleId: number) {
-  try {
-    await djangoApi.delete(`/api/posts/${articleId}`)
-    toast.add({
-      severity: 'info',
-      summary: 'Suppression',
-      detail: "L'article a été supprimé.",
-      life: 3000
-    })
-    await reloadArticles()
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Articles',
-      detail: "L'article n'a pas pu être supprimé.",
-      life: 3000
-    })
-    console.log(error)
-  }
+const deleteArticle = async (articleId: number) => {
+  await postService.deletePost(articleId)
+  await reloadArticles()
 }
 
 onMounted(async () => {
-  if (await loadTags()) {
-    await reloadArticles()
-  }
+  await loadTags()
+  await reloadArticles()
 })
 </script>
 
 <template>
-  <div class="events-list w-full h-full px-10 py-8">
-    <div class="events-list-header h-10 mb-6 flex justify-start items-center">
+  <div class="articles-list w-full h-full px-10 py-8">
+    <div class="articles-list-header h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Articles</span>
-      <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="visibleCreation = true" />
+      <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="visibleDialogRef = true" />
       <DialogArticle
-        v-model:visible="visibleCreation"
+        v-model:visible="visibleDialogRef"
         :set-hidden="closeDialog"
         :reload-articles="reloadArticles"
         :tags="tagsRef"
       />
     </div>
     <DataTable
-      :value="articles"
+      :value="articlesRef"
       show-gridlines
       striped-rows
       tableStyle="min-width: 50rem"
@@ -138,7 +93,11 @@ onMounted(async () => {
           <Tag
             v-for="(tag, index) in slotProps.data.tags"
             :key="index"
-            :value="getTagName(tag.id)"
+            :value="tag.name"
+            :style="{
+              backgroundColor: tag.backgroundColor ?? 'var(--primary-color)',
+              color: tag.textColor ?? ''
+            }"
             severity="primary"
             class="mx-1 my-0.5"
           />
@@ -150,11 +109,11 @@ onMounted(async () => {
             <a
               href="javascript:void(0)"
               class="hover:underline"
-              @click="visibleModification = slotProps.data.id"
+              @click="selectedArticleRef = slotProps.data.id"
               >Editer</a
             >
             <DialogArticle
-              :visible="visibleModification === slotProps.data.id"
+              :visible="selectedArticleRef === slotProps.data.id"
               :set-hidden="closeDialog"
               :reload-articles="reloadArticles"
               :tags="tagsRef"
@@ -163,7 +122,7 @@ onMounted(async () => {
             <ConfirmPopup></ConfirmPopup>
             <a
               href="javascript:void(0)"
-              @click="confirm1($event, slotProps.data.id)"
+              @click="confirmDelete($event, slotProps.data.id)"
               class="hover:underline"
               >Supprimer</a
             >
@@ -175,19 +134,19 @@ onMounted(async () => {
 </template>
 
 <style>
-.events-list .add-btn {
+.articles-list .add-btn {
   color: var(--text-color);
 }
 
-.events-list a {
+.articles-list a {
   color: var(--primary-color);
 }
 
-.events-list .p-paginator-bottom {
+.articles-list .p-paginator-bottom {
   border: none;
 }
 
-.events-list .p-paginator-rpp-options span.p-dropdown-label {
+.articles-list .p-paginator-rpp-options span.p-dropdown-label {
   align-content: center;
 }
 </style>

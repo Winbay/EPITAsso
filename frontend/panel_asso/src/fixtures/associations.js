@@ -8,11 +8,8 @@ let faq_items = [
 ]
 
 let images = [
-  {
-    id: 1,
-    url: 'https://yt3.googleusercontent.com/cOzPj17JbobUiEmTVMe2jmNPuy5LOExELFWjx8eIOlgK__wStz5hWIRzqivRsGiz-Lot-0XR=s900-c-k-c0x00ffffff-no-rj'
-  },
-  { id: 2, url: 'https://bdekraken.fr/assets/kraken.png' }
+  'https://yt3.googleusercontent.com/cOzPj17JbobUiEmTVMe2jmNPuy5LOExELFWjx8eIOlgK__wStz5hWIRzqivRsGiz-Lot-0XR=s900-c-k-c0x00ffffff-no-rj',
+  'https://bdekraken.fr/assets/kraken.png'
 ]
 
 let social_networks = [
@@ -34,7 +31,7 @@ let associations = [
     name: 'EPTV',
     description: 'Ceci est une description.',
     location: 'VJ',
-    logo: images[0],
+    logoUrl: images[0],
     members: [],
     social_networks: [social_networks[0], social_networks[1]],
     faq: [faq_items[0], faq_items[1]]
@@ -45,7 +42,7 @@ let associations = [
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
     location: 'KB',
-    logo: images[1],
+    logoUrl: images[1],
     members: [],
     social_networks: [social_networks[0]],
     faq: [faq_items[2], faq_items[3]]
@@ -64,9 +61,9 @@ fixture('GET /api/associations/{id}', (request) => {
 fixture('POST /api/associations', (request, response) => {
   let newAsso = request.data
   newAsso.id = associations[associations.length - 1].id + 1
-  const index = images.findIndex((image) => image.id === newAsso.logo)
+  const index = images.findIndex((image) => image.id === newAsso.logoUrl)
   if (index !== -1) {
-    newAsso.logo = images[index]
+    newAsso.logoUrl = images[index]
   }
   associations.push(newAsso)
   response(201)

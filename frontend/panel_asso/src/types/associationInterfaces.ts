@@ -1,31 +1,25 @@
-import type { FetchedUser } from '@/types/userInterfaces'
-
-export interface Association {
-  id: number
-  name: string
-  description: string
-  location: string
-  logo: LogoAsso
-  members: FetchedUser[]
-  socialNetworks: SocialNetwork[]
-  faq: FAQItem[]
-}
-
 export interface SocialNetwork {
   id: number
   name: string
   link: string
 }
 
-export interface FAQItem {
+export interface Faq {
   id: number
   question: string
   answer: string
 }
 
-export interface AssociationCreation extends Omit<Association, 'id' | 'socialNetwork' | 'faq'> {}
-
-export interface LogoAsso {
+export interface Association {
   id: number
-  url: string
+  name: string
+  description: string
+  location: string
+  logoUrl: string
+}
+
+export interface AssociationDetail extends Association {
+  // members: User[]
+  socialNetworks: SocialNetwork[]
+  faq: Faq[]
 }
