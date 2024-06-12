@@ -3,6 +3,10 @@ export interface User {
   login: string
   firstName: string
   lastName: string
+}
+
+export interface UserDetail extends User {
+  email: string
   school: string
 }
 

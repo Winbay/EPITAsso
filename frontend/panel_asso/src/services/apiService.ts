@@ -43,6 +43,7 @@ export default class ApiService<SchemaType> {
   }
 
   protected async update(data: SchemaType, id?: number): Promise<void> {
+
     const validatedData = await this.validate(data)
     await this.request<void>('put', `${this.basePath}${id ? id + '/' : ''}`, validatedData)
   }

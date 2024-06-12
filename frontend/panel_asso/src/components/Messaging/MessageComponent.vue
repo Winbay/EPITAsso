@@ -2,76 +2,77 @@
 
 import '@/fixtures/associations'
 import '@/fixtures/users'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 
-import type { User } from '@/types/userInterfaces'
-import type { MessageInterfaces } from '@/types/messageInterfaces'
-import type { Association } from '@/types/associationInterfaces'
-import djangoApi from '@/services/api'
+import type { FetchedUser } from '@/types/userInterfaces'
+import type { Message } from '@/types/messageInterfaces'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const user = ref<FetchedUser>(userStore.user)
 
 const props = defineProps<{
-  message: MessageInterfaces,
-  user: User
+  message: Message,
 }>();
 
-const user_sender_obj = ref<User | null>(null);
-const association_sender_obj = ref<Association | null>(null);
 const showDate = ref(false)
 
 const isUserMessage = computed(() => {
-  return props.message.user_sender === props.user.id;
+  return props.message.author.id === user.value.id;
 });
 
 function formatDate(date: Date | string) {
   const dateObj = new Date(date);
-  const optionsDate = { day: 'numeric', month: 'numeric', year: 'numeric' };
-  const optionsTime = { hour: 'numeric', minute: 'numeric' };
+
+  const optionsDate: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric'
+  };
+
+  const optionsTime: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: 'numeric'
+  };
+
   const formattedDate = dateObj.toLocaleDateString('fr-FR', optionsDate);
   const formattedTime = dateObj.toLocaleTimeString('fr-FR', optionsTime);
+
   return `${formattedTime} ${formattedDate}`;
 }
-
-onMounted(async () => {
-  try {
-    const response = await djangoApi.get<User>(`/api/user/${props.message.user_sender}`)
-    user_sender_obj.value = response.data
-    const response2 = await djangoApi.get<Association>(`/api/association/${props.message.association}`)
-    association_sender_obj.value = response2.data
-  } catch (error) {
-    console.error(error)
-  }
-})
 </script>
 
 <template>
   <div
-    v-if="user_sender_obj && association_sender_obj"
-    class="flex mb-4"
-    :class="{ 'justify-end': isUserMessage, 'justify-start': !isUserMessage }"
+    v-if="message"
+    class="mb-4 relative w-full flex flex-col"
+    :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }"
+    @mouseover="showDate = true"
+    @mouseleave="showDate = false"
   >
-    <div
-      class="flex flex-col flex-start mb-1 relative"
-      :class="{ 'flex-end': isUserMessage, 'flex-start': !isUserMessage }"
-      @mouseover="showDate = true"
-      @mouseleave="showDate = false"
-    >
-      <span v-if="showDate" class="text-gray-500 text-sm absolute px-2" style="bottom: 4.5rem;">{{ formatDate(message.sent_date) }}</span> <!-- Positionnement absolu de la date -->
-      <div class="flex flex-col justify-between w-full px-2">
-        <span class="font-bold mr-2">{{ user_sender_obj.firstName }} {{ user_sender_obj.lastName }} ({{ association_sender_obj.name }})</span>
-      </div>
-      <div class="message-bubble" :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
-        <div class="message-content">
-          {{ message.content }}
-        </div>
+    <span
+      v-if="showDate"
+      class="text-gray-500 text-sm absolute message-date mr-2"
+      :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
+      {{ formatDate(message.sentAt) }}
+    </span>
+    <span
+      class="font-bold mr-2"
+      :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
+      {{ message.author.firstName }} {{ message.author.lastName }} ({{ message.associationSender.name }})
+    </span>
+    <div class="message-bubble" :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
+      <div class="message-content">
+        {{ message.content }}
       </div>
     </div>
   </div>
 </template>
 
-
 <style scoped>
 .message-bubble {
-  max-width: 70%;
+  width: fit-content;
+  max-width: 80%;
   padding: 10px;
   border-radius: 15px;
   margin-bottom: 5px;
@@ -82,6 +83,7 @@ onMounted(async () => {
 .message-content {
   font-size: 14px;
   line-height: 1.5;
+  word-wrap: break-word;
 }
 
 .message-user {
@@ -91,6 +93,8 @@ onMounted(async () => {
 .message-other {
   align-self: flex-start;
 }
+
+.message-date {
+  top: -1rem; /* Adjust this value as needed */
+}
 </style>
-
-

@@ -1,11 +1,12 @@
 import type { Conversation } from '@/types/conversationInterfaces'
 import type { Association } from '@/types/associationInterfaces'
+import type { User } from '@/types/userInterfaces'
 
-export interface MessageInterfaces {
+export interface Message {
     id: number;
-    content: string;
-    user_sender: string;
-    sent_date: Date;
     conversation: Conversation;
-    association: Association;
+    content: string;
+    author: User;
+    associationSender: Association;
+    sentAt: Date;
 }

@@ -4,22 +4,14 @@ export let users = [
   {
     id: "1",
     login: 'john.doe',
-    email: 'john.doe@epita.fr',
-    firstName: 'John',
-    lastName: 'Doe',
-    school: 'epita',
-    isAdmin: true,
-    associations: [0]
+    first_name: 'John',
+    last_name: 'Doe',
   },
   {
     id: "2",
     login: 'jane.doe',
-    email: 'jane.doe@epita.fr',
-    firstName: 'Jane',
-    lastName: 'Doe',
-    school: 'epita',
-    isAdmin: false,
-    associations: [1, 2]
+    first_name: 'Jane',
+    last_name: 'Doe',
   }
 ]
 
