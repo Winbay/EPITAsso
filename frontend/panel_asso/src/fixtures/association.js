@@ -50,12 +50,45 @@ let associations = [
 ]
 
 fixture('GET /api/associations/', () => {
-  return associations
+  return associations.map((asso) => {
+    return {
+      id: asso.id,
+      name: asso.name,
+      description: asso.description,
+      location: asso.location,
+      logo: asso.logo
+    }
+  })
 })
 
-fixture('GET /api/associations/{id}', (request) => {
+fixture('GET /api/associations/{id}/', (request) => {
+  const id = parseInt(request.data.id)
+  const index = associations.findIndex((asso) => asso.id === id)
+  if (index !== -1) {
+    return {
+      id: associations[index].id,
+      name: associations[index].name,
+      description: associations[index].description,
+      location: associations[index].location,
+      logo: associations[index].logo
+    }
+  }
+})
+
+fixture('GET /api/associations/{id}/details/', (request) => {
   const id = parseInt(request.data.id)
   return associations.find((asso) => asso.id === id)
+})
+
+fixture('PUT /api/associations/{id}/details/', (request, response) => {
+  let id = parseInt(request.data.id)
+  const index = associations.findIndex((item) => item.id === id)
+  if (index !== -1) {
+    let newAsso = request.data
+    newAsso.id = id
+    associations.splice(index, 1, newAsso)
+  }
+  response(201)
 })
 
 fixture('POST /api/associations/', (request, response) => {

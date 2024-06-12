@@ -22,14 +22,24 @@ export default class ApiService<SchemaType> {
     await this.request<void>('post', this.basePath, validatedData)
   }
 
+  protected async getDetails(): Promise<SchemaType> {
+    const data = await this.request<SchemaType>('get', `${this.basePath}`)
+    return this.validate(data)
+  }
+
   protected async getById(id: number): Promise<SchemaType> {
-    const data = await this.request<SchemaType>('get', `${this.basePath}${id}`)
+    const data = await this.request<SchemaType>('get', `${this.basePath}${id}/`)
     return this.validate(data)
   }
 
   protected async getAll(): Promise<SchemaType[]> {
     const data = await this.request<SchemaType[]>('get', `${this.basePath}`)
     return this.validateArray(data, yup.array().of(this.schema).required())
+  }
+
+  protected async updateDetails(data: SchemaType): Promise<void> {
+    const validatedData = await this.validate(data)
+    await this.request<void>('put', `${this.basePath}`, validatedData)
   }
 
   protected async update(id: number, data: SchemaType): Promise<void> {
