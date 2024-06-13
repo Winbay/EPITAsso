@@ -9,13 +9,13 @@ import type { Faq } from '@/types/associationInterfaces'
 const props = defineProps({
   setHidden: {
     type: Function,
-    required: true,
+    required: true
   },
   faqItem: {
     type: Object as PropType<Faq>,
     required: true
   }
-});
+})
 
 const getDefaultFaqItem = (): Faq => ({
   id: -1,
@@ -35,17 +35,12 @@ const editOrCreate = (): void => {
 
 const cancelDialog = () => {
   faqItemRef.value = getDefaultFaqItem()
-  props.setHidden(null);
-};
+  props.setHidden(null)
+}
 </script>
 
 <template>
-  <Dialog
-    :visible="true"
-    modal
-    @update:visible="cancelDialog"
-    header="Nouvelle question"
-  >
+  <Dialog :visible="true" modal @update:visible="cancelDialog" header="Nouvelle question">
     <div>
       <InputText
         id="socialNetworkName"
@@ -60,12 +55,7 @@ const cancelDialog = () => {
         class="w-full mb-2 h-12"
       />
       <div class="flex justify-start mt-5 gap-4">
-        <Button
-          label="Annuler"
-          icon="pi pi-times"
-          @click="cancelDialog"
-          severity="secondary"
-        />
+        <Button label="Annuler" icon="pi pi-times" @click="cancelDialog" severity="secondary" />
         <Button
           :label="faqItemRef.id === -1 ? 'Ajouter' : 'Modifier'"
           icon="pi pi-check"
@@ -78,6 +68,4 @@ const cancelDialog = () => {
   </Dialog>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

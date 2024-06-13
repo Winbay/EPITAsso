@@ -12,7 +12,6 @@ defineProps({
     required: true
   }
 })
-
 </script>
 
 <template>
@@ -27,7 +26,8 @@ defineProps({
     removable-sort
     :sort-order="-1"
     :rows="10"
-    :rowsPerPageOptions="[10, 25, 50]">
+    :rowsPerPageOptions="[10, 25, 50]"
+  >
     <Column field="login" header="Login" class="w-28" sortable>
       <template #body="slotProps">
         <span>{{ slotProps.data.login }}</span>

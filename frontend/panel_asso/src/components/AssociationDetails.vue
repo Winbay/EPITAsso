@@ -10,7 +10,6 @@ import type { AssociationDetail } from '@/types/associationInterfaces'
 import { getSocialNetworkImage } from '@/utils/associationUtils'
 import '@/fixtures/association'
 
-
 const props = defineProps({
   associationDetails: {
     type: Object as PropType<AssociationDetail>,
@@ -43,7 +42,9 @@ const closeDialog = async (): Promise<void> => {
       ></Image>
       <div class="flex flex-col w-full">
         <h1>{{ associationDetails.name }}</h1>
-        <p class="association-description mb-2 whitespace-pre-wrap">{{ associationDetails.description }}</p>
+        <p class="association-description mb-2 whitespace-pre-wrap">
+          {{ associationDetails.description }}
+        </p>
         <div class="flex pt-5">
           <div v-for="socialNetwork in associationDetails.socialNetworks" :key="socialNetwork.name">
             <a :href="socialNetwork.link" target="_blank">
@@ -62,10 +63,9 @@ const closeDialog = async (): Promise<void> => {
     <DialogAssociation
       v-model:visible="visibleDialogRef"
       :set-hidden="closeDialog"
-      :association="JSON.parse(JSON.stringify(associationDetails))" />
-    <FAQ
-      :faq="associationDetails.faq"
-      :association-id="associationDetails.id" />
+      :association="JSON.parse(JSON.stringify(associationDetails))"
+    />
+    <FAQ :faq="associationDetails.faq" :association-id="associationDetails.id" />
   </div>
 </template>
 

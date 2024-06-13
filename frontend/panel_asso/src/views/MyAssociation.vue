@@ -12,7 +12,10 @@ import Members from '@/components/DataTable/DataTableMembers.vue'
 
 const ASSOCIATION_ID = 2
 const toast = useToast()
-const associationDetailService: AssociationDetailService = new AssociationDetailService(toast, ASSOCIATION_ID)
+const associationDetailService: AssociationDetailService = new AssociationDetailService(
+  toast,
+  ASSOCIATION_ID
+)
 
 const isLoading = ref(true)
 
@@ -45,30 +48,27 @@ onMounted(async () => {
     <ProgressSpinner />
   </div>
   <div v-else>
-      <TabView class="content-center w-full h-full px-10 py-4">
-        <TabPanel header="Mon association">
-          <ScrollPanel
-            class="flex content-center w-full h-full"
-            style="width: 100%; height: calc(100vh - 7rem)"
-          >
-            <AssociationDetails
-              :association-details="associationRef"
-              :reload-association="reloadMyAssociation"
-            />
-          </ScrollPanel>
-
-        </TabPanel>
-        <TabPanel header="Les membres">
-          <ScrollPanel
-            class="flex content-center w-full h-full"
-            style="width: 100%; height: calc(100vh - 7rem)"
-          >
-            <Members
-              :members="associationRef.members"
-            />
-          </ScrollPanel>
-        </TabPanel>
-      </TabView>
+    <TabView class="content-center w-full h-full px-10 py-4">
+      <TabPanel header="Mon association">
+        <ScrollPanel
+          class="flex content-center w-full h-full"
+          style="width: 100%; height: calc(100vh - 7rem)"
+        >
+          <AssociationDetails
+            :association-details="associationRef"
+            :reload-association="reloadMyAssociation"
+          />
+        </ScrollPanel>
+      </TabPanel>
+      <TabPanel header="Les membres">
+        <ScrollPanel
+          class="flex content-center w-full h-full"
+          style="width: 100%; height: calc(100vh - 7rem)"
+        >
+          <Members :members="associationRef.members" />
+        </ScrollPanel>
+      </TabPanel>
+    </TabView>
   </div>
 </template>
 

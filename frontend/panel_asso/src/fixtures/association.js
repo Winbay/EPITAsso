@@ -59,7 +59,6 @@ fixture('POST /api/images', () => {
   return logos[logos.length - 1]
 })
 
-
 fixture('GET /api/associations/', () => {
   return associations.map((asso) => {
     return {
@@ -90,7 +89,7 @@ fixture('PUT /api/associations/{id}/', (request, response) => {
   let id = parseInt(request.data.id)
   const index = associations.findIndex((item) => item.id === id)
   if (index !== -1) {
-    let newAsso= {
+    let newAsso = {
       ...associations[index],
       ...request.data,
       id: id
@@ -126,8 +125,7 @@ fixture('POST /api/associations/{id}/faqs/', (request, response) => {
     const newFaq = request.data
     if (faq_items.length === 0) {
       newFaq.id = 1
-    }
-    else {
+    } else {
       newFaq.id = faq_items[faq_items.length - 1].id + 1
     }
     faq_items.push(newFaq)
@@ -188,8 +186,7 @@ fixture('POST /api/associations/{id}/socialNetworks/', (request, response) => {
     const newSocialNetwork = request.data
     if (social_networks.length === 0) {
       newSocialNetwork.id = 1
-    }
-    else {
+    } else {
       newSocialNetwork.id = social_networks[social_networks.length - 1].id + 1
     }
     social_networks.push(newSocialNetwork)
@@ -208,10 +205,14 @@ fixture('PUT /api/associations/{id}/socialNetworks/{social_network_id}/', (reque
       ...request.data,
       id: social_network_id
     }
-    let social_network_index = social_networks.findIndex((social_network) => social_network.id === social_network_id)
+    let social_network_index = social_networks.findIndex(
+      (social_network) => social_network.id === social_network_id
+    )
     if (social_network_index !== -1) {
       social_networks.splice(social_network_index, 1, newSocialNetwork)
-      social_network_index = associations[index].social_networks.findIndex((social_network) => social_network.id === social_network_id)
+      social_network_index = associations[index].social_networks.findIndex(
+        (social_network) => social_network.id === social_network_id
+      )
       if (social_network_index !== -1) {
         associations[index].social_networks.splice(social_network_index, 1, newSocialNetwork)
       }
@@ -220,23 +221,30 @@ fixture('PUT /api/associations/{id}/socialNetworks/{social_network_id}/', (reque
   response(201)
 })
 
-fixture('DELETE /api/associations/{id}/socialNetworks/{social_network_id}/', (request, response) => {
-  const id = parseInt(request.data.id)
-  const social_network_id = parseInt(request.data.social_network_id)
-  delete request.data.social_network_id
-  const index = associations.findIndex((asso) => asso.id === id)
-  if (index !== -1) {
-    let social_network_index = associations[index].social_networks.findIndex((social_network) => social_network.id === social_network_id)
-    if (social_network_index !== -1) {
-      associations[index].social_networks.splice(social_network_index, 1)
-      social_network_index = social_networks.findIndex((social_network) => social_network.id === social_network_id)
+fixture(
+  'DELETE /api/associations/{id}/socialNetworks/{social_network_id}/',
+  (request, response) => {
+    const id = parseInt(request.data.id)
+    const social_network_id = parseInt(request.data.social_network_id)
+    delete request.data.social_network_id
+    const index = associations.findIndex((asso) => asso.id === id)
+    if (index !== -1) {
+      let social_network_index = associations[index].social_networks.findIndex(
+        (social_network) => social_network.id === social_network_id
+      )
       if (social_network_index !== -1) {
-        social_networks.splice(social_network_index, 1)
+        associations[index].social_networks.splice(social_network_index, 1)
+        social_network_index = social_networks.findIndex(
+          (social_network) => social_network.id === social_network_id
+        )
+        if (social_network_index !== -1) {
+          social_networks.splice(social_network_index, 1)
+        }
       }
     }
+    response(204)
   }
-  response(204)
-})
+)
 
 fixture('GET /api/associations/{id}/members/', (request) => {
   const id = parseInt(request.data.id)

@@ -9,13 +9,13 @@ import type { SocialNetwork } from '@/types/associationInterfaces'
 const props = defineProps({
   setHidden: {
     type: Function,
-    required: true,
+    required: true
   },
   socialNetwork: {
     type: Object as PropType<SocialNetwork>,
     required: true
   }
-});
+})
 
 const getDefaultSocialNetwork = (): SocialNetwork => ({
   id: -1,
@@ -35,17 +35,12 @@ const editOrCreate = (): void => {
 
 const cancelDialog = () => {
   socialNetworksRef.value = getDefaultSocialNetwork()
-  props.setHidden();
-};
+  props.setHidden()
+}
 </script>
 
 <template>
-  <Dialog
-    :visible="true"
-    modal
-    @update:visible="cancelDialog"
-    header="Ajouter un réseau social"
-  >
+  <Dialog :visible="true" modal @update:visible="cancelDialog" header="Ajouter un réseau social">
     <div>
       <InputText
         id="socialNetworkName"
@@ -60,12 +55,7 @@ const cancelDialog = () => {
         class="w-full mb-2 h-12"
       />
       <div class="flex justify-start mt-5 gap-4">
-        <Button
-          label="Annuler"
-          icon="pi pi-times"
-          @click="cancelDialog"
-          severity="secondary"
-        />
+        <Button label="Annuler" icon="pi pi-times" @click="cancelDialog" severity="secondary" />
         <Button
           :label="socialNetworksRef.id === -1 ? 'Ajouter' : 'Modifier'"
           icon="pi pi-check"
@@ -78,6 +68,4 @@ const cancelDialog = () => {
   </Dialog>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { getSocialNetworkImage } from '@/utils/associationUtils'
 import type { SocialNetwork } from '@/types/associationInterfaces'
 import { type PropType, ref } from 'vue'
@@ -10,7 +9,6 @@ import Button from 'primevue/button'
 import Divider from 'primevue/divider'
 import type { MenuItem } from 'primevue/menuitem'
 
-
 const props = defineProps({
   socialNetworks: {
     type: Array as PropType<SocialNetwork[]>,
@@ -18,24 +16,25 @@ const props = defineProps({
   }
 })
 
-const items = (index: number) => [
-  {
-    label: 'Modifier',
-    icon: 'pi pi-pencil',
-    severity: 'info',
-    command: () => {
-      editSocialNetwork(index);
+const items = (index: number) =>
+  [
+    {
+      label: 'Modifier',
+      icon: 'pi pi-pencil',
+      severity: 'info',
+      command: () => {
+        editSocialNetwork(index)
+      }
+    },
+    {
+      label: 'Supprimer',
+      icon: 'pi pi-trash',
+      severity: 'danger',
+      command: () => {
+        deleteSocialNetwork(index)
+      }
     }
-  },
-  {
-    label: 'Supprimer',
-    icon: 'pi pi-trash',
-    severity: 'danger',
-    command: () => {
-      deleteSocialNetwork(index);
-    }
-  }
-] as MenuItem[];
+  ] as MenuItem[]
 
 const getDefaultSocialNetwork = (): SocialNetwork => ({
   id: -1,
@@ -43,11 +42,9 @@ const getDefaultSocialNetwork = (): SocialNetwork => ({
   link: ''
 })
 
-
 const socialNetworksRef = ref<SocialNetwork[]>(props.socialNetworks)
 const visibleDialogRef = ref(false)
 const selectedSocialNetworkRef = ref<SocialNetwork>(getDefaultSocialNetwork())
-
 
 const closeDialog = (socialNetwork: SocialNetwork | null = null): void => {
   if (socialNetwork) {
@@ -69,8 +66,6 @@ const editSocialNetwork = (index: number): void => {
 const deleteSocialNetwork = (index: number): void => {
   socialNetworksRef.value.splice(index, 1)
 }
-
-
 </script>
 
 <template>
@@ -78,22 +73,26 @@ const deleteSocialNetwork = (index: number): void => {
     <div class="flex justify-between items-center">
       <label class="block mb-2 text-2xl font-bold text-wrap">Réseaux sociaux</label>
       <Button
-        @click="() => { selectedSocialNetworkRef = getDefaultSocialNetwork(); visibleDialogRef = true; }"
+        @click="
+          () => {
+            selectedSocialNetworkRef = getDefaultSocialNetwork()
+            visibleDialogRef = true
+          }
+        "
         label="Ajouter un réseau social"
         icon="pi pi-plus"
         class="mb-5"
-        outlined />
+        outlined
+      />
     </div>
     <Divider class="mt-0"></Divider>
     <div class="flex flex-wrap gap-2">
       <div
         v-for="(socialNetwork, index) in socialNetworksRef"
         :key="socialNetwork.name"
-        class="relative">
-        <SpeedDial
-          :model="items(index)"
-          direction="down"
-          class="relative">
+        class="relative"
+      >
+        <SpeedDial :model="items(index)" direction="down" class="relative">
           <template #button="{ toggleCallback }">
             <Avatar
               @click="toggleCallback"
@@ -101,16 +100,12 @@ const deleteSocialNetwork = (index: number): void => {
               class="avatar cursor-pointer"
               style="width: 4rem; height: 4rem"
               shape="circle"
-              :title="socialNetwork.name"/>
+              :title="socialNetwork.name"
+            />
           </template>
           <template #item="{ item, onClick }">
             <div class="speeddial-list">
-              <Button
-                @click="onClick"
-                :icon=item.icon
-                :severity=item.severity
-                text
-              />
+              <Button @click="onClick" :icon="item.icon" :severity="item.severity" text />
             </div>
           </template>
         </SpeedDial>
@@ -119,7 +114,8 @@ const deleteSocialNetwork = (index: number): void => {
         v-if="visibleDialogRef"
         v-model:visible="visibleDialogRef"
         :set-hidden="closeDialog"
-        :social-network="JSON.parse(JSON.stringify(selectedSocialNetworkRef))" />
+        :social-network="JSON.parse(JSON.stringify(selectedSocialNetworkRef))"
+      />
     </div>
   </div>
 </template>
@@ -140,5 +136,4 @@ const deleteSocialNetwork = (index: number): void => {
   border-radius: 0.5rem;
   box-shadow: 0 0 0.3rem rgba(0, 0, 0, 1);
 }
-
 </style>

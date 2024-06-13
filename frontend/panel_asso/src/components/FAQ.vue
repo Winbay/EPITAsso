@@ -43,7 +43,6 @@ const closeDialog = (faqItem: Faq | null): void => {
   visibleDialogRef.value = false
 }
 
-
 const editQuestion = (index: number): void => {
   selectedFaqItemRef.value = faqItemsRef.value[index]
   visibleDialogRef.value = true
@@ -60,7 +59,12 @@ const deleteQuestion = (index: number): void => {
       <label class="block mb-2 text-2xl font-bold text-wrap">FAQ</label>
       <Button
         v-if="editing"
-        @click="() => { selectedFaqItemRef = getDefaultFaqItem(); visibleDialogRef = true; }"
+        @click="
+          () => {
+            selectedFaqItemRef = getDefaultFaqItem()
+            visibleDialogRef = true
+          }
+        "
         label="Ajouter une question"
         icon="pi pi-plus"
         class="mb-5"
@@ -103,7 +107,8 @@ const deleteQuestion = (index: number): void => {
       v-if="visibleDialogRef"
       v-model:visible="visibleDialogRef"
       :set-hidden="closeDialog"
-      :faq-item="JSON.parse(JSON.stringify(selectedFaqItemRef))" />
+      :faq-item="JSON.parse(JSON.stringify(selectedFaqItemRef))"
+    />
   </div>
 </template>
 
