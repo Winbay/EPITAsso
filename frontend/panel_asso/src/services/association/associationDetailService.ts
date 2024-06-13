@@ -4,7 +4,9 @@ import * as yup from 'yup';
 import ApiService from '../apiService';
 import { socialNetworkSchema } from './socialNetwork'
 import { faqSchema } from './faq'
+import { userSchema } from '@/services/user/user'
 
+const membersSchema = yup.array().of(userSchema).required();
 const socialNetworksSchema = yup.array().of(socialNetworkSchema).required();
 const faqsSchema = yup.array().of(faqSchema).required();
 
@@ -14,6 +16,7 @@ const associationDetailSchema = yup.object({
   description: yup.string().required(),
   location: yup.string().required(),
   logo: yup.string().required(),
+  members: membersSchema,
   social_networks: socialNetworksSchema,
   faq: faqsSchema
 }).required();
@@ -37,6 +40,14 @@ export default class AssociationDetailService extends ApiService<
       description: associationDetails.description,
       location: associationDetails.location,
       logo: associationDetails.logo,
+      members: associationDetails.members?.map((member) => ({
+          id: member.id,
+          login: member.login,
+          firstName: member.first_name,
+          lastName: member.last_name,
+          school: member.school
+        })
+      ),
       socialNetworks: associationDetails.social_networks?.map((socialNetwork) => ({
           id: socialNetwork.id,
           name: socialNetwork.name,

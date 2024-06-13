@@ -1,11 +1,14 @@
-interface User {
+export interface User {
   id: string
   login: string
-  email: string
   firstName: string
   lastName: string
   school: string
+}
+
+export interface UserDetail extends User {
+  email: string
   isAdmin: boolean
 }
 
-export interface FetchedUser extends Omit<User, 'isAdmin'> {}
+export interface FetchedUser extends Omit<UserDetail, 'isAdmin'> {}

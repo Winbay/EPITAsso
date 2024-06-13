@@ -19,10 +19,6 @@ const props = defineProps({
     type: Function,
     required: true,
   },
-  reloadAssociation: {
-    type: Function,
-    required: true
-  },
   association: {
     type: Object as PropType<AssociationDetail>,
     required: true,
@@ -40,6 +36,7 @@ const getDefaultAssociation = (): AssociationDetail => ({
   description: '',
   location: '',
   logo: '',
+  members: [],
   socialNetworks: [],
   faq: []
 })
@@ -76,7 +73,14 @@ const isFaqModified = (): boolean => {
 const edit = async (): Promise<void> => {
   if (currAssociationRef.value) {
     if (isAssociationModified()) {
-      await associationService.updateAssociation(currAssociationRef.value)
+      const association = {
+        id: currAssociationRef.value.id,
+        name: currAssociationRef.value.name,
+        description: currAssociationRef.value.description,
+        location: currAssociationRef.value.location,
+        logo: currAssociationRef.value.logo,
+      }
+      await associationService.updateAssociation(association)
     }
     if (isSocialNetworksModified()) {
       await socialNetworkService.updateSocialNetworks(currAssociationRef.value.socialNetworks)
@@ -85,7 +89,6 @@ const edit = async (): Promise<void> => {
       await faqService.updateFaqs(currAssociationRef.value.faq)
     }
   }
-  await props.reloadAssociation()
   props.setHidden()
 }
 
