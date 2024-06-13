@@ -52,7 +52,7 @@ export default class AssociationDetailService extends ApiService<
         school: member.school
       })),
       socialNetworks: associationDetails.social_networks,
-      faq: associationDetails.faq,
+      faq: associationDetails.faq
     }
   }
 }
