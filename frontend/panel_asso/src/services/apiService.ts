@@ -42,6 +42,11 @@ export default class ApiService<SchemaType> {
     await this.request<void>('put', `${this.basePath}${id}/`, validatedData)
   }
 
+  protected async updateAll(data: SchemaType[]): Promise<void> {
+    const validatedData = await this.validateArray(data, yup.array().of(this.schema).required())
+    await this.request<void>('put', `${this.basePath}/sync`, validatedData)
+  }
+
   protected async delete(id: number): Promise<void> {
     await this.request<void>('delete', `${this.basePath}${id}/`)
   }
@@ -49,7 +54,7 @@ export default class ApiService<SchemaType> {
   private async request<ReturnType>(
     method: 'post' | 'get' | 'put' | 'delete',
     url: string,
-    data?: SchemaType | Partial<SchemaType>
+    data?: SchemaType | Partial<SchemaType> | SchemaType[]
   ): Promise<ReturnType> {
     try {
       const response = await djangoApi[method]<ReturnType>(url, data)

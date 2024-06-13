@@ -45,7 +45,7 @@ const getDefaultAssociation = (): AssociationDetail => ({
 })
 
 const currAssociationRef = ref<AssociationDetail>(props.association)
-const initialAssociationRef = ref<AssociationDetail>(JSON.parse(JSON.stringify(props.association)))
+const initialAssociationRef = ref<AssociationDetail>({...props.association})
 
 const isAssociationModified = (): boolean => {
   const initAsso: Association = {

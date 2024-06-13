@@ -51,16 +51,8 @@ export default class AssociationDetailService extends ApiService<
         lastName: member.last_name,
         school: member.school
       })),
-      socialNetworks: associationDetails.social_networks?.map((socialNetwork) => ({
-        id: socialNetwork.id,
-        name: socialNetwork.name,
-        link: socialNetwork.link
-      })),
-      faq: associationDetails.faq?.map((faq) => ({
-        id: faq.id,
-        question: faq.question,
-        answer: faq.answer
-      }))
+      socialNetworks: associationDetails.social_networks,
+      faq: associationDetails.faq,
     }
   }
 }
