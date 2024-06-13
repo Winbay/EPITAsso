@@ -35,6 +35,22 @@ export default class FaqService extends ApiService<yup.InferType<typeof faqSchem
     await this.update(faq.id, faq)
   }
 
+  async updateFaqs(faqs: Faq[]): Promise<void> {
+    const faqItems = await this.getFaqs();
+    for (const faqItem of faqItems) {
+      if (!faqs.find((item) => item.id === faqItem.id)) {
+        await this.deleteFaq(faqItem.id);
+      }
+    }
+    for (const faq of faqs) {
+      if (faq.id !== -1) {
+        await this.updateFaq(faq)
+      } else {
+        await this.createFaq(faq)
+      }
+    }
+  }
+
   async deleteFaq(id: Faq['id']): Promise<void> {
     await this.delete(id)
   }

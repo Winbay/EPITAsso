@@ -27,26 +27,25 @@ const getDefaultFaqItem = (): Faq => ({
 })
 
 const faqItemsRef = ref<Faq[]>(props.faq)
-const editFaqItemRef = ref<Faq>(getDefaultFaqItem())
+const selectedFaqItemRef = ref<Faq>(getDefaultFaqItem())
 
 const visibleDialogRef = ref(false)
 
 const closeDialog = (faqItem: Faq | null): void => {
   if (faqItem) {
-    if (faqItem.id !== -1) {
+    if (selectedFaqItemRef.value.id !== -1) {
       const index = faqItemsRef.value.findIndex((item) => item.id === faqItem.id)
       faqItemsRef.value[index] = faqItem
     } else {
       faqItemsRef.value.push(faqItem)
     }
   }
-  editFaqItemRef.value = getDefaultFaqItem()
   visibleDialogRef.value = false
 }
 
 
 const editQuestion = (index: number): void => {
-  editFaqItemRef.value = faqItemsRef.value[index]
+  selectedFaqItemRef.value = faqItemsRef.value[index]
   visibleDialogRef.value = true
 }
 
@@ -61,9 +60,9 @@ const deleteQuestion = (index: number): void => {
       <label class="block mb-2 text-2xl font-bold text-wrap">FAQ</label>
       <Button
         v-if="editing"
+        @click="() => { selectedFaqItemRef = getDefaultFaqItem(); visibleDialogRef = true; }"
         label="Ajouter une question"
         icon="pi pi-plus"
-        @click="visibleDialogRef = true"
         class="mb-5"
         outlined
       />
@@ -104,7 +103,7 @@ const deleteQuestion = (index: number): void => {
       v-if="visibleDialogRef"
       v-model:visible="visibleDialogRef"
       :set-hidden="closeDialog"
-      :faq-item="JSON.parse(JSON.stringify(editFaqItemRef))" />
+      :faq-item="JSON.parse(JSON.stringify(selectedFaqItemRef))" />
   </div>
 </template>
 

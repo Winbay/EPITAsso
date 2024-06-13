@@ -39,6 +39,22 @@ export default class SocialNetworkService extends ApiService<
     await this.update(socialNetwork.id, socialNetwork)
   }
 
+  async updateSocialNetworks(socialNetworks: SocialNetwork[]): Promise<void> {
+    const socialNetworkItems = await this.getSocialNetworks();
+    for (const socialNetworkItem of socialNetworkItems) {
+      if (!socialNetworks.find((item) => item.id === socialNetworkItem.id)) {
+        await this.deleteSocialNetwork(socialNetworkItem.id);
+      }
+    }
+    for (const socialNetwork of socialNetworks) {
+      if (socialNetwork.id !== -1) {
+        await this.updateSocialNetwork(socialNetwork)
+      } else {
+        await this.createSocialNetwork(socialNetwork)
+      }
+    }
+  }
+
   async deleteSocialNetwork(id: SocialNetwork['id']): Promise<void> {
     await this.delete(id)
   }

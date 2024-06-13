@@ -2,9 +2,8 @@ import type { ToastServiceMethods } from 'primevue/toastservice';
 import type { AssociationDetail } from '@/types/associationInterfaces'
 import * as yup from 'yup';
 import ApiService from '../apiService';
-import AssociationService from './association';
-import SocialNetworkService, { socialNetworkSchema } from './socialNetwork'
-import FaqService, { faqSchema } from './faq'
+import { socialNetworkSchema } from './socialNetwork'
+import { faqSchema } from './faq'
 
 const socialNetworksSchema = yup.array().of(socialNetworkSchema).required();
 const faqsSchema = yup.array().of(faqSchema).required();
@@ -27,19 +26,8 @@ export default class AssociationDetailService extends ApiService<
   }
 
   async getAssociationDetail(): Promise<AssociationDetail> {
-    const data = await this.getDetails();
+    const data = await this.get();
     return this.converterSchemaToInterface(data);
-  }
-
-  async updateAssociationDetail(association: AssociationDetail): Promise<void> {
-    const { socialNetworks, faq, ...rest } = association;
-
-    const associationDetailsDataToValidate = {
-      ...rest,
-      social_networks: socialNetworks,
-      faq: faq
-    };
-    await this.updateDetails(associationDetailsDataToValidate);
   }
 
   protected converterSchemaToInterface(associationDetails: yup.InferType<typeof associationDetailSchema>): AssociationDetail {

@@ -80,28 +80,6 @@ fixture('GET /api/associations/{id}/details/', (request) => {
   return associations.find((asso) => asso.id === id)
 })
 
-fixture('PUT /api/associations/{id}/details/', (request, response) => {
-  let id = parseInt(request.data.id)
-  const index = associations.findIndex((item) => item.id === id)
-  if (index !== -1) {
-    let newAsso = request.data
-    newAsso.id = id
-    associations.splice(index, 1, newAsso)
-  }
-  response(201)
-})
-
-fixture('POST /api/associations/', (request, response) => {
-  let newAsso = request.data
-  newAsso.id = associations[associations.length - 1].id + 1
-  const index = logos.findIndex((image) => image.id === newAsso.logoUrl)
-  if (index !== -1) {
-    newAsso.logoUrl = logos[index]
-  }
-  associations.push(newAsso)
-  response(201)
-})
-
 fixture('POST /api/images', () => {
   const nextId = logos[logos.length - 1].id + 1
   logos.push({
@@ -115,8 +93,11 @@ fixture('PUT /api/associations/{id}/', (request, response) => {
   let id = parseInt(request.data.id)
   const index = associations.findIndex((item) => item.id === id)
   if (index !== -1) {
-    let newAsso = request.data
-    newAsso.id = id
+    let newAsso= {
+      ...associations[index],
+      ...request.data,
+      id: id
+    }
     associations.splice(index, 1, newAsso)
   }
   response(201)
@@ -141,11 +122,13 @@ fixture('POST /api/associations/{id}/faqs/', (request, response) => {
   const index = associations.findIndex((asso) => asso.id === id)
   if (index !== -1) {
     const newFaq = request.data
-    if (associations[index].faq.length === 0) {
+    if (faq_items.length === 0) {
       newFaq.id = 1
-    } else {
-      newFaq.id = associations[index].faq[associations[index].faq.length - 1].id + 1
     }
+    else {
+      newFaq.id = faq_items[faq_items.length - 1].id + 1
+    }
+    faq_items.push(newFaq)
     associations[index].faq.push(newFaq)
   }
   response(201, request.data)
@@ -154,28 +137,41 @@ fixture('POST /api/associations/{id}/faqs/', (request, response) => {
 fixture('PUT /api/associations/{id}/faqs/{faq_id}/', (request, response) => {
   const id = parseInt(request.data.id)
   const faq_id = parseInt(request.data.faq_id)
-  const newFaqItem = { id: faq_id, question: request.data.question, answer: request.data.answer }
+  delete request.data.faq_id
   const index = associations.findIndex((asso) => asso.id === id)
   if (index !== -1) {
-    const faq_index = associations[index].faq.findIndex((faq) => faq.id === faq_id)
+    const newFaqItem = {
+      ...request.data,
+      id: faq_id
+    }
+    let faq_index = faq_items.findIndex((faq) => faq.id === faq_id)
     if (faq_index !== -1) {
-      associations[index].faq.splice(faq_index, 1, newFaqItem)
+      faq_items.splice(faq_index, 1, newFaqItem)
+      faq_index = associations[index].faq.findIndex((faq) => faq.id === faq_id)
+      if (faq_index !== -1) {
+        associations[index].faq.splice(faq_index, 1, newFaqItem)
+      }
     }
   }
-  response(201, newFaqItem)
+  response(201)
 })
 
 fixture('DELETE /api/associations/{id}/faqs/{faq_id}/', (request, response) => {
   const id = parseInt(request.data.id)
   const faq_id = parseInt(request.data.faq_id)
+  delete request.data.faq_id
   const index = associations.findIndex((asso) => asso.id === id)
   if (index !== -1) {
-    const faq_index = associations[index].faq.findIndex((faq) => faq.id === faq_id)
+    let faq_index = associations[index].faq.findIndex((faq) => faq.id === faq_id)
     if (faq_index !== -1) {
       associations[index].faq.splice(faq_index, 1)
+      faq_index = faq_items.findIndex((faq) => faq.id === faq_id)
+      if (faq_index !== -1) {
+        faq_items.splice(faq_index, 1)
+      }
     }
   }
-  response(204, faq_id)
+  response(204)
 })
 
 fixture('GET /api/associations/{id}/socialNetworks/', (request) => {
@@ -188,41 +184,56 @@ fixture('POST /api/associations/{id}/socialNetworks/', (request, response) => {
   const index = associations.findIndex((asso) => asso.id === id)
   if (index !== -1) {
     const newSocialNetwork = request.data
-    if (associations[index].social_networks.length === 0) {
+    if (social_networks.length === 0) {
       newSocialNetwork.id = 1
-    } else {
-      newSocialNetwork.id = associations[index].social_networks[associations[index].social_networks.length - 1].id + 1
     }
+    else {
+      newSocialNetwork.id = social_networks[social_networks.length - 1].id + 1
+    }
+    social_networks.push(newSocialNetwork)
     associations[index].social_networks.push(newSocialNetwork)
   }
   response(201, request.data)
-
 })
 
 fixture('PUT /api/associations/{id}/socialNetworks/{social_network_id}/', (request, response) => {
   const id = parseInt(request.data.id)
   const social_network_id = parseInt(request.data.social_network_id)
+  delete request.data.social_network_id
   const index = associations.findIndex((asso) => asso.id === id)
   if (index !== -1) {
-    const social_network_index = associations[index].social_networks.findIndex((social_network) => social_network.id === social_network_id)
+    const newSocialNetwork = {
+      ...request.data,
+      id: social_network_id
+    }
+    let social_network_index = social_networks.findIndex((social_network) => social_network.id === social_network_id)
     if (social_network_index !== -1) {
-      associations[index].social_networks.splice(social_network_index, 1, request.data)
+      social_networks.splice(social_network_index, 1, newSocialNetwork)
+      social_network_index = associations[index].social_networks.findIndex((social_network) => social_network.id === social_network_id)
+      if (social_network_index !== -1) {
+        associations[index].social_networks.splice(social_network_index, 1, newSocialNetwork)
+      }
     }
   }
-  response(201, request.data)
+  response(201)
 })
 
 fixture('DELETE /api/associations/{id}/socialNetworks/{social_network_id}/', (request, response) => {
   const id = parseInt(request.data.id)
   const social_network_id = parseInt(request.data.social_network_id)
+  delete request.data.social_network_id
   const index = associations.findIndex((asso) => asso.id === id)
   if (index !== -1) {
-    const social_network_index = associations[index].social_networks.findIndex((social_network) => social_network.id === social_network_id)
+    let social_network_index = associations[index].social_networks.findIndex((social_network) => social_network.id === social_network_id)
     if (social_network_index !== -1) {
       associations[index].social_networks.splice(social_network_index, 1)
+      social_network_index = social_networks.findIndex((social_network) => social_network.id === social_network_id)
+      if (social_network_index !== -1) {
+        social_networks.splice(social_network_index, 1)
+      }
     }
   }
-  response(204, social_network_id)
+  response(204)
 })
 
 fixture('GET /api/associations/{id}/members/', (request) => {

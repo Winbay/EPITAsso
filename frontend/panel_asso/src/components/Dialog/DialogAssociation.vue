@@ -7,11 +7,12 @@ import Dialog from 'primevue/dialog';
 
 import { ref, defineProps, type PropType } from 'vue';
 import { useToast } from 'primevue/usetoast'
-import type { AssociationDetail, Faq, SocialNetwork } from '@/types/associationInterfaces'
-import { getSocialNetworkImage } from '@/utils/associationUtils';
+import type { Association, AssociationDetail, SocialNetwork } from '@/types/associationInterfaces'
 import FAQ from '@/components/FAQ.vue'
-import DialogSocialNetwork from '@/components/Dialog/DialogSocialNetwork.vue'
-import AssociationDetailService from '@/services/association/associationDetailService'
+import FaqService from '@/services/association/faq'
+import SocialNetworkService from '@/services/association/socialNetwork'
+import AssociationService from '@/services/association/association'
+import SocialNetworks from '@/components/SocialNetworks.vue'
 
 const props = defineProps({
   setHidden: {
@@ -29,7 +30,9 @@ const props = defineProps({
 });
 
 const toast = useToast()
-const associationDetailService: AssociationDetailService = new AssociationDetailService(toast, props.association.id);
+const associationService: AssociationService = new AssociationService(toast);
+const socialNetworkService: SocialNetworkService = new SocialNetworkService(toast, props.association.id);
+const faqService: FaqService = new FaqService(toast, props.association.id);
 
 const getDefaultAssociation = (): AssociationDetail => ({
   id: -1,
@@ -41,38 +44,46 @@ const getDefaultAssociation = (): AssociationDetail => ({
   faq: []
 })
 
-const getDefaultSocialNetwork = (): SocialNetwork => ({
-  id: -1,
-  name: '',
-  link: ''
-})
-
 const currAssociationRef = ref<AssociationDetail>(props.association);
+const initialAssociationRef = ref<AssociationDetail>(JSON.parse(JSON.stringify(props.association)));
 
-const visibleDialogRef = ref(false)
-const editSocialNetworkRef = ref<SocialNetwork>(getDefaultSocialNetwork())
-
-const closeDialog = (socialNetwork: SocialNetwork | null): void => {
-  if (socialNetwork) {
-    if (socialNetwork.id !== -1) {
-      const index = currAssociationRef.value.socialNetworks.findIndex((item) => item.id === socialNetwork.id)
-      currAssociationRef.value.socialNetworks[index] = socialNetwork
-    } else {
-      currAssociationRef.value.socialNetworks.push(socialNetwork)
-    }
+const isAssociationModified = (): boolean => {
+  const initAsso : Association = {
+    id: initialAssociationRef.value.id,
+    name: initialAssociationRef.value.name,
+    description: initialAssociationRef.value.description,
+    location: initialAssociationRef.value.location,
+    logo: initialAssociationRef.value.logo,
   }
-  editSocialNetworkRef.value = getDefaultSocialNetwork()
-  visibleDialogRef.value = false
+  const currAsso : Association = {
+    id: currAssociationRef.value.id,
+    name: currAssociationRef.value.name,
+    description: currAssociationRef.value.description,
+    location: currAssociationRef.value.location,
+    logo: currAssociationRef.value.logo,
+  }
+  return JSON.stringify(initAsso) !== JSON.stringify(currAsso);
 }
 
-const editSocialNetwork = (index: number): void => {
-  editSocialNetworkRef.value = currAssociationRef.value.socialNetworks[index]
-  visibleDialogRef.value = true
+const isSocialNetworksModified = (): boolean => {
+  return JSON.stringify(initialAssociationRef.value.socialNetworks) !== JSON.stringify(currAssociationRef.value.socialNetworks);
+}
+
+const isFaqModified = (): boolean => {
+  return JSON.stringify(initialAssociationRef.value.faq) !== JSON.stringify(currAssociationRef.value.faq);
 }
 
 const edit = async (): Promise<void> => {
-  if (props.association) {
-    await associationDetailService.updateAssociationDetail(currAssociationRef.value)
+  if (currAssociationRef.value) {
+    if (isAssociationModified()) {
+      await associationService.updateAssociation(currAssociationRef.value)
+    }
+    if (isSocialNetworksModified()) {
+      await socialNetworkService.updateSocialNetworks(currAssociationRef.value.socialNetworks)
+    }
+    if (isFaqModified()) {
+      await faqService.updateFaqs(currAssociationRef.value.faq)
+    }
   }
   await props.reloadAssociation()
   props.setHidden()
@@ -149,43 +160,15 @@ const handleImageChange = (event: Event): void => {
         <Textarea id="associationDescription" v-model="currAssociationRef.description" class="w-full" rows="5" autoResize />
       </div>
 
-      <div class="mb-6">
-        <label class="block mb-2 text-2xl font-bold text-wrap">Réseaux sociaux</label>
-        <div class="flex items-center">
-          <div
-            v-for="(socialNetwork, index) in currAssociationRef.socialNetworks"
-            :key="socialNetwork.name"
-            class="relative mr-2">
-            <Avatar
-              @click="editSocialNetwork(index)"
-              :image="getSocialNetworkImage(socialNetwork.name)"
-              class="cursor-pointer"
-              style="width: 4rem; height: 4rem"
-              shape="circle"
-              :title="socialNetwork.name"/>
-            <div class="edit-overlay" @click="editSocialNetwork(index)" style="width: 4rem; height: 4rem">
-              <i class="pi pi-pencil edit-overlay-icon"></i>
-            </div>
-          </div>
-          <Button
-            @click="visibleDialogRef = true"
-            icon="pi pi-plus"
-            style="width: 4rem; height: 4rem"
-            class="p-button-rounded p-button-outlined" />
-          <DialogSocialNetwork
-            v-if="visibleDialogRef"
-            v-model:visible="visibleDialogRef"
-            :set-hidden="closeDialog"
-            :social-network="JSON.parse(JSON.stringify(editSocialNetworkRef))" />
-        </div>
-      </div>
+      <SocialNetworks
+        :socialNetworks="currAssociationRef.socialNetworks" />
 
       <FAQ
         :editing="true"
         :faq="currAssociationRef.faq" />
 
-      <div class="mt-6 flex justify-start">
-        <Button label="Annuler" class="mr-4" severity="secondary" @click="cancelDialog" />
+      <div class="mt-6 flex justify-start gap-4">
+        <Button label="Annuler" severity="secondary" @click="cancelDialog" />
         <Button label="Sauvegarder" severity="success" @click="edit" />
       </div>
     </div>

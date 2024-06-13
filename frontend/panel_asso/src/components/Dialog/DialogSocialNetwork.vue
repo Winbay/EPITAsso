@@ -37,7 +37,6 @@ const cancelDialog = () => {
   socialNetworksRef.value = getDefaultSocialNetwork()
   props.setHidden();
 };
-
 </script>
 
 <template>
@@ -60,20 +59,18 @@ const cancelDialog = () => {
         placeholder="Lien vers le réseau social"
         class="w-full mb-2 h-12"
       />
-      <div class="flex justify-end mt-5">
+      <div class="flex justify-start mt-5 gap-4">
         <Button
           label="Annuler"
           icon="pi pi-times"
           @click="cancelDialog"
-          class="mx-2"
           severity="secondary"
         />
         <Button
-          label="Ajouter"
+          :label="socialNetworksRef.id === -1 ? 'Ajouter' : 'Modifier'"
           icon="pi pi-check"
           @click="editOrCreate"
           :disabled="!isFormValid"
-          class="mx-2"
           severity="success"
         />
       </div>
