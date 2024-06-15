@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from user.serializers import UserLoginSerializer
-from .models import AssociateUserAndAssociation, Association, Faq
+from .models import AssociateUserAndAssociation, Association, Faq, SocialNetwork
 
 
 class AssociationSerializer(serializers.ModelSerializer):
@@ -17,25 +17,31 @@ class FaqSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
+class SocialNetworkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialNetwork
+        fields = ['id', 'name', 'link']
+        read_only_fields = ['id']
+
+
 class AssociationDetailsSerializer(serializers.ModelSerializer):
-    members = serializers.SerializerMethodField()
     faqs = FaqSerializer(many=True, read_only=True)
+    social_networks = SocialNetworkSerializer(many=True, read_only=True)
 
     class Meta:
         model = Association
-        fields = ['id', 'name', 'content', 'logo', 'location', 'faqs', 'members']
-        read_only_fields = ['id', 'name', 'content', 'logo', 'location', 'faqs', 'members']
+        fields = ['id', 'name', 'content', 'logo', 'location', 'faqs', 'social_networks']
+        read_only_fields = ['id']
         depth = 1
 
-    def get_members(self, obj):
-        associated_users = AssociateUserAndAssociation.objects.filter(association=obj)
-        users = [association.user for association in associated_users]
-        return UserLoginSerializer(users, many=True).data
-    
+
 class MemberSerializer(serializers.ModelSerializer):
-    user = UserLoginSerializer(read_only=True)
+    login = serializers.CharField(source='user.login')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+    school = serializers.CharField(source='user.school')
 
     class Meta:
         model = AssociateUserAndAssociation
-        fields = ['id', 'user', 'role']
-        read_only_fields = ['id', 'user']
+        fields = ['id', 'role', 'login', 'first_name', 'last_name', 'school']
+        read_only_fields = ['id', 'role', 'login', 'first_name', 'last_name', 'school']

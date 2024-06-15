@@ -36,7 +36,7 @@ export default class SocialNetworkService extends ApiService<
   }
 
   async updateSocialNetwork(socialNetwork: SocialNetwork): Promise<void> {
-    await this.update(socialNetwork.id, socialNetwork)
+    await this.update(socialNetwork, socialNetwork.id)
   }
 
   async updateSocialNetworks(socialNetworks: SocialNetwork[]): Promise<void> {

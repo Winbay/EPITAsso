@@ -2,15 +2,8 @@ import type { Event } from '@/types/eventInterfaces'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 import ApiService from '../apiService'
+import { tagSchema } from '../tag'
 
-const tagSchema = yup
-  .object({
-    id: yup.number().required(),
-    name: yup.string().required(),
-    background_color: yup.string().nullable().defined(),
-    text_color: yup.string().nullable().defined()
-  })
-  .required()
 const tagsSchema = yup.array().of(tagSchema).required()
 
 const eventSchema = yup
@@ -74,7 +67,7 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
       })),
       ...rest
     }
-    await this.update(eventDataToValidate.id, eventDataToValidate)
+    await this.update(eventDataToValidate, eventDataToValidate.id)
   }
 
   async deleteEvent(id: Event['id']): Promise<void> {

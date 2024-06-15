@@ -5,12 +5,13 @@ import TabPanel from 'primevue/tabpanel'
 import AssociationDetails from '@/components/AssociationDetails.vue'
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import AssociationDetailService from '@/services/association/associationDetailService'
+import AssociationDetailService from '@/services/association/details'
 import type { AssociationDetail } from '@/types/associationInterfaces'
 import ProgressSpinner from 'primevue/progressspinner'
 import Members from '@/components/DataTable/DataTableMembers.vue'
 
-const ASSOCIATION_ID = 2
+const ASSOCIATION_ID = 1
+
 const toast = useToast()
 const associationDetailService: AssociationDetailService = new AssociationDetailService(
   toast,
@@ -22,12 +23,11 @@ const isLoading = ref(true)
 const getDefaultAssociation = (): AssociationDetail => ({
   id: -1,
   name: '',
-  description: '',
+  content: '',
   location: '',
   logo: '',
-  members: [],
   socialNetworks: [],
-  faq: []
+  faqs: []
 })
 
 const associationRef = ref<AssociationDetail>(getDefaultAssociation())
@@ -65,7 +65,7 @@ onMounted(async () => {
           class="flex content-center w-full h-full"
           style="width: 100%; height: calc(100vh - 7rem)"
         >
-          <Members :members="associationRef.members" />
+          <Members :association-id="ASSOCIATION_ID" />
         </ScrollPanel>
       </TabPanel>
     </TabView>

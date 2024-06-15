@@ -32,11 +32,7 @@ export default class FaqService extends ApiService<yup.InferType<typeof faqSchem
   }
 
   async updateFaq(faq: Faq): Promise<void> {
-    await this.update(faq.id, faq)
-  }
-
-  async updateFaqs(faqs: Faq[]): Promise<void> {
-    await this.updateAll(faqs)
+    await this.update(faq, faq.id)
   }
 
   async deleteFaq(id: Faq['id']): Promise<void> {

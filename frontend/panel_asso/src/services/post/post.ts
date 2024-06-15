@@ -2,15 +2,8 @@ import type { Post } from '@/types/articleInterfaces'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 import ApiService from '../apiService'
+import { tagSchema } from '../tag'
 
-const tagSchema = yup
-  .object({
-    id: yup.number().required(),
-    name: yup.string().required(),
-    background_color: yup.string().nullable().defined(),
-    text_color: yup.string().nullable().defined()
-  })
-  .required()
 const tagsSchema = yup.array().of(tagSchema).required()
 
 const postSchema = yup
@@ -63,7 +56,7 @@ export default class PostService extends ApiService<yup.InferType<typeof postSch
       })),
       ...rest
     }
-    await this.update(postDataToValidate.id, postDataToValidate)
+    await this.update(postDataToValidate, postDataToValidate.id)
   }
 
   async deletePost(postId: number): Promise<void> {

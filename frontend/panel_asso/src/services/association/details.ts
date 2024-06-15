@@ -4,9 +4,7 @@ import * as yup from 'yup'
 import ApiService from '../apiService'
 import { socialNetworkSchema } from './socialNetwork'
 import { faqSchema } from './faq'
-import { userSchema } from '@/services/user/user'
 
-const membersSchema = yup.array().of(userSchema).required()
 const socialNetworksSchema = yup.array().of(socialNetworkSchema).required()
 const faqsSchema = yup.array().of(faqSchema).required()
 
@@ -14,12 +12,11 @@ const associationDetailSchema = yup
   .object({
     id: yup.number().required(),
     name: yup.string().required(),
-    description: yup.string().required(),
+    content: yup.string().required(),
     location: yup.string().required(),
     logo: yup.string().required(),
-    members: membersSchema,
     social_networks: socialNetworksSchema,
-    faq: faqsSchema
+    faqs: faqsSchema
   })
   .required()
 
@@ -35,24 +32,34 @@ export default class AssociationDetailService extends ApiService<
     return this.converterSchemaToInterface(data)
   }
 
+  /**
+   * 
+   * @param associationDetail without members beacause they are update in another endpoint
+   */
+  async updateAssociationDetail(associationDetail: Omit<AssociationDetail, 'members'>): Promise<void> {
+    const data = {
+      id: associationDetail.id,
+      name: associationDetail.name,
+      content: associationDetail.content,
+      location: associationDetail.location,
+      logo: associationDetail.logo,
+      social_networks: associationDetail.socialNetworks,
+      faqs: associationDetail.faqs
+    }
+    await this.update(data)
+  }
+
   protected converterSchemaToInterface(
     associationDetails: yup.InferType<typeof associationDetailSchema>
   ): AssociationDetail {
     return {
       id: associationDetails.id,
       name: associationDetails.name,
-      description: associationDetails.description,
+      content: associationDetails.content,
       location: associationDetails.location,
       logo: associationDetails.logo,
-      members: associationDetails.members?.map((member) => ({
-        id: member.id,
-        login: member.login,
-        firstName: member.first_name,
-        lastName: member.last_name,
-        school: member.school
-      })),
       socialNetworks: associationDetails.social_networks,
-      faq: associationDetails.faq
+      faqs: associationDetails.faqs,
     }
   }
 }

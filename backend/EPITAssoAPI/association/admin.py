@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Association, AssociateUserAndAssociation, Faq
+from .models import Association, AssociateUserAndAssociation, Faq, SocialNetwork
 
 
 @admin.register(AssociateUserAndAssociation)
@@ -19,3 +19,8 @@ class AssociationAdmin(admin.ModelAdmin):
 class FaqAdmin(admin.ModelAdmin):
     list_display = ("id", "question", "association")
     search_fields = ("question", "association")
+
+@admin.register(SocialNetwork)
+class SocialNetworkAdmin(admin.ModelAdmin):
+    list_display = ("name", "link", "association")
+    search_fields = ("name", "link", "association")
