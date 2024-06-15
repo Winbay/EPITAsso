@@ -19,6 +19,8 @@ const associationDetailService: AssociationDetailService = new AssociationDetail
 )
 
 const isLoading = ref(true)
+const membersLoaded = ref(false)
+const activeTab = ref(0)
 
 const getDefaultAssociation = (): AssociationDetail => ({
   id: -1,
@@ -41,6 +43,13 @@ const reloadMyAssociation = async (): Promise<void> => {
 onMounted(async () => {
   await reloadMyAssociation()
 })
+
+const handleTabChange = (event: { index: number }): void => {
+  activeTab.value = event.index
+  if (event.index === 1 && !membersLoaded.value) {
+    membersLoaded.value = true
+  }
+}
 </script>
 
 <template>
@@ -48,7 +57,7 @@ onMounted(async () => {
     <ProgressSpinner />
   </div>
   <div v-else>
-    <TabView class="content-center w-full h-full px-10 py-4">
+    <TabView class="content-center w-full h-full px-10 py-4" @tab-change="handleTabChange">
       <TabPanel header="Mon association">
         <ScrollPanel
           class="flex content-center w-full h-full"
@@ -65,7 +74,7 @@ onMounted(async () => {
           class="flex content-center w-full h-full"
           style="width: 100%; height: calc(100vh - 7rem)"
         >
-          <Members :association-id="ASSOCIATION_ID" />
+          <Members v-if="membersLoaded" :association-id="ASSOCIATION_ID" />
         </ScrollPanel>
       </TabPanel>
     </TabView>
