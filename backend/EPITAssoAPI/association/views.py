@@ -59,7 +59,7 @@ class AssociationDetailsView(generics.RetrieveUpdateAPIView):
         existing_faq_ids = [faq.id for faq in existing_faqs]
 
         for faq_data in faqs_data:
-            if faq_data['id'] == None or faq_data['id'] == -1:
+            if faq_data['id'] is None or faq_data['id'] == -1:
                 faq_data.pop('id', None)
                 Faq.objects.create(association=instance, **faq_data)
             elif faq_data['id'] in existing_faq_ids:
@@ -77,7 +77,7 @@ class AssociationDetailsView(generics.RetrieveUpdateAPIView):
         existing_social_network_ids = [social_network.id for social_network in existing_social_networks]
 
         for social_network_data in social_networks_data:
-            if social_network_data['id'] == None or social_network_data['id'] == -1:
+            if social_network_data['id'] is None or social_network_data['id'] == -1:
                 social_network_data.pop('id', None)
                 SocialNetwork.objects.create(association=instance, **social_network_data)
             elif social_network_data['id'] in existing_social_network_ids:
