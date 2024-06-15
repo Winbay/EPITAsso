@@ -3,7 +3,7 @@ import * as yup from 'yup'
 import ApiService from './apiService'
 import type { Tag } from '@/types/tagInterfaces'
 
-const tagSchema = yup
+export const tagSchema = yup
   .object({
     id: yup.number().required(),
     name: yup.string().required(),

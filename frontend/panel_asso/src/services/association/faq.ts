@@ -3,7 +3,7 @@ import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 import ApiService from '../apiService'
 
-const faqSchema = yup.object({
+export const faqSchema = yup.object({
   id: yup.number().required(),
   question: yup.string().required(),
   answer: yup.string().required()
@@ -13,7 +13,7 @@ export default class FaqService extends ApiService<yup.InferType<typeof faqSchem
   associationId: Association['id']
 
   constructor(toast: ToastServiceMethods, associationId: Association['id']) {
-    super(toast, `/api/associations/${associationId}/faqs`, faqSchema)
+    super(toast, `/api/associations/${associationId}/faqs/`, faqSchema)
     this.associationId = associationId
   }
 
@@ -32,7 +32,7 @@ export default class FaqService extends ApiService<yup.InferType<typeof faqSchem
   }
 
   async updateFaq(faq: Faq): Promise<void> {
-    await this.update(faq.id, faq)
+    await this.update(faq, faq.id)
   }
 
   async deleteFaq(id: Faq['id']): Promise<void> {

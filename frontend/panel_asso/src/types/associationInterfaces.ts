@@ -1,3 +1,5 @@
+import type { User } from '@/types/userInterfaces'
+
 export interface SocialNetwork {
   id: number
   name: string
@@ -10,16 +12,19 @@ export interface Faq {
   answer: string
 }
 
+export interface Member extends Pick<User, 'id' | 'login' | 'firstName' | 'lastName' | 'school'> {
+  role: string
+}
+
 export interface Association {
   id: number
   name: string
-  description: string
+  content: string
   location: string
-  logoUrl: string
+  logo: string
 }
 
 export interface AssociationDetail extends Association {
-  // members: User[]
   socialNetworks: SocialNetwork[]
-  faq: Faq[]
+  faqs: Faq[]
 }

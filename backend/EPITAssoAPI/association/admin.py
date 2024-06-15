@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Association, AssociateUserAndAssociation
+from .models import Association, AssociateUserAndAssociation, Faq, SocialNetwork
 
 
 @admin.register(AssociateUserAndAssociation)
@@ -13,3 +13,15 @@ class AssociationAdmin(admin.ModelAdmin):
     list_display = ("name", "id", "location")
     search_fields = ("name", "location")
     # list_filter = ('location',) # TODO uncomment this line once location is an enum or object
+
+
+@admin.register(Faq)
+class FaqAdmin(admin.ModelAdmin):
+    list_display = ("id", "question", "association")
+    search_fields = ("question", "association")
+
+
+@admin.register(SocialNetwork)
+class SocialNetworkAdmin(admin.ModelAdmin):
+    list_display = ("name", "link", "association")
+    search_fields = ("name", "link", "association")

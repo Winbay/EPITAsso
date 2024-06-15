@@ -22,8 +22,13 @@ export default class ApiService<SchemaType> {
     await this.request<void>('post', this.basePath, validatedData)
   }
 
+  protected async get(): Promise<SchemaType> {
+    const data = await this.request<SchemaType>('get', `${this.basePath}`)
+    return this.validate(data)
+  }
+
   protected async getById(id: number): Promise<SchemaType> {
-    const data = await this.request<SchemaType>('get', `${this.basePath}${id}`)
+    const data = await this.request<SchemaType>('get', `${this.basePath}${id}/`)
     return this.validate(data)
   }
 
@@ -32,9 +37,9 @@ export default class ApiService<SchemaType> {
     return this.validateArray(data, yup.array().of(this.schema).required())
   }
 
-  protected async update(id: number, data: SchemaType): Promise<void> {
+  protected async update(data: SchemaType, id?: number): Promise<void> {
     const validatedData = await this.validate(data)
-    await this.request<void>('put', `${this.basePath}${id}/`, validatedData)
+    await this.request<void>('put', `${this.basePath}${id ? id + '/' : ''}`, validatedData)
   }
 
   protected async delete(id: number): Promise<void> {
@@ -44,7 +49,7 @@ export default class ApiService<SchemaType> {
   private async request<ReturnType>(
     method: 'post' | 'get' | 'put' | 'delete',
     url: string,
-    data?: SchemaType | Partial<SchemaType>
+    data?: SchemaType | Partial<SchemaType> | SchemaType[]
   ): Promise<ReturnType> {
     try {
       const response = await djangoApi[method]<ReturnType>(url, data)
