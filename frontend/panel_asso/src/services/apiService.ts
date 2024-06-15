@@ -42,8 +42,12 @@ export default class ApiService<SchemaType> {
     return this.validateArray(data, yup.array().of(this.schema).required())
   }
 
-  protected async update(data: SchemaType, id?: number): Promise<void> {
+  protected async getAllWithParams(params: string): Promise<SchemaType[]> {
+    const data = await this.request<SchemaType[]>('get', this.basePath, undefined, params); // Passer params ici
+    return this.validateArray(data, yup.array().of(this.schema).required());
+  }
 
+  protected async update(data: SchemaType, id?: number): Promise<void> {
     const validatedData = await this.validate(data)
     await this.request<void>('put', `${this.basePath}${id ? id + '/' : ''}`, validatedData)
   }
@@ -55,10 +59,12 @@ export default class ApiService<SchemaType> {
   private async request<ReturnType>(
     method: 'post' | 'get' | 'put' | 'delete',
     url: string,
-    data?: SchemaType | Partial<SchemaType> | SchemaType[]
+    data?: SchemaType | Partial<SchemaType>,
+    params?: string
   ): Promise<ReturnType> {
     try {
-      const response = await djangoApi[method]<ReturnType>(url, data)
+      const fullUrl = params ? `${url}?${params}` : url
+      const response = await djangoApi[method]<ReturnType>(fullUrl, data)
       return response.data
     } catch (error) {
       this.handleError(error, `${method.toUpperCase()}: An error occured.`)

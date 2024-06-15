@@ -18,7 +18,7 @@ const props = defineProps<{
 const showDate = ref(false)
 
 const isUserMessage = computed(() => {
-  return props.message.author.id === user.value.id;
+  return props.message.author.login === user.value.login;
 });
 
 function formatDate(date: Date | string) {

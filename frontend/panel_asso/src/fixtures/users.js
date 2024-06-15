@@ -3,7 +3,7 @@ import fixture from 'can-fixture'
 export let users = [
   {
     id: "1",
-    login: 'john.doe',
+    login: 'nathan.lenogue',
     first_name: 'John',
     last_name: 'Doe',
   },

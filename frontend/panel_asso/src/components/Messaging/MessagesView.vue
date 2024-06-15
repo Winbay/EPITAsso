@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import '@/fixtures/messages'
-import { computed, onMounted, type PropType, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, type PropType, ref, watch } from 'vue'
 
 import ProgressSpinner from 'primevue/progressspinner';
 import Divider from 'primevue/divider';
@@ -28,26 +28,28 @@ const messageService = ref<MessageService>(new MessageService(toast, props.conve
 const messagesRef = ref<Message[]>([])
 const isLoading = ref(true)
 const newMessageContent = ref("")
+const limit = 10
+const offset = ref(0)
 
-const reversedMessages = computed(() => {
-  return messagesRef.value?.slice().sort((a, b) => a.sentAt.getTime() - b.sentAt.getTime()).reverse() || [];
-});
 
 async function fetchConversation() {
   isLoading.value = true
-  messagesRef.value = await messageService.value.getMessages()
+  offset.value = messagesRef.value.length
+  const messages = await messageService.value.getMessages(limit, offset.value)
+  messagesRef.value = [...messagesRef.value, ...messages]
   isLoading.value = false
 }
 
 async function sendMessage() {
   if (newMessageContent.value.length === 0) return
+  // TODO: set right author and association sender
   const newMessage = {
     id: 1,
     conversation: props.conversation,
     content: newMessageContent.value,
     author: {
       id: "1",
-      login: "Moi",
+      login: "nathan.lenogue",
       firstName: "Moi",
       lastName: "Moi",
     },
@@ -62,34 +64,51 @@ async function sendMessage() {
   }
   await messageService.value.createMessage(newMessage)
   newMessageContent.value = ""
-  await fetchConversation()
+  messagesRef.value.push(newMessage)
+  await scrollToEnd()
 }
 
-onMounted(() => {
-  fetchConversation()
-})
+async function handleScrollEnd(event: Event) {
+  const target = event.target as HTMLElement;
+  const lastScrollHeight = target.scrollHeight
+  if (target.scrollTop === 0){
+    await fetchConversation()
+    await nextTick(() => {
+      target.scrollTop = target.scrollHeight - lastScrollHeight;
+    })
+  }
+}
 
-watch(() => props.conversation.id, async (newConversationId) => {
-  messageService.value = new MessageService(toast, newConversationId)
+async function scrollToEnd() {
+  const scrollElement = document.querySelector("#messagesContainer");
+  if (scrollElement) {
+    await nextTick(() => {
+      scrollElement.scrollTop = scrollElement.scrollHeight
+    })
+  }
+}
+
+onMounted(async () => {
   await fetchConversation()
+  await scrollToEnd()
 })
 
 </script>
 
 <template>
   <div class="flex flex-col h-full p-4 rounded-lg shadow-md">
-    <div v-if="isLoading" class="content-center text-center h-full">
+    <div v-show="isLoading" class="content-center text-center h-full">
       <ProgressSpinner />
     </div>
-    <div v-else class="flex flex-col h-full">
+    <div v-show="!isLoading" class="flex flex-col h-full">
       <div class="flex-grow">
         <h1 class="text-lg font-semibold">{{ conversation!.name }}</h1>
         <div class="flex flex-wrap mt-2">
           <Chip class="mr-2 mb-2" v-for="association in conversation!.associationsInConversation" :key="association.id" :label="association.name" />
         </div>
         <Divider />
-        <div id="messagesContainer">
-          <div v-for="message in reversedMessages" :key="message.id">
+        <div id="messagesContainer" @scroll="handleScrollEnd">
+          <div v-for="message in messagesRef" :key="message.id">
             <MessageComponent :message="message" class="mb-2"/>
           </div>
         </div>
@@ -110,7 +129,7 @@ watch(() => props.conversation.id, async (newConversationId) => {
   padding: 25px 10px 10px;
   display: flex;
   overflow-y: auto;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 #messagesContainer::-webkit-scrollbar {

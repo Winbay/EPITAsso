@@ -95,7 +95,7 @@ onMounted(async () => {
       </Listbox>
     </div>
     <div class="col-span-2">
-      <MessagesView v-if="selectedConversation" class="ml-4" :conversation="selectedConversation"/>
+      <MessagesView v-if="selectedConversation" :key="selectedConversation.id" class="ml-4" :conversation="selectedConversation"/>
     </div>
   </div>
 
