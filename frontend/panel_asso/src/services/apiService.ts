@@ -37,14 +37,9 @@ export default class ApiService<SchemaType> {
     return this.validateArray(data, yup.array().of(this.schema).required())
   }
 
-  protected async update(id: number, data: SchemaType): Promise<void> {
+  protected async update(data: SchemaType, id?: number): Promise<void> {
     const validatedData = await this.validate(data)
-    await this.request<void>('put', `${this.basePath}${id}/`, validatedData)
-  }
-
-  protected async updateAll(data: SchemaType[]): Promise<void> {
-    const validatedData = await this.validateArray(data, yup.array().of(this.schema).required())
-    await this.request<void>('put', `${this.basePath}/sync`, validatedData)
+    await this.request<void>('put', `${this.basePath}${id ? id + '/' : ''}`, validatedData)
   }
 
   protected async delete(id: number): Promise<void> {

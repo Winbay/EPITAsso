@@ -7,12 +7,10 @@ import Dialog from 'primevue/dialog'
 
 import { ref, defineProps, type PropType } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import type { Association, AssociationDetail, SocialNetwork } from '@/types/associationInterfaces'
+import type { AssociationDetail } from '@/types/associationInterfaces'
 import FAQ from '@/components/FAQ.vue'
-import FaqService from '@/services/association/faq'
-import SocialNetworkService from '@/services/association/socialNetwork'
-import AssociationService from '@/services/association/association'
 import SocialNetworks from '@/components/SocialNetworks.vue'
+import AssociationDetailService from '@/services/association/details'
 
 const props = defineProps({
   setHidden: {
@@ -26,76 +24,27 @@ const props = defineProps({
 })
 
 const toast = useToast()
-const associationService: AssociationService = new AssociationService(toast)
-const socialNetworkService: SocialNetworkService = new SocialNetworkService(
+
+const associationDetailService: AssociationDetailService = new AssociationDetailService(
   toast,
   props.association.id
 )
-const faqService: FaqService = new FaqService(toast, props.association.id)
 
 const getDefaultAssociation = (): AssociationDetail => ({
   id: -1,
   name: '',
-  description: '',
+  content: '',
   location: '',
   logo: '',
-  members: [],
   socialNetworks: [],
-  faq: []
+  faqs: []
 })
 
 const currAssociationRef = ref<AssociationDetail>(props.association)
-const initialAssociationRef = ref<AssociationDetail>({ ...props.association })
 
-const isAssociationModified = (): boolean => {
-  const initAsso: Association = {
-    id: initialAssociationRef.value.id,
-    name: initialAssociationRef.value.name,
-    description: initialAssociationRef.value.description,
-    location: initialAssociationRef.value.location,
-    logo: initialAssociationRef.value.logo
-  }
-  const currAsso: Association = {
-    id: currAssociationRef.value.id,
-    name: currAssociationRef.value.name,
-    description: currAssociationRef.value.description,
-    location: currAssociationRef.value.location,
-    logo: currAssociationRef.value.logo
-  }
-  return JSON.stringify(initAsso) !== JSON.stringify(currAsso)
-}
-
-const isSocialNetworksModified = (): boolean => {
-  return (
-    JSON.stringify(initialAssociationRef.value.socialNetworks) !==
-    JSON.stringify(currAssociationRef.value.socialNetworks)
-  )
-}
-
-const isFaqModified = (): boolean => {
-  return (
-    JSON.stringify(initialAssociationRef.value.faq) !== JSON.stringify(currAssociationRef.value.faq)
-  )
-}
-
-const edit = async (): Promise<void> => {
+const saveUpdate = async (): Promise<void> => {
   if (currAssociationRef.value) {
-    if (isAssociationModified()) {
-      const association = {
-        id: currAssociationRef.value.id,
-        name: currAssociationRef.value.name,
-        description: currAssociationRef.value.description,
-        location: currAssociationRef.value.location,
-        logo: currAssociationRef.value.logo
-      }
-      await associationService.updateAssociation(association)
-    }
-    if (isSocialNetworksModified()) {
-      await socialNetworkService.updateSocialNetworks(currAssociationRef.value.socialNetworks)
-    }
-    if (isFaqModified()) {
-      await faqService.updateFaqs(currAssociationRef.value.faq)
-    }
+    await associationDetailService.updateAssociationDetail(currAssociationRef.value)
   }
   props.setHidden()
 }
@@ -178,7 +127,7 @@ const handleImageChange = (event: Event): void => {
         >
         <Textarea
           id="associationDescription"
-          v-model="currAssociationRef.description"
+          v-model="currAssociationRef.content"
           class="w-full"
           rows="5"
           autoResize
@@ -187,11 +136,11 @@ const handleImageChange = (event: Event): void => {
 
       <SocialNetworks :socialNetworks="currAssociationRef.socialNetworks" />
 
-      <FAQ :editing="true" :faq="currAssociationRef.faq" />
+      <FAQ :editing="true" :faqs="currAssociationRef.faqs" />
 
       <div class="mt-6 flex justify-start gap-4">
         <Button label="Annuler" severity="secondary" @click="cancelDialog" />
-        <Button label="Sauvegarder" severity="success" @click="edit" />
+        <Button label="Sauvegarder" severity="success" @click="saveUpdate" />
       </div>
     </div>
   </Dialog>

@@ -1,22 +1,41 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, onMounted, ref, type PropType } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
-import type { User } from '@/types/userInterfaces'
-import type { PropType } from 'vue'
+import { useToast } from 'primevue/usetoast';
+import MemberService from '@/services/association/member';
+import type { Member } from '@/types/associationInterfaces';
 
-defineProps({
-  members: {
-    type: Array as PropType<User[]>,
+const props = defineProps({
+  associationId: {
+    type: Number,
     required: true
   }
+})
+
+const toast = useToast()
+const membersService: MemberService = new MemberService(toast, props.associationId)
+
+const getDefaultMember = (): Member => ({
+  id: '',
+  login: '',
+  firstName: '',
+  lastName: '',
+  school: '',
+  role: '',
+})
+
+const membersRef = ref<Member[]>([])
+
+onMounted(async () => {
+  membersRef.value = await membersService.getMembers()
 })
 </script>
 
 <template>
   <DataTable
-    :value="members"
+    :value="membersRef"
     show-gridlines
     striped-rows
     tableStyle="min-width: 50rem"
@@ -28,6 +47,11 @@ defineProps({
     :rows="10"
     :rowsPerPageOptions="[10, 25, 50]"
   >
+    <Column field="role" header="Rôle" class="w-28" sortable>
+      <template #body="slotProps">
+        <span>{{ slotProps.data.role }}</span>
+      </template>
+    </Column>
     <Column field="login" header="Login" class="w-28" sortable>
       <template #body="slotProps">
         <span>{{ slotProps.data.login }}</span>

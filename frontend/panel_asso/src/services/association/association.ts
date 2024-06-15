@@ -6,7 +6,7 @@ import ApiService from '../apiService'
 const associationSchema = yup.object({
   id: yup.number().required(),
   name: yup.string().required(),
-  description: yup.string().required(),
+  content: yup.string().required(),
   location: yup.string().required(),
   logo: yup.string().required()
 })
@@ -29,7 +29,7 @@ export default class AssociationService extends ApiService<
   }
 
   async updateAssociation(association: Association): Promise<void> {
-    const { ...rest } = association
-    await this.update(rest.id, rest)
+    const { ...data } = association
+    await this.update(data, data.id)
   }
 }

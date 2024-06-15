@@ -8,7 +8,6 @@ import DialogAssociation from '@/components/Dialog/DialogAssociation.vue'
 import FAQ from '@/components/FAQ.vue'
 import type { AssociationDetail } from '@/types/associationInterfaces'
 import { getSocialNetworkImage } from '@/utils/associationUtils'
-import '@/fixtures/association'
 
 const props = defineProps({
   associationDetails: {
@@ -42,8 +41,8 @@ const closeDialog = async (): Promise<void> => {
       ></Image>
       <div class="flex flex-col w-full">
         <h1>{{ associationDetails.name }}</h1>
-        <p class="association-description mb-2 whitespace-pre-wrap">
-          {{ associationDetails.description }}
+        <p class="association-content mb-2 whitespace-pre-wrap">
+          {{ associationDetails.content }}
         </p>
         <div class="flex pt-5">
           <div v-for="socialNetwork in associationDetails.socialNetworks" :key="socialNetwork.name">
@@ -63,9 +62,9 @@ const closeDialog = async (): Promise<void> => {
     <DialogAssociation
       v-model:visible="visibleDialogRef"
       :set-hidden="closeDialog"
-      :association="JSON.parse(JSON.stringify(associationDetails))"
+      :association="associationDetails"
     />
-    <FAQ :faq="associationDetails.faq" :association-id="associationDetails.id" />
+    <FAQ :faqs="associationDetails.faqs" :association-id="associationDetails.id" />
   </div>
 </template>
 

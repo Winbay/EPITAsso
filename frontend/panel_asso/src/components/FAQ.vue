@@ -14,7 +14,7 @@ const props = defineProps({
     required: false,
     default: false
   },
-  faq: {
+  faqs: {
     type: Array as PropType<Faq[]>,
     required: true
   }
@@ -26,7 +26,7 @@ const getDefaultFaqItem = (): Faq => ({
   answer: ''
 })
 
-const faqItemsRef = ref<Faq[]>(props.faq)
+const faqItemsRef = ref<Faq[]>(props.faqs)
 const selectedFaqItemRef = ref<Faq>(getDefaultFaqItem())
 
 const visibleDialogRef = ref(false)
@@ -107,7 +107,7 @@ const deleteQuestion = (index: number): void => {
       v-if="visibleDialogRef"
       v-model:visible="visibleDialogRef"
       :set-hidden="closeDialog"
-      :faq-item="JSON.parse(JSON.stringify(selectedFaqItemRef))"
+      :faq-item="{ ...selectedFaqItemRef }"
     />
   </div>
 </template>
