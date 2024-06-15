@@ -5,30 +5,47 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
-    replaces = [('association', '0002_faq'), ('association', '0003_socialnetwork'), ('association', '0004_rename_url_socialnetwork_link')]
+    replaces = [
+        ("association", "0002_faq"),
+        ("association", "0003_socialnetwork"),
+        ("association", "0004_rename_url_socialnetwork_link"),
+    ]
 
     dependencies = [
-        ('association', '0001_initial'),
+        ("association", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Faq',
+            name="Faq",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('question', models.TextField()),
-                ('answer', models.TextField()),
-                ('association', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='faqs', to='association.association')),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("question", models.TextField()),
+                ("answer", models.TextField()),
+                (
+                    "association",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="faqs",
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SocialNetwork',
+            name="SocialNetwork",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('link', models.TextField(blank=True, null=True)),
-                ('association', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='social_networks', to='association.association')),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("link", models.TextField(blank=True, null=True)),
+                (
+                    "association",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="social_networks",
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
     ]

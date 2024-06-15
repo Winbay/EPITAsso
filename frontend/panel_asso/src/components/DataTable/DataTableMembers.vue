@@ -3,9 +3,9 @@ import { defineProps, onMounted, ref, type PropType } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
-import { useToast } from 'primevue/usetoast';
-import MemberService from '@/services/association/member';
-import type { Member } from '@/types/associationInterfaces';
+import { useToast } from 'primevue/usetoast'
+import MemberService from '@/services/association/member'
+import type { Member } from '@/types/associationInterfaces'
 
 const props = defineProps({
   associationId: {
@@ -23,7 +23,7 @@ const getDefaultMember = (): Member => ({
   firstName: '',
   lastName: '',
   school: '',
-  role: '',
+  role: ''
 })
 
 const membersRef = ref<Member[]>([])

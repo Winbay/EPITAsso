@@ -20,6 +20,7 @@ class FaqAdmin(admin.ModelAdmin):
     list_display = ("id", "question", "association")
     search_fields = ("question", "association")
 
+
 @admin.register(SocialNetwork)
 class SocialNetworkAdmin(admin.ModelAdmin):
     list_display = ("name", "link", "association")

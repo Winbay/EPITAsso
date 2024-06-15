@@ -15,8 +15,7 @@ class IsMemberOfAssociation(permissions.BasePermission):
     def has_permission(self, request, view):
         if not request.user.is_authenticated:
             return False
-        association_id = view.kwargs.get('pk')
+        association_id = view.kwargs.get("pk")
         return AssociateUserAndAssociation.objects.filter(
-            association_id=association_id,
-            user=request.user
+            association_id=association_id, user=request.user
         ).exists()

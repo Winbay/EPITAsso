@@ -25,16 +25,23 @@ class AssociateUserAndAssociation(models.Model):
 
 class Faq(models.Model):
     id = models.BigAutoField(primary_key=True)
-    association = models.ForeignKey("association.Association", on_delete=models.CASCADE, related_name='faqs')
+    association = models.ForeignKey(
+        "association.Association", on_delete=models.CASCADE, related_name="faqs"
+    )
     question = models.TextField()
     answer = models.TextField()
 
     def __str__(self):
         return self.question
-    
+
+
 class SocialNetwork(models.Model):
     id = models.BigAutoField(primary_key=True)
-    association = models.ForeignKey("association.Association", on_delete=models.CASCADE, related_name='social_networks')
+    association = models.ForeignKey(
+        "association.Association",
+        on_delete=models.CASCADE,
+        related_name="social_networks",
+    )
     name = models.CharField(max_length=255)
     link = models.TextField(null=True, blank=True)
 

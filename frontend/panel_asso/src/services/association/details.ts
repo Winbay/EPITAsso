@@ -33,10 +33,12 @@ export default class AssociationDetailService extends ApiService<
   }
 
   /**
-   * 
+   *
    * @param associationDetail without members beacause they are update in another endpoint
    */
-  async updateAssociationDetail(associationDetail: Omit<AssociationDetail, 'members'>): Promise<void> {
+  async updateAssociationDetail(
+    associationDetail: Omit<AssociationDetail, 'members'>
+  ): Promise<void> {
     const data = {
       id: associationDetail.id,
       name: associationDetail.name,
@@ -59,7 +61,7 @@ export default class AssociationDetailService extends ApiService<
       location: associationDetails.location,
       logo: associationDetails.logo,
       socialNetworks: associationDetails.social_networks,
-      faqs: associationDetails.faqs,
+      faqs: associationDetails.faqs
     }
   }
 }
