@@ -26,7 +26,7 @@ export default class ConversationService extends ApiService<yup.InferType<typeof
     const associationsInConversationDataToValidate = associationsInConversation.map((association) => ({
       id: association.id,
       name: association.name,
-      description: association.description,
+      content: association.content,
       location: association.location,
       logo: association.logo
     }))
@@ -55,7 +55,7 @@ export default class ConversationService extends ApiService<yup.InferType<typeof
       associationsInConversation: conversation.associations_in_conversation.map((association) => ({
         id: association.id,
         name: association.name,
-        description: association.description,
+        content: association.content,
         location: association.location,
         logo: association.logo
       })),

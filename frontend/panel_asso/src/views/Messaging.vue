@@ -1,7 +1,5 @@
 <script setup lang="ts">
 
-import '@/fixtures/associations'
-import '@/fixtures/users'
 import { onMounted, ref } from 'vue'
 
 import Listbox from 'primevue/listbox';
@@ -26,46 +24,49 @@ const associationService: AssociationService = new AssociationService(toast)
 
 const isLoading = ref(true)
 const conversationsRef = ref<Conversation[]>([])
-const selectedConversation = ref<Conversation | null>(null)
-const newConversationName = ref<string | null>(null)
-const associations = ref<Association[]>([])
-const selectedAssociations = ref<Association[]>([])
+const selectedConversationRef = ref<Conversation | null>(null)
+const newConversationNameRef = ref<string | null>(null)
+const selectedAssociationsRef = ref<Association[]>([])
+const associationsRef = ref<Association[]>([])
 
-const overlayPanel = ref()
+const overlayPanelRef = ref<OverlayPanel>()
 
-async function toggle(event: Event) {
-  if (overlayPanel.value) {
+async function openOverlayPanel(event: Event): Promise<void> {
+  if (overlayPanelRef.value) {
     try {
       associationService.getAssociations()
-        .then(response => associations.value = response)
+        .then(response => associationsRef.value = response)
     } catch (error) {
       console.error(error)
     }
-    overlayPanel.value.toggle(event)
+    overlayPanelRef.value.toggle(event)
   }
 }
 
-async function fetchConversations() {
+async function fetchConversations(): Promise<void> {
   isLoading.value = true
   conversationsRef.value = await conversationService.getConversations()
   isLoading.value = false
 }
 
-async function createConversation() {
-  if (!newConversationName.value || selectedAssociations.value.length === 0) return
+async function createConversation(): Promise<void> {
+  if (!newConversationNameRef.value || selectedAssociationsRef.value.length === 0) return
+  const my_association = await associationService.getAssociationById(ASSOCIATION_ID)
   const newConversation = {
-    name: newConversationName.value,
-    associationsInConversation: selectedAssociations.value,
+    name: newConversationNameRef.value,
+    associationsInConversation: [...selectedAssociationsRef.value, my_association],
     lastSentAt: new Date(),
   }
   await conversationService.createConversation(newConversation)
-  newConversationName.value = null
-  selectedAssociations.value = []
-  overlayPanel.value.hide()
+  newConversationNameRef.value = null
+  selectedAssociationsRef.value = []
+  if (overlayPanelRef.value) {
+    overlayPanelRef.value.hide()
+  }
   await fetchConversations()
 }
 
-async function deleteConversation(conversation: Conversation) {
+async function deleteConversation(conversation: Conversation): Promise<void> {
   await conversationService.deleteConversation(conversation.id)
   conversationsRef.value = conversationsRef.value.filter(conv => conv.id !== conversation.id)
 }
@@ -83,9 +84,9 @@ onMounted(async () => {
   <div v-else class="grid grid-cols-3 gap-4 mt-8 mx-8" style="height: 90vh">
     <div class="col-span-1">
       <div class="p-grid p-fluid mb-2">
-        <Button icon="pi pi-plus" class="p-col-6 p-d-flex p-jc-end" text label="Nouvelle conversation" @click="toggle($event)" />
+        <Button icon="pi pi-plus" class="p-col-6 p-d-flex p-jc-end" text label="Nouvelle conversation" @click="openOverlayPanel($event)" />
       </div>
-      <Listbox v-if="conversationsRef.length > 0" v-model="selectedConversation" :options="conversationsRef" filter optionLabel="name">
+      <Listbox v-if="conversationsRef.length > 0" v-model="selectedConversationRef" :options="conversationsRef" filter optionLabel="name">
         <template #option="slotProps">
           <div class="flex justify-between items-center">
             <span>{{ slotProps.option.name }}</span>
@@ -93,16 +94,19 @@ onMounted(async () => {
           </div>
         </template>
       </Listbox>
+      <div v-else class="p-20 text-center">
+        <h3> Pas de conversations </h3>
+      </div>
     </div>
     <div class="col-span-2">
-      <MessagesView v-if="selectedConversation" :key="selectedConversation.id" class="ml-4" :conversation="selectedConversation"/>
+      <MessagesView v-if="selectedConversationRef" :key="selectedConversationRef.id" class="ml-4" :conversation="selectedConversationRef"/>
     </div>
   </div>
 
-  <OverlayPanel ref="overlayPanel">
-    <InputText class="mr-4" v-model="newConversationName" placeholder="Nom de la conversation" />
-    <MultiSelect class="mr-4" display="chip" v-model="selectedAssociations" :options="associations.filter(asso => asso.id !== ASSOCIATION_ID)" filter option-label="name" placeholder="Selectionner des associations" />
-    <Button type="button" label="Créer" @click="createConversation" :disabled="!newConversationName"/>
+  <OverlayPanel ref="overlayPanelRef">
+    <InputText class="mr-4" v-model="newConversationNameRef" placeholder="Nom de la conversation" />
+    <MultiSelect class="mr-4" display="chip" v-model="selectedAssociationsRef" :options="associationsRef.filter(asso => asso.id !== ASSOCIATION_ID)" filter option-label="name" placeholder="Selectionner des associations" />
+    <Button type="button" label="Créer" @click="createConversation" :disabled="!newConversationNameRef"/>
   </OverlayPanel>
 </template>
 

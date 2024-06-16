@@ -1,27 +1,29 @@
 <script setup lang="ts">
 
-import '@/fixtures/associations'
-import '@/fixtures/users'
-import { computed, ref } from 'vue'
+import { computed, type PropType, ref } from 'vue'
 
 import type { FetchedUser } from '@/types/userInterfaces'
 import type { Message } from '@/types/messageInterfaces'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
+if (userStore.user === null) throw new Error("User is not logged in")
 const user = ref<FetchedUser>(userStore.user)
 
-const props = defineProps<{
-  message: Message,
-}>();
-
-const showDate = ref(false)
-
-const isUserMessage = computed(() => {
-  return props.message.author.login === user.value.login;
+const props = defineProps({
+  message: {
+    type: Object as PropType<Omit<Message, 'id'>>,
+    required: true
+  },
 });
 
-function formatDate(date: Date | string) {
+const showDateRef = ref(false)
+
+const isUserMessage = computed(() => {
+  return props.message.author.id === user.value.id;
+});
+
+function formatDate(date: Date | string): string {
   const dateObj = new Date(date);
 
   const optionsDate: Intl.DateTimeFormatOptions = {
@@ -47,11 +49,11 @@ function formatDate(date: Date | string) {
     v-if="message"
     class="mb-4 relative w-full flex flex-col"
     :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }"
-    @mouseover="showDate = true"
-    @mouseleave="showDate = false"
+    @mouseover="showDateRef = true"
+    @mouseleave="showDateRef = false"
   >
     <span
-      v-if="showDate"
+      v-if="showDateRef"
       class="text-gray-500 text-sm absolute message-date mr-2"
       :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
       {{ formatDate(message.sentAt) }}
@@ -62,7 +64,7 @@ function formatDate(date: Date | string) {
       {{ message.author.firstName }} {{ message.author.lastName }} ({{ message.associationSender.name }})
     </span>
     <div class="message-bubble" :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
-      <div class="message-content">
+      <div class="message-content whitespace-pre-wrap">
         {{ message.content }}
       </div>
     </div>

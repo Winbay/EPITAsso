@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
-import '@/fixtures/messages'
-import { computed, nextTick, onMounted, type PropType, ref, watch } from 'vue'
+import { nextTick, onMounted, type PropType, ref } from 'vue'
 
 import ProgressSpinner from 'primevue/progressspinner';
 import Divider from 'primevue/divider';
@@ -12,8 +11,16 @@ import { useToast } from 'primevue/usetoast'
 
 import type { Conversation } from '@/types/conversationInterfaces'
 import type { Message } from '@/types/messageInterfaces'
+import type { FetchedUser } from '@/types/userInterfaces'
 import MessageComponent from '@/components/Messaging/MessageComponent.vue'
 import MessageService from '@/services/messaging/message'
+import { useUserStore } from '@/stores/user'
+
+const ASSOCIATION_ID = 1
+
+const userStore = useUserStore()
+if (userStore.user === null) throw new Error("User is not logged in")
+const user = ref<FetchedUser>(userStore.user)
 
 const props = defineProps({
   conversation: {
@@ -25,65 +32,60 @@ const props = defineProps({
 const toast = useToast()
 const messageService = ref<MessageService>(new MessageService(toast, props.conversation.id))
 
-const messagesRef = ref<Message[]>([])
 const isLoading = ref(true)
-const newMessageContent = ref("")
+const messagesRef = ref<Omit<Message, 'id'>[]>([])
+const newMessageContentRef = ref("")
 const limit = 10
 const offset = ref(0)
 
+const messageContainerRef = ref<HTMLElement | null>(null)
 
-async function fetchConversation() {
-  isLoading.value = true
+async function fetchConversation(firstLoad: boolean = true): Promise<void> {
+  if (firstLoad) {
+    isLoading.value = true
+  }
   offset.value = messagesRef.value.length
   const messages = await messageService.value.getMessages(limit, offset.value)
-  messagesRef.value = [...messagesRef.value, ...messages]
-  isLoading.value = false
+  messagesRef.value = [...messages, ...messagesRef.value]
+  if (firstLoad) {
+    isLoading.value = false
+  }
 }
 
-async function sendMessage() {
-  if (newMessageContent.value.length === 0) return
+async function sendMessage(): Promise<void> {
+  if (newMessageContentRef.value.length === 0) return
   // TODO: set right author and association sender
+  const associationSender = props.conversation?.associationsInConversation.find(association => association.id === ASSOCIATION_ID)
+  if (!associationSender) throw new Error("Association not found")
   const newMessage = {
-    id: 1,
     conversation: props.conversation,
-    content: newMessageContent.value,
-    author: {
-      id: "1",
-      login: "nathan.lenogue",
-      firstName: "Moi",
-      lastName: "Moi",
-    },
-    associationSender: {
-      id: 1,
-      name: "Asso",
-      description: "Description",
-      location: "Location",
-      logo: "https://via.placeholder.com/150"
-    },
+    content: newMessageContentRef.value,
+    author: user.value,
+    associationSender: associationSender,
     sentAt: new Date()
   }
   await messageService.value.createMessage(newMessage)
-  newMessageContent.value = ""
+  newMessageContentRef.value = ""
   messagesRef.value.push(newMessage)
   await scrollToEnd()
 }
 
-async function handleScrollEnd(event: Event) {
+async function handleScrollTop(event: Event): Promise<void> {
   const target = event.target as HTMLElement;
   const lastScrollHeight = target.scrollHeight
   if (target.scrollTop === 0){
-    await fetchConversation()
+    await fetchConversation(false)
     await nextTick(() => {
       target.scrollTop = target.scrollHeight - lastScrollHeight;
     })
   }
 }
 
-async function scrollToEnd() {
-  const scrollElement = document.querySelector("#messagesContainer");
-  if (scrollElement) {
+async function scrollToEnd(): Promise<void> {
+  const messagesContainer = messageContainerRef.value
+  if (messagesContainer) {
     await nextTick(() => {
-      scrollElement.scrollTop = scrollElement.scrollHeight
+      messagesContainer.scrollTop = messagesContainer.scrollHeight
     })
   }
 }
@@ -107,15 +109,15 @@ onMounted(async () => {
           <Chip class="mr-2 mb-2" v-for="association in conversation!.associationsInConversation" :key="association.id" :label="association.name" />
         </div>
         <Divider />
-        <div id="messagesContainer" @scroll="handleScrollEnd">
-          <div v-for="message in messagesRef" :key="message.id">
+        <div id="messagesContainer" ref="messageContainerRef" @scroll="handleScrollTop">
+          <div v-for="message in messagesRef" :key="message.content">
             <MessageComponent :message="message" class="mb-2"/>
           </div>
         </div>
       </div>
       <form @submit.prevent="sendMessage" class="mt-2 flex items-center">
-        <InputText v-model="newMessageContent" placeholder="Écrivez un message" class="flex-grow p-inputtext-sm" />
-        <Button :disabled="newMessageContent.length === 0" type="submit" label="Envoyer" class="ml-2 p-button-sm p-button-primary" />
+        <InputText v-model="newMessageContentRef" placeholder="Écrivez un message" class="flex-grow p-inputtext-sm" />
+        <Button :disabled="newMessageContentRef.length === 0" type="submit" label="Envoyer" class="ml-2 p-button-sm p-button-primary" />
       </form>
     </div>
   </div>

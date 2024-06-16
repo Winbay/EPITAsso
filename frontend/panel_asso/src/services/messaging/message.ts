@@ -25,7 +25,7 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
     const associationsInConversation = conversation.associationsInConversation.map(association => ({
       id: association.id,
       name: association.name,
-      description: association.description,
+      content: association.content,
       location: association.location,
       logo: association.logo
     }));
@@ -43,6 +43,7 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
         login: author.login,
         first_name: author.firstName,
         last_name: author.lastName,
+        school: author.school
       },
       association_sender: associationSender,
       sent_at: sentAt
@@ -71,7 +72,7 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
         associationsInConversation: message.conversation.associations_in_conversation.map((association) => ({
           id: association.id,
           name: association.name,
-          description: association.description,
+          content: association.content,
           location: association.location,
           logo: association.logo
         })),
@@ -83,6 +84,7 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
         login: message.author.login,
         firstName: message.author.first_name,
         lastName: message.author.last_name,
+        school: message.author.school
       },
       associationSender: message.association_sender,
       sentAt: message.sent_at
