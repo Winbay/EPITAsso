@@ -31,7 +31,7 @@ const associationService = new AssociationService(toast);
 const userService = new UserService(toast);
 
 initializeConversations(associationService).then(() => {
-  initializeMessages(userService)
+  initializeMessages(userService).then(() => {
+    app.mount('#app')
+  });
 });
-
-app.mount('#app')

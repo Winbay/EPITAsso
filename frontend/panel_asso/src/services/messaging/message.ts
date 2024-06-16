@@ -54,14 +54,9 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
 
   async getMessages(limit: number, offset: number): Promise<Message[]> {
     const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() });
-    const data = await this.getAllWithParams(params.toString())
+    const data = await this.getAll(params.toString())
     return data.map((message: yup.InferType<typeof messageSchema>) => this.converterSchemaToInterface(message))
   }
-
-  // async getMessages(): Promise<Message[]> {
-  //   const data = await this.getAll()
-  //   return data.map((message: yup.InferType<typeof messageSchema>) => this.converterSchemaToInterface(message))
-  // }
 
   protected converterSchemaToInterface(message: yup.InferType<typeof messageSchema>): Message {
     return {

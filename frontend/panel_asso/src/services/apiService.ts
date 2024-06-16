@@ -6,11 +6,13 @@ export default class ApiService<SchemaType> {
   toast: ToastServiceMethods
   basePath: string
   schema: yup.ObjectSchema<any>
+  params: string | null
 
-  constructor(toast: ToastServiceMethods, basePath: string, schema: yup.ObjectSchema<any>) {
+  constructor(toast: ToastServiceMethods, basePath: string, schema: yup.ObjectSchema<any>, params: string | null = null) {
     this.toast = toast
     this.basePath = basePath
     this.schema = schema
+    this.params = params
   }
 
   // TODO not safe (ex: if omittedFields contains some fields in data)
@@ -37,13 +39,8 @@ export default class ApiService<SchemaType> {
     return this.validate(data)
   }
 
-  protected async getAll(): Promise<SchemaType[]> {
-    const data = await this.request<SchemaType[]>('get', `${this.basePath}`)
-    return this.validateArray(data, yup.array().of(this.schema).required())
-  }
-
-  protected async getAllWithParams(params: string): Promise<SchemaType[]> {
-    const data = await this.request<SchemaType[]>('get', this.basePath, undefined, params); // Passer params ici
+  protected async getAll(params: string | null = null): Promise<SchemaType[]> {
+    const data = await this.request<SchemaType[]>('get', this.basePath,undefined, params);
     return this.validateArray(data, yup.array().of(this.schema).required());
   }
 
@@ -60,9 +57,10 @@ export default class ApiService<SchemaType> {
     method: 'post' | 'get' | 'put' | 'delete',
     url: string,
     data?: SchemaType | Partial<SchemaType>,
-    params?: string
+    params?: string | null
   ): Promise<ReturnType> {
     try {
+      params = this.params ? this.params + (params ? '&' + params : '') : params
       const fullUrl = params ? `${url}?${params}` : url
       const response = await djangoApi[method]<ReturnType>(fullUrl, data)
       return response.data

@@ -24,14 +24,14 @@ export async function initializeConversations(associationService) {
   conversations[0].associations_in_conversation = [associations[0], associations[1]];
   conversations[1].associations_in_conversation = [associations[0]];
 
-  fixture('GET /api/associations/{id}/conversations/', (request) => {
-    const id = parseInt(request.data.id);
+  fixture('GET /api/conversations/', (request) => {
+    const id = parseInt(request.data.association_id);
     return conversations.filter((conversation) => {
       return conversation.associations_in_conversation.find((association) => association.id === id);
     });
   });
 
-  fixture('POST /api/associations/{id}/conversations/', (request) => {
+  fixture('POST /api/conversations/?association_id={id}', (request) => {
     const conversation_id = conversations.length === 0 ? 1 : conversations[conversations.length - 1].id + 1;
     const conversation = {
       id: conversation_id,
@@ -43,7 +43,7 @@ export async function initializeConversations(associationService) {
     return conversation;
   });
 
-  fixture('DELETE /api/associations/{association_id}/conversations/{conversation_id}/', (request) => {
+  fixture('DELETE /api/conversations/{conversation_id}/', (request) => {
     const association_id = parseInt(request.data.association_id);
     const conversation_id = parseInt(request.data.conversation_id);
     const conversation = conversations.find((conversation) => conversation.id === conversation_id);

@@ -18,7 +18,8 @@ export const conversationSchema = yup
 
 export default class ConversationService extends ApiService<yup.InferType<typeof conversationSchema>> {
   constructor(toast: ToastServiceMethods, associationId: number) {
-    super(toast, `/api/associations/${associationId}/conversations/`, conversationSchema)
+    const params = new URLSearchParams({ association_id: associationId.toString()});
+    super(toast, `/api/conversations/`, conversationSchema, params.toString())
   }
 
   async createConversation(conversation: Omit<Conversation, 'id'>): Promise<void> {
