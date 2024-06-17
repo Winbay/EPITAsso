@@ -9,7 +9,7 @@ import DialogEquipmentRequestDetails from "@/components/Dialog/DialogEquipmentRe
 import DialogEquipmentRequestAccept from "@/components/Dialog/DialogEquipmentRequestAccept.vue";
 import DialogEquipmentRequestRefuse from "@/components/Dialog/DialogEquipmentRequestRefuse.vue";
 
-const props = defineProps({
+defineProps({
   currAssoEquipments: {
     type: Object as PropType<Equipment[]>,
     required: true

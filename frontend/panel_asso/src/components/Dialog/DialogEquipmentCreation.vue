@@ -51,7 +51,7 @@ const createEquipment = async () => {
 const cancelDialog = () => {
   currEquipment.value = {
     name: '',
-    assoOwner: {id: 1, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"},
+    assoOwner: {id: 1, name: "EPTV", logo: "/images/eptv.jpg", content: "", location: "KB"},
     quantity: 1,
     equipmentRequest: null,
     photo: ''

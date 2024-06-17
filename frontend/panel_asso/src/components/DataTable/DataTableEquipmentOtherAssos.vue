@@ -11,7 +11,7 @@ import type {Equipment} from "@/types/equipmentInterfaces";
 import {FilterMatchMode} from "primevue/api";
 import DialogEquipmentBorrow from "@/components/Dialog/DialogEquipmentBorrow.vue";
 
-const props = defineProps({
+defineProps({
   otherAssosEquipment: {
     type: Object as PropType<Equipment[]>,
     required: true
@@ -27,7 +27,7 @@ const props = defineProps({
 });
 
 const visibleBorrow = ref<number>(0);
-const currAsso = {id: 1, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"};
+const currAsso = {id: 1, name: "EPTV", logo: "/images/eptv.jpg", content: "", location: "KB"};
 
 const filtersOtherAssos = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },

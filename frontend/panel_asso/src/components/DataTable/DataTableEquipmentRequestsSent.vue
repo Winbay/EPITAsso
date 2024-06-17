@@ -6,10 +6,8 @@ import Column from "primevue/column";
 import {defineProps, type PropType, ref} from "vue";
 import type {Equipment, EquipmentRequest} from "@/types/equipmentInterfaces";
 import DialogEquipmentRequestDetails from "@/components/Dialog/DialogEquipmentRequestDetails.vue";
-import DialogEquipmentRequestAccept from "@/components/Dialog/DialogEquipmentRequestAccept.vue";
-import DialogEquipmentRequestRefuse from "@/components/Dialog/DialogEquipmentRequestRefuse.vue";
 
-const props = defineProps({
+defineProps({
   currAssoEquipments: {
     type: Object as PropType<Equipment[]>,
     required: true

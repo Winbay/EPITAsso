@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
 import Dialog from 'primevue/dialog'
 
 import {defineProps, type PropType, ref, onMounted} from 'vue'

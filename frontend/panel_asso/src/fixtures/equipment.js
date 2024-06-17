@@ -1,9 +1,9 @@
 import fixture from 'can-fixture'
 
 const assos = [
-    {id: 1, name: "BDE", logo: "/images/kraken.png", description: "", location: "KB"},
-    {id: 2, name: "VJN", logo: "/images/vjn.png", description: "", location: "KB"},
-    {id: 3, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"},
+    {id: 1, name: "BDE", logo: "/images/kraken.png", content: "", location: "KB"},
+    {id: 2, name: "VJN", logo: "/images/vjn.png", content: "", location: "KB"},
+    {id: 3, name: "EPTV", logo: "/images/eptv.jpg", content: "", location: "KB"},
 ]
 
 const users = [
@@ -117,7 +117,7 @@ fixture('POST /api/equipment/{equipmentId}/borrow', (request, response) => {
     response(200)
 })
 
-fixture('DELETE /api/equipment/{id}', (request) => {
+fixture('DELETE /api/equipment/{id}', (request, response) => {
     const id = parseInt(request.data.id)
     equipment = equipment.filter((e) => e.id !== id)
     response(204)
