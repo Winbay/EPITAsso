@@ -29,21 +29,21 @@ async function reloadEquipmentRequests() {
 }
 
 onMounted(async () => {
-  await reloadEquipments();
-  await reloadEquipmentRequests();
+  await reloadEquipments()
+  await reloadEquipmentRequests()
 })
 </script>
 
 <template>
   <div class="equipment-list w-full h-full px-10 py-8 flex flex-col">
     <DataTableEquipmentCurrAsso
-        :curr-asso-equipment="allEquipment.filter(eq => eq.assoOwner.id === currAsso.id)"
-        :reload-equipments="reloadEquipments"
+      :curr-asso-equipment="allEquipment.filter((eq) => eq.assoOwner.id === currAsso.id)"
+      :reload-equipments="reloadEquipments"
     />
     <DataTableEquipmentOtherAssos
-        :other-assos-equipment="allEquipment.filter(eq => eq.assoOwner.id !== currAsso.id)"
-        :reload-equipments="reloadEquipments"
-        :reload-equipment-requests="reloadEquipmentRequests"
+      :other-assos-equipment="allEquipment.filter((eq) => eq.assoOwner.id !== currAsso.id)"
+      :reload-equipments="reloadEquipments"
+      :reload-equipment-requests="reloadEquipmentRequests"
     />
     <div class="h-10 mt-8 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Demandes de prêt</span>
@@ -51,17 +51,17 @@ onMounted(async () => {
     <TabView>
       <TabPanel header="Reçues">
         <DataTableEquipmentRequestsReceived
-            :curr-asso-equipments="allEquipment.filter(eq => eq.assoOwner.id === currAsso.id)"
-            :equipment-requests="equipmentRequestsReceived"
-            :reload-equipments="reloadEquipments"
-            :reload-equipment-requests="reloadEquipmentRequests"
+          :curr-asso-equipments="allEquipment.filter((eq) => eq.assoOwner.id === currAsso.id)"
+          :equipment-requests="equipmentRequestsReceived"
+          :reload-equipments="reloadEquipments"
+          :reload-equipment-requests="reloadEquipmentRequests"
         />
       </TabPanel>
       <TabPanel header="Envoyées">
         <DataTableEquipmentRequestsSent
-            :curr-asso-equipments="allEquipment.filter(eq => eq.assoOwner.id === currAsso.id)"
-            :equipment-requests="equipmentRequestsSent"
-            :reload-equipment-requests="reloadEquipmentRequests"
+          :curr-asso-equipments="allEquipment.filter((eq) => eq.assoOwner.id === currAsso.id)"
+          :equipment-requests="equipmentRequestsSent"
+          :reload-equipment-requests="reloadEquipmentRequests"
         />
       </TabPanel>
     </TabView>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Textarea from "primevue/textarea";
+import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import EquipmentRequestService from "@/services/equipment/equipmentRequest";
@@ -29,7 +29,7 @@ const props = defineProps({
 const toast = useToast();
 const equipmentRequestService: EquipmentRequestService = new EquipmentRequestService(toast);
 
-const comment = ref<string>('');
+const comment = ref<string>('')
 
 const acceptEquipmentRequest = async () => {
   await equipmentRequestService.acceptRequest({ id: props.equipmentRequestId, comment: comment.value });
@@ -40,42 +40,41 @@ const acceptEquipmentRequest = async () => {
 }
 
 const cancelDialog = () => {
-  comment.value = '';
-  props.setHidden();
+  comment.value = ''
+  props.setHidden()
 }
 </script>
 
 <template>
   <Dialog
-      class="dialog-event"
-      modal
-      @update:visible="cancelDialog"
-      header="Acceptation de la demande"
+    class="dialog-event"
+    modal
+    @update:visible="cancelDialog"
+    header="Acceptation de la demande"
   >
     <div class="title mb-6 flex flex-col justify-start">
       <label for="comment" class="mb-2 text-xl font-bold text-wrap">Commentaire (optionnel)</label>
       <Textarea
-          v-model="comment"
-          id="comment"
-          placeholder="Commentaire"
-          rows="3"
-          cols="30"
-          auto-resize
+        v-model="comment"
+        id="comment"
+        placeholder="Commentaire"
+        rows="3"
+        cols="30"
+        auto-resize
       />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">
         <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />
         <Button
-            label="Confirmer"
-            severity="success"
-            class="w-1/4"
-            @click="acceptEquipmentRequest"
+          label="Confirmer"
+          severity="success"
+          class="w-1/4"
+          @click="acceptEquipmentRequest"
         />
       </div>
     </div>
   </Dialog>
 </template>
 
-<style>
-</style>
+<style></style>
