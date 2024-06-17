@@ -30,6 +30,7 @@ const currEquipment = ref<EquipmentModification>({
   id: 0,
   name: '',
   quantity: 1,
+  photo: ''
 })
 
 const updateEquipment = async () => {
@@ -81,6 +82,11 @@ onMounted(() => {
     <div class="content mb-6 flex flex-col justify-start">
       <label for="quantity" class="mb-2 text-2xl font-bold text-wrap">Quantité</label>
       <InputNumber id="quantity" v-model="currEquipment.quantity" type="number" :min="1"/>
+    </div>
+    <div class="content mb-6 flex flex-col justify-start">
+      <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Photo (Optionnelle)</label>
+      <InputText id="photo" v-model="currEquipment.photo" maxlength="255" placeholder="Url de l'image"/>
+      <img v-if="currEquipment.photo !== ''" :src="currEquipment.photo" alt="Matériel photo"/>
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">

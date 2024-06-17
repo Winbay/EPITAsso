@@ -37,26 +37,26 @@ let equipmentRequests = [
         comment: ''},
     {id: 6, equipmentId: 3, equipmentName: 'Ecocup WEI', userRespoOwner: null, assoBorrower: assos[1],
         userRespoBorrower: users[2], borrowingDate: 1718035200, dueDate: 1718208000, status: 'waiting', comment: ''},
-    {id: 8, equipmentId: 3, equipmentName: 'Crêpière grise', userRespoOwner: users[1], assoBorrower: assos[0],
-        userRespoBorrower: users[3], borrowingDate: 1718035200, dueDate: 1718208000, status: 'accepted', comment: 'Rendez la propre svp c:'},
+    {id: 8, equipmentId: 9, equipmentName: 'Crêpière grise', userRespoOwner: users[1], assoBorrower: assos[0],
+        userRespoBorrower: users[3], borrowingDate: 1718035200, dueDate: 1719266400, status: 'accepted', comment: 'Rendez la propre svp c:'},
 ]
 
 let equipment = [
-    {id: 1, name: "Talkie Walkie", assoOwner: assos[0], quantity: 15, equipmentRequest: null},
-    {id: 2, name: "Enceinte", assoOwner: assos[0], quantity: 1, equipmentRequest: equipmentRequests[0]},
-    {id: 3, name: "Ecocup WEI", assoOwner: assos[0], quantity: 200, equipmentRequest: null},
-    {id: 4, name: "Bar", assoOwner: assos[0], quantity: 3, equipmentRequest: null},
-    {id: 5, name: "Enrouleur", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 6, name: "Multi-prise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[2]},
-    {id: 7, name: "Multi-prise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[1]},
-    {id: 8, name: "Friteuse", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 14, name: "Gauffrière", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 15, name: "Glacière", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 9, name: "Crêpière grise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[7]},
-    {id: 10, name: "Crêpière verte n1", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 11, name: "Crêpière verte n2", assoOwner: assos[1], quantity: 1, equipmentRequest: null},
-    {id: 12, name: "Projecteur", assoOwner: assos[2], quantity: 1, equipmentRequest: equipmentRequests[3]},
-    {id: 13, name: "Fond vert", assoOwner: assos[2], quantity: 1, equipmentRequest: null},
+    {id: 1, name: "Talkie Walkie", assoOwner: assos[0], quantity: 15, equipmentRequest: null, photo: ''},
+    {id: 2, name: "Enceinte", assoOwner: assos[0], quantity: 1, equipmentRequest: equipmentRequests[0], photo: 'https://proxymedia.woopic.com/api/v1/images/1618%2Fedithor%2Faccessoires%2F504x504-LD0005793816_1_624ed828be29591e39e9ab10.png?format=504x504&saveas=webp&saveasquality=80'},
+    {id: 3, name: "Ecocup WEI", assoOwner: assos[0], quantity: 200, equipmentRequest: null, photo: ''},
+    {id: 4, name: "Bar", assoOwner: assos[0], quantity: 3, equipmentRequest: null, photo: ''},
+    {id: 5, name: "Enrouleur", assoOwner: assos[1], quantity: 1, equipmentRequest: null, photo: ''},
+    {id: 6, name: "Multi-prise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[2], photo: 'https://content.pearl.fr/media/cache/default/article_ultralarge_high_nocrop/shared/images/articles/K/KT8/multiprise-avec-3-prises-230-v-et-interrupteur-blanc-ref_KT8583_1.jpg'},
+    {id: 7, name: "Multi-prise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[1], photo: 'https://content.pearl.fr/media/cache/default/article_ultralarge_high_nocrop/shared/images/articles/K/KT8/multiprise-avec-3-prises-230-v-et-interrupteur-blanc-ref_KT8583_1.jpg'},
+    {id: 8, name: "Friteuse", assoOwner: assos[1], quantity: 1, equipmentRequest: null, photo: ''},
+    {id: 14, name: "Gauffrière", assoOwner: assos[1], quantity: 1, equipmentRequest: null, photo: ''},
+    {id: 15, name: "Glacière", assoOwner: assos[1], quantity: 1, equipmentRequest: null, photo: ''},
+    {id: 9, name: "Crêpière grise", assoOwner: assos[1], quantity: 1, equipmentRequest: equipmentRequests[7], photo: ''},
+    {id: 10, name: "Crêpière verte n1", assoOwner: assos[1], quantity: 1, equipmentRequest: null, photo: ''},
+    {id: 11, name: "Crêpière verte n2", assoOwner: assos[1], quantity: 1, equipmentRequest: null, photo: ''},
+    {id: 12, name: "Projecteur", assoOwner: assos[2], quantity: 1, equipmentRequest: equipmentRequests[3], photo: ''},
+    {id: 13, name: "Fond vert", assoOwner: assos[2], quantity: 1, equipmentRequest: null, photo: ''},
 ]
 
 fixture('GET /api/equipment', () => {
@@ -117,10 +117,17 @@ fixture('POST /api/equipment/{equipmentId}/borrow', (request, response) => {
     response(200)
 })
 
-fixture('DELETE /api/equipment/{id}', (request, response) => {
+fixture('DELETE /api/equipment/{id}', (request) => {
     const id = parseInt(request.data.id)
     equipment = equipment.filter((e) => e.id !== id)
     response(204)
+})
+
+fixture('POST /api/equipment/{id}/invalid-dates', (request) => {
+    // Récupère les dates auxquelles le matériel est déjà emprunté (demandes acceptées seulement)
+    const id = parseInt(request.data.id);
+    return equipmentRequests.filter(req => req.equipmentId === id && req.status === 'accepted')
+        .map(req => [req.borrowingDate, req.dueDate])
 })
 
 fixture('POST /api/equipment/requests/received', (request) => {

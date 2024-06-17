@@ -26,7 +26,8 @@ const currEquipment = ref<EquipmentCreation>({
   name: '',
   assoOwner: {id: 1, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"},
   quantity: 1,
-  equipmentRequest: null
+  equipmentRequest: null,
+  photo: ''
 })
 
 const createEquipment = async () => {
@@ -52,7 +53,8 @@ const cancelDialog = () => {
     name: '',
     assoOwner: {id: 1, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"},
     quantity: 1,
-    equipmentRequest: null
+    equipmentRequest: null,
+    photo: ''
   }
   props.setHidden()
 }
@@ -79,6 +81,11 @@ const cancelDialog = () => {
     <div class="content mb-6 flex flex-col justify-start">
       <label for="quantity" class="mb-2 text-2xl font-bold text-wrap">Quantité</label>
       <InputNumber id="quantity" v-model="currEquipment.quantity" type="number" :min="1"/>
+    </div>
+    <div class="content mb-6 flex flex-col justify-start">
+      <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Photo (Optionnelle)</label>
+      <InputText id="photo" v-model="currEquipment.photo" maxlength="255" placeholder="Url de l'image"/>
+      <img v-if="currEquipment.photo !== ''" :src="currEquipment.photo" alt="Matériel photo"/>
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">

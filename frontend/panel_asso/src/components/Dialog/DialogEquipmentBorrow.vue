@@ -38,6 +38,7 @@ const currEquipment = ref<Equipment>();
 const currEquipmentRequest = ref<EquipmentRequestCreation>();
 const borrowingDate = ref(new Date(Date.now()));
 const dueDate = ref(new Date(Date.now()));
+const invalidDates = ref<Date[]>([]);
 
 const borrowEquipment = async () => {
   if (!currEquipment.value || !currEquipmentRequest.value) { return }
@@ -93,6 +94,33 @@ const cancelDialog = () => {
   props.setHidden()
 }
 
+const loadInvalidDates = async () => {
+  try {
+    const rep = await axios.post<number[][]>(`/api/equipment/${props.equipment.id}/invalid-dates`,
+        { id: props.equipment.id });
+    const timestampList = rep.data;
+    timestampList.forEach((timestampTuple) => {
+      const startDate = new Date(timestampTuple[0] * 1000);
+      const endDate = new Date(timestampTuple[1] * 1000);
+      let currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+        invalidDates.value.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    })
+    return true
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Matériel - Dates invalides',
+      detail: `La liste des dates invalides pour le matériel ${props.equipment?.name} n'a pas pu être chargée`,
+      life: 3000
+    })
+    console.log(error)
+    return false
+  }
+}
+
 onMounted(() => {
   currEquipment.value = props.equipment;
   currEquipmentRequest.value = {
@@ -110,11 +138,17 @@ onMounted(() => {
       @update:visible="cancelDialog"
       header="Emprunt du matériel"
       v-if="currEquipment && currEquipmentRequest"
+      @show="loadInvalidDates()"
   >
-    <div class="title mb-6 flex flex-col justify-start">
-      <label for="name" class="mb-2 text-2xl font-bold text-wrap">Matériel</label>
-      <span>Nom : {{ currEquipment.name }}</span>
-      <span>Quantité : {{ currEquipment.quantity }}</span>
+    <div class="mb-6 flex">
+      <div class="title flex flex-col justify-start">
+        <label for="name" class="mb-2 text-xl font-bold text-wrap">Matériel</label>
+        <span>Nom : {{ currEquipment.name }}</span>
+        <span>Quantité : {{ currEquipment.quantity }}</span>
+      </div>
+      <div v-if="currEquipment.photo !== ''" class="photo flex justify-start max-w-32 max-h-32 ml-6">
+        <img :src="currEquipment.photo" alt="Matériel photo"/>
+      </div>
     </div>
 
     <div class="mb-6 flex">
@@ -122,8 +156,7 @@ onMounted(() => {
         <label class="mb-2 text-xl font-bold text-wrap">Date d'emprunt</label>
         <Calendar
             v-model="borrowingDate"
-            showTime
-            hourFormat="24"
+            :disabled-dates="invalidDates"
             dateFormat="dd/mm/yy"
         />
       </div>
@@ -131,8 +164,7 @@ onMounted(() => {
         <label class="mb-2 text-xl font-bold text-wrap">Date de retour</label>
         <Calendar
             v-model="dueDate"
-            showTime
-            hourFormat="24"
+            :disabled-dates="invalidDates"
             dateFormat="dd/mm/yy"
         />
       </div>

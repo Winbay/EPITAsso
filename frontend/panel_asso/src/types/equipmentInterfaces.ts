@@ -7,6 +7,7 @@ export interface Equipment {
     assoOwner: Association
     quantity: number
     equipmentRequest: null | EquipmentRequest
+    photo: string  // Url to the image for now
 }
 
 export interface EquipmentRequest {

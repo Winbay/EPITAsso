@@ -48,10 +48,15 @@ onMounted(() => {
       header="Détails du matériel"
       v-if="currEquipment"
   >
-    <div class="title mb-6 flex flex-col justify-start">
-      <label for="name" class="mb-2 text-xl font-bold text-wrap underline">Matériel</label>
-      <span>Nom : {{ currEquipment.name }}</span>
-      <span>Quantité : {{ currEquipment.quantity }}</span>
+    <div class="mb-6 flex">
+      <div class="title flex flex-col justify-start">
+        <label for="name" class="mb-2 text-xl font-bold text-wrap underline">Matériel</label>
+        <span>Nom : {{ currEquipment.name }}</span>
+        <span>Quantité : {{ currEquipment.quantity }}</span>
+      </div>
+      <div v-if="currEquipment.photo !== ''" class="photo flex justify-start max-w-32 max-h-32 ml-6">
+        <img :src="currEquipment.photo" alt="Matériel photo"/>
+      </div>
     </div>
     <div class="content mb-6 flex flex-col justify-start" v-if="currEquipment.equipmentRequest !== null">
       <label class="mb-2 text-xl font-bold text-wrap underline">Association propriétaire</label>

@@ -13,6 +13,10 @@ const props = defineProps({
   equipmentRequest: {
     type: Object as PropType<EquipmentRequest>,
     required: true
+  },
+  received: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -45,7 +49,7 @@ const timestampToString = (timestamp: number) => {
       <span>{{ equipmentRequest.equipmentName }}</span>
     </div>
     <div class="content mb-6 flex flex-col justify-start">
-      <label class="mb-2 text-xl font-bold text-wrap underline">Association emprunteuse</label>
+      <label class="mb-2 text-xl font-bold text-wrap underline">{{ props.received ? 'Association emprunteuse' : 'Association propriétaire'}}</label>
       <div class="flex items-center">
         <Avatar
             :image="equipmentRequest.assoBorrower.logo"
