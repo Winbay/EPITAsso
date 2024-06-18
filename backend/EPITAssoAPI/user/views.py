@@ -156,7 +156,7 @@ class MicrosoftTokenView(APIView):
 
 class UserView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = DetailUserSerializer
 
     @extend_schema(
         summary="List all users",

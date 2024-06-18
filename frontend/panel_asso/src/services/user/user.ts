@@ -1,6 +1,7 @@
 import * as yup from 'yup'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import ApiService from '@/services/apiService'
+import type { User } from '@/types/userInterfaces'
 
 export const userSchema = yup.object({
   id: yup.string().required(),
@@ -12,7 +13,7 @@ export const userSchema = yup.object({
 
 export default class UserService extends ApiService<yup.InferType<typeof userSchema>> {
   constructor(toast: ToastServiceMethods) {
-    super(toast, `/api/users`, userSchema)
+    super(toast, `users/`, userSchema)
   }
 
   async getUsers(): Promise<User[]> {

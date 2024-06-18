@@ -19,3 +19,10 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "login", "first_name", "last_name", "school"]
         # read_only_fields = ["id", "login"]
+
+
+class UserSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "login"]
+        read_only_fields = ["id", "login"]

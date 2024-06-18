@@ -23,7 +23,7 @@ const eventSchema = yup
 
 export default class EventService extends ApiService<yup.InferType<typeof eventSchema>> {
   constructor(toast: ToastServiceMethods) {
-    super(toast, `/api/events/`, eventSchema)
+    super(toast, `events/`, eventSchema)
   }
 
   async createEvent(event: Omit<Event, 'id' | 'author'>): Promise<void> {

@@ -2,47 +2,35 @@ import * as yup from 'yup'
 import type { Conversation } from '@/types/conversationInterfaces'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import ApiService from '@/services/apiService'
-import { associationSchema } from '@/services/association/association'
-
-const associationsSchema = yup.array().of(associationSchema).required()
 
 export const conversationSchema = yup
   .object({
     id: yup.number().required(),
     name: yup.string().required(),
-    associations_in_conversation: associationsSchema,
+    // Association ids is a must for create TODO: change that
+    associations: yup.array().of(yup.number().required()).required(),
     last_sent_at: yup.date().transform((value, originalValue) => {
       return originalValue ? new Date(originalValue) : value
     }).required()
   })
 
 export default class ConversationService extends ApiService<yup.InferType<typeof conversationSchema>> {
-  constructor(toast: ToastServiceMethods, associationId: number) {
-    const params = new URLSearchParams({ association_id: associationId.toString()});
-    super(toast, `/api/conversations/`, conversationSchema, params.toString())
+  constructor(toast: ToastServiceMethods) {
+    super(toast, `conversations/`, conversationSchema)
   }
 
-  async createConversation(conversation: Omit<Conversation, 'id'>): Promise<void> {
-    const { associationsInConversation, lastSentAt, ...rest } = conversation
-    const associationsInConversationDataToValidate = associationsInConversation.map((association) => ({
-      id: association.id,
-      name: association.name,
-      content: association.content,
-      location: association.location,
-      logo: association.logo
-    }))
-
+  async createConversation(conversation: Omit<Conversation, 'id' | 'lastSentAt'>): Promise<void> {
+    console.log("conversation", conversation)
     const conversationDataToValidate = {
-      ...rest,
-      associations_in_conversation: associationsInConversationDataToValidate,
-      last_sent_at: lastSentAt
+      name: conversation.name,
+      associations: conversation.associationIds
     }
-    await this.create(conversationDataToValidate, ['id'])
+    await this.create(conversationDataToValidate, ['id', 'last_sent_at'])
   }
 
   async getConversations(): Promise<Conversation[]> {
     const data = await this.getAll()
-    return data.map((conversation) => this.converterSchemaToInterface(conversation)) as Conversation[]
+    return data.map((conversation) => this.converterSchemaToInterface(conversation))
   }
 
   async deleteConversation(id: Conversation['id']): Promise<void> {
@@ -53,13 +41,7 @@ export default class ConversationService extends ApiService<yup.InferType<typeof
     return {
       id: conversation.id,
       name: conversation.name,
-      associationsInConversation: conversation.associations_in_conversation.map((association) => ({
-        id: association.id,
-        name: association.name,
-        content: association.content,
-        location: association.location,
-        logo: association.logo
-      })),
+      associationIds: conversation.associations,
       lastSentAt: new Date(conversation.last_sent_at),
     }
   }

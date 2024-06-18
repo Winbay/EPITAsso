@@ -9,64 +9,72 @@ import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import { useToast } from 'primevue/usetoast'
 
-import type { Conversation } from '@/types/conversationInterfaces'
-import type { Message } from '@/types/messageInterfaces'
-import type { FetchedUser } from '@/types/userInterfaces'
+import type { Conversation, Message } from '@/types/conversationInterfaces'
 import MessageComponent from '@/components/Messaging/MessageComponent.vue'
 import MessageService from '@/services/messaging/message'
-import { useUserStore } from '@/stores/user'
+import type { Association } from '@/types/associationInterfaces';
 
 const ASSOCIATION_ID = 1
-
-const userStore = useUserStore()
-if (userStore.user === null) throw new Error("User is not logged in")
-const user = ref<FetchedUser>(userStore.user)
 
 const props = defineProps({
   conversation: {
     type: Object as PropType<Conversation>,
     required: true
   },
+  associations: {
+    type: Array as PropType<Association[]>,
+    required: true
+  }
 });
 
 const toast = useToast()
-const messageService = ref<MessageService>(new MessageService(toast, props.conversation.id))
+const messageService = new MessageService(toast, props.conversation.id)
+const associationsRef = ref<Association[]>(props.associations)
 
 const isLoading = ref(true)
-const messagesRef = ref<Omit<Message, 'id'>[]>([])
+const messagesRef = ref<Message[]>([])
 const newMessageContentRef = ref("")
 const limit = 10
 const offset = ref(0)
+const nextRef = ref<string | null | undefined>(undefined)
 
 const messageContainerRef = ref<HTMLElement | null>(null)
 
-async function fetchConversation(firstLoad: boolean = true): Promise<void> {
-  if (firstLoad) {
-    isLoading.value = true
+const loadMessages = async (): Promise<void> => {
+  if (nextRef.value === null) return // Already fetched all messages
+  let next
+  let messages
+  if (nextRef.value === undefined) {
+    // First fetch (no next url)
+    const res = await messageService.getMessages(limit, 0)
+    next = res.next
+    messages = res.messages
+  } else {
+    const res = await messageService.getMessagesWithNext(nextRef.value)
+    next = res.next
+    messages = res.messages
   }
-  offset.value = messagesRef.value.length
-  const messages = await messageService.value.getMessages(limit, offset.value)
   messagesRef.value = [...messages, ...messagesRef.value]
-  if (firstLoad) {
-    isLoading.value = false
-  }
+  nextRef.value = next
+}
+
+const fetchConversation = async (): Promise<void> => {
+  isLoading.value = true
+  offset.value = messagesRef.value.length
+  await loadMessages()
+  isLoading.value = false
 }
 
 async function sendMessage(): Promise<void> {
   if (newMessageContentRef.value.length === 0) return
   // TODO: set right author and association sender
-  const associationSender = props.conversation?.associationsInConversation.find(association => association.id === ASSOCIATION_ID)
+  const associationSender = props.conversation?.associationIds.find((associationid: Association['id']) => associationid === ASSOCIATION_ID)
   if (!associationSender) throw new Error("Association not found")
-  const newMessage = {
-    conversation: props.conversation,
+  const newMessage: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'> = {
     content: newMessageContentRef.value,
-    author: user.value,
-    associationSender: associationSender,
-    sentAt: new Date()
   }
-  await messageService.value.createMessage(newMessage)
+  messagesRef.value.push(await messageService.createMessage(newMessage))
   newMessageContentRef.value = ""
-  messagesRef.value.push(newMessage)
   await scrollToEnd()
 }
 
@@ -74,7 +82,7 @@ async function handleScrollTop(event: Event): Promise<void> {
   const target = event.target as HTMLElement;
   const lastScrollHeight = target.scrollHeight
   if (target.scrollTop === 0){
-    await fetchConversation(false)
+    await loadMessages()
     await nextTick(() => {
       target.scrollTop = target.scrollHeight - lastScrollHeight;
     })
@@ -106,7 +114,7 @@ onMounted(async () => {
       <div class="flex-grow">
         <h1 class="text-lg font-semibold">{{ conversation!.name }}</h1>
         <div class="flex flex-wrap mt-2">
-          <Chip class="mr-2 mb-2" v-for="association in conversation!.associationsInConversation" :key="association.id" :label="association.name" />
+          <Chip class="mr-2 mb-2" v-for="association in associationsRef" :key="association.id" :label="association.name" />
         </div>
         <Divider />
         <div id="messagesContainer" ref="messageContainerRef" @scroll="handleScrollTop">

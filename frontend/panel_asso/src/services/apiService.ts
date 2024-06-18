@@ -2,6 +2,8 @@ import djangoApi from './api'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 
+const ASSOCIATION_ID = 1
+
 export default class ApiService<SchemaType> {
   toast: ToastServiceMethods
   basePath: string
@@ -10,7 +12,7 @@ export default class ApiService<SchemaType> {
 
   constructor(toast: ToastServiceMethods, basePath: string, schema: yup.ObjectSchema<any>, params: string | null = null) {
     this.toast = toast
-    this.basePath = basePath
+    this.basePath = `api/${ASSOCIATION_ID}/` + basePath
     this.schema = schema
     this.params = params
   }
@@ -39,9 +41,25 @@ export default class ApiService<SchemaType> {
     return this.validate(data)
   }
 
-  protected async getAll(params: string | null = null): Promise<SchemaType[]> {
-    const data = await this.request<SchemaType[]>('get', this.basePath,undefined, params);
+  protected async getAll(): Promise<SchemaType[]> {
+    const data = await this.request<SchemaType[]>('get', this.basePath);
     return this.validateArray(data, yup.array().of(this.schema).required());
+  }
+
+  protected async getAllWithParams(params: string): Promise<{
+    count: number,
+    next: string | null,
+    previous: string | null,
+    results: SchemaType[]
+  }> {
+    const {results, ...rest} = await this.request<{
+      count: number,
+      next: string | null,
+      previous: string | null,
+      results: SchemaType[]
+    }>('get', this.basePath, undefined, params)
+    const res = await this.validateArray(results, yup.array().of(this.schema).required())
+    return {...rest, results: res}
   }
 
   protected async update(data: SchemaType, id?: number): Promise<void> {

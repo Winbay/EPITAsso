@@ -3,16 +3,16 @@
 import { computed, type PropType, ref } from 'vue'
 
 import type { FetchedUser } from '@/types/userInterfaces'
-import type { Message } from '@/types/messageInterfaces'
 import { useUserStore } from '@/stores/user'
+import type { Message } from '@/types/conversationInterfaces';
 
 const userStore = useUserStore()
-if (userStore.user === null) throw new Error("User is not logged in")
+if (userStore.user === null) throw new Error("User is not logged in") // TODO should be handled in another way
 const user = ref<FetchedUser>(userStore.user)
 
 const props = defineProps({
   message: {
-    type: Object as PropType<Omit<Message, 'id'>>,
+    type: Object as PropType<Message>,
     required: true
   },
 });
@@ -61,7 +61,7 @@ function formatDate(date: Date | string): string {
     <span
       class="font-bold mr-2"
       :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
-      {{ message.author.firstName }} {{ message.author.lastName }} ({{ message.associationSender.name }})
+      {{ message.author.login }} ({{ message.associationSender.name }})
     </span>
     <div class="message-bubble" :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }">
       <div class="message-content whitespace-pre-wrap">

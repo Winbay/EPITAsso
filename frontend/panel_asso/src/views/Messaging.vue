@@ -19,7 +19,7 @@ import AssociationService from '@/services/association/association'
 const ASSOCIATION_ID = 1
 
 const toast = useToast()
-const conversationService: ConversationService = new ConversationService(toast, ASSOCIATION_ID)
+const conversationService: ConversationService = new ConversationService(toast)
 const associationService: AssociationService = new AssociationService(toast)
 
 const isLoading = ref(true)
@@ -33,12 +33,6 @@ const overlayPanelRef = ref<OverlayPanel>()
 
 async function openOverlayPanel(event: Event): Promise<void> {
   if (overlayPanelRef.value) {
-    try {
-      associationService.getAssociations()
-        .then(response => associationsRef.value = response)
-    } catch (error) {
-      console.error(error)
-    }
     overlayPanelRef.value.toggle(event)
   }
 }
@@ -51,10 +45,9 @@ async function fetchConversations(): Promise<void> {
 
 async function createConversation(): Promise<void> {
   if (!newConversationNameRef.value || selectedAssociationsRef.value.length === 0) return
-  const my_association = await associationService.getAssociationById(ASSOCIATION_ID)
   const newConversation = {
     name: newConversationNameRef.value,
-    associationsInConversation: [...selectedAssociationsRef.value, my_association],
+    associationIds: [...selectedAssociationsRef.value.map(asso => asso.id), ASSOCIATION_ID],
     lastSentAt: new Date(),
   }
   await conversationService.createConversation(newConversation)
@@ -67,11 +60,13 @@ async function createConversation(): Promise<void> {
 }
 
 async function deleteConversation(conversation: Conversation): Promise<void> {
-  await conversationService.deleteConversation(conversation.id)
+  await conversationService.deleteConversation(conversation.id) // TODO can not be smth like that
   conversationsRef.value = conversationsRef.value.filter(conv => conv.id !== conversation.id)
 }
 
 onMounted(async () => {
+  const associations = await associationService.getAssociations()
+  associationsRef.value = associations
   await fetchConversations()
 })
 
@@ -99,7 +94,13 @@ onMounted(async () => {
       </div>
     </div>
     <div class="col-span-2">
-      <MessagesView v-if="selectedConversationRef" :key="selectedConversationRef.id" class="ml-4" :conversation="selectedConversationRef"/>
+      <MessagesView 
+        v-if="selectedConversationRef"
+        :key="selectedConversationRef.id"
+        class="ml-4"
+        :conversation="selectedConversationRef"
+        :associations="associationsRef.filter(asso => (selectedConversationRef as Conversation).associationIds.includes(asso.id))"
+      />
     </div>
   </div>
 
