@@ -1,6 +1,9 @@
 import axios from 'axios'
 import * as JWT from 'jwt-decode'
 import { useUserStore } from '@/stores/user'
+import AuthenticationRefreshService from '@/services/authentication/refresh'
+import { useToast } from 'primevue/usetoast'
+import type { AuthenticationRefresh } from '@/types/authenticationInterface'
 
 const API_URL = import.meta.env.VITE_API_URL
 export const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
@@ -25,55 +28,40 @@ const djangoApi = axios.create({
   withCredentials: true // to include session cookie
 })
 
-djangoApi.interceptors.request.use(
-  async (config) => {
-    let accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
-    let refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+export function configureDjangoApi(toast: ReturnType<typeof useToast>) {
+  const authenticationRefreshService = new AuthenticationRefreshService(toast)
 
-    if (accessToken) {
-      const accessTokenExpiry = getTokenExpiry(accessToken)
-      const now = new Date().getTime()
+  djangoApi.interceptors.request.use(
+    async (config) => {
+      let accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
 
-      if (accessTokenExpiry && now >= accessTokenExpiry) {
-        if (refreshToken) {
-          try {
-            const response = await axios.post(`${API_URL}/api/auth/refresh`, {
-              refresh: refreshToken
-            })
-            accessToken = response.data.access
-            refreshToken = response.data.refresh
-            if (accessToken && refreshToken) {
-              localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
-              localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken)
-              djangoApi.defaults.headers['Authorization'] = `Bearer ${accessToken}`
-            } else {
-              throw new Error('Access token not received from refresh request')
-            }
-          } catch (refreshError) {
-            console.error('Error refreshing token:', refreshError)
-            const userStore = useUserStore()
-            userStore.setUser(null)
-            localStorage.removeItem(ACCESS_TOKEN_KEY)
-            localStorage.removeItem(REFRESH_TOKEN_KEY)
-            window.location.href = '/login'
-            return Promise.reject(refreshError)
+      if (accessToken) {
+        const accessTokenExpiry = getTokenExpiry(accessToken)
+        const now = new Date().getTime()
+
+        if (accessTokenExpiry && now >= accessTokenExpiry) {
+          if (refreshToken) {
+            const data: AuthenticationRefresh = await authenticationRefreshService.refresh(refreshToken)
+            accessToken = data.access
+            localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
+            localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh)
+            djangoApi.defaults.headers['Authorization'] = `Bearer ${accessToken}`
           }
-        } else {
-          const userStore = useUserStore()
-          userStore.setUser(null)
-          localStorage.removeItem(ACCESS_TOKEN_KEY)
-          localStorage.removeItem(REFRESH_TOKEN_KEY)
-          window.location.href = '/login'
-          return Promise.reject('No refresh token available')
         }
+        config.headers['Authorization'] = `Bearer ${accessToken}`
       }
-      config.headers['Authorization'] = `Bearer ${accessToken}`
+      return config
+    },
+    (error) => {
+      const userStore = useUserStore()
+      userStore.setUser(null)
+      localStorage.removeItem(ACCESS_TOKEN_KEY)
+      localStorage.removeItem(REFRESH_TOKEN_KEY)
+      window.location.href = '/'
+      return Promise.reject(error)
     }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
+  )
+}
 
 export default djangoApi

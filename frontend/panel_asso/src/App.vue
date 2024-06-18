@@ -2,61 +2,44 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import djangoApi, {
-  ACCESS_TOKEN_KEY,
-  REDIRECT_URI,
-  REFRESH_TOKEN_KEY
-} from '@/services/api'
+import { ACCESS_TOKEN_KEY, configureDjangoApi, REDIRECT_URI, REFRESH_TOKEN_KEY } from '@/services/api'
 import TheHeader from '@/components/TheHeader.vue'
 import MainPanel from '@/components/MainPanel.vue'
 import SideMenu from '@/components/SideMenu.vue'
 import Login from '@/components/Login.vue'
-import type { FetchedUser } from '@/types/userInterfaces'
 
 import Toast from 'primevue/toast'
 import ProgressSpinner from 'primevue/progressspinner'
+import { useToast } from 'primevue/usetoast'
+import UserDetailService from '@/services/user/details'
+import type { UserDetail } from '@/types/userInterfaces'
+import AuthenticationService from '@/services/authentication/authentification'
+import type { AuthenticationToken } from '@/types/authenticationInterface'
 
 const userStore = useUserStore()
 const router = useRouter()
 const isLoggedIn = ref(false)
 const isLoading = ref(true)
 
-async function fetchTokenWithCode(code: string): Promise<any> {
-  try {
-    const response = await djangoApi.post('/api/auth/token', { code, redirect_uri: REDIRECT_URI })
-    if (response.status === 200) {
-      return response.data
-    }
-    throw new Error('Failed to fetch token with code')
-  } catch (error) {
-    console.error('Failed to fetch token:', error)
-    return null
-  }
+const toast = useToast()
+configureDjangoApi(toast)
+const userService = new UserDetailService(toast)
+const authenticationService = new AuthenticationService(toast)
+
+async function fetchTokenWithCode(code: string): Promise<AuthenticationToken> {
+  return await authenticationService.getToken(code, REDIRECT_URI)
 }
 
-async function fetchUserDetails(): Promise<FetchedUser | null> {
-  try {
-    const response = await djangoApi.get('/api/users/me')
-    if (response.status === 200) {
-      return response.data
-    }
-    console.error('Failed to fetch user details:', response.statusText)
-    return null
-  } catch (error) {
-    console.error('Error fetching user details:', error)
-    return null
-  }
+async function fetchUserDetails(): Promise<UserDetail | null> {
+  return await userService.getUser()
 }
 
 async function handleTokenFetch(code: string): Promise<boolean> {
-  const tokenData = await fetchTokenWithCode(code)
+  const tokenData: AuthenticationToken = await fetchTokenWithCode(code)
   if (tokenData) {
-    const { token_type, access_token, refresh_token } = tokenData
-    if (token_type && access_token && refresh_token) {
-      localStorage.setItem(ACCESS_TOKEN_KEY, access_token)
-      localStorage.setItem(REFRESH_TOKEN_KEY, refresh_token)
-      return true
-    }
+    localStorage.setItem(ACCESS_TOKEN_KEY, tokenData.accessToken)
+    localStorage.setItem(REFRESH_TOKEN_KEY, tokenData.refreshToken)
+    return true
   }
   return false
 }
