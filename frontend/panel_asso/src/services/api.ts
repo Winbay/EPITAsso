@@ -42,7 +42,8 @@ export function configureDjangoApi(toast: ReturnType<typeof useToast>) {
 
         if (accessTokenExpiry && now >= accessTokenExpiry) {
           if (refreshToken) {
-            const data: AuthenticationRefresh = await authenticationRefreshService.refresh(refreshToken)
+            const data: AuthenticationRefresh =
+              await authenticationRefreshService.refresh(refreshToken)
             accessToken = data.access
             localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
             localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh)

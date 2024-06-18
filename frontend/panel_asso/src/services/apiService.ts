@@ -14,7 +14,10 @@ export default class ApiService<SchemaType> {
   }
 
   // TODO not safe (ex: if omittedFields contains some fields in data)
-  protected async create<ReturnType>(data: Partial<SchemaType>, omittedFields?: string[]): Promise<ReturnType> {
+  protected async create<ReturnType>(
+    data: Partial<SchemaType>,
+    omittedFields?: string[]
+  ): Promise<ReturnType> {
     let validatedData
     if (omittedFields && omittedFields.length > 0) {
       validatedData = await this.validateWithoutFields(data, omittedFields)

@@ -3,16 +3,15 @@ import type { UserDetail } from '@/types/userInterfaces'
 import ApiService from '@/services/apiService'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 
-const userDetailSchema = yup
-  .object({
-    id: yup.string().required(),
-    login: yup.string().required(),
-    first_name: yup.string().required(),
-    last_name: yup.string().required(),
-    school: yup.string().required(),
-    email: yup.string().email().required(),
-    isAdmin: yup.boolean()
-  })
+const userDetailSchema = yup.object({
+  id: yup.string().required(),
+  login: yup.string().required(),
+  first_name: yup.string().required(),
+  last_name: yup.string().required(),
+  school: yup.string().required(),
+  email: yup.string().email().required(),
+  isAdmin: yup.boolean()
+})
 
 export default class UserDetailService extends ApiService<yup.InferType<typeof userDetailSchema>> {
   constructor(toast: ToastServiceMethods) {

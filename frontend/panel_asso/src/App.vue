@@ -2,7 +2,12 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { ACCESS_TOKEN_KEY, configureDjangoApi, REDIRECT_URI, REFRESH_TOKEN_KEY } from '@/services/api'
+import {
+  ACCESS_TOKEN_KEY,
+  configureDjangoApi,
+  REDIRECT_URI,
+  REFRESH_TOKEN_KEY
+} from '@/services/api'
 import TheHeader from '@/components/TheHeader.vue'
 import MainPanel from '@/components/MainPanel.vue'
 import SideMenu from '@/components/SideMenu.vue'
@@ -44,7 +49,7 @@ async function handleTokenFetch(code: string): Promise<boolean> {
   return false
 }
 
-async function login(): Promise<void>{
+async function login(): Promise<void> {
   let userData = await fetchUserDetails()
   userStore.setUser(userData)
   isLoggedIn.value = true

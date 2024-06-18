@@ -67,7 +67,13 @@ const openProfile = () => {
           </div>
         </template>
       </Dropdown>
-      <Button v-if="user" :label="user!.login" icon="pi pi-user" class="text-white w-full h-8 pl-2" @click="openProfile" />
+      <Button
+        v-if="user"
+        :label="user!.login"
+        icon="pi pi-user"
+        class="text-white w-full h-8 pl-2"
+        @click="openProfile"
+      />
     </div>
   </header>
 </template>
