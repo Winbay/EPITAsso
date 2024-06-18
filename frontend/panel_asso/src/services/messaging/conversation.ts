@@ -23,13 +23,14 @@ export default class ConversationService extends ApiService<
     super(toast, `conversations/`, conversationSchema)
   }
 
-  async createConversation(conversation: Omit<Conversation, 'id' | 'lastSentAt'>): Promise<void> {
-    console.log('conversation', conversation)
+  async createConversation(conversation: Omit<Conversation, 'id' | 'lastSentAt'>): Promise<Conversation> {
     const conversationDataToValidate = {
       name: conversation.name,
       associations: conversation.associationIds
     }
-    await this.create(conversationDataToValidate, ['id', 'last_sent_at'])
+    const data = await this.create(conversationDataToValidate, ['id', 'last_sent_at'])
+    if (!data) throw new Error('No created conversation returned')
+    return this.converterSchemaToInterface(data as yup.InferType<typeof conversationSchema>)
   }
 
   async getConversations(): Promise<Conversation[]> {

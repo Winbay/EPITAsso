@@ -53,7 +53,7 @@ const loadMessages = async (): Promise<void> => {
     next = res.next
     messages = res.messages
   }
-  messagesRef.value = [...messages, ...messagesRef.value]
+  messagesRef.value = [...messages.reverse(), ...messagesRef.value]
   nextRef.value = next
 }
 

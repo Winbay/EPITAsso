@@ -44,7 +44,6 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
   async createMessage(
     message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'>
   ): Promise<Message> {
-    console.log('message', message)
     const data = await this.create(message, [
       'id',
       'author',
@@ -53,7 +52,6 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
       'association_sender'
     ])
     if (!data) throw new Error('No created message returned')
-    console.log('data', data)
     return this.converterSchemaToInterface(data as yup.InferType<typeof messageSchema>)
   }
 

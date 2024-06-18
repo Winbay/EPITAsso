@@ -49,13 +49,14 @@ async function createConversation(): Promise<void> {
     associationIds: [...selectedAssociationsRef.value.map((asso) => asso.id), ASSOCIATION_ID],
     lastSentAt: new Date()
   }
-  await conversationService.createConversation(newConversation)
-  newConversationNameRef.value = null
+  const conversation = await conversationService.createConversation(newConversation)
+  newConversationNameRef.value = conversation.name
+  selectedConversationRef.value = conversation
+  conversationsRef.value.push(conversation)
   selectedAssociationsRef.value = []
   if (overlayPanelRef.value) {
     overlayPanelRef.value.hide()
   }
-  await fetchConversations()
 }
 
 async function deleteConversation(conversation: Conversation): Promise<void> {
