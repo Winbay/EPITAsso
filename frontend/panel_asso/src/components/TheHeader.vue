@@ -2,7 +2,12 @@
 import { ref } from 'vue'
 import Avatar from 'primevue/avatar'
 import Dropdown from 'primevue/dropdown'
-import Login from '@/components/Login.vue'
+import Button from 'primevue/button'
+import router from '@/router'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const user = ref(userStore.getUser)
 
 const associations = ref([
   { name: 'EPTV', logo: 'eptv.jpg' },
@@ -20,6 +25,11 @@ const stateMenu = () => {
   } else {
     sidePanel.classList.add('panel-inactive')
   }
+}
+
+const openProfile = () => {
+  router.push('/profile')
+  console.log('open profile')
 }
 </script>
 
@@ -57,6 +67,13 @@ const stateMenu = () => {
           </div>
         </template>
       </Dropdown>
+      <Button
+        v-if="user"
+        :label="user!.login"
+        icon="pi pi-user"
+        class="text-white w-full h-8 pl-2"
+        @click="openProfile"
+      />
     </div>
   </header>
 </template>

@@ -8,7 +8,5 @@ export interface User {
 
 export interface UserDetail extends User {
   email: string
-  isAdmin: boolean
+  isAdmin: boolean | undefined
 }
-
-export interface FetchedUser extends Omit<UserDetail, 'isAdmin'> {}
