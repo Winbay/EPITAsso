@@ -13,7 +13,7 @@ class MessageListView(generics.ListCreateAPIView):
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
-        conversation_id = self.kwargs.get('pk')
+        conversation_id = self.kwargs.get("pk")
         return Message.objects.filter(conversation_id=conversation_id)
 
     @extend_schema(summary="List all Messages")
@@ -28,22 +28,24 @@ class MessageListView(generics.ListCreateAPIView):
 
     @extend_schema(summary="Create a Message")
     def post(self, request, *args, **kwargs):
-        request.data['conversation'] = kwargs.get('pk')
+        request.data["conversation"] = kwargs.get("pk")
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(author=self.request.user,
-                             association_sender=self.__get_association_sender()
-                             )
+            serializer.save(
+                author=self.request.user,
+                association_sender=self.__get_association_sender(),
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def __get_association_sender(self):
-        association_id = self.kwargs.get('association_id')
+        association_id = self.kwargs.get("association_id")
         try:
             association = Association.objects.get(id=association_id)
         except Association.DoesNotExist:
-            raise serializers.ValidationError('Invalid association ID')
+            raise serializers.ValidationError("Invalid association ID")
         return association
+
 
 class ConversationListView(generics.ListCreateAPIView):
     queryset = Conversation.objects.all()

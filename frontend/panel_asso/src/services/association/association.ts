@@ -11,8 +11,9 @@ export const associationSchema = yup.object({
   logo: yup.string().required()
 })
 
-export default class AssociationService extends ApiService<yup.InferType<typeof associationSchema>>
-{
+export default class AssociationService extends ApiService<
+  yup.InferType<typeof associationSchema>
+> {
   constructor(toast: ToastServiceMethods) {
     super(toast, `associations/`, associationSchema)
   }
