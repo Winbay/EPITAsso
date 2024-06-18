@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
-import axios from 'axios'
 
 import {ref, defineProps, type PropType, onMounted} from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type {Equipment, EquipmentRequestCreation} from "@/types/equipmentInterfaces";
 import type {Association} from "@/types/associationInterfaces";
 import Calendar from "primevue/calendar";
+import EquipmentService from "@/services/equipment/equipment";
 
 const props = defineProps({
   setHidden: {
@@ -32,7 +32,8 @@ const props = defineProps({
   }
 })
 
-const toast = useToast()
+const toast = useToast();
+const equipmentService: EquipmentService = new EquipmentService(toast);
 
 const currEquipment = ref<Equipment>();
 const currEquipmentRequest = ref<EquipmentRequestCreation>();
@@ -60,22 +61,11 @@ const borrowEquipment = async () => {
     });
     return false;
   }
-  try {
-    await axios.post(`/api/equipment/${currEquipment.value.id}/borrow`, {
-      ...currEquipmentRequest.value,
-      borrowingDate: borrowingDate.value.getTime() / 1000,
-      dueDate: dueDate.value.getTime() / 1000,
-    });
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Prêt de matériel',
-      detail: "La demande de prêt du matériel n'a pas pu être créée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+  await equipmentService.borrowEquipment(currEquipment.value.id, {
+    ...currEquipmentRequest.value,
+    borrowingDate: borrowingDate.value.getTime() / 1000,
+    dueDate: dueDate.value.getTime() / 1000,
+  });
   await props.reloadEquipments()
   await props.reloadEquipmentRequests();
   props.setHidden()
@@ -95,30 +85,16 @@ const cancelDialog = () => {
 }
 
 const loadInvalidDates = async () => {
-  try {
-    const rep = await axios.post<number[][]>(`/api/equipment/${props.equipment.id}/invalid-dates`,
-        { id: props.equipment.id });
-    const timestampList = rep.data;
-    timestampList.forEach((timestampTuple) => {
-      const startDate = new Date(timestampTuple[0] * 1000);
-      const endDate = new Date(timestampTuple[1] * 1000);
-      let currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        invalidDates.value.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-    })
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Matériel - Dates invalides',
-      detail: `La liste des dates invalides pour le matériel ${props.equipment?.name} n'a pas pu être chargée`,
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+  const timestampList = await equipmentService.getInvalidDates(props.equipment.id);
+  timestampList.forEach((timestampTuple) => {
+    const startDate = new Date(timestampTuple[0] * 1000);
+    const endDate = new Date(timestampTuple[1] * 1000);
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      invalidDates.value.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  })
 }
 
 onMounted(() => {

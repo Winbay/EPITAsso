@@ -78,18 +78,28 @@ export default class ApiService<SchemaType> {
     const res = await this.validateArray(results, yup.array().of(this.schema).required())
     return { ...rest, results: res }
   }
+  
+  protected async getAllCustom(route: string): Promise<SchemaType[]> {
+    const data = await this.request<SchemaType[]>('get', `${this.basePath}${route}`)
+    return this.validateArray(data, yup.array().of(this.schema).required())
+  }
 
   protected async update(data: SchemaType, id?: number): Promise<void> {
     const validatedData = await this.validate(data)
     await this.request<void>('put', `${this.getFullPath()}${id ? id + '/' : ''}`, validatedData)
   }
 
+  protected async patch(data: SchemaType, id?: number): Promise<void> {
+    const validatedData = await this.validate(data)
+    await this.request<void>('patch', `${this.basePath}${id ? id + '/' : ''}`, validatedData)
+  }
+
   protected async delete(id: number): Promise<void> {
     await this.request<void>('delete', `${this.getFullPath()}${id}/`)
   }
 
-  private async request<ReturnType>(
-    method: 'post' | 'get' | 'put' | 'delete',
+  protected async request<ReturnType>(
+    method: 'post' | 'get' | 'put' | 'patch' | 'delete',
     url: string,
     data?: SchemaType | Partial<SchemaType>,
     params?: string | null
@@ -149,7 +159,7 @@ export default class ApiService<SchemaType> {
     }
   }
 
-  private async validateArray(
+  protected async validateArray(
     data: SchemaType[],
     schema: yup.ArraySchema<SchemaType[], any, '', ''>
   ): Promise<SchemaType[]> {
@@ -169,5 +179,40 @@ export default class ApiService<SchemaType> {
    */
   protected converterSchemaToInterface(data: SchemaType): unknown {
     return data
+  }
+
+  protected camelToSnake(obj: any): any {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+
+    const newObj: any = Array.isArray(obj) ? [] : {};
+
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        let newKey = key.replace(/[A-Z]/g, match => `_${match.toLowerCase()}`);
+        newKey = newKey.startsWith('_') ? newKey.substring(1) : newKey;
+        newObj[newKey] = this.camelToSnake(obj[key]);
+      }
+    }
+
+    return newObj;
+  }
+
+  protected snakeToCamel(obj: any): any {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+
+    const newObj: any = Array.isArray(obj) ? [] : {};
+
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const newKey = key.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+        newObj[newKey] = this.snakeToCamel(obj[key]);
+      }
+    }
+
+    return newObj;
   }
 }

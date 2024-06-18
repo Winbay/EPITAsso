@@ -19,9 +19,9 @@ import type { PropType } from 'vue'
 import {FilterMatchMode} from "primevue/api";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
-import axios from "axios";
+import EquipmentService from "@/services/equipment/equipment";
 
-const props = defineProps({
+defineProps({
   currAssoEquipment: {
     type: Object as PropType<Equipment[]>,
     required: true
@@ -43,6 +43,7 @@ const visibleModification = ref(0);
 const visibleDetails = ref(0);
 const confirm = useConfirm()
 const toast = useToast()
+const equipmentService: EquipmentService = new EquipmentService(toast);
 
 const confirmDelete = (event: Event, equipmentId: number) => {
   confirm.require({
@@ -83,45 +84,11 @@ const closeDialog = () => {
 }
 
 async function deleteEquipment(equipmentId: number) {
-  try {
-    await axios.delete(`/api/equipment/${equipmentId}`)
-    toast.add({
-      severity: 'info',
-      summary: 'Suppression',
-      detail: "Le matériel a été supprimé.",
-      life: 3000
-    })
-    await props.reloadEquipments()
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Évènements',
-      detail: "Le matériel n'a pas pu être supprimé.",
-      life: 3000
-    })
-    console.log(error)
-  }
+  await equipmentService.deleteEquipment(equipmentId);
 }
 
 async function retrieveEquipment(equipmentId: number) {
-  try {
-    await axios.post(`/api/equipment/${equipmentId}/retrieve`, {id: equipmentId})
-    toast.add({
-      severity: 'info',
-      summary: 'Récupération',
-      detail: "Le matériel a été marqué comme récupéré.",
-      life: 3000
-    })
-    await props.reloadEquipments()
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Évènements',
-      detail: "Le matériel n'a pas pu être marqué comme récupéré.",
-      life: 3000
-    })
-    console.log(error)
-  }
+  await equipmentService.retrieveEquipment(equipmentId);
 }
 
 const timestampToString = (timestamp: number) => {

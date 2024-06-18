@@ -3,11 +3,11 @@ import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
-import axios from 'axios'
 
-import { ref, defineProps } from 'vue'
-import { useToast } from 'primevue/usetoast'
+import {ref, defineProps} from 'vue'
+import {useToast} from 'primevue/usetoast'
 import type {EquipmentCreation} from "@/types/equipmentInterfaces";
+import EquipmentService from "@/services/equipment/equipment";
 
 const props = defineProps({
   setHidden: {
@@ -20,29 +20,19 @@ const props = defineProps({
   }
 })
 
-const toast = useToast()
+const toast = useToast();
+const equipmentService: EquipmentService = new EquipmentService(toast);
 
 const currEquipment = ref<EquipmentCreation>({
   name: '',
-  assoOwner: {id: 1, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"},
+  assoOwner: {id: 1, name: "EPTV", logo: "/images/eptv.jpg", content: "", location: "KB"},
   quantity: 1,
   equipmentRequest: null,
   photo: ''
 })
 
 const createEquipment = async () => {
-  try {
-    await axios.post(`/api/equipment`, currEquipment.value);
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Enregistrement de matériel',
-      detail: "Le matériel n'a pas pu être enregistré.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+  await equipmentService.createEquipment(currEquipment.value);
   await props.reloadEquipments()
   props.setHidden()
   return true
@@ -89,7 +79,7 @@ const cancelDialog = () => {
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">
-        <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />
+        <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog"/>
         <Button
             label="Enregistrer"
             severity="success"

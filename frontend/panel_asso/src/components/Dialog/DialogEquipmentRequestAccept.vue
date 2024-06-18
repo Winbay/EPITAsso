@@ -2,7 +2,7 @@
 import Textarea from "primevue/textarea";
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
-import axios from 'axios'
+import EquipmentRequestService from "@/services/equipment/equipmentRequest";
 
 import { ref, defineProps } from 'vue'
 import { useToast } from 'primevue/usetoast'
@@ -26,25 +26,13 @@ const props = defineProps({
   }
 })
 
-const toast = useToast()
+const toast = useToast();
+const equipmentRequestService: EquipmentRequestService = new EquipmentRequestService(toast);
 
 const comment = ref<string>('');
 
 const acceptEquipmentRequest = async () => {
-  try {
-    console.log('Request body: ', { id: props.equipmentRequestId, comment: comment.value });
-    await axios.post(`/api/equipment/requests/${props.equipmentRequestId}/accept`,
-        { id: props.equipmentRequestId, comment: comment.value });
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Acceptation de la demande',
-      detail: "La demande de prêt n'a pas pu être acceptée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+  await equipmentRequestService.acceptRequest({ id: props.equipmentRequestId, comment: comment.value });
   await props.reloadEquipments();
   await props.reloadEquipmentRequests()
   props.setHidden()

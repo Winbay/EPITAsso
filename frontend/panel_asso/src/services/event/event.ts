@@ -1,8 +1,8 @@
-import type { Event } from '@/types/eventInterfaces'
-import type { ToastServiceMethods } from 'primevue/toastservice'
+import type {Event} from '@/types/eventInterfaces'
+import type {ToastServiceMethods} from 'primevue/toastservice'
 import * as yup from 'yup'
 import ApiService from '../apiService'
-import { tagSchema } from '../tag'
+import {tagSchema} from '../tag'
 
 const tagsSchema = yup.array().of(tagSchema).required()
 
@@ -27,7 +27,7 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
   }
 
   async createEvent(event: Omit<Event, 'id' | 'author'>): Promise<void> {
-    const { startDate, endDate, endRecurrence, tags, ...rest } = event
+    const {startDate, endDate, endRecurrence, tags, ...rest} = event
     const eventDataToValidate = {
       start_date: startDate,
       end_date: endDate,
@@ -54,7 +54,7 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
   }
 
   async updateEvent(event: Event): Promise<void> {
-    const { startDate, endDate, endRecurrence, tags, ...rest } = event
+    const {startDate, endDate, endRecurrence, tags, ...rest} = event
     const eventDataToValidate = {
       start_date: startDate,
       end_date: endDate,

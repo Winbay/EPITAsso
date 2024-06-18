@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import axios from 'axios'
 import {onMounted, ref} from 'vue';
 import {useToast} from 'primevue/usetoast';
 import type {Equipment, EquipmentRequest} from "@/types/equipmentInterfaces";
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
+import EquipmentService from "@/services/equipment/equipment";
+import EquipmentRequestService from "@/services/equipment/equipmentRequest";
 import DataTableEquipmentCurrAsso from "@/components/DataTable/DataTableEquipmentCurrAsso.vue";
 import DataTableEquipmentOtherAssos from "@/components/DataTable/DataTableEquipmentOtherAssos.vue";
 import DataTableEquipmentRequestsReceived from "@/components/DataTable/DataTableEquipmentRequestsReceived.vue";
@@ -14,55 +15,17 @@ const allEquipment = ref<Equipment[]>([]);
 const equipmentRequestsReceived = ref<EquipmentRequest[]>([]);
 const equipmentRequestsSent = ref<EquipmentRequest[]>([]);
 const currAsso = {id: 1, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"};
-const toast = useToast()
+const toast = useToast();
+const equipmentService: EquipmentService = new EquipmentService(toast);
+const equipmentRequestService: EquipmentRequestService = new EquipmentRequestService(toast);
 
 async function reloadEquipments() {
-  try {
-    const rep = await axios.get<Equipment[]>('/api/equipment');
-    allEquipment.value = rep.data;
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Évènements',
-      detail: "La liste des matériels n'a pas pu être chargée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+  allEquipment.value = await equipmentService.getEquipments();
 }
 
 async function reloadEquipmentRequests() {
-  try {
-    const rep = await axios.post<EquipmentRequest[]>('/api/equipment/requests/received',
-        {assoId: currAsso.id});
-    equipmentRequestsReceived.value = rep.data;
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Demandes de prêt',
-      detail: "La liste des demandes de prêt reçues n'a pas pu être chargée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
-  try {
-    const rep = await axios.post<EquipmentRequest[]>('/api/equipment/requests/sent',
-        {assoId: currAsso.id});
-    equipmentRequestsSent.value = rep.data;
-    return true
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Demandes de prêt',
-      detail: "La liste des demandes de prêt envoyées n'a pas pu être chargée.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+  equipmentRequestsReceived.value = await equipmentRequestService.getRequestsReceived();
+  equipmentRequestsSent.value = await equipmentRequestService.getRequestsSent();
 }
 
 onMounted(async () => {

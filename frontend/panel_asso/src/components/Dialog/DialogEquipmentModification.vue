@@ -3,11 +3,11 @@ import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
-import axios from 'axios'
 
 import {ref, defineProps, type PropType, onMounted} from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type {EquipmentModification} from "@/types/equipmentInterfaces";
+import EquipmentService from "@/services/equipment/equipment";
 
 const props = defineProps({
   setHidden: {
@@ -25,6 +25,7 @@ const props = defineProps({
 })
 
 const toast = useToast()
+const equipmentService: EquipmentService = new EquipmentService(toast);
 
 const currEquipment = ref<EquipmentModification>({
   id: 0,
@@ -34,18 +35,7 @@ const currEquipment = ref<EquipmentModification>({
 })
 
 const updateEquipment = async () => {
-  try {
-    await axios.put(`/api/equipment/${currEquipment.value.id}`, currEquipment.value);
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: 'Modification de matériel',
-      detail: "Le matériel n'a pas pu être modifié.",
-      life: 3000
-    })
-    console.log(error)
-    return false
-  }
+  await equipmentService.patchEquipment(currEquipment.value);
   await props.reloadEquipments()
   props.setHidden()
   return true
