@@ -183,36 +183,36 @@ export default class ApiService<SchemaType> {
 
   protected camelToSnake(obj: any): any {
     if (obj === null || typeof obj !== 'object') {
-      return obj;
+      return obj
     }
 
-    const newObj: any = Array.isArray(obj) ? [] : {};
+    const newObj: any = Array.isArray(obj) ? [] : {}
 
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        let newKey = key.replace(/[A-Z]/g, match => `_${match.toLowerCase()}`);
-        newKey = newKey.startsWith('_') ? newKey.substring(1) : newKey;
-        newObj[newKey] = this.camelToSnake(obj[key]);
+        let newKey = key.replace(/[A-Z]/g, (match) => `_${match.toLowerCase()}`)
+        newKey = newKey.startsWith('_') ? newKey.substring(1) : newKey
+        newObj[newKey] = this.camelToSnake(obj[key])
       }
     }
 
-    return newObj;
+    return newObj
   }
 
   protected snakeToCamel(obj: any): any {
     if (obj === null || typeof obj !== 'object') {
-      return obj;
+      return obj
     }
 
-    const newObj: any = Array.isArray(obj) ? [] : {};
+    const newObj: any = Array.isArray(obj) ? [] : {}
 
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const newKey = key.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
-        newObj[newKey] = this.snakeToCamel(obj[key]);
+        const newKey = key.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase())
+        newObj[newKey] = this.snakeToCamel(obj[key])
       }
     }
 
-    return newObj;
+    return newObj
   }
 }

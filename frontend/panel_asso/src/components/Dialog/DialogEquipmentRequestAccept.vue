@@ -2,7 +2,7 @@
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
-import EquipmentRequestService from "@/services/equipment/equipmentRequest";
+import EquipmentRequestService from '@/services/equipment/equipmentRequest'
 
 import { ref, defineProps } from 'vue'
 import { useToast } from 'primevue/usetoast'
@@ -26,14 +26,17 @@ const props = defineProps({
   }
 })
 
-const toast = useToast();
-const equipmentRequestService: EquipmentRequestService = new EquipmentRequestService(toast);
+const toast = useToast()
+const equipmentRequestService: EquipmentRequestService = new EquipmentRequestService(toast)
 
 const comment = ref<string>('')
 
 const acceptEquipmentRequest = async () => {
-  await equipmentRequestService.acceptRequest({ id: props.equipmentRequestId, comment: comment.value });
-  await props.reloadEquipments();
+  await equipmentRequestService.acceptRequest({
+    id: props.equipmentRequestId,
+    comment: comment.value
+  })
+  await props.reloadEquipments()
   await props.reloadEquipmentRequests()
   props.setHidden()
   return true

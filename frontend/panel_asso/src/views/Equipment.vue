@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
-import {useToast} from 'primevue/usetoast';
-import type {Equipment, EquipmentRequest} from "@/types/equipmentInterfaces";
-import TabView from 'primevue/tabview';
-import TabPanel from 'primevue/tabpanel';
-import EquipmentService from "@/services/equipment/equipment";
-import EquipmentRequestService from "@/services/equipment/equipmentRequest";
-import DataTableEquipmentCurrAsso from "@/components/DataTable/DataTableEquipmentCurrAsso.vue";
-import DataTableEquipmentOtherAssos from "@/components/DataTable/DataTableEquipmentOtherAssos.vue";
-import DataTableEquipmentRequestsReceived from "@/components/DataTable/DataTableEquipmentRequestsReceived.vue";
-import DataTableEquipmentRequestsSent from "@/components/DataTable/DataTableEquipmentRequestsSent.vue";
+import { onMounted, ref } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import type { Equipment, EquipmentRequest } from '@/types/equipmentInterfaces'
+import TabView from 'primevue/tabview'
+import TabPanel from 'primevue/tabpanel'
+import EquipmentService from '@/services/equipment/equipment'
+import EquipmentRequestService from '@/services/equipment/equipmentRequest'
+import DataTableEquipmentCurrAsso from '@/components/DataTable/DataTableEquipmentCurrAsso.vue'
+import DataTableEquipmentOtherAssos from '@/components/DataTable/DataTableEquipmentOtherAssos.vue'
+import DataTableEquipmentRequestsReceived from '@/components/DataTable/DataTableEquipmentRequestsReceived.vue'
+import DataTableEquipmentRequestsSent from '@/components/DataTable/DataTableEquipmentRequestsSent.vue'
 
-const allEquipment = ref<Equipment[]>([]);
-const equipmentRequestsReceived = ref<EquipmentRequest[]>([]);
-const equipmentRequestsSent = ref<EquipmentRequest[]>([]);
-const currAsso = {id: 1, name: "EPTV", logo: "/images/eptv.jpg", description: "", location: "KB"};
-const toast = useToast();
-const equipmentService: EquipmentService = new EquipmentService(toast);
-const equipmentRequestService: EquipmentRequestService = new EquipmentRequestService(toast);
+const allEquipment = ref<Equipment[]>([])
+const equipmentRequestsReceived = ref<EquipmentRequest[]>([])
+const equipmentRequestsSent = ref<EquipmentRequest[]>([])
+const currAsso = { id: 1, name: 'EPTV', logo: '/images/eptv.jpg', description: '', location: 'KB' }
+const toast = useToast()
+const equipmentService: EquipmentService = new EquipmentService(toast)
+const equipmentRequestService: EquipmentRequestService = new EquipmentRequestService(toast)
 
 async function reloadEquipments() {
-  allEquipment.value = await equipmentService.getEquipments();
+  allEquipment.value = await equipmentService.getEquipments()
 }
 
 async function reloadEquipmentRequests() {
-  equipmentRequestsReceived.value = await equipmentRequestService.getRequestsReceived();
-  equipmentRequestsSent.value = await equipmentRequestService.getRequestsSent();
+  equipmentRequestsReceived.value = await equipmentRequestService.getRequestsReceived()
+  equipmentRequestsSent.value = await equipmentRequestService.getRequestsSent()
 }
 
 onMounted(async () => {

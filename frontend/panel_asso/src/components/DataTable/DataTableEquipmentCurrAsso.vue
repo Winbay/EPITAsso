@@ -16,10 +16,10 @@ import DialogEquipmentModification from '@/components/Dialog/DialogEquipmentModi
 import DialogEquipmentDetails from '@/components/Dialog/DialogEquipmentDetails.vue'
 import '@/fixtures/equipment'
 import type { PropType } from 'vue'
-import {FilterMatchMode} from "primevue/api";
-import {useConfirm} from "primevue/useconfirm";
-import {useToast} from "primevue/usetoast";
-import EquipmentService from "@/services/equipment/equipment";
+import { FilterMatchMode } from 'primevue/api'
+import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
+import EquipmentService from '@/services/equipment/equipment'
 
 defineProps({
   currAssoEquipment: {
@@ -43,7 +43,7 @@ const visibleModification = ref(0)
 const visibleDetails = ref(0)
 const confirm = useConfirm()
 const toast = useToast()
-const equipmentService: EquipmentService = new EquipmentService(toast);
+const equipmentService: EquipmentService = new EquipmentService(toast)
 
 const confirmDelete = (event: Event, equipmentId: number) => {
   confirm.require({
@@ -84,11 +84,11 @@ const closeDialog = () => {
 }
 
 async function deleteEquipment(equipmentId: number) {
-  await equipmentService.deleteEquipment(equipmentId);
+  await equipmentService.deleteEquipment(equipmentId)
 }
 
 async function retrieveEquipment(equipmentId: number) {
-  await equipmentService.retrieveEquipment(equipmentId);
+  await equipmentService.retrieveEquipment(equipmentId)
 }
 
 const timestampToString = (timestamp: number) => {

@@ -4,10 +4,10 @@ import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 
-import {ref, defineProps} from 'vue'
-import {useToast} from 'primevue/usetoast'
-import type {EquipmentCreation} from "@/types/equipmentInterfaces";
-import EquipmentService from "@/services/equipment/equipment";
+import { ref, defineProps } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import type { EquipmentCreation } from '@/types/equipmentInterfaces'
+import EquipmentService from '@/services/equipment/equipment'
 
 const props = defineProps({
   setHidden: {
@@ -20,19 +20,19 @@ const props = defineProps({
   }
 })
 
-const toast = useToast();
-const equipmentService: EquipmentService = new EquipmentService(toast);
+const toast = useToast()
+const equipmentService: EquipmentService = new EquipmentService(toast)
 
 const currEquipment = ref<EquipmentCreation>({
   name: '',
-  assoOwner: {id: 1, name: "EPTV", logo: "/images/eptv.jpg", content: "", location: "KB"},
+  assoOwner: { id: 1, name: 'EPTV', logo: '/images/eptv.jpg', content: '', location: 'KB' },
   quantity: 1,
   equipmentRequest: null,
   photo: ''
 })
 
 const createEquipment = async () => {
-  await equipmentService.createEquipment(currEquipment.value);
+  await equipmentService.createEquipment(currEquipment.value)
   await props.reloadEquipments()
   props.setHidden()
   return true
@@ -84,13 +84,8 @@ const cancelDialog = () => {
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">
-        <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog"/>
-        <Button
-            label="Enregistrer"
-            severity="success"
-            class="w-1/4"
-            @click="createEquipment"
-        />
+        <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />
+        <Button label="Enregistrer" severity="success" class="w-1/4" @click="createEquipment" />
       </div>
     </div>
   </Dialog>

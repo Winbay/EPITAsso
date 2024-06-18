@@ -6,8 +6,8 @@ import Dialog from 'primevue/dialog'
 
 import { ref, defineProps, type PropType, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import type {EquipmentModification} from "@/types/equipmentInterfaces";
-import EquipmentService from "@/services/equipment/equipment";
+import type { EquipmentModification } from '@/types/equipmentInterfaces'
+import EquipmentService from '@/services/equipment/equipment'
 
 const props = defineProps({
   setHidden: {
@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 const toast = useToast()
-const equipmentService: EquipmentService = new EquipmentService(toast);
+const equipmentService: EquipmentService = new EquipmentService(toast)
 
 const currEquipment = ref<EquipmentModification>({
   id: 0,
@@ -35,7 +35,7 @@ const currEquipment = ref<EquipmentModification>({
 })
 
 const updateEquipment = async () => {
-  await equipmentService.patchEquipment(currEquipment.value);
+  await equipmentService.patchEquipment(currEquipment.value)
   await props.reloadEquipments()
   props.setHidden()
   return true
