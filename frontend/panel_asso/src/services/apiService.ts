@@ -21,8 +21,7 @@ export default class ApiService<SchemaType> {
     // TODO change that
     if (replacePath) {
       this.basePath = replacePath
-    }
-    else {
+    } else {
       this.basePath = `api/${ASSOCIATION_ID}/` + basePath
     }
     this.schema = schema

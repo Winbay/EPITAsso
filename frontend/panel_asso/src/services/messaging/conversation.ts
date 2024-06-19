@@ -23,7 +23,9 @@ export default class ConversationService extends ApiService<
     super(toast, `conversations/`, conversationSchema)
   }
 
-  async createConversation(conversation: Omit<Conversation, 'id' | 'lastSentAt'>): Promise<Conversation> {
+  async createConversation(
+    conversation: Omit<Conversation, 'id' | 'lastSentAt'>
+  ): Promise<Conversation> {
     const conversationDataToValidate = {
       name: conversation.name,
       associations: conversation.associationIds

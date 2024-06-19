@@ -4,14 +4,16 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('messaging', '0002_rename_associations_in_conversation_conversation_associations'),
+        (
+            "messaging",
+            "0002_rename_associations_in_conversation_conversation_associations",
+        ),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='message',
-            options={'ordering': ['-sent_at']},
+            name="message",
+            options={"ordering": ["-sent_at"]},
         ),
     ]
