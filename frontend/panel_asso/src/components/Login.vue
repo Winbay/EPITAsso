@@ -13,7 +13,7 @@ const handleMicrosoftLogin = () => {
   <div class="login-container">
     <Card class="card flex flex-col justify-center text-center p-6 rounded-lg w-96 bg-1f2937">
       <template #title>
-        <h1 class="text-2xl font-bold mb-6">LOG IN</h1>
+        <h1 class="text-2xl font-bold mb-6">CONNEXION</h1>
       </template>
       <template #content>
         <Button

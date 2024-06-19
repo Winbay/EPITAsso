@@ -6,11 +6,11 @@ import * as yup from 'yup'
 const API_PATH = 'api';
 
 export default class ApiService<SchemaType> {
-  toast: ToastServiceMethods | null = null
+  toast: ToastServiceMethods | null
   basePath: string
   schema: yup.ObjectSchema<any>
   params: string | null
-  replacePath?: string
+  replacePath: string | undefined
 
   constructor(
     toast: ToastServiceMethods | null,
@@ -19,9 +19,7 @@ export default class ApiService<SchemaType> {
     params: string | null = null,
     replacePath?: string // TODO change that
   ) {
-    if (toast) {
-      this.toast = toast
-    }
+    this.toast = toast
     this.basePath = basePath
     this.replacePath = replacePath
     this.schema = schema
