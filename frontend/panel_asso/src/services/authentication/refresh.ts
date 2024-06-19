@@ -12,7 +12,8 @@ export default class AuthenticationRefreshService extends ApiService<
   yup.InferType<typeof authenticationRefreshSchema>
 > {
   constructor(toast: ToastServiceMethods) {
-    super(toast, '/api/auth/refresh', authenticationRefreshSchema)
+    // TODO
+    super(toast, '/api/auth/refresh', authenticationRefreshSchema, null, '/api/auth/refresh')
   }
 
   async refresh(refreshToken: string): Promise<AuthenticationRefresh> {

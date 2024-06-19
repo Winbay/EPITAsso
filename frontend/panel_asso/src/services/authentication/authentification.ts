@@ -24,7 +24,8 @@ export default class AuthenticationService extends ApiService<
   yup.InferType<typeof authenticationSchema>
 > {
   constructor(toast: ToastServiceMethods) {
-    super(toast, '/api/auth/token', authenticationSchema)
+    // TODO
+    super(toast, '/api/auth/token', authenticationSchema, null, '/api/auth/token')
   }
 
   async getToken(code: string, redirect_uri: string): Promise<AuthenticationToken> {
