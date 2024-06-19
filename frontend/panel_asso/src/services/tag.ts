@@ -14,7 +14,7 @@ export const tagSchema = yup
 
 export default class TagService extends ApiService<yup.InferType<typeof tagSchema>> {
   constructor(toast: ToastServiceMethods, from: 'events' | 'posts') {
-    super(toast, `/api/${from}/tags/`, tagSchema)
+    super(toast, `${from}/tags/`, tagSchema)
   }
 
   async getTags(): Promise<Tag[]> {

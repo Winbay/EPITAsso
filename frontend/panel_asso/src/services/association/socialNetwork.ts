@@ -15,7 +15,7 @@ export default class SocialNetworkService extends ApiService<
   associationId: Association['id']
 
   constructor(toast: ToastServiceMethods, associationId: Association['id']) {
-    super(toast, `/api/associations/${associationId}/socialNetworks/`, socialNetworkSchema)
+    super(toast, `associations/${associationId}/socialNetworks/`, socialNetworkSchema)
     this.associationId = associationId
   }
 

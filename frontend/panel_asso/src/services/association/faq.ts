@@ -13,7 +13,7 @@ export default class FaqService extends ApiService<yup.InferType<typeof faqSchem
   associationId: Association['id']
 
   constructor(toast: ToastServiceMethods, associationId: Association['id']) {
-    super(toast, `/api/associations/${associationId}/faqs/`, faqSchema)
+    super(toast, `associations/${associationId}/faqs/`, faqSchema)
     this.associationId = associationId
   }
 

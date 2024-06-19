@@ -19,7 +19,7 @@ export default class MemberService extends ApiService<yup.InferType<typeof membe
   associationId: Association['id']
 
   constructor(toast: ToastServiceMethods, associationId: Association['id']) {
-    super(toast, `/api/associations/${associationId}/members/`, memberSchema)
+    super(toast, `associations/${associationId}/members/`, memberSchema)
     this.associationId = associationId
   }
 

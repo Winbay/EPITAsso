@@ -28,7 +28,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # API endpoints
     path(
-        "api/",
+        "api/<int:association_id>/",
         include(
             [
                 path("swagger-file", SpectacularAPIView.as_view(), name="schema"),
@@ -42,7 +42,7 @@ urlpatterns = [
                     SpectacularRedocView.as_view(url_name="schema"),
                     name="redoc",
                 ),
-                path("", include("user.urls")),
+                # path("", include("user.urls")), TODO: change that
                 path("", include("association.urls")),
                 path("", include("event.urls")),
                 path("", include("post.urls")),
@@ -51,4 +51,5 @@ urlpatterns = [
             ]
         ),
     ),
+    path("api/", include("user.urls")),
 ]

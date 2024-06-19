@@ -4,13 +4,13 @@ from django.db import models
 class Conversation(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    associations_in_conversation = models.ManyToManyField(
+    associations = models.ManyToManyField(
         "association.Association", related_name="conversations"
     )
 
     last_sent_at = models.DateTimeField(auto_now=True)
 
-    def str(self):
+    def __str__(self):
         return self.name
 
 
@@ -32,5 +32,8 @@ class Message(models.Model):
 
     sent_at = models.DateTimeField(auto_now_add=True)
 
-    def str(self):
+    class Meta:
+        ordering = ["-sent_at"]
+
+    def __str__(self):
         return self.content

@@ -5,7 +5,7 @@ from rest_framework import generics, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from .models import User
-from .serializers import UserSerializer, DetailUserSerializer
+from .serializers import DetailUserSerializer
 from requests_oauthlib import OAuth2Session
 from django.shortcuts import redirect
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -156,7 +156,7 @@ class MicrosoftTokenView(APIView):
 
 class UserView(generics.ListAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = DetailUserSerializer
 
     @extend_schema(
         summary="List all users",

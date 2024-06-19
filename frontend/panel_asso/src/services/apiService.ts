@@ -2,15 +2,30 @@ import djangoApi from './api'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 
+const ASSOCIATION_ID = 1
+
 export default class ApiService<SchemaType> {
   toast: ToastServiceMethods
   basePath: string
   schema: yup.ObjectSchema<any>
+  params: string | null
 
-  constructor(toast: ToastServiceMethods, basePath: string, schema: yup.ObjectSchema<any>) {
+  constructor(
+    toast: ToastServiceMethods,
+    basePath: string,
+    schema: yup.ObjectSchema<any>,
+    params: string | null = null,
+    replacePath?: string // TODO change that
+  ) {
     this.toast = toast
-    this.basePath = basePath
+    // TODO change that
+    if (replacePath) {
+      this.basePath = replacePath
+    } else {
+      this.basePath = `api/${ASSOCIATION_ID}/` + basePath
+    }
     this.schema = schema
+    this.params = params
   }
 
   // TODO not safe (ex: if omittedFields contains some fields in data)
@@ -38,8 +53,24 @@ export default class ApiService<SchemaType> {
   }
 
   protected async getAll(): Promise<SchemaType[]> {
-    const data = await this.request<SchemaType[]>('get', `${this.basePath}`)
+    const data = await this.request<SchemaType[]>('get', this.basePath)
     return this.validateArray(data, yup.array().of(this.schema).required())
+  }
+
+  protected async getAllWithParams(params: string): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: SchemaType[]
+  }> {
+    const { results, ...rest } = await this.request<{
+      count: number
+      next: string | null
+      previous: string | null
+      results: SchemaType[]
+    }>('get', this.basePath, undefined, params)
+    const res = await this.validateArray(results, yup.array().of(this.schema).required())
+    return { ...rest, results: res }
   }
 
   protected async update(data: SchemaType, id?: number): Promise<void> {
@@ -54,10 +85,13 @@ export default class ApiService<SchemaType> {
   private async request<ReturnType>(
     method: 'post' | 'get' | 'put' | 'delete',
     url: string,
-    data?: SchemaType | Partial<SchemaType> | SchemaType[]
+    data?: SchemaType | Partial<SchemaType>,
+    params?: string | null
   ): Promise<ReturnType> {
     try {
-      const response = await djangoApi[method]<ReturnType>(url, data)
+      params = this.params ? this.params + (params ? '&' + params : '') : params
+      const fullUrl = params ? `${url}?${params}` : url
+      const response = await djangoApi[method]<ReturnType>(fullUrl, data)
       return response.data
     } catch (error) {
       this.handleError(error, `${method.toUpperCase()}: An error occured.`)

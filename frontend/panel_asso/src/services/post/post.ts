@@ -18,7 +18,7 @@ const postSchema = yup
 
 export default class PostService extends ApiService<yup.InferType<typeof postSchema>> {
   constructor(toast: ToastServiceMethods) {
-    super(toast, `/api/posts/`, postSchema)
+    super(toast, `posts/`, postSchema)
   }
 
   async createPost(post: Omit<Post, 'id' | 'author'>): Promise<void> {

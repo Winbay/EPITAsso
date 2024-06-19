@@ -42,6 +42,13 @@ class AssociationDetailsSerializer(serializers.ModelSerializer):
         depth = 1
 
 
+class AssociationSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Association
+        fields = ["id", "name"]
+        read_only_fields = ["id", "name"]
+
+
 class MemberSerializer(serializers.ModelSerializer):
     login = serializers.CharField(source="user.login")
     first_name = serializers.CharField(source="user.first_name")

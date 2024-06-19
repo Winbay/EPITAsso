@@ -52,7 +52,6 @@ class AssociationDetailsView(generics.RetrieveUpdateAPIView):
 
     @extend_schema(summary="Update an Association")
     def put(self, request, *args, **kwargs):
-        print(request.data, args, kwargs)
         new_faqs = request.data.get("faqs", [])
         self.__update_faqs(new_faqs, self.get_object())
         social_networks = request.data.get("social_networks", [])
