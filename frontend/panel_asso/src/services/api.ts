@@ -49,7 +49,8 @@ djangoApi.interceptors.request.use(
         config.headers['Authorization'] = ``
         if (refreshToken) {
           try {
-            const data: AuthenticationRefresh = await authenticationRefreshService.refresh(refreshToken)
+            const data: AuthenticationRefresh =
+              await authenticationRefreshService.refresh(refreshToken)
             accessToken = data.access
             localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
             localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh)

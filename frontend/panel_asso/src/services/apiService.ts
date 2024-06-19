@@ -17,7 +17,6 @@ export default class ApiService<SchemaType> {
     params: string | null = null,
     replacePath?: string // TODO change that
   ) {
-
     if (toast) {
       this.toast = toast
     }
