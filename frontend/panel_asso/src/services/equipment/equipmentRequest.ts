@@ -2,27 +2,38 @@ import type { EquipmentRequest } from '@/types/equipmentInterfaces'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 import ApiService from '../apiService'
-import { associationSchema } from '../association/association'
-import { userSchema } from '@/services/user/user'
+
+const userSchema = yup.object({
+  id: yup.string().required(),
+  login: yup.string().required()
+})
+
+const associationSchema = yup
+  .object({
+    id: yup.number().required(),
+    name: yup.string().required(),
+    logo: yup.string().required()
+  })
+  .required()
 
 export const equipmentRequestSchema = yup.object({
   id: yup.number().required(),
-  equipmentId: yup.number().required(),
-  equipmentName: yup.string().required(),
-  userRespoOwner: userSchema, // Can be null
-  assoBorrower: associationSchema.required(),
-  userRespoBorrower: userSchema.required(),
-  borrowingDate: yup.number().required(),
-  dueDate: yup.number().required(),
+  equipment_id: yup.number().required(),
+  equipment_name: yup.string().required(),
+  user_respo_owner: userSchema.notRequired(), // Can be null
+  asso_borrower: associationSchema.required(),
+  user_respo_borrower: userSchema.required(),
+  borrowing_date: yup.number().required(),
+  due_date: yup.number().required(),
   status: yup.string().oneOf(['waiting', 'accepted', 'refused']).required(),
-  comment: yup.string().required()
+  comment: yup.string() // Can be blank (empty string)
 })
 
 export default class EquipmentRequestService extends ApiService<
   yup.InferType<typeof equipmentRequestSchema>
 > {
   constructor(toast: ToastServiceMethods) {
-    super(toast, '/api/equipment/requests/', equipmentRequestSchema)
+    super(toast, 'equipments/requests/', equipmentRequestSchema)
   }
 
   async getRequestsReceived(): Promise<EquipmentRequest[]> {
@@ -37,7 +48,7 @@ export default class EquipmentRequestService extends ApiService<
 
   async acceptRequest(equipmentRequest: Pick<EquipmentRequest, 'id' | 'comment'>): Promise<void> {
     await this.request<void>(
-      'post',
+      'patch',
       `${this.basePath}${equipmentRequest.id}/accept`,
       equipmentRequest
     )
@@ -45,7 +56,7 @@ export default class EquipmentRequestService extends ApiService<
 
   async refuseRequest(equipmentRequest: Pick<EquipmentRequest, 'id' | 'comment'>): Promise<void> {
     await this.request<void>(
-      'post',
+      'patch',
       `${this.basePath}${equipmentRequest.id}/refuse`,
       equipmentRequest
     )

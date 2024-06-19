@@ -14,14 +14,13 @@ import type { Equipment } from '@/types/equipmentInterfaces'
 import DialogEquipmentCreation from '@/components/Dialog/DialogEquipmentCreation.vue'
 import DialogEquipmentModification from '@/components/Dialog/DialogEquipmentModification.vue'
 import DialogEquipmentDetails from '@/components/Dialog/DialogEquipmentDetails.vue'
-import '@/fixtures/equipment'
 import type { PropType } from 'vue'
 import { FilterMatchMode } from 'primevue/api'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import EquipmentService from '@/services/equipment/equipment'
 
-defineProps({
+const props = defineProps({
   currAssoEquipment: {
     type: Object as PropType<Equipment[]>,
     required: true
@@ -85,10 +84,14 @@ const closeDialog = () => {
 
 async function deleteEquipment(equipmentId: number) {
   await equipmentService.deleteEquipment(equipmentId)
+  // TODO not opti
+  props.reloadEquipments()
 }
 
 async function retrieveEquipment(equipmentId: number) {
   await equipmentService.retrieveEquipment(equipmentId)
+  // TODO not opti
+  props.reloadEquipments()
 }
 
 const timestampToString = (timestamp: number) => {
@@ -178,6 +181,7 @@ const timestampToString = (timestamp: number) => {
     </Column>
     <Column header="Actions">
       <template #body="slotProps">
+        <ConfirmPopup></ConfirmPopup>
         <div class="flex flex-col" v-if="slotProps.data.equipmentRequest === null">
           <a
             href="javascript:void(0)"
@@ -191,7 +195,6 @@ const timestampToString = (timestamp: number) => {
             :reload-equipments="reloadEquipments"
             :set-hidden="closeDialog"
           />
-          <ConfirmPopup></ConfirmPopup>
           <a
             href="javascript:void(0)"
             @click="confirmDelete($event, slotProps.data.id)"

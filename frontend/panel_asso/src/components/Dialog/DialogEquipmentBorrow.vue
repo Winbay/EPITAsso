@@ -77,7 +77,6 @@ const borrowEquipment = async () => {
 const cancelDialog = () => {
   currEquipmentRequest.value = {
     equipmentId: props.equipment.id,
-    assoBorrower: props.currAsso,
     borrowingDate: Date.now() / 1000,
     dueDate: Date.now() / 1000
   }
@@ -103,7 +102,6 @@ onMounted(() => {
   currEquipment.value = props.equipment
   currEquipmentRequest.value = {
     equipmentId: props.equipment.id,
-    assoBorrower: props.currAsso,
     borrowingDate: Date.now() / 1000,
     dueDate: Date.now() / 1000
   }

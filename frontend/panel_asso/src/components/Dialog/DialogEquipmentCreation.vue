@@ -25,25 +25,22 @@ const equipmentService: EquipmentService = new EquipmentService(toast)
 
 const currEquipment = ref<EquipmentCreation>({
   name: '',
-  assoOwner: { id: 1, name: 'EPTV', logo: '/images/eptv.jpg', content: '', location: 'KB' },
   quantity: 1,
-  equipmentRequest: null,
   photo: ''
 })
 
 const createEquipment = async () => {
+  // TODO use POST return object to update the list of equipments
   await equipmentService.createEquipment(currEquipment.value)
   await props.reloadEquipments()
   props.setHidden()
-  return true
+  return true // TODO why ?
 }
 
 const cancelDialog = () => {
   currEquipment.value = {
     name: '',
-    assoOwner: { id: 1, name: 'EPTV', logo: '/images/eptv.jpg', content: '', location: 'KB' },
     quantity: 1,
-    equipmentRequest: null,
     photo: ''
   }
   props.setHidden()
