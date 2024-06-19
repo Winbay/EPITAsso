@@ -22,7 +22,7 @@ const isUserMessage = computed(() => {
   return props.message.author.id === user.value.id
 })
 
-function formatDate(date: Date | string): string {
+const formatDate = (date: Date | string): string => {
   const dateObj = new Date(date)
 
   const optionsDate: Intl.DateTimeFormatOptions = {

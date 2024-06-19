@@ -64,7 +64,7 @@ const fetchConversation = async (): Promise<void> => {
   isLoading.value = false
 }
 
-async function sendMessage(): Promise<void> {
+const sendMessage = async (): Promise<void> => {
   if (newMessageContentRef.value.length === 0) return
   // TODO: set right author and association sender
   const associationSender = props.conversation?.associationIds.find(
@@ -82,7 +82,7 @@ async function sendMessage(): Promise<void> {
   await scrollToEnd()
 }
 
-async function handleScrollTop(event: Event): Promise<void> {
+const handleScrollTop = async (event: Event): Promise<void> => {
   const target = event.target as HTMLElement
   const lastScrollHeight = target.scrollHeight
   if (target.scrollTop === 0) {
@@ -93,7 +93,7 @@ async function handleScrollTop(event: Event): Promise<void> {
   }
 }
 
-async function scrollToEnd(): Promise<void> {
+const scrollToEnd = async (): Promise<void> => {
   const messagesContainer = messageContainerRef.value
   if (messagesContainer) {
     await nextTick(() => {

@@ -9,7 +9,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import PrimeVue from 'primevue/config'
 import ConfirmationService from 'primevue/confirmationservice'
-import ToastService, { type ToastServiceMethods } from 'primevue/toastservice'
+import ToastService from 'primevue/toastservice'
 import router from './router'
 import Tooltip from 'primevue/tooltip'
 

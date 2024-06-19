@@ -30,19 +30,19 @@ const associationsRef = ref<Association[]>([])
 
 const overlayPanelRef = ref<OverlayPanel>()
 
-async function openOverlayPanel(event: Event): Promise<void> {
+const openOverlayPanel = async (event: Event): Promise<void> => {
   if (overlayPanelRef.value) {
     overlayPanelRef.value.toggle(event)
   }
 }
 
-async function fetchConversations(): Promise<void> {
+const fetchConversations = async (): Promise<void> => {
   isLoading.value = true
   conversationsRef.value = await conversationService.getConversations()
   isLoading.value = false
 }
 
-async function createConversation(): Promise<void> {
+const createConversation = async (): Promise<void> => {
   if (!newConversationNameRef.value || selectedAssociationsRef.value.length === 0) return
   const newConversation = {
     name: newConversationNameRef.value,
@@ -59,7 +59,7 @@ async function createConversation(): Promise<void> {
   }
 }
 
-async function deleteConversation(conversation: Conversation): Promise<void> {
+const deleteConversation = async (conversation: Conversation): Promise<void> => {
   await conversationService.deleteConversation(conversation.id) // TODO can not be smth like that
   conversationsRef.value = conversationsRef.value.filter((conv) => conv.id !== conversation.id)
 }
