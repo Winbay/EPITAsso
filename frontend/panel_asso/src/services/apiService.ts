@@ -14,10 +14,17 @@ export default class ApiService<SchemaType> {
     toast: ToastServiceMethods,
     basePath: string,
     schema: yup.ObjectSchema<any>,
-    params: string | null = null
+    params: string | null = null,
+    replacePath?: string // TODO change that
   ) {
     this.toast = toast
-    this.basePath = `api/${ASSOCIATION_ID}/` + basePath
+    // TODO change that
+    if (replacePath) {
+      this.basePath = replacePath
+    }
+    else {
+      this.basePath = `api/${ASSOCIATION_ID}/` + basePath
+    }
     this.schema = schema
     this.params = params
   }

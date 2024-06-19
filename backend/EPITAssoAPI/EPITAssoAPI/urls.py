@@ -42,7 +42,7 @@ urlpatterns = [
                     SpectacularRedocView.as_view(url_name="schema"),
                     name="redoc",
                 ),
-                # path("", include("user.urls")),
+                # path("", include("user.urls")), TODO: change that
                 path("", include("association.urls")),
                 path("", include("event.urls")),
                 path("", include("post.urls")),

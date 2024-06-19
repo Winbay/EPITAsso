@@ -13,7 +13,8 @@ export const userSchema = yup.object({
 
 export default class UserService extends ApiService<yup.InferType<typeof userSchema>> {
   constructor(toast: ToastServiceMethods) {
-    super(toast, `users/`, userSchema)
+    // TODO change that
+    super(toast, `users/`, userSchema, null, 'api/users')
   }
 
   async getUsers(): Promise<User[]> {
