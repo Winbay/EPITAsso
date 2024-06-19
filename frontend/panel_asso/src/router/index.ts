@@ -21,7 +21,7 @@ const router = createRouter({
     { path: '/login', component: Login },
     { path: '/profile', component: Profile },
     { path: '/messaging', component: Messaging },
-    { path: '/equipment', component: Equipment },
+    { path: '/equipment', component: Equipment }
   ]
 })
 
