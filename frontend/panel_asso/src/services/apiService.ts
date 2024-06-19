@@ -1,14 +1,16 @@
 import djangoApi from './api'
 import type { ToastServiceMethods } from 'primevue/toastservice'
+import SelectedAssoService from "@/services/association/selectedAsso";
 import * as yup from 'yup'
 
-const ASSOCIATION_ID = 1
+const API_PATH = 'api';
 
 export default class ApiService<SchemaType> {
   toast: ToastServiceMethods | null = null
   basePath: string
   schema: yup.ObjectSchema<any>
   params: string | null
+  replacePath?: string
 
   constructor(
     toast: ToastServiceMethods | null,
@@ -20,14 +22,18 @@ export default class ApiService<SchemaType> {
     if (toast) {
       this.toast = toast
     }
-    // TODO change that
-    if (replacePath) {
-      this.basePath = replacePath
-    } else {
-      this.basePath = `api/${ASSOCIATION_ID}/` + basePath
-    }
+    this.basePath = basePath
+    this.replacePath = replacePath
     this.schema = schema
     this.params = params
+  }
+
+  protected getFullPath(): string {
+    if (this.replacePath) {
+      return this.replacePath;
+    }
+    const associationId: string = SelectedAssoService.getAssociationId();
+    return `${API_PATH}/${associationId}/${this.basePath}`;
   }
 
   // TODO not safe (ex: if omittedFields contains some fields in data)
@@ -41,21 +47,21 @@ export default class ApiService<SchemaType> {
     } else {
       validatedData = await this.validate(data as SchemaType)
     }
-    return await this.request<ReturnType>('post', this.basePath, validatedData)
+    return await this.request<ReturnType>('post', this.getFullPath(), validatedData)
   }
 
   protected async get(): Promise<SchemaType> {
-    const data = await this.request<SchemaType>('get', `${this.basePath}`)
+    const data = await this.request<SchemaType>('get', `${this.getFullPath()}`)
     return this.validate(data)
   }
 
   protected async getById(id: number): Promise<SchemaType> {
-    const data = await this.request<SchemaType>('get', `${this.basePath}${id}/`)
+    const data = await this.request<SchemaType>('get', `${this.getFullPath()}${id}/`)
     return this.validate(data)
   }
 
   protected async getAll(): Promise<SchemaType[]> {
-    const data = await this.request<SchemaType[]>('get', this.basePath)
+    const data = await this.request<SchemaType[]>('get', `${this.getFullPath()}`)
     return this.validateArray(data, yup.array().of(this.schema).required())
   }
 
@@ -77,11 +83,11 @@ export default class ApiService<SchemaType> {
 
   protected async update(data: SchemaType, id?: number): Promise<void> {
     const validatedData = await this.validate(data)
-    await this.request<void>('put', `${this.basePath}${id ? id + '/' : ''}`, validatedData)
+    await this.request<void>('put', `${this.getFullPath()}${id ? id + '/' : ''}`, validatedData)
   }
 
   protected async delete(id: number): Promise<void> {
-    await this.request<void>('delete', `${this.basePath}${id}/`)
+    await this.request<void>('delete', `${this.getFullPath()}${id}/`)
   }
 
   private async request<ReturnType>(

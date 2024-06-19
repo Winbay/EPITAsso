@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Avatar from 'primevue/avatar'
 import Dropdown from 'primevue/dropdown'
 import Button from 'primevue/button'
@@ -8,12 +8,11 @@ import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 const user = ref(userStore.getUser)
+import type {Association} from "@/types/associationInterfaces";
+import SelectedAssoService from "@/services/association/selectedAsso";
 
-const associations = ref([
-  { name: 'EPTV', logo: 'eptv.jpg' },
-  { name: 'Kraken', logo: 'kraken.png' }
-])
-const selectedAsso = ref(associations.value[0])
+const userAssociations = ref<Association[]>([]);
+const selectedAsso = ref<Association | undefined>();
 
 const stateMenu = () => {
   let sidePanel = document.getElementById('main-content')
@@ -31,6 +30,33 @@ const openProfile = () => {
   router.push('/profile')
   console.log('open profile')
 }
+const getCurrentUserAssociations = async () => {
+  userAssociations.value = await SelectedAssoService.getUserAssociations();
+}
+
+const handleSelectedAssoChange = (newValue: Association) => {
+  SelectedAssoService.setAssociationId(newValue.id.toString())
+}
+
+watch(selectedAsso, (newValue) => {
+  if (!newValue) {
+    return;
+  }
+  handleSelectedAssoChange(newValue);
+});
+
+onMounted(async () => {
+  await getCurrentUserAssociations();
+  if (userAssociations.value.length === 0) {
+    return; // Rediriger vers une page qui dit qu'on a pas d'asso
+  }
+  let currAssoId = SelectedAssoService.getAssociationId();
+  if (currAssoId === '0') {
+    SelectedAssoService.setAssociationId(userAssociations.value[0].id.toString())
+    currAssoId = SelectedAssoService.getAssociationId();
+  }
+  selectedAsso.value = userAssociations.value.find(asso => asso.id.toString() === currAssoId);
+})
 </script>
 
 <template>
@@ -46,7 +72,7 @@ const openProfile = () => {
     <div class="header-right flex justify-center items-center mr-10">
       <Dropdown
         v-model="selectedAsso"
-        :options="associations"
+        :options="userAssociations"
         optionLabel="name"
         placeholder="Select an Asso"
         class="h-10 w-full md:w-14rem bg-transparent border-0 shadow-none"
