@@ -23,18 +23,19 @@ export interface EquipmentRequest {
   comment: string
 }
 
-export interface EquipmentCreation extends Omit<Equipment, 'id' | 'assoOwner' | 'equipmentRequest'> {}
+export interface EquipmentCreation
+  extends Omit<Equipment, 'id' | 'assoOwner' | 'equipmentRequest'> {}
 
 export interface EquipmentModification extends Omit<Equipment, 'assoOwner' | 'equipmentRequest'> {}
 
 export interface EquipmentRequestCreation
   extends Omit<
     EquipmentRequest,
-    | 'id' 
-    | 'equipmentName' 
-    | 'userRespoOwner' 
+    | 'id'
+    | 'equipmentName'
+    | 'userRespoOwner'
     | 'assoBorrower'
-    | 'userRespoBorrower' 
-    | 'status' 
-    | 'comment' 
+    | 'userRespoBorrower'
+    | 'status'
+    | 'comment'
   > {}

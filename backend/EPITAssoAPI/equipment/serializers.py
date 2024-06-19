@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from association.serializers import (
-    AssociationSimpleSerializer,
     AssociationSimpleWithLogoSerializer,
 )
 from user.serializers import UserSimpleSerializer

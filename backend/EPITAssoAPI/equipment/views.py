@@ -5,7 +5,11 @@ from django.utils import timezone
 from django.db.models import Q
 from association.models import Association
 from .models import Equipment, EquipmentRequest
-from .serializers import EquipmentRequestSimpleSerializer, EquipmentSerializer, EquipmentRequestSerializer
+from .serializers import (
+    EquipmentRequestSimpleSerializer,
+    EquipmentSerializer,
+    EquipmentRequestSerializer,
+)
 
 
 class EquipmentListView(generics.ListCreateAPIView):
@@ -53,6 +57,7 @@ class EquipmentRetrieveView(generics.UpdateAPIView):
         equipment.save()
         serializer = self.get_serializer(equipment)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class EquipmentBorrowView(generics.CreateAPIView):
     queryset = EquipmentRequest.objects.all()
@@ -119,7 +124,7 @@ class EquipmentInvalidDatesView(generics.ListAPIView):
 
     def get_queryset(self):
         now = int(timezone.now().timestamp())
-        return self.queryset.filter(status='accepted').filter(
+        return self.queryset.filter(status="accepted").filter(
             Q(borrowing_date__gt=now) & Q(due_date__lt=now)
         )
 
@@ -169,7 +174,7 @@ class EquipmentRequestAcceptView(generics.UpdateAPIView):
         equipment_request.status = "accepted"
         equipment_request.user_respo_owner = request.user
 
-        comment = request.data.get('comment')
+        comment = request.data.get("comment")
         if comment:
             equipment_request.comment = comment
 
@@ -189,7 +194,7 @@ class EquipmentRequestRefuseView(generics.UpdateAPIView):
         equipment_request.status = "refused"
         equipment_request.user_respo_owner = request.user
 
-        comment = request.data.get('comment')
+        comment = request.data.get("comment")
         if comment:
             equipment_request.comment = comment
 
