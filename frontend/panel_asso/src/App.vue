@@ -2,12 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import {
-  ACCESS_TOKEN_KEY,
-  configureDjangoApi,
-  REDIRECT_URI,
-  REFRESH_TOKEN_KEY
-} from '@/services/api'
+import { ACCESS_TOKEN_KEY, REDIRECT_URI, REFRESH_TOKEN_KEY } from '@/services/api'
 import TheHeader from '@/components/TheHeader.vue'
 import MainPanel from '@/components/MainPanel.vue'
 import SideMenu from '@/components/SideMenu.vue'
@@ -27,7 +22,6 @@ const isLoggedIn = ref(false)
 const isLoading = ref(true)
 
 const toast = useToast()
-configureDjangoApi(toast)
 const userService = new UserDetailService(toast)
 const authenticationService = new AuthenticationService(toast)
 

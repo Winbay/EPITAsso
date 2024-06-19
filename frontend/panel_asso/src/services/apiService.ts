@@ -5,19 +5,21 @@ import * as yup from 'yup'
 const ASSOCIATION_ID = 1
 
 export default class ApiService<SchemaType> {
-  toast: ToastServiceMethods
+  toast: ToastServiceMethods | null = null
   basePath: string
   schema: yup.ObjectSchema<any>
   params: string | null
 
   constructor(
-    toast: ToastServiceMethods,
+    toast: ToastServiceMethods | null,
     basePath: string,
     schema: yup.ObjectSchema<any>,
     params: string | null = null,
     replacePath?: string // TODO change that
   ) {
-    this.toast = toast
+    if (toast) {
+      this.toast = toast
+    }
     // TODO change that
     if (replacePath) {
       this.basePath = replacePath
@@ -99,23 +101,27 @@ export default class ApiService<SchemaType> {
   }
 
   private handleError(error: any, message: string): never {
-    this.toast.add({
-      severity: 'error',
-      summary: 'Associations',
-      detail: message,
-      life: 5000
-    })
+    if (this.toast) {
+      this.toast.add({
+        severity: 'error',
+        summary: 'Associations',
+        detail: message,
+        life: 5000
+      })
+    }
     console.log('API error:', error)
     throw error
   }
 
   private catchValidationError(error: any): never {
-    this.toast.add({
-      severity: 'error',
-      summary: 'Erreur de validation',
-      detail: 'Les données ne correspondent pas au schéma de validation: ' + error,
-      life: 5000
-    })
+    if (this.toast) {
+      this.toast.add({
+        severity: 'error',
+        summary: 'Erreur de validation',
+        detail: 'Les données ne correspondent pas au schéma de validation: ' + error,
+        life: 5000
+      })
+    }
     throw error
   }
 
