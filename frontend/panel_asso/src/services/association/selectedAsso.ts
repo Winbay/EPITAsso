@@ -1,15 +1,7 @@
+import {associationSchema} from "@/services/association/association";
 import djangoApi from "@/services/api";
 // import {useToast} from "primevue/usetoast";
 import type {Association} from "@/types/associationInterfaces";
-import * as yup from "yup";
-
-const associationSchema = yup.object({
-  id: yup.number().required(),
-  name: yup.string().required(),
-  content: yup.string().required(),
-  location: yup.string().required(),
-  logo: yup.string().required()
-})
 
 export default class SelectedAssoService {
   static associationId: string | null = localStorage.getItem('associationId');
@@ -25,8 +17,7 @@ export default class SelectedAssoService {
 
   static async getUserAssociations(): Promise<Association[]> {
     try {
-      // TODO
-      const response = await djangoApi['get']<typeof associationSchema[]>('/api/user/me/associations')
+      const response = await djangoApi['get']<typeof associationSchema[]>('/api/associations')
       return response.data.map((asso) => this.snakeToCamel(asso));
     } catch (error) {
       this.handleError(error, `GET: An error occured.`)

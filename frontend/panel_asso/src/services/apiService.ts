@@ -10,7 +10,7 @@ export default class ApiService<SchemaType> {
   basePath: string
   schema: yup.ObjectSchema<any>
   params: string | null
-  replacePath: string | undefined
+  replacePath?: string
 
   constructor(
     toast: ToastServiceMethods | null,
