@@ -1,4 +1,3 @@
-import type { ToastServiceMethods } from 'primevue/toastservice'
 import ApiService from '@/services/apiService'
 import * as yup from 'yup'
 import type { AuthenticationRefresh } from '@/types/authenticationInterface'
@@ -11,9 +10,9 @@ const authenticationRefreshSchema = yup.object({
 export default class AuthenticationRefreshService extends ApiService<
   yup.InferType<typeof authenticationRefreshSchema>
 > {
-  constructor(toast: ToastServiceMethods) {
+  constructor() {
     // TODO
-    super(toast, '/api/auth/refresh', authenticationRefreshSchema, null, '/api/auth/refresh')
+    super(null, '/api/auth/refresh', authenticationRefreshSchema, null, '/api/auth/refresh')
   }
 
   async refresh(refreshToken: string): Promise<AuthenticationRefresh> {

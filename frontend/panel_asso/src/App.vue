@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import {
   ACCESS_TOKEN_KEY,
-  configureDjangoApi,
   REDIRECT_URI,
   REFRESH_TOKEN_KEY
 } from '@/services/api'
@@ -27,7 +26,6 @@ const isLoggedIn = ref(false)
 const isLoading = ref(true)
 
 const toast = useToast()
-configureDjangoApi(toast)
 const userService = new UserDetailService(toast)
 const authenticationService = new AuthenticationService(toast)
 
