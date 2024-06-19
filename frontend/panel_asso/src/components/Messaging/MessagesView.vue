@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, type PropType, ref } from 'vue'
+import { nextTick, onBeforeMount, onMounted, type PropType, ref } from 'vue'
 
 import ProgressSpinner from 'primevue/progressspinner'
 import Divider from 'primevue/divider'
@@ -12,8 +12,14 @@ import type { Conversation, Message } from '@/types/conversationInterfaces'
 import MessageComponent from '@/components/Messaging/MessageComponent.vue'
 import MessageService from '@/services/messaging/message'
 import type { Association } from '@/types/associationInterfaces'
+import { useUserStore } from '@/stores/user'
+import type { FetchedUser } from '@/types/userInterfaces'
 
 const ASSOCIATION_ID = 1
+
+const userStore = useUserStore()
+if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
+const user = ref<FetchedUser>(userStore.user)
 
 const props = defineProps({
   conversation: {
@@ -29,6 +35,8 @@ const props = defineProps({
 const toast = useToast()
 const messageService = new MessageService(toast, props.conversation.id)
 const associationsRef = ref<Association[]>(props.associations)
+
+let socket: WebSocket | null = null
 
 const isLoading = ref(true)
 const messagesRef = ref<Message[]>([])
@@ -104,12 +112,36 @@ const scrollToEnd = async (): Promise<void> => {
 
 onMounted(async () => {
   await fetchConversation()
+  const accessToken = localStorage.getItem('accessToken')
+  const wsUrl = import.meta.env.VITE_WS_URL
+  socket = new WebSocket(`${wsUrl}/chat/${props.conversation?.id}/?token=${accessToken}`)
+
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data)
+    if (message.author.id !== user.value.id) {
+      messagesRef.value.push(message)
+      scrollToEnd()
+    }
+  }
+
+  socket.onerror = (error) => {
+    console.error('WebSocket error:', error)
+  }
+
   await scrollToEnd()
+})
+
+onBeforeMount(() => {
+  return () => {
+    if (socket) {
+      socket.close()
+    }
+  }
 })
 </script>
 
 <template>
-  <div class="flex flex-col h-full p-4 rounded-lg shadow-md">
+  <div class="message-view flex flex-col h-full p-4 rounded-lg shadow-md">
     <div v-show="isLoading" class="content-center text-center h-full">
       <ProgressSpinner />
     </div>
@@ -118,7 +150,7 @@ onMounted(async () => {
         <h1 class="text-lg font-semibold">{{ conversation!.name }}</h1>
         <div class="flex flex-wrap mt-2">
           <Chip
-            class="mr-2 mb-2"
+            class="mr-2"
             v-for="association in associationsRef"
             :key="association.id"
             :label="association.name"
@@ -131,7 +163,7 @@ onMounted(async () => {
           </div>
         </div>
       </div>
-      <form @submit.prevent="sendMessage" class="mt-2 flex items-center">
+      <form @submit.prevent="sendMessage" class="mt-3 flex items-center">
         <InputText
           v-model="newMessageContentRef"
           placeholder="Écrivez un message"
@@ -149,13 +181,21 @@ onMounted(async () => {
 </template>
 
 <style>
+.message-view {
+  background-color: #1f2937;
+  height: 90vh;
+}
+
 #messagesContainer {
+  background-color: #171f2c;
   width: 100%;
+  height: calc(90vh - 190px);
   max-height: calc(90vh - 190px);
   padding: 25px 10px 10px;
   display: flex;
   overflow-y: auto;
   flex-direction: column;
+  border-radius: 0.5rem;
 }
 
 #messagesContainer::-webkit-scrollbar {

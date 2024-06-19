@@ -45,6 +45,7 @@ MICROSOFT_SCOPES = ["User.Read"]
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -62,6 +63,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -93,7 +95,17 @@ TEMPLATES = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(os.getenv("REDIS_HOST"), os.getenv("REDIS_PORT"))],
+        },
+    }
+}
+
 WSGI_APPLICATION = "EPITAssoAPI.wsgi.application"
+ASGI_APPLICATION = "EPITAssoAPI.asgi.application"
 
 
 # Database
