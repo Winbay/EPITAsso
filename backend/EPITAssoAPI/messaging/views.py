@@ -5,6 +5,9 @@ from rest_framework.pagination import LimitOffsetPagination
 from association.models import Association
 from .models import Message, Conversation
 from .serializers import MessageSerializer, ConversationSerializer
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import json
 
 
 class MessageListView(generics.ListCreateAPIView):
@@ -35,6 +38,15 @@ class MessageListView(generics.ListCreateAPIView):
                 author=self.request.user,
                 association_sender=self.__get_association_sender(),
             )
+
+            # Notify via WebSocket
+            conversation_id = kwargs.get("pk")
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"conversation_{conversation_id}",
+                {"type": "chat.message", "message": json.dumps(serializer.data)},
+            )
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

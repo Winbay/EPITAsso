@@ -8,6 +8,8 @@ import InputText from 'primevue/inputtext'
 import MultiSelect from 'primevue/multiselect'
 import ProgressSpinner from 'primevue/progressspinner'
 import { useToast } from 'primevue/usetoast'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 
 import type { Association } from '@/types/associationInterfaces'
 import type { Conversation } from '@/types/conversationInterfaces'
@@ -17,6 +19,7 @@ import AssociationService from '@/services/association/association'
 
 const ASSOCIATION_ID = 1
 
+const confirm = useConfirm()
 const toast = useToast()
 const conversationService: ConversationService = new ConversationService(toast)
 const associationService: AssociationService = new AssociationService(toast)
@@ -57,11 +60,33 @@ const createConversation = async (): Promise<void> => {
   if (overlayPanelRef.value) {
     overlayPanelRef.value.hide()
   }
+
+  newConversationNameRef.value = null
+}
+
+const confirmDelete = (event: Event, conversation: Conversation) => {
+  event.stopPropagation()
+  confirm.require({
+    target: event.currentTarget as HTMLElement,
+    header: `Suppression de la conversation "${conversation.name}"`,
+    message: 'Êtes-vous sûr de vouloir supprimer cette conversation ?',
+    icon: 'pi pi-exclamation-triangle',
+    rejectClass: 'p-button-secondary p-button-outlined p-button-sm',
+    acceptClass: 'p-button-danger p-button-sm',
+    rejectLabel: 'Annuler',
+    acceptLabel: 'Supprimer',
+    accept: async () => {
+      await deleteConversation(conversation)
+    }
+  })
 }
 
 const deleteConversation = async (conversation: Conversation): Promise<void> => {
   await conversationService.deleteConversation(conversation.id) // TODO can not be smth like that
   conversationsRef.value = conversationsRef.value.filter((conv) => conv.id !== conversation.id)
+  if (selectedConversationRef.value?.id === conversation.id) {
+    selectedConversationRef.value = null
+  }
 }
 
 onMounted(async () => {
@@ -80,8 +105,7 @@ onMounted(async () => {
       <div class="p-grid p-fluid mb-2">
         <Button
           icon="pi pi-plus"
-          class="p-col-6 p-d-flex p-jc-end"
-          text
+          class="add-btn px-4 h-full"
           label="Nouvelle conversation"
           @click="openOverlayPanel($event)"
         />
@@ -98,9 +122,9 @@ onMounted(async () => {
             <span>{{ slotProps.option.name }}</span>
             <Button
               icon="pi pi-trash"
-              class="p-button-danger"
+              class="p-button-danger delete-btn"
               text
-              @click.stop="deleteConversation(slotProps.option)"
+              @click="confirmDelete($event, slotProps.option)"
             />
           </div>
         </template>
@@ -142,6 +166,12 @@ onMounted(async () => {
       :disabled="!newConversationNameRef"
     />
   </OverlayPanel>
+
+  <ConfirmDialog />
 </template>
 
-<style scoped></style>
+<style scoped>
+.add-btn {
+  color: var(--text-color);
+}
+</style>

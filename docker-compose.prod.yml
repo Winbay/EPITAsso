@@ -6,22 +6,47 @@ services:
       - db_data:/var/lib/postgresql/data
     env_file:
       - ./backend/EPITAssoAPI/.env.prod
+  
+  redis:
+    image: redis:7.4-rc1-alpine3.20
+    volumes:
+      - redis_cache:/data
 
-  django:
+  django-gunicorn:
     build:
-      context: ./backend/EPITAssoAPI
+      context: .
+      dockerfile: Dockerfile
     command: >
       sh -c "python3 manage.py makemigrations &&
           python3 manage.py migrate --noinput &&
           python manage.py collectstatic --no-input &&
           gunicorn EPITAssoAPI.wsgi:application --bind 0.0.0.0:8000"
     restart: always
-    volumes:
-      - static:/app/static
     environment:
       ENV_FILE: .env.prod
+    volumes:
+      - static:/app/static
     depends_on:
       - db
+      - redis
+
+  django-daphne:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "python3 manage.py makemigrations &&
+          python3 manage.py migrate --noinput &&
+          python manage.py collectstatic --no-input &&
+          daphne -b 0.0.0.0 -p 8001 EPITAssoAPI.asgi:application"
+    restart: always
+    environment:
+      ENV_FILE: .env.prod
+    volumes:
+      - static:/app/static
+    depends_on:
+      - db
+      - redis
 
   asso:
     build:
@@ -32,12 +57,6 @@ services:
   etd:
     build:
       context: ./frontend/vitrine
-      dockerfile: Dockerfile.prod
-    restart: always
-
-  adm:
-    build:
-      context: ./frontend/panel_adm
       dockerfile: Dockerfile.prod
     restart: always
 
@@ -58,3 +77,4 @@ services:
 volumes:
   db_data:
   static:
+  redis_cache:
