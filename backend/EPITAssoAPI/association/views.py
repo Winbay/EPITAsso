@@ -135,13 +135,14 @@ class MemberListView(generics.ListAPIView):
     serializer_class = MemberSerializer
     permission_classes = [IsMemberOfAssociation]
 
+    def get_queryset(self):
+        association_id = self.kwargs["association_id"]
+        return AssociateUserAndAssociation.objects.filter(association_id=association_id)
+
     @extend_schema(summary="List all Members")
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def get_queryset(self):
-        association_id = self.kwargs["pk"]
-        return AssociateUserAndAssociation.objects.filter(association_id=association_id)
 
 
 class MemberDetailView(generics.RetrieveUpdateAPIView):

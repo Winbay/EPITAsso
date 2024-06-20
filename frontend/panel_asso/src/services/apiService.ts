@@ -74,7 +74,7 @@ export default class ApiService<SchemaType> {
       next: string | null
       previous: string | null
       results: SchemaType[]
-    }>('get', this.basePath, undefined, params)
+    }>('get', this.getFullPath(), undefined, params)
     const res = await this.validateArray(results, yup.array().of(this.schema).required())
     return { ...rest, results: res }
   }

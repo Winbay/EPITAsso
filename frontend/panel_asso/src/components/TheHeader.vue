@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import Avatar from 'primevue/avatar'
-import Dropdown from 'primevue/dropdown'
+import Dropdown, { type DropdownChangeEvent } from 'primevue/dropdown'
 import Button from 'primevue/button'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
+import type {AssociationWithLogo} from "@/types/associationInterfaces";
+import SelectedAssoService from "@/services/association/selectedAsso";
+import { useAssociationStore } from '@/stores/selectedAssociation'
 
 const userStore = useUserStore()
 const user = ref(userStore.getUser)
-import type {Association} from "@/types/associationInterfaces";
-import SelectedAssoService from "@/services/association/selectedAsso";
 
-const userAssociations = ref<Association[]>([]);
-const selectedAsso = ref<Association | undefined>();
+const userAssociations = ref<AssociationWithLogo[]>([]);
+const selectedAsso = ref<AssociationWithLogo | undefined>();
 
 const stateMenu = () => {
   let sidePanel = document.getElementById('main-content')
@@ -34,16 +35,14 @@ const getCurrentUserAssociations = async () => {
   userAssociations.value = await SelectedAssoService.getUserAssociations();
 }
 
-const handleSelectedAssoChange = (newValue: Association) => {
-  SelectedAssoService.setAssociationId(newValue.id.toString())
-}
-
-watch(selectedAsso, (newValue) => {
-  if (!newValue) {
-    return;
+const associationStore = useAssociationStore();
+const handleSelectedAssoChange = (event: DropdownChangeEvent) => {
+  SelectedAssoService.setAssociationId(event.value.id.toString())
+  if (associationStore.selectedAssociationId !== event.value.id.toString()) {
+    associationStore.setSelectedAssociation(event.value.id.toString());
+    window.location.reload();
   }
-  handleSelectedAssoChange(newValue);
-});
+}
 
 onMounted(async () => {
   await getCurrentUserAssociations();
@@ -76,10 +75,11 @@ onMounted(async () => {
         optionLabel="name"
         placeholder="Select an Asso"
         class="h-10 w-full md:w-14rem bg-transparent border-0 shadow-none"
+        @change="handleSelectedAssoChange"
       >
         <template #value="slotProps">
           <div v-if="slotProps.value" class="flex align-items-center">
-            <Avatar :image="`/images/${slotProps.value.logo}`" class="mr-1" shape="circle" />
+            <Avatar :image="`${slotProps.value.logo}`" class="mr-1" shape="circle" />
             <div class="text-base flex items-center ml-1 mr-0">{{ slotProps.value.name }}</div>
           </div>
           <span v-else>
@@ -88,7 +88,7 @@ onMounted(async () => {
         </template>
         <template #option="slotProps">
           <div class="flex align-items-center">
-            <Avatar :image="`/images/${slotProps.option.logo}`" class="mr-1" shape="circle" />
+            <Avatar :image="`${slotProps.option.logo}`" class="mr-1" shape="circle" />
             <div class="text-base flex items-center ml-1">{{ slotProps.option.name }}</div>
           </div>
         </template>

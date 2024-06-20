@@ -16,8 +16,7 @@ import type { Conversation } from '@/types/conversationInterfaces'
 import MessagesView from '@/components/Messaging/MessagesView.vue'
 import ConversationService from '@/services/messaging/conversation'
 import AssociationService from '@/services/association/association'
-
-const ASSOCIATION_ID = 1
+import SelectedAssoService from '@/services/association/selectedAsso'
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -49,7 +48,7 @@ const createConversation = async (): Promise<void> => {
   if (!newConversationNameRef.value || selectedAssociationsRef.value.length === 0) return
   const newConversation = {
     name: newConversationNameRef.value,
-    associationIds: [...selectedAssociationsRef.value.map((asso) => asso.id), ASSOCIATION_ID],
+    associationIds: [...selectedAssociationsRef.value.map((asso) => asso.id), +SelectedAssoService.getAssociationId()],
     lastSentAt: new Date()
   }
   const conversation = await conversationService.createConversation(newConversation)
@@ -120,12 +119,12 @@ onMounted(async () => {
         <template #option="slotProps">
           <div class="flex justify-between items-center">
             <span>{{ slotProps.option.name }}</span>
-            <Button
+            <!-- <Button
               icon="pi pi-trash"
               class="p-button-danger delete-btn"
               text
               @click="confirmDelete($event, slotProps.option)"
-            />
+            /> -->
           </div>
         </template>
       </Listbox>
@@ -154,7 +153,7 @@ onMounted(async () => {
       class="mr-4"
       display="chip"
       v-model="selectedAssociationsRef"
-      :options="associationsRef.filter((asso) => asso.id !== ASSOCIATION_ID)"
+      :options="associationsRef.filter((asso) => asso.id !== +SelectedAssoService.getAssociationId())"
       filter
       option-label="name"
       placeholder="Selectionner des associations"

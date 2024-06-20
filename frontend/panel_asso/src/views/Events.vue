@@ -113,8 +113,8 @@ const formatDate = (date: Date): string => {
       tableStyle="min-width: 50rem"
       size="small"
       paginator
-      :rows="10"
-      :rowsPerPageOptions="[10, 20, 50]"
+      :rows="5"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
       removableSort
     >
       <Column field="name" header="Titre" sortable></Column>

@@ -9,13 +9,12 @@ import AssociationDetailService from '@/services/association/details'
 import type { AssociationDetail } from '@/types/associationInterfaces'
 import ProgressSpinner from 'primevue/progressspinner'
 import Members from '@/components/DataTable/DataTableMembers.vue'
-
-const ASSOCIATION_ID = 1
+import SelectedAssoService from '@/services/association/selectedAsso'
 
 const toast = useToast()
 const associationDetailService: AssociationDetailService = new AssociationDetailService(
   toast,
-  ASSOCIATION_ID
+  +SelectedAssoService.getAssociationId()
 )
 
 const isLoading = ref(true)
@@ -74,7 +73,7 @@ const handleTabChange = (event: { index: number }): void => {
           class="flex content-center w-full h-full"
           style="width: 100%; height: calc(100vh - 7rem)"
         >
-          <Members v-if="membersLoaded" :association-id="ASSOCIATION_ID" />
+          <Members v-if="membersLoaded" :association-id="+SelectedAssoService.getAssociationId()" />
         </ScrollPanel>
       </TabPanel>
     </TabView>
