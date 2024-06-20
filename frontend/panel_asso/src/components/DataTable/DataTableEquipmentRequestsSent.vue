@@ -3,7 +3,7 @@ import Tag from 'primevue/tag'
 import Avatar from 'primevue/avatar'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import { defineProps, type PropType, ref } from 'vue'
+import { defineProps, type PropType, ref, computed } from 'vue'
 import type { Equipment, EquipmentRequest } from '@/types/equipmentInterfaces'
 import DialogEquipmentRequestDetails from '@/components/Dialog/DialogEquipmentRequestDetails.vue'
 
@@ -78,18 +78,6 @@ const closeDialog = () => {
     <Column header="Matériel">
       <template #body="slotProps">
         <span>{{ slotProps.data.equipmentName }}</span>
-      </template>
-    </Column>
-    <Column header="Association propriétaire">
-      <template #body="slotProps">
-        <div class="flex items-center">
-          <Avatar
-            :image="slotProps.data.assoBorrower.logo"
-            size="xlarge"
-            class="flex align-items-center justify-content-center mr-2"
-          />
-          <span>{{ slotProps.data.assoBorrower.name }}</span>
-        </div>
       </template>
     </Column>
     <Column header="Dates d'emprunt">

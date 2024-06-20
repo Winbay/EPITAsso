@@ -1,0 +1,297 @@
+[
+{
+  "model": "event.tag",
+  "pk": 2,
+  "fields": {
+    "name": "Afterwork",
+    "text_color": "#000000",
+    "background_color": "#FFFFE0"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 3,
+  "fields": {
+    "name": "Soirée étudiante",
+    "text_color": "#000000",
+    "background_color": "#DDA0DD"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 4,
+  "fields": {
+    "name": "Visée Sociétale",
+    "text_color": "#000000",
+    "background_color": "#90EE90"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 5,
+  "fields": {
+    "name": "Tutorat/Professionnelles",
+    "text_color": "#000000",
+    "background_color": "#4169E1"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 6,
+  "fields": {
+    "name": "Festif",
+    "text_color": "#000000",
+    "background_color": "#FFA500"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 7,
+  "fields": {
+    "name": "Divertissement",
+    "text_color": "#000000",
+    "background_color": "#F08080"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 8,
+  "fields": {
+    "name": "Innovation/Science",
+    "text_color": "#000000",
+    "background_color": "#E0FFFF"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 9,
+  "fields": {
+    "name": "Musique",
+    "text_color": "#000000",
+    "background_color": "#FFA07A"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 10,
+  "fields": {
+    "name": "Sport",
+    "text_color": "#000000",
+    "background_color": "#FF00FF"
+  }
+},
+{
+  "model": "event.tag",
+  "pk": 11,
+  "fields": {
+    "name": "Art et culture",
+    "text_color": "#000000",
+    "background_color": "#FFC0CB"
+  }
+},
+{
+  "model": "event.event",
+  "pk": 1,
+  "fields": {
+    "author": "794aa599-fd5a-4713-a3db-dcf145f717fa",
+    "name": "Poulpe Party",
+    "content": "<h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Kraken vous convie pour sa dernière soirée de l’année à l'Under, transformée en une véritable Pool Party, le </span><strong style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">7 juin de 23h à 5h</strong><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\"> ! P</span></h3><h3><br></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Plongez dans une ambiance musicale envoûtante avec Unisson aux platines, offrant des sons variés pour vous faire danser jusqu'au petit matin ! </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Admirez une scénographie éblouissante qui vous transportera dans l'univers festif et décontracté d'une pool party. </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Au bar, savourez des cocktails rafraîchissants et des boissons estivales à des prix qui vous feront plonger dans l'été.</span></h3><p><br></p><p><strong style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: var(--header-primary);\">▬▬ SÉCURITÉ &amp; PRÉVENTION ▬▬</strong></p><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Capotes de verre disponibles au bar. </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Stand VSS et Croix-Rouge </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Événement interdit aux mineurs. </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Aucune discrimination, comportement inapproprié, remarque sexiste, transphobe, homophobe, raciste ne sera toléré. Les staffs seront présents partout pour veiller au respect des règles. Prenez soin de vous, de vos amis et de vos verres, même avec les contrôles et la sécurité à l'entrée. </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Aucune consommation de stupéfiants, quel qu'en soit le type, ne sera tolérée pendant l'événement.</span></h3><p><br></p><p><strong style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: var(--header-primary);\">▬▬ BAR ▬▬</strong></p><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Ecocup à 1€ </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Pinte : 5€ </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Cocktail : 5€ </span></h3><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Shot : 2€</span></h3><p><br></p><p><strong style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: var(--header-primary);\">▬▬ BILLETTERIE ▬▬</strong></p><h3><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Billets à partir de 5€ </span></h3><p><a href=\"https://www.helloasso.com/associations/bde-epita/evenements/kraken-poulpe-party\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: var(--text-link);\">https://www.helloasso.com/associations/bde-epita/evenements/kraken-poulpe-party</a></p><p><br></p><p><strong style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: var(--header-primary);\">▬▬ PARTENAIRES ▬▬</strong></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Lateb, La Paillote – Bar </span></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">VJN </span></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Icare </span></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">STOP-VSS </span></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Éphémère - Couverture photo de l'événement </span></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Unisson - Musique</span></p><p><br></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Une carte étudiante sera demandée pour les billets IONIS </span></p><p><br></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Carte d'identité OBLIGATOIRE, un contrôle sera effectué </span></p><p><br></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\"> Merci de respecter le lieu et ses alentours L’accès à l'événement est réservé aux personnes étant en mesure de présenter un billet valide. Une vérification systématique du billet d’entrée et de la carte d'identité sera effectuée. </span></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Pool Vibes Only! </span></p><p><br></p><p><span style=\"background-color: oklab(0.798803 0.0268804 0.148792 / 0.08); color: oklab(0.899401 -0.00192499 -0.00481987);\">Votre Bde Kraken</span></p>",
+    "start_date": "2024-06-07T21:00:00Z",
+    "end_date": "2024-06-08T04:00:00Z",
+    "end_recurrence": "2024-06-05T15:34:28Z",
+    "recurrent": false,
+    "frequency": 1,
+    "association": 1,
+    "places_number": 0,
+    "notes": "",
+    "tags": [
+      9,
+      3,
+      6,
+      7
+    ],
+    "staff_members": [
+      "9f98ae50-4ade-4662-8559-85c205f99df9"
+    ],
+    "other_associations": [],
+    "tasks": []
+  }
+},
+{
+  "model": "event.event",
+  "pk": 6,
+  "fields": {
+    "author": "328257cf-357e-4d3a-bac9-617eb363f5dc",
+    "name": "Tournois five kraken x episport",
+    "content": "<p>.</p>",
+    "start_date": "2024-06-06T14:00:00Z",
+    "end_date": "2024-06-06T16:00:00Z",
+    "end_recurrence": "2024-06-10T20:56:03Z",
+    "recurrent": false,
+    "frequency": 0,
+    "association": 1,
+    "places_number": 0,
+    "notes": "",
+    "tags": [
+      10
+    ],
+    "staff_members": [],
+    "other_associations": [],
+    "tasks": []
+  }
+},
+{
+  "model": "event.event",
+  "pk": 7,
+  "fields": {
+    "author": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "name": "Afterwork Kraken & Rodéosine",
+    "content": "<p>.</p>",
+    "start_date": "2024-04-30T16:00:00Z",
+    "end_date": "2024-04-30T22:00:00Z",
+    "end_recurrence": "2024-04-30T21:06:13Z",
+    "recurrent": false,
+    "frequency": 0,
+    "association": 1,
+    "places_number": 0,
+    "notes": "",
+    "tags": [
+      9,
+      2,
+      6
+    ],
+    "staff_members": [],
+    "other_associations": [],
+    "tasks": []
+  }
+},
+{
+  "model": "event.event",
+  "pk": 8,
+  "fields": {
+    "author": "5d1c1005-2286-46be-ba59-a6069993993b",
+    "name": "Afterwork Kraken",
+    "content": "<p>a</p>",
+    "start_date": "2024-04-16T16:00:00Z",
+    "end_date": "2024-04-16T22:00:00Z",
+    "end_recurrence": "2024-06-10T21:11:20Z",
+    "recurrent": false,
+    "frequency": 0,
+    "association": 1,
+    "places_number": 0,
+    "notes": "",
+    "tags": [
+      9,
+      2
+    ],
+    "staff_members": [],
+    "other_associations": [],
+    "tasks": []
+  }
+},
+{
+  "model": "event.event",
+  "pk": 9,
+  "fields": {
+    "author": "0186ee99-788b-4a92-b52d-302f74e38ad5",
+    "name": "WEI 2024",
+    "content": "<p>.</p>",
+    "start_date": "2024-09-12T16:00:00Z",
+    "end_date": "2024-09-15T21:00:00Z",
+    "end_recurrence": "2024-06-10T21:13:23Z",
+    "recurrent": false,
+    "frequency": 0,
+    "association": 1,
+    "places_number": 0,
+    "notes": "",
+    "tags": [
+      3,
+      6,
+      7,
+      9,
+      10,
+      11
+    ],
+    "staff_members": [],
+    "other_associations": [],
+    "tasks": []
+  }
+},
+{
+  "model": "event.event",
+  "pk": 10,
+  "fields": {
+    "author": "5d1c1005-2286-46be-ba59-a6069993993b",
+    "name": "Rentré septembre",
+    "content": "a",
+    "start_date": "2024-09-02T14:00:00Z",
+    "end_date": "2024-09-02T22:00:00Z",
+    "end_recurrence": "2024-06-10T21:20:45Z",
+    "recurrent": false,
+    "frequency": 0,
+    "association": 1,
+    "places_number": 0,
+    "notes": "",
+    "tags": [
+      2,
+      7,
+      9,
+      10,
+      11
+    ],
+    "staff_members": [],
+    "other_associations": [],
+    "tasks": []
+  }
+},
+{
+  "model": "event.event",
+  "pk": 11,
+  "fields": {
+    "author": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "name": "Soirée Rentrée",
+    "content": "<p>a</p>",
+    "start_date": "2024-09-07T21:00:00Z",
+    "end_date": "2024-09-08T04:00:00Z",
+    "end_recurrence": "2024-06-10T21:20:56Z",
+    "recurrent": false,
+    "frequency": 0,
+    "association": 1,
+    "places_number": 0,
+    "notes": "",
+    "tags": [
+      9,
+      3,
+      6
+    ],
+    "staff_members": [],
+    "other_associations": [],
+    "tasks": []
+  }
+},
+{
+  "model": "event.event",
+  "pk": 12,
+  "fields": {
+    "author": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "name": "Soirée MTI 28/06",
+    "content": "<p>Soirée pour la MTI !</p>",
+    "start_date": "2024-06-20T10:08:38.982Z",
+    "end_date": "2024-06-20T10:08:38.982Z",
+    "end_recurrence": "2024-06-20T10:08:38.982Z",
+    "recurrent": false,
+    "frequency": 0,
+    "association": 1,
+    "places_number": 0,
+    "notes": null,
+    "tags": [
+      9,
+      3,
+      6
+    ],
+    "staff_members": [],
+    "other_associations": [],
+    "tasks": []
+  }
+}
+]
