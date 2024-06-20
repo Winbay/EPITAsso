@@ -37,11 +37,15 @@ onMounted(async () => {
 <template>
   <div class="equipment-list w-full h-full px-10 py-8 flex flex-col">
     <DataTableEquipmentCurrAsso
-      :curr-asso-equipment="allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())"
+      :curr-asso-equipment="
+        allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())
+      "
       :reload-equipments="reloadEquipments"
     />
     <DataTableEquipmentOtherAssos
-      :other-assos-equipment="allEquipment.filter((eq) => eq.assoOwner.id !== +SelectedAssoService.getAssociationId())"
+      :other-assos-equipment="
+        allEquipment.filter((eq) => eq.assoOwner.id !== +SelectedAssoService.getAssociationId())
+      "
       :reload-equipments="reloadEquipments"
       :reload-equipment-requests="reloadEquipmentRequests"
     />
@@ -51,7 +55,9 @@ onMounted(async () => {
     <TabView>
       <TabPanel header="Reçues">
         <DataTableEquipmentRequestsReceived
-          :curr-asso-equipments="allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())"
+          :curr-asso-equipments="
+            allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())
+          "
           :equipment-requests="equipmentRequestsReceived"
           :reload-equipments="reloadEquipments"
           :reload-equipment-requests="reloadEquipmentRequests"
@@ -59,7 +65,9 @@ onMounted(async () => {
       </TabPanel>
       <TabPanel header="Envoyées">
         <DataTableEquipmentRequestsSent
-          :curr-asso-equipments="allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())"
+          :curr-asso-equipments="
+            allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())
+          "
           :equipment-requests="equipmentRequestsSent"
           :reload-equipment-requests="reloadEquipmentRequests"
         />
