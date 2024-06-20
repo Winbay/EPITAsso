@@ -10,11 +10,11 @@ import DataTableEquipmentCurrAsso from '@/components/DataTable/DataTableEquipmen
 import DataTableEquipmentOtherAssos from '@/components/DataTable/DataTableEquipmentOtherAssos.vue'
 import DataTableEquipmentRequestsReceived from '@/components/DataTable/DataTableEquipmentRequestsReceived.vue'
 import DataTableEquipmentRequestsSent from '@/components/DataTable/DataTableEquipmentRequestsSent.vue'
+import SelectedAssoService from '@/services/association/selectedAsso'
 
 const allEquipment = ref<Equipment[]>([])
 const equipmentRequestsReceived = ref<EquipmentRequest[]>([])
 const equipmentRequestsSent = ref<EquipmentRequest[]>([])
-const currAsso = { id: 1, name: 'EPTV', logo: '/images/eptv.jpg', description: '', location: 'KB' }
 const toast = useToast()
 const equipmentService: EquipmentService = new EquipmentService(toast)
 const equipmentRequestService: EquipmentRequestService = new EquipmentRequestService(toast)
@@ -37,11 +37,11 @@ onMounted(async () => {
 <template>
   <div class="equipment-list w-full h-full px-10 py-8 flex flex-col">
     <DataTableEquipmentCurrAsso
-      :curr-asso-equipment="allEquipment.filter((eq) => eq.assoOwner.id === currAsso.id)"
+      :curr-asso-equipment="allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())"
       :reload-equipments="reloadEquipments"
     />
     <DataTableEquipmentOtherAssos
-      :other-assos-equipment="allEquipment.filter((eq) => eq.assoOwner.id !== currAsso.id)"
+      :other-assos-equipment="allEquipment.filter((eq) => eq.assoOwner.id !== +SelectedAssoService.getAssociationId())"
       :reload-equipments="reloadEquipments"
       :reload-equipment-requests="reloadEquipmentRequests"
     />
@@ -51,7 +51,7 @@ onMounted(async () => {
     <TabView>
       <TabPanel header="Reçues">
         <DataTableEquipmentRequestsReceived
-          :curr-asso-equipments="allEquipment.filter((eq) => eq.assoOwner.id === currAsso.id)"
+          :curr-asso-equipments="allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())"
           :equipment-requests="equipmentRequestsReceived"
           :reload-equipments="reloadEquipments"
           :reload-equipment-requests="reloadEquipmentRequests"
@@ -59,7 +59,7 @@ onMounted(async () => {
       </TabPanel>
       <TabPanel header="Envoyées">
         <DataTableEquipmentRequestsSent
-          :curr-asso-equipments="allEquipment.filter((eq) => eq.assoOwner.id === currAsso.id)"
+          :curr-asso-equipments="allEquipment.filter((eq) => eq.assoOwner.id === +SelectedAssoService.getAssociationId())"
           :equipment-requests="equipmentRequestsSent"
           :reload-equipment-requests="reloadEquipmentRequests"
         />

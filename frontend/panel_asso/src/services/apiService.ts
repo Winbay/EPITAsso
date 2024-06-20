@@ -80,7 +80,7 @@ export default class ApiService<SchemaType> {
   }
 
   protected async getAllCustom(route: string): Promise<SchemaType[]> {
-    const data = await this.request<SchemaType[]>('get', `${this.basePath}${route}`)
+    const data = await this.request<SchemaType[]>('get', `${this.getFullPath()}${route}`)
     return this.validateArray(data, yup.array().of(this.schema).required())
   }
 
@@ -91,7 +91,7 @@ export default class ApiService<SchemaType> {
 
   protected async patch(data: SchemaType, id?: number): Promise<void> {
     const validatedData = await this.validate(data)
-    await this.request<void>('patch', `${this.basePath}${id ? id + '/' : ''}`, validatedData)
+    await this.request<void>('patch', `${this.getFullPath()}${id ? id + '/' : ''}`, validatedData)
   }
 
   protected async delete(id: number): Promise<void> {

@@ -49,7 +49,7 @@ export default class EquipmentRequestService extends ApiService<
   async acceptRequest(equipmentRequest: Pick<EquipmentRequest, 'id' | 'comment'>): Promise<void> {
     await this.request<void>(
       'patch',
-      `${this.basePath}${equipmentRequest.id}/accept`,
+      `${this.getFullPath()}${equipmentRequest.id}/accept`,
       equipmentRequest
     )
   }
@@ -57,7 +57,7 @@ export default class EquipmentRequestService extends ApiService<
   async refuseRequest(equipmentRequest: Pick<EquipmentRequest, 'id' | 'comment'>): Promise<void> {
     await this.request<void>(
       'patch',
-      `${this.basePath}${equipmentRequest.id}/refuse`,
+      `${this.getFullPath()}${equipmentRequest.id}/refuse`,
       equipmentRequest
     )
   }

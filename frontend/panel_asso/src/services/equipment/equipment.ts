@@ -56,7 +56,7 @@ export default class EquipmentService extends ApiService<yup.InferType<typeof eq
 
   async retrieveEquipment(id: Equipment['id']): Promise<void> {
     // Marque un matériel en "récupéré" (set le equipmentRequest à null quoi)
-    await this.request<void>('patch', `${this.basePath}${id}/retrieve`)
+    await this.request<void>('patch', `${this.getFullPath()}${id}/retrieve`)
   }
 
   // TODO: change that
@@ -67,13 +67,13 @@ export default class EquipmentService extends ApiService<yup.InferType<typeof eq
     const { borrowingDate, dueDate } = equipmentRequest
     await this.request<void>(
       'post',
-      `${this.basePath}${id}/borrow`,
+      `${this.getFullPath()}${id}/borrow`,
       this.camelToSnake(equipmentRequest)
     )
   }
 
   async getInvalidDates(id: Equipment['id']): Promise<number[][]> {
     // Renvoie la liste des timestamps [borrowingDate, dueDate] des demandes acceptées pour ce matériel
-    return await this.request<number[][]>('get', `${this.basePath}${id}/invalid-dates`)
+    return await this.request<number[][]>('get', `${this.getFullPath()}${id}/invalid-dates`)
   }
 }
