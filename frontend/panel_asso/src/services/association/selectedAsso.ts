@@ -1,6 +1,6 @@
-import djangoApi from "@/services/api";
-import type { AssociationWithLogo } from "@/types/associationInterfaces";
-import * as yup from "yup";
+import djangoApi from '@/services/api'
+import type { AssociationWithLogo } from '@/types/associationInterfaces'
+import * as yup from 'yup'
 
 const associationSchema = yup.object({
   id: yup.number().required(),
@@ -9,21 +9,23 @@ const associationSchema = yup.object({
 })
 
 export default class SelectedAssoService {
-  static associationId: string | null = localStorage.getItem('associationId');
+  static associationId: string | null = localStorage.getItem('associationId')
 
   static getAssociationId(): string {
-    return this.associationId !== null ? this.associationId : '0';
+    return this.associationId !== null ? this.associationId : '0'
   }
 
   static setAssociationId(associationId: string): void {
-    localStorage.setItem('associationId', associationId);
-    this.associationId = associationId;
+    localStorage.setItem('associationId', associationId)
+    this.associationId = associationId
   }
 
   static async getUserAssociations(): Promise<AssociationWithLogo[]> {
     try {
-      const response = await djangoApi['get']<typeof associationSchema[]>('/api/users/me/associations')
-      return response.data.map((asso) => this.snakeToCamel(asso));
+      const response = await djangoApi['get']<(typeof associationSchema)[]>(
+        '/api/users/me/associations'
+      )
+      return response.data.map((asso) => this.snakeToCamel(asso))
     } catch (error) {
       this.handleError(error, `GET: An error occured.`)
     }

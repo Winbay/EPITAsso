@@ -1,9 +1,9 @@
 import djangoApi from './api'
 import type { ToastServiceMethods } from 'primevue/toastservice'
-import SelectedAssoService from "@/services/association/selectedAsso";
+import SelectedAssoService from '@/services/association/selectedAsso'
 import * as yup from 'yup'
 
-const API_PATH = 'api';
+const API_PATH = 'api'
 
 export default class ApiService<SchemaType> {
   toast: ToastServiceMethods | null
@@ -28,10 +28,10 @@ export default class ApiService<SchemaType> {
 
   protected getFullPath(): string {
     if (this.replacePath) {
-      return this.replacePath;
+      return this.replacePath
     }
-    const associationId: string = SelectedAssoService.getAssociationId();
-    return `${API_PATH}/${associationId}/${this.basePath}`;
+    const associationId: string = SelectedAssoService.getAssociationId()
+    return `${API_PATH}/${associationId}/${this.basePath}`
   }
 
   // TODO not safe (ex: if omittedFields contains some fields in data)

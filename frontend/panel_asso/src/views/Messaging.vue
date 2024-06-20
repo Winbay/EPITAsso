@@ -48,7 +48,10 @@ const createConversation = async (): Promise<void> => {
   if (!newConversationNameRef.value || selectedAssociationsRef.value.length === 0) return
   const newConversation = {
     name: newConversationNameRef.value,
-    associationIds: [...selectedAssociationsRef.value.map((asso) => asso.id), +SelectedAssoService.getAssociationId()],
+    associationIds: [
+      ...selectedAssociationsRef.value.map((asso) => asso.id),
+      +SelectedAssoService.getAssociationId()
+    ],
     lastSentAt: new Date()
   }
   const conversation = await conversationService.createConversation(newConversation)
@@ -153,7 +156,9 @@ onMounted(async () => {
       class="mr-4"
       display="chip"
       v-model="selectedAssociationsRef"
-      :options="associationsRef.filter((asso) => asso.id !== +SelectedAssoService.getAssociationId())"
+      :options="
+        associationsRef.filter((asso) => asso.id !== +SelectedAssoService.getAssociationId())
+      "
       filter
       option-label="name"
       placeholder="Selectionner des associations"

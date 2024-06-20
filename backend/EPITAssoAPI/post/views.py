@@ -57,7 +57,11 @@ class PostListView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         association_id = self.kwargs["association_id"]
         association = Association.objects.get(id=association_id)
-        serializer.save(last_author=self.request.user, association=association, author=self.request.user)
+        serializer.save(
+            last_author=self.request.user,
+            association=association,
+            author=self.request.user,
+        )
 
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):

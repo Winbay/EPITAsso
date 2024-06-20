@@ -5,15 +5,15 @@ import Dropdown, { type DropdownChangeEvent } from 'primevue/dropdown'
 import Button from 'primevue/button'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
-import type {AssociationWithLogo} from "@/types/associationInterfaces";
-import SelectedAssoService from "@/services/association/selectedAsso";
+import type { AssociationWithLogo } from '@/types/associationInterfaces'
+import SelectedAssoService from '@/services/association/selectedAsso'
 import { useAssociationStore } from '@/stores/selectedAssociation'
 
 const userStore = useUserStore()
 const user = ref(userStore.getUser)
 
-const userAssociations = ref<AssociationWithLogo[]>([]);
-const selectedAsso = ref<AssociationWithLogo | undefined>();
+const userAssociations = ref<AssociationWithLogo[]>([])
+const selectedAsso = ref<AssociationWithLogo | undefined>()
 
 const stateMenu = () => {
   let sidePanel = document.getElementById('main-content')
@@ -32,29 +32,29 @@ const openProfile = () => {
   console.log('open profile')
 }
 const getCurrentUserAssociations = async () => {
-  userAssociations.value = await SelectedAssoService.getUserAssociations();
+  userAssociations.value = await SelectedAssoService.getUserAssociations()
 }
 
-const associationStore = useAssociationStore();
+const associationStore = useAssociationStore()
 const handleSelectedAssoChange = (event: DropdownChangeEvent) => {
   SelectedAssoService.setAssociationId(event.value.id.toString())
   if (associationStore.selectedAssociationId !== event.value.id.toString()) {
-    associationStore.setSelectedAssociation(event.value.id.toString());
-    window.location.reload();
+    associationStore.setSelectedAssociation(event.value.id.toString())
+    window.location.reload()
   }
 }
 
 onMounted(async () => {
-  await getCurrentUserAssociations();
+  await getCurrentUserAssociations()
   if (userAssociations.value.length === 0) {
-    return; // Rediriger vers une page qui dit qu'on a pas d'asso
+    return // Rediriger vers une page qui dit qu'on a pas d'asso
   }
-  let currAssoId = SelectedAssoService.getAssociationId();
+  let currAssoId = SelectedAssoService.getAssociationId()
   if (currAssoId === '0') {
     SelectedAssoService.setAssociationId(userAssociations.value[0].id.toString())
-    currAssoId = SelectedAssoService.getAssociationId();
+    currAssoId = SelectedAssoService.getAssociationId()
   }
-  selectedAsso.value = userAssociations.value.find(asso => asso.id.toString() === currAssoId);
+  selectedAsso.value = userAssociations.value.find((asso) => asso.id.toString() === currAssoId)
 })
 </script>
 

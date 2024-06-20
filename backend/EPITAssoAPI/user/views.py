@@ -189,7 +189,7 @@ class UserLoggedDetailView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         self.kwargs["pk"] = request.user.id
         return super().get(request, *args, **kwargs)
-    
+
 
 class UserLoggedAssociationsView(generics.ListAPIView):
     queryset = Association.objects.all()
@@ -197,7 +197,9 @@ class UserLoggedAssociationsView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        user_associations = AssociateUserAndAssociation.objects.filter(user=user).values_list('association', flat=True)
+        user_associations = AssociateUserAndAssociation.objects.filter(
+            user=user
+        ).values_list("association", flat=True)
         return Association.objects.filter(id__in=user_associations)
 
     @extend_schema(
@@ -205,4 +207,3 @@ class UserLoggedAssociationsView(generics.ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
-        

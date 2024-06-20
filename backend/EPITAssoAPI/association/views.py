@@ -144,7 +144,6 @@ class MemberListView(generics.ListAPIView):
         return super().list(request, *args, **kwargs)
 
 
-
 class MemberDetailView(generics.RetrieveUpdateAPIView):
     queryset = AssociateUserAndAssociation.objects.all()
     serializer_class = MemberSerializer
