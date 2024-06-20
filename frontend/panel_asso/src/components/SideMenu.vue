@@ -41,7 +41,8 @@ const items = [
   },
   {
     label: 'Matériel',
-    icon: 'pi pi-database'
+    icon: 'pi pi-database',
+    path: 'equipment'
   }
 ]
 

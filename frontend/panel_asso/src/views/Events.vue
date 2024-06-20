@@ -181,11 +181,11 @@ const formatDate = (date: Date): string => {
   color: var(--primary-color);
 }
 
-.events-list .p-paginator-bottom {
+.p-paginator-bottom {
   border: none;
 }
 
-.events-list .p-paginator-rpp-options span.p-dropdown-label {
+.p-paginator-rpp-options span.p-dropdown-label {
   align-content: center;
 }
 

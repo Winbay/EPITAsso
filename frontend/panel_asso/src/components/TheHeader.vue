@@ -59,7 +59,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <header class="w-full h-10 flex justify-between">
+  <header class="w-full h-10 flex justify-between absolute top-0 z-10">
     <div class="header-left w-64 flex justify-between items-center">
       <div class="page-title w-56 flex justify-center">
         <span class="ml-2 text-lg font-bold uppercase text-wrap">Panel Association</span>

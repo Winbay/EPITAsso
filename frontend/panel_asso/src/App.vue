@@ -76,15 +76,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="overflow-auto">
     <div v-if="isLoading" class="spinner">
       <ProgressSpinner />
     </div>
     <Login v-else-if="!isLoggedIn" />
-    <div v-else>
+    <div class="overflow-auto" v-else>
       <Toast />
       <TheHeader />
-      <main id="main-content" class="h-full flex flex-wrap overflow-hidden">
+      <main id="main-content" class="h-full flex flex-wrap overflow-auto mt-10">
         <SideMenu />
         <MainPanel />
       </main>
@@ -93,7 +93,11 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-main {
+#main-content {
+  height: calc(100% - 40px);
+}
+
+.main {
   height: max-content;
   background-color: #131923;
 }

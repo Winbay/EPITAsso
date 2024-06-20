@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref, type PropType } from 'vue'
+import { defineProps, onMounted, ref } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
@@ -16,15 +16,6 @@ const props = defineProps({
 
 const toast = useToast()
 const membersService: MemberService = new MemberService(toast, props.associationId)
-
-const getDefaultMember = (): Member => ({
-  id: '',
-  login: '',
-  firstName: '',
-  lastName: '',
-  school: '',
-  role: ''
-})
 
 const membersRef = ref<Member[]>([])
 
