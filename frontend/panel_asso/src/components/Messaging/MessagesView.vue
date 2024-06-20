@@ -14,8 +14,7 @@ import MessageService from '@/services/messaging/message'
 import type { Association } from '@/types/associationInterfaces'
 import { useUserStore } from '@/stores/user'
 import type { FetchedUser } from '@/types/userInterfaces'
-
-const ASSOCIATION_ID = 1
+import SelectedAssoService from '@/services/association/selectedAsso'
 
 const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
@@ -75,8 +74,9 @@ const fetchConversation = async (): Promise<void> => {
 const sendMessage = async (): Promise<void> => {
   if (newMessageContentRef.value.length === 0) return
   // TODO: set right author and association sender
+  // TODO: ahah taht convert
   const associationSender = props.conversation?.associationIds.find(
-    (associationid: Association['id']) => associationid === ASSOCIATION_ID
+    (associationid: Association['id']) => associationid === +SelectedAssoService.getAssociationId()
   )
   if (!associationSender) throw new Error('Association not found')
   const newMessage: Omit<

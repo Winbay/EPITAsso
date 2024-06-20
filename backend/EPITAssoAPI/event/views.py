@@ -1,5 +1,7 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
+
+from association.models import Association
 from .models import Event, Tag
 from .serializers import EventSerializer, TagSerializer
 from user.permissions import IsCustomAdmin
@@ -40,6 +42,10 @@ class EventListView(generics.ListCreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
+    def get_queryset(self):
+        association_id = self.kwargs["association_id"]
+        return Event.objects.filter(association_id=association_id)
+
     @extend_schema(summary="List all Events")
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -49,7 +55,9 @@ class EventListView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        association_id = self.kwargs["association_id"]
+        association = Association.objects.get(id=association_id)
+        serializer.save(author=self.request.user, association=association)
 
 
 class EventDetailView(generics.RetrieveUpdateDestroyAPIView):

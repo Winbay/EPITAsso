@@ -4,6 +4,9 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, inline_serial
 from rest_framework import generics, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
+
+from association.models import AssociateUserAndAssociation, Association
+from association.serializers import AssociationSimpleWithLogoSerializer
 from .models import User
 from .serializers import DetailUserSerializer
 from requests_oauthlib import OAuth2Session
@@ -185,4 +188,22 @@ class UserLoggedDetailView(generics.RetrieveAPIView):
     )
     def get(self, request, *args, **kwargs):
         self.kwargs["pk"] = request.user.id
+        return super().get(request, *args, **kwargs)
+
+
+class UserLoggedAssociationsView(generics.ListAPIView):
+    queryset = Association.objects.all()
+    serializer_class = AssociationSimpleWithLogoSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        user_associations = AssociateUserAndAssociation.objects.filter(
+            user=user
+        ).values_list("association", flat=True)
+        return Association.objects.filter(id__in=user_associations)
+
+    @extend_schema(
+        summary="Retrieve the logged user's associations",
+    )
+    def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)

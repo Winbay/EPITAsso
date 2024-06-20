@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Avatar from 'primevue/avatar'
-import Dropdown from 'primevue/dropdown'
+import Dropdown, { type DropdownChangeEvent } from 'primevue/dropdown'
 import Button from 'primevue/button'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
+import type { AssociationWithLogo } from '@/types/associationInterfaces'
+import SelectedAssoService from '@/services/association/selectedAsso'
+import { useAssociationStore } from '@/stores/selectedAssociation'
 
 const userStore = useUserStore()
 const user = ref(userStore.getUser)
 
-const associations = ref([
-  { name: 'EPTV', logo: 'eptv.jpg' },
-  { name: 'Kraken', logo: 'kraken.png' }
-])
-const selectedAsso = ref(associations.value[0])
+const userAssociations = ref<AssociationWithLogo[]>([])
+const selectedAsso = ref<AssociationWithLogo | undefined>()
 
 const stateMenu = () => {
   let sidePanel = document.getElementById('main-content')
@@ -31,6 +31,31 @@ const openProfile = () => {
   router.push('/profile')
   console.log('open profile')
 }
+const getCurrentUserAssociations = async () => {
+  userAssociations.value = await SelectedAssoService.getUserAssociations()
+}
+
+const associationStore = useAssociationStore()
+const handleSelectedAssoChange = (event: DropdownChangeEvent) => {
+  SelectedAssoService.setAssociationId(event.value.id.toString())
+  if (associationStore.selectedAssociationId !== event.value.id.toString()) {
+    associationStore.setSelectedAssociation(event.value.id.toString())
+    window.location.reload()
+  }
+}
+
+onMounted(async () => {
+  await getCurrentUserAssociations()
+  if (userAssociations.value.length === 0) {
+    return // Rediriger vers une page qui dit qu'on a pas d'asso
+  }
+  let currAssoId = SelectedAssoService.getAssociationId()
+  if (currAssoId === '0') {
+    SelectedAssoService.setAssociationId(userAssociations.value[0].id.toString())
+    currAssoId = SelectedAssoService.getAssociationId()
+  }
+  selectedAsso.value = userAssociations.value.find((asso) => asso.id.toString() === currAssoId)
+})
 </script>
 
 <template>
@@ -46,14 +71,15 @@ const openProfile = () => {
     <div class="header-right flex justify-center items-center mr-10">
       <Dropdown
         v-model="selectedAsso"
-        :options="associations"
+        :options="userAssociations"
         optionLabel="name"
         placeholder="Select an Asso"
         class="h-10 w-full md:w-14rem bg-transparent border-0 shadow-none"
+        @change="handleSelectedAssoChange"
       >
         <template #value="slotProps">
           <div v-if="slotProps.value" class="flex align-items-center">
-            <Avatar :image="`/images/${slotProps.value.logo}`" class="mr-1" shape="circle" />
+            <Avatar :image="`${slotProps.value.logo}`" class="mr-1" shape="circle" />
             <div class="text-base flex items-center ml-1 mr-0">{{ slotProps.value.name }}</div>
           </div>
           <span v-else>
@@ -62,7 +88,7 @@ const openProfile = () => {
         </template>
         <template #option="slotProps">
           <div class="flex align-items-center">
-            <Avatar :image="`/images/${slotProps.option.logo}`" class="mr-1" shape="circle" />
+            <Avatar :image="`${slotProps.option.logo}`" class="mr-1" shape="circle" />
             <div class="text-base flex items-center ml-1">{{ slotProps.option.name }}</div>
           </div>
         </template>

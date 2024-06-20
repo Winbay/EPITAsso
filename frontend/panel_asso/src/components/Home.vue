@@ -2,7 +2,7 @@
 
 <template>
   <div>
-    <h1>Home Panel</h1>
+    <h1>Bienvenue !</h1>
   </div>
 </template>
 

@@ -1,7 +1,6 @@
 import axios from 'axios'
 import * as JWT from 'jwt-decode'
 import { useUserStore } from '@/stores/user'
-import AuthenticationRefreshService from '@/services/authentication/refresh'
 import type { AuthenticationRefresh } from '@/types/authenticationInterface'
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -27,7 +26,6 @@ const djangoApi = axios.create({
   withCredentials: true // to include session cookie
 })
 
-const authenticationRefreshService = new AuthenticationRefreshService()
 let isRefreshing = false
 
 djangoApi.interceptors.request.use(
@@ -38,7 +36,7 @@ djangoApi.interceptors.request.use(
     }
 
     let accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+    let refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
 
     if (accessToken) {
       const accessTokenExpiry = getTokenExpiry(accessToken)
@@ -49,11 +47,15 @@ djangoApi.interceptors.request.use(
         config.headers['Authorization'] = ``
         if (refreshToken) {
           try {
-            const data: AuthenticationRefresh =
-              await authenticationRefreshService.refresh(refreshToken)
-            accessToken = data.access
-            localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
-            localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh)
+            const response = await axios.post(`${API_URL}/api/auth/refresh`, {
+              refresh: refreshToken
+            })
+            accessToken = response.data.access
+            refreshToken = response.data.refresh
+            if (accessToken && refreshToken) {
+              localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
+              localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken)
+            }
             config.headers['Authorization'] = `Bearer ${accessToken}`
           } catch (error) {
             console.error('Failed to refresh token:', error)

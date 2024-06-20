@@ -7,11 +7,11 @@ const items = [
     label: 'Tableau de bord',
     icon: 'pi pi-building-columns'
   },
-  {
-    label: 'Mon association',
-    icon: 'pi pi-info-circle',
-    path: 'mon-association'
-  },
+  // {
+  //   label: 'Mon association',
+  //   icon: 'pi pi-info-circle',
+  //   path: 'mon-association'
+  // },
   {
     label: 'Messagerie',
     icon: 'pi pi-inbox',

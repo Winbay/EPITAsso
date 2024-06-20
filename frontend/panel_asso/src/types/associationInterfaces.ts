@@ -28,3 +28,5 @@ export interface AssociationDetail extends Association {
   socialNetworks: SocialNetwork[]
   faqs: Faq[]
 }
+
+export interface AssociationWithLogo extends Pick<Association, 'id' | 'name' | 'logo'> {}

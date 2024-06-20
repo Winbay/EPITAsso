@@ -63,6 +63,10 @@ class ConversationListView(generics.ListCreateAPIView):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
 
+    def get_queryset(self):
+        association_id = self.kwargs["association_id"]
+        return Conversation.objects.filter(associations__id=association_id)
+
     @extend_schema(summary="List all Conversations")
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

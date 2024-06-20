@@ -12,11 +12,11 @@ import Messaging from '@/views/Messaging.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', component: Home },
+    { path: '/', component: MyAssociation },
     { path: '/engagement-etudiant', component: StudentEngagement },
     { path: '/events', component: Events },
     { path: '/articles', component: Articles },
-    { path: '/mon-association', component: MyAssociation },
+    // { path: '/mon-association', component: MyAssociation },
     { path: '/login', component: Login },
     { path: '/profile', component: Profile },
     { path: '/messaging', component: Messaging }

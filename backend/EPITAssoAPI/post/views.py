@@ -1,5 +1,7 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
+
+from association.models import Association
 from .models import Tag, Post, Image
 from .serializers import TagSerializer, PostSerializer, ImageSerializer
 from user.permissions import IsCustomAdmin
@@ -40,6 +42,10 @@ class PostListView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+    def get_queryset(self):
+        association_id = self.kwargs["association_id"]
+        return Post.objects.filter(association_id=association_id)
+
     @extend_schema(summary="List all Posts")
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -49,8 +55,13 @@ class PostListView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-        serializer.save(last_author=self.request.user)
+        association_id = self.kwargs["association_id"]
+        association = Association.objects.get(id=association_id)
+        serializer.save(
+            last_author=self.request.user,
+            association=association,
+            author=self.request.user,
+        )
 
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
