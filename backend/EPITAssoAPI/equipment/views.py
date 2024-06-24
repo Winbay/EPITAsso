@@ -2,7 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import generics, serializers, status
 from rest_framework.response import Response
 from django.utils import timezone
-from django.db.models import Q, Subquery, OuterRef
+from django.db.models import Q, Subquery
 from association.models import Association
 from .models import Equipment, EquipmentRequest
 from .serializers import (
@@ -87,7 +87,7 @@ class EquipmentBorrowView(generics.CreateAPIView):
         if serializer.is_valid():
             association_borrower = self.__get_association_borrower()
 
-            equipment_request = serializer.save(
+            serializer.save(
                 user_respo_borrower=request.user,
                 asso_borrower=association_borrower,
                 user_respo_owner=None,
@@ -147,10 +147,12 @@ class EquipmentRequestReceivedView(generics.ListAPIView):
         association_id = self.kwargs.get("association_id")
 
         # Sous-requête pour filtrer les ID des équipements de l'association
-        equipments = Equipment.objects.filter(asso_owner_id=association_id).values('id')
+        equipments = Equipment.objects.filter(asso_owner_id=association_id).values("id")
 
         # Filtrer les demandes d'équipement où equipment_id est dans les IDs des équipements de l'association
-        queryset = EquipmentRequest.objects.filter(equipment_id__in=Subquery(equipments))
+        queryset = EquipmentRequest.objects.filter(
+            equipment_id__in=Subquery(equipments)
+        )
         print(queryset)
         return queryset
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import '@/fixtures/studentEngagement'
 import Button from 'primevue/button'
 import StudentEngagementDialog from '@/components/Dialog/StudentEngagementDialog.vue'
 import StudentEngagementTable from '@/components/DataTable/StudentEngagementTable.vue'

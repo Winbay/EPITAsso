@@ -214,13 +214,11 @@ SPECTACULAR_SETTINGS = {
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # dev frontend
+    "https://api.jftj.fr",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "https://yourfrontenddomain.com",
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "X-CSRFToken",

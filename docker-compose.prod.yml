@@ -14,7 +14,7 @@ services:
 
   django-gunicorn:
     build:
-      context: .
+      context: ./backend/EPITAssoAPI
       dockerfile: Dockerfile
     command: >
       sh -c "python3 manage.py makemigrations &&
@@ -32,16 +32,13 @@ services:
 
   django-daphne:
     build:
-      context: .
+      context: ./backend/EPITAssoAPI
       dockerfile: Dockerfile
-    command: >
-      sh -c "python3 manage.py makemigrations &&
-          python3 manage.py migrate --noinput &&
-          python manage.py collectstatic --no-input &&
-          daphne -b 0.0.0.0 -p 8001 EPITAssoAPI.asgi:application"
+    command: daphne -b 0.0.0.0 -p 8001 EPITAssoAPI.asgi:application
     restart: always
     environment:
       ENV_FILE: .env.prod
+      DJANGO_SETTINGS_MODULE: EPITAssoAPI.settings
     volumes:
       - static:/app/static
     depends_on:
@@ -69,10 +66,10 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - django
-      - asso
+      - django-gunicorn
+      - django-daphne
       - etd
-      - adm
+      - asso
 
 volumes:
   db_data:
