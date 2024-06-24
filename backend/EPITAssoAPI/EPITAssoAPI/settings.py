@@ -214,7 +214,7 @@ SPECTACULAR_SETTINGS = {
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # dev frontend
-    "https://api.jftj.fr"
+    "https://api.jftj.fr",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

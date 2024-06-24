@@ -147,10 +147,12 @@ class EquipmentRequestReceivedView(generics.ListAPIView):
         association_id = self.kwargs.get("association_id")
 
         # Sous-requête pour filtrer les ID des équipements de l'association
-        equipments = Equipment.objects.filter(asso_owner_id=association_id).values('id')
+        equipments = Equipment.objects.filter(asso_owner_id=association_id).values("id")
 
         # Filtrer les demandes d'équipement où equipment_id est dans les IDs des équipements de l'association
-        queryset = EquipmentRequest.objects.filter(equipment_id__in=Subquery(equipments))
+        queryset = EquipmentRequest.objects.filter(
+            equipment_id__in=Subquery(equipments)
+        )
         print(queryset)
         return queryset
 
