@@ -11,6 +11,7 @@ import type { AssociationDetail } from '@/types/associationInterfaces'
 import FAQ from '@/components/FAQ.vue'
 import SocialNetworks from '@/components/SocialNetworks.vue'
 import AssociationDetailService from '@/services/association/details'
+import { emit } from '@/utils/eventBus'
 
 const props = defineProps({
   setHidden: {
@@ -44,7 +45,9 @@ const currAssociationRef = ref<AssociationDetail>(props.association)
 
 const saveUpdate = async (): Promise<void> => {
   if (currAssociationRef.value) {
-    await associationDetailService.updateAssociationDetail(currAssociationRef.value)
+    await associationDetailService.updateAssociationDetail(currAssociationRef.value).then(() => {
+      emit('association-changed', currAssociationRef.value.id)
+    })
   }
   props.setHidden()
 }

@@ -2,7 +2,7 @@
 
 <template>
   <div class="page-content flex-grow overflow-auto">
-    <router-view></router-view>
+    <router-view class="h-full"></router-view>
   </div>
 </template>
 
