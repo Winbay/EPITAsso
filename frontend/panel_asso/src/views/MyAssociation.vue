@@ -88,7 +88,10 @@ const handleTabChange = (event: { index: number }): void => {
           <h2 class="text-2xl font-bold">Mes associations</h2>
         </template>
         <template #content>
-          <SelectAssociation :user-associations="userAssociations" class="select-association-dropdown" />
+          <SelectAssociation
+            :user-associations="userAssociations"
+            class="select-association-dropdown"
+          />
         </template>
       </Card>
     </div>

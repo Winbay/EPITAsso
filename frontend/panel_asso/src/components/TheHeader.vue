@@ -31,12 +31,14 @@ const openProfile = () => {
   router.push('/profile')
 }
 
-const refreshUserAssociations = async () : Promise<void> => {
+const refreshUserAssociations = async (): Promise<void> => {
   userAssociations.value = await SelectedAssoService.getUserAssociations()
   if (userAssociations.value.length === 0) {
     localStorage.removeItem(ASSOCIATION_ID)
   }
-  selectedAssociation.value = userAssociations.value.find((asso) => asso.id.toString() === SelectedAssoService.getAssociationId())
+  selectedAssociation.value = userAssociations.value.find(
+    (asso) => asso.id.toString() === SelectedAssoService.getAssociationId()
+  )
 }
 
 onMounted(async () => {
@@ -61,7 +63,8 @@ onMounted(async () => {
       <SelectAssociation
         v-if="userAssociations.length > 0"
         v-model="selectedAssociation"
-        :user-associations="userAssociations" />
+        :user-associations="userAssociations"
+      />
       <div>
         <Button
           v-if="user"

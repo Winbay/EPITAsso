@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import Avatar from 'primevue/avatar'
 import Dropdown, { type DropdownChangeEvent } from 'primevue/dropdown'
 import { type PropType, ref } from 'vue'
@@ -18,7 +17,7 @@ defineProps({
 const selectedAssociation = ref<AssociationWithLogo | undefined>()
 
 const associationStore = useAssociationStore()
-const handleSelectedAssoChange = (event: DropdownChangeEvent) : void => {
+const handleSelectedAssoChange = (event: DropdownChangeEvent): void => {
   SelectedAssoService.setAssociationId(event.value.id.toString())
   if (associationStore.selectedAssociationId !== event.value.id.toString()) {
     associationStore.setSelectedAssociation(event.value.id.toString())
@@ -42,8 +41,8 @@ const handleSelectedAssoChange = (event: DropdownChangeEvent) : void => {
         <div class="text-base flex items-center ml-1 mr-0">{{ slotProps.value.name }}</div>
       </div>
       <span v-else>
-            {{ slotProps.placeholder }}
-          </span>
+        {{ slotProps.placeholder }}
+      </span>
     </template>
     <template #option="slotProps">
       <div class="flex align-items-center">
