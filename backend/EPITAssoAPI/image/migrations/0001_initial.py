@@ -5,21 +5,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0001_initial'),
+        ("association", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Image',
+            name="Image",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('image', models.ImageField(upload_to='images')),
-                ('caption', models.CharField(blank=True, max_length=255, null=True)),
-                ('association', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='association_image', to='association.association')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("image", models.ImageField(upload_to="images")),
+                ("caption", models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "association",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="association_image",
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
     ]

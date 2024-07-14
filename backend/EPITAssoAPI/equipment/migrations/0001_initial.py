@@ -5,35 +5,62 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0001_initial'),
+        ("association", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Equipment',
+            name="Equipment",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('quantity', models.IntegerField()),
-                ('photo', models.ImageField(blank=True, max_length=255, null=True, upload_to='equipments/')),
-                ('asso_owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='association.association')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("quantity", models.IntegerField()),
+                (
+                    "photo",
+                    models.ImageField(
+                        blank=True, max_length=255, null=True, upload_to="equipments/"
+                    ),
+                ),
+                (
+                    "asso_owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='EquipmentRequest',
+            name="EquipmentRequest",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('borrowing_date', models.IntegerField()),
-                ('due_date', models.IntegerField()),
-                ('status', models.CharField(choices=[('waiting', 'Waiting'), ('accepted', 'Accepted'), ('refused', 'Refused')], max_length=20)),
-                ('comment', models.TextField(blank=True)),
-                ('equipment_id', models.IntegerField(default=0)),
-                ('equipment_name', models.CharField(default='', max_length=255)),
-                ('asso_borrower', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='borrowed_equipment_requests', to='association.association')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("borrowing_date", models.IntegerField()),
+                ("due_date", models.IntegerField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("waiting", "Waiting"),
+                            ("accepted", "Accepted"),
+                            ("refused", "Refused"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("comment", models.TextField(blank=True)),
+                ("equipment_id", models.IntegerField(default=0)),
+                ("equipment_name", models.CharField(default="", max_length=255)),
+                (
+                    "asso_borrower",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="borrowed_equipment_requests",
+                        to="association.association",
+                    ),
+                ),
             ],
         ),
     ]
