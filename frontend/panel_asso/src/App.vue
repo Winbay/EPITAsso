@@ -94,7 +94,7 @@ onMounted(async () => {
 
 <style scoped>
 #main-content {
-  height: calc(100% - 40px);
+  height: calc(100vh - 40px);
 }
 
 .main {

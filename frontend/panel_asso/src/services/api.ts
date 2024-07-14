@@ -1,12 +1,12 @@
 import axios from 'axios'
 import * as JWT from 'jwt-decode'
 import { useUserStore } from '@/stores/user'
-import type { AuthenticationRefresh } from '@/types/authenticationInterface'
 
 const API_URL = import.meta.env.VITE_API_URL
 export const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
 export const ACCESS_TOKEN_KEY = 'accessToken'
 export const REFRESH_TOKEN_KEY = 'refreshToken'
+export const ASSOCIATION_ID = 'associationId'
 
 export function getTokenExpiry(token: string): number | null {
   try {

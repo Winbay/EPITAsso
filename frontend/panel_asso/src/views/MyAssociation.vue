@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import ScrollPanel from 'primevue/scrollpanel'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
+import Card from 'primevue/card'
 import AssociationDetails from '@/components/AssociationDetails.vue'
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import AssociationDetailService from '@/services/association/details'
-import type { AssociationDetail } from '@/types/associationInterfaces'
+import type { AssociationDetail, AssociationWithLogo } from '@/types/associationInterfaces'
 import ProgressSpinner from 'primevue/progressspinner'
 import Members from '@/components/DataTable/DataTableMembers.vue'
 import SelectedAssoService from '@/services/association/selectedAsso'
+import { on } from '@/utils/eventBus'
+import SelectAssociation from '@/components/SelectAssociation.vue'
 
 const toast = useToast()
-const associationDetailService: AssociationDetailService = new AssociationDetailService(
-  toast,
-  +SelectedAssoService.getAssociationId()
-)
+let associationDetailService: AssociationDetailService
 
-const isLoading = ref(true)
+const isLoading = ref(false)
 const membersLoaded = ref(false)
 const activeTab = ref(0)
+
+const userAssociations = ref<AssociationWithLogo[]>([])
 
 const getDefaultAssociation = (): AssociationDetail => ({
   id: -1,
@@ -40,7 +41,19 @@ const reloadMyAssociation = async (): Promise<void> => {
 }
 
 onMounted(async () => {
-  await reloadMyAssociation()
+  const initialAssociationId = SelectedAssoService.getAssociationId()
+
+  on('association-changed', async (newAssociationId: number) => {
+    associationDetailService = new AssociationDetailService(toast, +newAssociationId)
+    await reloadMyAssociation()
+  })
+
+  if (initialAssociationId && +initialAssociationId !== 0) {
+    associationDetailService = new AssociationDetailService(toast, +initialAssociationId)
+    await reloadMyAssociation()
+  } else {
+    userAssociations.value = await SelectedAssoService.getUserAssociations()
+  }
 })
 
 const handleTabChange = (event: { index: number }): void => {
@@ -56,27 +69,35 @@ const handleTabChange = (event: { index: number }): void => {
     <ProgressSpinner />
   </div>
   <div v-else>
-    <TabView class="content-center w-full h-full px-10 py-4" @tab-change="handleTabChange">
-      <TabPanel header="Mon association">
-        <ScrollPanel
-          class="flex content-center w-full h-full"
-          style="width: 100%; height: calc(100vh - 7rem)"
-        >
+    <div v-if="associationRef.id > 0" class="w-full h-full px-10 py-8">
+      <TabView @tab-change="handleTabChange">
+        <TabPanel header="Mon association">
           <AssociationDetails
             :association-details="associationRef"
             :reload-association="reloadMyAssociation"
           />
-        </ScrollPanel>
-      </TabPanel>
-      <TabPanel header="Les membres">
-        <ScrollPanel
-          class="flex content-center w-full h-full"
-          style="width: 100%; height: calc(100vh - 7rem)"
-        >
+        </TabPanel>
+        <TabPanel header="Les membres">
           <Members v-if="membersLoaded" :association-id="+SelectedAssoService.getAssociationId()" />
-        </ScrollPanel>
-      </TabPanel>
-    </TabView>
+        </TabPanel>
+      </TabView>
+    </div>
+    <div v-else-if="userAssociations.length > 0" class="select-association-container">
+      <Card class="card flex flex-col justify-center text-center pl-6 pr-6 rounded-lg bg-1f2937">
+        <template #title>
+          <h2 class="text-2xl font-bold">Mes associations</h2>
+        </template>
+        <template #content>
+          <SelectAssociation
+            :user-associations="userAssociations"
+            class="select-association-dropdown"
+          />
+        </template>
+      </Card>
+    </div>
+    <div v-else class="h-full flex flex-col items-center justify-center">
+      <h3>Vous n'avez pas encore rejoint d'associations</h3>
+    </div>
   </div>
 </template>
 
@@ -95,5 +116,22 @@ const handleTabChange = (event: { index: number }): void => {
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
   padding: 0.75rem 1.25rem;
+}
+
+.select-association-container {
+  background-color: #131923;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.select-association-dropdown {
+  background-color: #19212f;
+}
+
+.select-association-dropdown:hover {
+  background-color: #293749;
 }
 </style>

@@ -1,4 +1,4 @@
-import djangoApi from '@/services/api'
+import djangoApi, { ASSOCIATION_ID } from '@/services/api'
 import type { AssociationWithLogo } from '@/types/associationInterfaces'
 import * as yup from 'yup'
 
@@ -9,7 +9,7 @@ const associationSchema = yup.object({
 })
 
 export default class SelectedAssoService {
-  static associationId: string | null = localStorage.getItem('associationId')
+  static associationId: string | null = localStorage.getItem(ASSOCIATION_ID)
 
   static getAssociationId(): string {
     return this.associationId !== null ? this.associationId : '0'

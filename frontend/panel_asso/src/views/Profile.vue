@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/services/api'
+import { ACCESS_TOKEN_KEY, ASSOCIATION_ID, REFRESH_TOKEN_KEY } from '@/services/api'
 
 const userStore = useUserStore()
 const user = ref(userStore.getUser)
@@ -12,6 +12,7 @@ const logout = () => {
   userStore.setUser(null)
   localStorage.removeItem(ACCESS_TOKEN_KEY)
   localStorage.removeItem(REFRESH_TOKEN_KEY)
+  localStorage.removeItem(ASSOCIATION_ID)
   window.location.href = '/'
 }
 </script>
