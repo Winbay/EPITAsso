@@ -5,50 +5,33 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     initial = True
 
     dependencies = [
-        ("association", "0001_initial"),
+        ('association', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="Tag",
+            name='Tag',
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False)),
-                ("name", models.CharField(max_length=255)),
-                ("text_color", models.CharField(blank=True, max_length=7, null=True)),
-                (
-                    "background_color",
-                    models.CharField(blank=True, max_length=7, null=True),
-                ),
-                (
-                    "type",
-                    models.CharField(
-                        choices=[("event", "Event"), ("post", "Post")],
-                        default="post",
-                        max_length=5,
-                    ),
-                ),
+                ('id', models.BigAutoField(primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=255)),
+                ('text_color', models.CharField(blank=True, max_length=7, null=True)),
+                ('background_color', models.CharField(blank=True, max_length=7, null=True)),
+                ('type', models.CharField(choices=[('event', 'Event'), ('post', 'Post')], default='post', max_length=5)),
             ],
         ),
         migrations.CreateModel(
-            name="Post",
+            name='Post',
             fields=[
-                ("id", models.BigAutoField(primary_key=True, serialize=False)),
-                ("title", models.CharField(max_length=255)),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("updated_at", models.DateTimeField(auto_now=True)),
-                ("content", models.TextField()),
-                (
-                    "association",
-                    models.ForeignKey(
-                        null=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        related_name="posts",
-                        to="association.association",
-                    ),
-                ),
+                ('id', models.BigAutoField(primary_key=True, serialize=False)),
+                ('title', models.CharField(max_length=255)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('content', models.TextField()),
+                ('association', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='posts', to='association.association')),
             ],
         ),
     ]

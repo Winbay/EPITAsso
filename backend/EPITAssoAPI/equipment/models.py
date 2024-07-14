@@ -52,9 +52,7 @@ class Equipment(models.Model):
         related_name="equipment",
         blank=True,
     )
-    photo = models.ImageField(
-        upload_to="equipments/", blank=True, null=True, max_length=255
-    )
+    photo = models.ImageField(upload_to="equipments/", blank=True, null=True, max_length=255)
 
     def __str__(self):
         return self.name

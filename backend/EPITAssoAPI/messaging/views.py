@@ -23,21 +23,21 @@ class MessageListView(generics.ListCreateAPIView):
         summary="List all Messages",
         parameters=[
             OpenApiParameter(
-                name="limit",
+                name='limit',
                 description="Number of results to return",
                 required=False,
                 type=int,
-                location=OpenApiParameter.QUERY,
+                location=OpenApiParameter.QUERY
             ),
             OpenApiParameter(
-                name="offset",
+                name='offset',
                 description="Initial offset in the results",
                 required=False,
                 type=int,
-                location=OpenApiParameter.QUERY,
+                location=OpenApiParameter.QUERY
             ),
         ],
-        responses=MessageSerializer(many=True),
+        responses=MessageSerializer(many=True)
     )
     @extend_schema(summary="List all Messages")
     def get(self, request, *args, **kwargs):

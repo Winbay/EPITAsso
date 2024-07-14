@@ -6,44 +6,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     initial = True
 
     dependencies = [
-        ("equipment", "0001_initial"),
+        ('equipment', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="equipmentrequest",
-            name="user_respo_borrower",
-            field=models.ForeignKey(
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                related_name="borrower_requests",
-                to=settings.AUTH_USER_MODEL,
-            ),
+            model_name='equipmentrequest',
+            name='user_respo_borrower',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='borrower_requests', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
-            model_name="equipmentrequest",
-            name="user_respo_owner",
-            field=models.ForeignKey(
-                blank=True,
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                related_name="equipment_owner_requests",
-                to=settings.AUTH_USER_MODEL,
-            ),
+            model_name='equipmentrequest',
+            name='user_respo_owner',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='equipment_owner_requests', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
-            model_name="equipment",
-            name="equipment_request",
-            field=models.OneToOneField(
-                blank=True,
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
-                related_name="equipment",
-                to="equipment.equipmentrequest",
-            ),
+            model_name='equipment',
+            name='equipment_request',
+            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='equipment', to='equipment.equipmentrequest'),
         ),
     ]
