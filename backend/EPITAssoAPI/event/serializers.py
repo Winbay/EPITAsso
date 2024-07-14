@@ -1,11 +1,6 @@
 from rest_framework import serializers
-from .models import Tag, Event
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = "__all__"
+from .models import Event
+from post.serializers import TagSerializer
 
 
 class EventSerializer(serializers.ModelSerializer):

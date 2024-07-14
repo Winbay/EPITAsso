@@ -27,16 +27,6 @@ class EventSheet(models.Model):
         return f"{self.name} on {self.date}"
 
 
-class Tag(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    text_color = models.CharField(max_length=7, blank=True, null=True)
-    background_color = models.CharField(max_length=7, blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-
 class EventTaskList(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -60,7 +50,7 @@ class Event(models.Model):
 
     recurrent = models.BooleanField(default=False)
     frequency = models.IntegerField(default=0)
-    tags = models.ManyToManyField(Tag, blank=True)
+    tags = models.ManyToManyField("post.Tag", blank=True)
 
     association = models.ForeignKey(
         "association.Association", on_delete=models.SET_NULL, null=True

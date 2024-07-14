@@ -2,7 +2,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 
 from association.models import Association
-from .models import Event, Tag
+from .models import Event
+from post.models import Tag
 from .serializers import EventSerializer, TagSerializer
 from user.permissions import IsCustomAdmin
 
@@ -10,6 +11,9 @@ from user.permissions import IsCustomAdmin
 class TagListView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+    def get_queryset(self):
+        return Tag.objects.filter(type='event')
 
     @extend_schema(summary="List all Tags")
     def get(self, request, *args, **kwargs):
