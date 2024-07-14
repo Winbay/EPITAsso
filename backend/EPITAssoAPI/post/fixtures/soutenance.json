@@ -5,7 +5,8 @@
   "fields": {
     "name": "Recrutement",
     "text_color": null,
-    "background_color": null
+    "background_color": null,
+    "type": "post"
   }
 },
 {
@@ -14,7 +15,8 @@
   "fields": {
     "name": "Projets",
     "text_color": null,
-    "background_color": null
+    "background_color": null,
+    "type": "post"
   }
 },
 {

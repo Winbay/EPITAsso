@@ -1,95 +1,5 @@
 [
 {
-  "model": "event.tag",
-  "pk": 2,
-  "fields": {
-    "name": "Afterwork",
-    "text_color": "#000000",
-    "background_color": "#FFFFE0"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 3,
-  "fields": {
-    "name": "Soirée étudiante",
-    "text_color": "#000000",
-    "background_color": "#DDA0DD"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 4,
-  "fields": {
-    "name": "Visée Sociétale",
-    "text_color": "#000000",
-    "background_color": "#90EE90"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 5,
-  "fields": {
-    "name": "Tutorat/Professionnelles",
-    "text_color": "#000000",
-    "background_color": "#4169E1"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 6,
-  "fields": {
-    "name": "Festif",
-    "text_color": "#000000",
-    "background_color": "#FFA500"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 7,
-  "fields": {
-    "name": "Divertissement",
-    "text_color": "#000000",
-    "background_color": "#F08080"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 8,
-  "fields": {
-    "name": "Innovation/Science",
-    "text_color": "#000000",
-    "background_color": "#E0FFFF"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 9,
-  "fields": {
-    "name": "Musique",
-    "text_color": "#000000",
-    "background_color": "#FFA07A"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 10,
-  "fields": {
-    "name": "Sport",
-    "text_color": "#000000",
-    "background_color": "#FF00FF"
-  }
-},
-{
-  "model": "event.tag",
-  "pk": 11,
-  "fields": {
-    "name": "Art et culture",
-    "text_color": "#000000",
-    "background_color": "#FFC0CB"
-  }
-},
-{
   "model": "event.event",
   "pk": 1,
   "fields": {
@@ -104,12 +14,7 @@
     "association": 1,
     "places_number": 0,
     "notes": "",
-    "tags": [
-      9,
-      3,
-      6,
-      7
-    ],
+    "tags": [],
     "staff_members": [
       "9f98ae50-4ade-4662-8559-85c205f99df9"
     ],
@@ -132,9 +37,7 @@
     "association": 1,
     "places_number": 0,
     "notes": "",
-    "tags": [
-      10
-    ],
+    "tags": [],
     "staff_members": [],
     "other_associations": [],
     "tasks": []
@@ -155,11 +58,7 @@
     "association": 1,
     "places_number": 0,
     "notes": "",
-    "tags": [
-      9,
-      2,
-      6
-    ],
+    "tags": [],
     "staff_members": [],
     "other_associations": [],
     "tasks": []
@@ -180,10 +79,7 @@
     "association": 1,
     "places_number": 0,
     "notes": "",
-    "tags": [
-      9,
-      2
-    ],
+    "tags": [],
     "staff_members": [],
     "other_associations": [],
     "tasks": []
@@ -204,14 +100,7 @@
     "association": 1,
     "places_number": 0,
     "notes": "",
-    "tags": [
-      3,
-      6,
-      7,
-      9,
-      10,
-      11
-    ],
+    "tags": [],
     "staff_members": [],
     "other_associations": [],
     "tasks": []
@@ -232,13 +121,7 @@
     "association": 1,
     "places_number": 0,
     "notes": "",
-    "tags": [
-      2,
-      7,
-      9,
-      10,
-      11
-    ],
+    "tags": [],
     "staff_members": [],
     "other_associations": [],
     "tasks": []
@@ -259,11 +142,7 @@
     "association": 1,
     "places_number": 0,
     "notes": "",
-    "tags": [
-      9,
-      3,
-      6
-    ],
+    "tags": [],
     "staff_members": [],
     "other_associations": [],
     "tasks": []
@@ -284,11 +163,7 @@
     "association": 1,
     "places_number": 0,
     "notes": null,
-    "tags": [
-      9,
-      3,
-      6
-    ],
+    "tags": [],
     "staff_members": [],
     "other_associations": [],
     "tasks": []
