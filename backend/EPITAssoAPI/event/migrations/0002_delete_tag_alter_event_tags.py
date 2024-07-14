@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0001_initial'),
-        ('post', '0002_tag_type'),
+        ("event", "0001_initial"),
+        ("post", "0002_tag_type"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='Tag',
+            name="Tag",
         ),
         migrations.AlterField(
-            model_name='event',
-            name='tags',
-            field=models.ManyToManyField(blank=True, to='post.tag'),
+            model_name="event",
+            name="tags",
+            field=models.ManyToManyField(blank=True, to="post.tag"),
         ),
     ]

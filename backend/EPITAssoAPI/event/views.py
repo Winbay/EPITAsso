@@ -13,7 +13,7 @@ class TagListView(generics.ListCreateAPIView):
     serializer_class = TagSerializer
 
     def get_queryset(self):
-        return Tag.objects.filter(type='event')
+        return Tag.objects.filter(type="event")
 
     @extend_schema(summary="List all Tags")
     def get(self, request, *args, **kwargs):

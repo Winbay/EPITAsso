@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('post', '0001_initial'),
+        ("post", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tag',
-            name='type',
-            field=models.CharField(choices=[('event', 'Event'), ('post', 'Post')], default='post', max_length=5),
+            model_name="tag",
+            name="type",
+            field=models.CharField(
+                choices=[("event", "Event"), ("post", "Post")],
+                default="post",
+                max_length=5,
+            ),
         ),
     ]
