@@ -6,40 +6,50 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0002_initial'),
-        ('event', '0001_initial'),
-        ('post', '0001_initial'),
+        ("association", "0002_initial"),
+        ("event", "0001_initial"),
+        ("post", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='author',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='events_authored', to=settings.AUTH_USER_MODEL),
+            model_name="event",
+            name="author",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="events_authored",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='event',
-            name='other_associations',
-            field=models.ManyToManyField(blank=True, related_name='related_events', to='association.association'),
+            model_name="event",
+            name="other_associations",
+            field=models.ManyToManyField(
+                blank=True, related_name="related_events", to="association.association"
+            ),
         ),
         migrations.AddField(
-            model_name='event',
-            name='staff_members',
-            field=models.ManyToManyField(blank=True, related_name='events_staff', to=settings.AUTH_USER_MODEL),
+            model_name="event",
+            name="staff_members",
+            field=models.ManyToManyField(
+                blank=True, related_name="events_staff", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='event',
-            name='tags',
-            field=models.ManyToManyField(blank=True, to='post.tag'),
+            model_name="event",
+            name="tags",
+            field=models.ManyToManyField(blank=True, to="post.tag"),
         ),
         migrations.AddField(
-            model_name='event',
-            name='tasks',
-            field=models.ManyToManyField(blank=True, related_name='events', to='event.eventtasklist'),
+            model_name="event",
+            name="tasks",
+            field=models.ManyToManyField(
+                blank=True, related_name="events", to="event.eventtasklist"
+            ),
         ),
     ]

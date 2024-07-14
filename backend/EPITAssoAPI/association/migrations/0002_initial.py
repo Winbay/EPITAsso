@@ -6,33 +6,45 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('association', '0001_initial'),
+        ("association", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='associateuserandassociation',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="associateuserandassociation",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='associateuserandassociation',
-            name='association',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='association.association'),
+            model_name="associateuserandassociation",
+            name="association",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="association.association",
+            ),
         ),
         migrations.AddField(
-            model_name='faq',
-            name='association',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='faqs', to='association.association'),
+            model_name="faq",
+            name="association",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="faqs",
+                to="association.association",
+            ),
         ),
         migrations.AddField(
-            model_name='socialnetwork',
-            name='association',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='social_networks', to='association.association'),
+            model_name="socialnetwork",
+            name="association",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="social_networks",
+                to="association.association",
+            ),
         ),
     ]

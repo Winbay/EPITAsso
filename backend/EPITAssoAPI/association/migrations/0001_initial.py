@@ -4,46 +4,49 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AssociateUserAndAssociation',
+            name="AssociateUserAndAssociation",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('role', models.CharField(max_length=255)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("role", models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='Association',
+            name="Association",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('content', models.TextField()),
-                ('logo', models.ImageField(blank=True, max_length=255, null=True, upload_to='logos/')),
-                ('location', models.CharField(max_length=255)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("content", models.TextField()),
+                (
+                    "logo",
+                    models.ImageField(
+                        blank=True, max_length=255, null=True, upload_to="logos/"
+                    ),
+                ),
+                ("location", models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='Faq',
+            name="Faq",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('question', models.TextField()),
-                ('answer', models.TextField()),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("question", models.TextField()),
+                ("answer", models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name='SocialNetwork',
+            name="SocialNetwork",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('link', models.TextField(blank=True, null=True)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("link", models.TextField(blank=True, null=True)),
             ],
         ),
     ]

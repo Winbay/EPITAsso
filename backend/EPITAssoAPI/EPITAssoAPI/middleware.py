@@ -59,9 +59,10 @@ def JWTAuthMiddlewareStack(app):
     """This function wrap channels authentication stack with JWTAuthMiddleware."""
     return JWTAuthMiddleware(AuthMiddlewareStack(app))
 
+
 class AssociationMiddleware(MiddlewareMixin):
     def process_view(self, request, view_func, view_args, view_kwargs):
-        association_id = view_kwargs.get('association_id')
+        association_id = view_kwargs.get("association_id")
         if association_id is not None:
             cache_key = f"association_{association_id}"
             association = cache.get(cache_key)
@@ -69,8 +70,8 @@ class AssociationMiddleware(MiddlewareMixin):
             if not association:
                 try:
                     association = Association.objects.get(id=association_id)
-                    cache.set(cache_key, association, timeout=60*15)
+                    cache.set(cache_key, association, timeout=60 * 15)
                 except Association.DoesNotExist:
-                    return JsonResponse({'error': 'Association not found'}, status=404)
+                    return JsonResponse({"error": "Association not found"}, status=404)
 
             request.association = association
