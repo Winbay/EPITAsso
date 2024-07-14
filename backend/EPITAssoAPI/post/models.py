@@ -8,6 +8,13 @@ class Tag(models.Model):
     text_color = models.CharField(max_length=7, blank=True, null=True)
     background_color = models.CharField(max_length=7, blank=True, null=True)
 
+    TYPE_CHOICES = [
+        ("event", "Event"),
+        ("post", "Post"),
+    ]
+
+    type = models.CharField(max_length=5, choices=TYPE_CHOICES, default="post")
+
     def __str__(self):
         return self.name
 

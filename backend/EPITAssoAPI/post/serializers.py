@@ -5,7 +5,7 @@ from .models import Tag, Post, Image
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = "__all__"
+        fields = ["id", "name", "text_color", "background_color"]
 
 
 class ImageSerializer(serializers.ModelSerializer):

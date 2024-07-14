@@ -11,6 +11,9 @@ class TagListView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
+    def get_queryset(self):
+        return Tag.objects.filter(type="post")
+
     @extend_schema(summary="List all Tags")
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
