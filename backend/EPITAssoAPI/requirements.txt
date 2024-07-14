@@ -11,3 +11,5 @@ pkce==1.0.3
 drf-spectacular[sidecar]==0.27.2
 channels[daphne]==4.1.0
 channels-redis==4.2.0
+pillow==10.4.0
+django-redis==5.4.0

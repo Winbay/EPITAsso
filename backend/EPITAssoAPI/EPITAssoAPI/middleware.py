@@ -6,8 +6,12 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db import close_old_connections
+from django.http import JsonResponse
 from jwt import InvalidSignatureError, ExpiredSignatureError, DecodeError
 from jwt import decode as jwt_decode
+from django.core.cache import cache
+from django.utils.deprecation import MiddlewareMixin
+from association.models import Association
 
 User = get_user_model()
 
@@ -54,3 +58,19 @@ class JWTAuthMiddleware:
 def JWTAuthMiddlewareStack(app):
     """This function wrap channels authentication stack with JWTAuthMiddleware."""
     return JWTAuthMiddleware(AuthMiddlewareStack(app))
+
+class AssociationMiddleware(MiddlewareMixin):
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        association_id = view_kwargs.get('association_id')
+        if association_id is not None:
+            cache_key = f"association_{association_id}"
+            association = cache.get(cache_key)
+
+            if not association:
+                try:
+                    association = Association.objects.get(id=association_id)
+                    cache.set(cache_key, association, timeout=60*15)
+                except Association.DoesNotExist:
+                    return JsonResponse({'error': 'Association not found'}, status=404)
+
+            request.association = association

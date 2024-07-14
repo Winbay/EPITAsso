@@ -5,7 +5,7 @@ class Association(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
     content = models.TextField()
-    logo = models.TextField(null=True, blank=True)
+    logo = models.ImageField(upload_to="logos/", null=True, blank=True, max_length=255)
 
     location = models.CharField(max_length=255)  # TODO change for an enum of location ?
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tag, Post, Image
+from .models import Tag, Post
 
 
 @admin.register(Post)
@@ -16,12 +16,6 @@ class PostAdmin(admin.ModelAdmin):
         "updated_at",
         "tags",
     )
-
-
-@admin.register(Image)
-class ImageAdmin(admin.ModelAdmin):
-    list_display = ("link",)
-    search_fields = ("link",)
 
 
 @admin.register(Tag)
