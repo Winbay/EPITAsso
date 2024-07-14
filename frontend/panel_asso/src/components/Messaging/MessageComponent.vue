@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
+import Button from 'primevue/button'
 
 import type { FetchedUser } from '@/types/userInterfaces'
 import { useUserStore } from '@/stores/user'
@@ -15,6 +16,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const emits = defineEmits(['onRightClick'])
 
 const showDateRef = ref(false)
 
@@ -41,6 +44,10 @@ const formatDate = (date: Date | string): string => {
 
   return `${formattedTime} ${formattedDate}`
 }
+
+const openMessageMenu = (event: MouseEvent): void => {
+  emits('onRightClick', event, props.message)
+}
 </script>
 
 <template>
@@ -59,14 +66,31 @@ const formatDate = (date: Date | string): string => {
       {{ formatDate(message.sentAt) }}
     </span>
     <span
-      class="font-bold mr-2"
+      class="font-bold mr-2 flex"
       :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }"
     >
+      <Button
+        v-if="showDateRef && isUserMessage"
+        icon="pi pi-ellipsis-h"
+        raised
+        class="button-plus mr-2"
+        style="width: 2rem; height: 1rem;"
+        @click="openMessageMenu"
+      />
       {{ message.author.login }} ({{ message.associationSender.name }})
+      <Button
+        v-if="showDateRef && !isUserMessage"
+        icon="pi pi-ellipsis-h"
+        raised
+        class="button-plus ml-2"
+        style="width: 2rem; height: 1rem;"
+        @click="openMessageMenu"
+      />
     </span>
     <div
       class="message-bubble"
       :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage }"
+      @contextmenu="openMessageMenu"
     >
       <div class="message-content whitespace-pre-wrap">
         {{ message.content }}
@@ -101,6 +125,11 @@ const formatDate = (date: Date | string): string => {
 }
 
 .message-date {
-  top: -1rem; /* Adjust this value as needed */
+  top: -1rem;
+}
+
+.button-plus {
+  background-color: var(--highlight-bg);
+  color: white;
 }
 </style>

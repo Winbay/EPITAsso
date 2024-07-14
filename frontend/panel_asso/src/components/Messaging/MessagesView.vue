@@ -4,9 +4,10 @@ import { nextTick, onBeforeMount, onMounted, type PropType, ref } from 'vue'
 import ProgressSpinner from 'primevue/progressspinner'
 import Divider from 'primevue/divider'
 import Chip from 'primevue/chip'
-import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
+import ContextMenu from 'primevue/contextmenu'
 
 import type { Conversation, Message } from '@/types/conversationInterfaces'
 import MessageComponent from '@/components/Messaging/MessageComponent.vue'
@@ -15,6 +16,7 @@ import type { Association } from '@/types/associationInterfaces'
 import { useUserStore } from '@/stores/user'
 import type { FetchedUser } from '@/types/userInterfaces'
 import SelectedAssoService from '@/services/association/selectedAsso'
+import type { MenuItem } from 'primevue/menuitem'
 
 const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
@@ -40,41 +42,49 @@ let socket: WebSocket | null = null
 const isLoading = ref(true)
 const messagesRef = ref<Message[]>([])
 const newMessageContentRef = ref('')
+let buttonLabelText = 'Envoyer'
 const limit = 10
-const offset = ref(0)
 const nextRef = ref<string | null | undefined>(undefined)
 
 const messageContainerRef = ref<HTMLElement | null>(null)
 
 const loadMessages = async (): Promise<void> => {
   if (nextRef.value === null) return // Already fetched all messages
-  let next
-  let messages
-  if (nextRef.value === undefined) {
-    // First fetch (no next url)
-    const res = await messageService.getMessages(limit, 0)
-    next = res.next
-    messages = res.messages
-  } else {
-    const res = await messageService.getMessagesWithNext(nextRef.value)
-    next = res.next
-    messages = res.messages
+  try {
+    const { next, messages } = nextRef.value === undefined
+      ? await messageService.getMessages(limit, 0)
+      : await messageService.getMessagesWithNext(nextRef.value)
+    messagesRef.value = [...messages.reverse(), ...messagesRef.value]
+    nextRef.value = next
+  } catch (error) {
+    console.error('Failed to load messages:', error)
   }
-  messagesRef.value = [...messages.reverse(), ...messagesRef.value]
-  nextRef.value = next
 }
 
 const fetchConversation = async (): Promise<void> => {
-  isLoading.value = true
-  offset.value = messagesRef.value.length
-  await loadMessages()
-  isLoading.value = false
+  try {
+    isLoading.value = true
+    await loadMessages()
+  } catch (error) {
+    console.error('Failed to fetch conversation:', error)
+  } finally {
+    isLoading.value = false
+  }
 }
 
-const sendMessage = async (): Promise<void> => {
+const sendOrModifyMessage = async (): Promise<void> => {
   if (newMessageContentRef.value.length === 0) return
   // TODO: set right author and association sender
   // TODO: ahah taht convert
+
+  if (buttonLabelText === 'Modifier' && user.value.id === selectedMessageRef.value?.author.id) {
+    await modifyMessage()
+  } else {
+    await sendMessage()
+  }
+}
+
+const sendMessage = async (): Promise<void> => {
   const associationSender = props.conversation?.associationIds.find(
     (associationid: Association['id']) => associationid === +SelectedAssoService.getAssociationId()
   )
@@ -90,7 +100,23 @@ const sendMessage = async (): Promise<void> => {
   await scrollToEnd()
 }
 
+const modifyMessage = async (): Promise<void> => {
+  if (!selectedMessageRef.value) return
+  // const modifiedMessage:  Omit<
+  //   Message,
+  //   'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'
+  // > = {
+  //   content: newMessageContentRef.value
+  // }
+  // const updatedMessage = await messageService.updateMessage(selectedMessageRef.value.id, modifiedMessage)
+  // const index = messagesRef.value.findIndex((msg) => msg.id === updatedMessage.id)
+  // messagesRef.value[index] = updatedMessage
+  newMessageContentRef.value = ''
+  buttonLabelText = 'Envoyer'
+}
+
 const handleScrollTop = async (event: Event): Promise<void> => {
+  menuMessageRef.value?.hide()
   const target = event.target as HTMLElement
   const lastScrollHeight = target.scrollHeight
   if (target.scrollTop === 0) {
@@ -109,6 +135,65 @@ const scrollToEnd = async (): Promise<void> => {
     })
   }
 }
+
+const handleTextAreaKeyDown = async (event: KeyboardEvent): Promise<void> => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault()
+    await sendOrModifyMessage()
+  }
+}
+
+const menuMessageRef = ref<ContextMenu | null>(null)
+const selectedMessageRef = ref<Message | null>(null)
+const items = ref<MenuItem[]>([
+  { label: 'Copier', icon: 'pi pi-copy', command: () => copyMessage() },
+  { label: 'Modifier', icon: 'pi pi-file-edit', command: () => fillMessageContentForEditing(), visible: () => selectedMessageRef.value?.author.id === user.value.id},
+  { label: 'Supprimer', icon: 'pi pi-trash', command: () => deleteMessage(), class: 'delete-item', visible: () => selectedMessageRef.value?.author.id === user.value.id}
+]);
+
+const onMessageRightClick = (event: MouseEvent, message: Message): void => {
+  menuMessageRef.value?.show(event)
+  selectedMessageRef.value = message
+}
+
+const copyMessage = async () => {
+  if (!selectedMessageRef.value) return;
+
+  try {
+    await navigator.clipboard.writeText(selectedMessageRef.value.content);
+    selectedMessageRef.value = null;
+  } catch (err) {
+    console.error('Failed to copy:', err);
+  }
+};
+
+const fillMessageContentForEditing = async () => {
+  if (!selectedMessageRef.value) return;
+
+  try {
+    newMessageContentRef.value = selectedMessageRef.value.content;
+    buttonLabelText = 'Modifier';
+  } catch (err) {
+    console.error('Failed to fill message content for editing:', err)
+  }
+}
+
+const cancelModification = (): void => {
+  selectedMessageRef.value = null;
+  newMessageContentRef.value = '';
+  buttonLabelText = 'Envoyer';
+}
+
+const deleteMessage = async () => {
+  if (!selectedMessageRef.value) return;
+
+  try {
+    // await messageService.deleteMessage(selectedMessageRef.value.id);
+    // messagesRef.value = messagesRef.value.filter(msg => msg.id !== selectedMessageRef.value?.id);
+  } catch (err) {
+    console.error('Failed to delete message:', err);
+  }
+};
 
 onMounted(async () => {
   await fetchConversation()
@@ -159,21 +244,34 @@ onBeforeMount(() => {
         <Divider />
         <div id="messagesContainer" ref="messageContainerRef" @scroll="handleScrollTop">
           <div v-for="message in messagesRef" :key="message.content">
-            <MessageComponent :message="message" class="mb-2" />
+            <MessageComponent :message="message" class="mb-2" @on-right-click="onMessageRightClick"/>
           </div>
+          <ContextMenu
+            ref="menuMessageRef"
+            :model="items"
+          />
         </div>
       </div>
-      <form @submit.prevent="sendMessage" class="mt-3 flex items-center">
-        <InputText
+      <form @submit.prevent="sendOrModifyMessage" class="mt-3 flex items-center">
+        <Textarea
           v-model="newMessageContentRef"
           placeholder="Écrivez un message"
-          class="flex-grow p-inputtext-sm"
+          class="flex-grow p-inputtextarea-sm"
+          rows="1"
+          @keydown="handleTextAreaKeyDown"
         />
         <Button
-          :disabled="newMessageContentRef.length === 0"
+          v-if="buttonLabelText === 'Modifier'"
+          type="button"
+          label="Annuler"
+          class="ml-2 p-button-sm p-button-secondary justify-center"
+          @click="cancelModification"
+        />
+        <Button
+          :disabled="newMessageContentRef.trim().length === 0"
           type="submit"
-          label="Envoyer"
-          class="ml-2 p-button-sm p-button-primary"
+          :label="buttonLabelText"
+          class="ml-2 p-button-sm p-button-primary justify-center"
         />
       </form>
     </div>
@@ -216,4 +314,36 @@ onBeforeMount(() => {
   background: var(--surface-200);
   cursor: pointer;
 }
+
+textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  overflow-y:hidden;
+  padding: 0.5rem;
+  border: 1px solid var(--surface-300);
+  border-radius: 0.25rem;
+  background-color: #111827;
+}
+
+.p-contextmenu {
+  background-color: #1f2937 !important;
+  border: transparent;
+}
+
+.p-contextmenu .p-menuitem-text {
+  font-size: 14px !important;
+}
+
+.delete-item .p-menuitem-text, .delete-item .p-menuitem-icon {
+  color: #da373c;
+}
+
+.delete-item:hover {
+  background-color: #da373c;
+  .p-menuitem-text, .p-menuitem-icon {
+    color: white !important;
+  }
+}
+
 </style>
