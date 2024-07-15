@@ -31,6 +31,7 @@ class Message(models.Model):
     )
 
     sent_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         ordering = ["-sent_at"]

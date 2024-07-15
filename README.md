@@ -96,3 +96,8 @@ All ports are exposed for development testing. You can access the services using
 - Association frontend: http://localhost:8081
 - Student frontend: http://localhost:8082
 - Administration frontend: http://localhost:8083
+
+## Backend documentation
+
+The backend is a Django REST API developed in Python 3.12 and Django 5.0.
+The API documentation is available in [backend/EPITAssoAPI/README.md](./backend/EPITAssoAPI/README.md).

@@ -26,3 +26,8 @@ class UserSimpleSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "login"]
         read_only_fields = ["id", "login"]
+
+class UserWithLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["login"]

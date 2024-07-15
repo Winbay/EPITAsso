@@ -45,3 +45,8 @@ docker-compose -f docker-compose.prod.yml up
 ```
 
 The API is accessible on http://localhost/
+
+## Documentation
+
+The messaging app use websocket to send real-time messages.
+The documentation of this service is available in [Websockets.md](./Websockets.md)
