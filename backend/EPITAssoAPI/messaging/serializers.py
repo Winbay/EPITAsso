@@ -22,6 +22,7 @@ class MessageSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["sent_at", "author", "association_sender", "updated_at"]
 
+
 class MessageUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message

@@ -5,7 +5,11 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.exceptions import PermissionDenied
 from association.models import Association
 from .models import Message, Conversation
-from .serializers import MessageSerializer, ConversationSerializer, MessageUpdateSerializer
+from .serializers import (
+    MessageSerializer,
+    ConversationSerializer,
+    MessageUpdateSerializer,
+)
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import json
@@ -55,12 +59,9 @@ class MessageListView(generics.ListCreateAPIView):
         request=MessageUpdateSerializer,
         responses={
             status.HTTP_201_CREATED: OpenApiResponse(
-                response=MessageSerializer,
-                description="Message successfully created"
+                response=MessageSerializer, description="Message successfully created"
             ),
-            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
-                description="Invalid input"
-            )
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(description="Invalid input"),
         },
     )
     def post(self, request, *args, **kwargs):
@@ -77,10 +78,7 @@ class MessageListView(generics.ListCreateAPIView):
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f"conversation_{conversation_id}",
-                {
-                    "type": "chat.message.sent",
-                    "message": json.dumps(serializer.data)
-                },
+                {"type": "chat.message.sent", "message": json.dumps(serializer.data)},
             )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -102,58 +100,66 @@ class MessageDetailView(generics.GenericAPIView):
     def get_object(self):
         conversation_id = self.kwargs.get("conversation_id")
         message_id = self.kwargs.get("message_id")
-        message = get_object_or_404(Message, pk=message_id, conversation_id=conversation_id)
+        message = get_object_or_404(
+            Message, pk=message_id, conversation_id=conversation_id
+        )
         return message
 
     @extend_schema(
         summary="Update a Message",
         parameters=[
             OpenApiParameter(
-                name='conversation_id',
-                description='The ID of the conversation to which the message belongs',
+                name="conversation_id",
+                description="The ID of the conversation to which the message belongs",
                 required=True,
                 type=int,
-                location=OpenApiParameter.PATH
+                location=OpenApiParameter.PATH,
             ),
             OpenApiParameter(
-                name='message_id',
-                description='The ID of the message to be updated',
+                name="message_id",
+                description="The ID of the message to be updated",
                 required=True,
                 type=int,
-                location=OpenApiParameter.PATH
+                location=OpenApiParameter.PATH,
             ),
         ],
         request=MessageUpdateSerializer,
         responses={
             200: MessageSerializer,
-            403: OpenApiResponse(description="Forbidden - You do not have permission to edit this message."),
-            404: OpenApiResponse(description="Not Found - The specified message does not exist."),
+            403: OpenApiResponse(
+                description="Forbidden - You do not have permission to edit this message."
+            ),
+            404: OpenApiResponse(
+                description="Not Found - The specified message does not exist."
+            ),
             400: OpenApiResponse(description="Bad Request - Invalid data provided."),
-        }
+        },
     )
     def patch(self, request, *args, **kwargs):
         message = self.get_object()
 
         if message.author != request.user:
-            return Response({"detail": "You do not have permission to edit this message."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "You do not have permission to edit this message."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         partial = True
         serializer = self.get_serializer(message, data=request.data, partial=partial)
         if serializer.is_valid():
             serializer.save()
-            
+
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f"conversation_{message.conversation.id}",
                 {
                     "type": "chat.message.updated",
-                    "message": json.dumps({
-                        "id": message.id,
-                        "content": serializer.data["content"]
-                    })
-                }
+                    "message": json.dumps(
+                        {"id": message.id, "content": serializer.data["content"]}
+                    ),
+                },
             )
-            
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -162,7 +168,7 @@ class MessageDetailView(generics.GenericAPIView):
         message = self.get_object()
         if message.author != request.user:
             raise PermissionDenied("You do not have permission to delete this message.")
-        
+
         message_id = message.id
         message.delete()
 
@@ -176,6 +182,7 @@ class MessageDetailView(generics.GenericAPIView):
         )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class ConversationListView(generics.ListCreateAPIView):
     queryset = Conversation.objects.all()
