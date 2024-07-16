@@ -5,10 +5,15 @@ import Button from 'primevue/button'
 import type { FetchedUser } from '@/types/userInterfaces'
 import { useUserStore } from '@/stores/user'
 import type { Message } from '@/types/conversationInterfaces'
+import type { Association } from '@/types/associationInterfaces'
 
 const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
 const user = ref<FetchedUser>(userStore.user)
+
+const associationId = localStorage.getItem('associationId')
+if (!associationId) throw new Error('No association selected') // TODO should be handled in another way
+const selectedAssociation = ref<Pick<Association, 'id'>>({ id: parseInt(associationId) })
 
 const props = defineProps({
   message: {
@@ -22,7 +27,7 @@ const emits = defineEmits(['onRightClick'])
 const showDateRef = ref(false)
 
 const isUserMessage = computed(() => {
-  return props.message.author.id === user.value.id
+  return props.message.author.login === user.value.login && props.message.associationSender.id === selectedAssociation.value.id
 })
 
 const formatDate = (date: Date | string): string => {

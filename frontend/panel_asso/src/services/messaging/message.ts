@@ -6,7 +6,6 @@ import djangoApi from '../api'
 
 const authorSchema = yup
   .object({
-    id: yup.string().required(),
     login: yup.string().required()
   })
   .required()

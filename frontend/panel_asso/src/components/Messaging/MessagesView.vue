@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onBeforeMount, onMounted, type PropType, ref } from 'vue'
+import { computed, nextTick, onBeforeMount, onMounted, type PropType, ref } from 'vue'
 
 import ProgressSpinner from 'primevue/progressspinner'
 import Divider from 'primevue/divider'
@@ -21,6 +21,14 @@ import type { MenuItem } from 'primevue/menuitem'
 const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
 const user = ref<FetchedUser>(userStore.user)
+
+const associationId = localStorage.getItem('associationId')
+if (!associationId) throw new Error('No association selected') // TODO should be handled in another way
+const selectedAssociation = ref<Pick<Association, 'id'>>({ id: parseInt(associationId) })
+
+const isUserMessage = computed(() => {
+  return selectedMessageRef.value?.author.login === user.value.login && selectedMessageRef.value?.associationSender.id === selectedAssociation.value.id
+})
 
 const props = defineProps({
   conversation: {
@@ -77,7 +85,7 @@ const sendOrModifyMessage = async (): Promise<void> => {
   // TODO: set right author and association sender
   // TODO: ahah taht convert
 
-  if (buttonLabelText === 'Modifier' && user.value.id === selectedMessageRef.value?.author.id) {
+  if (buttonLabelText === 'Modifier' && isUserMessage.value) {
     await modifyMessage()
   } else {
     await sendMessage()
@@ -147,8 +155,8 @@ const menuMessageRef = ref<ContextMenu | null>(null)
 const selectedMessageRef = ref<Message | null>(null)
 const items = ref<MenuItem[]>([
   { label: 'Copier', icon: 'pi pi-copy', command: () => copyMessage() },
-  { label: 'Modifier', icon: 'pi pi-file-edit', command: () => fillMessageContentForEditing(), visible: () => selectedMessageRef.value?.author.id === user.value.id},
-  { label: 'Supprimer', icon: 'pi pi-trash', command: () => deleteMessage(), class: 'delete-item', visible: () => selectedMessageRef.value?.author.id === user.value.id}
+  { label: 'Modifier', icon: 'pi pi-file-edit', command: () => fillMessageContentForEditing(), visible: () => isUserMessage.value},
+  { label: 'Supprimer', icon: 'pi pi-trash', command: () => deleteMessage(), class: 'delete-item', visible: () => isUserMessage.value}
 ]);
 
 const onMessageRightClick = (event: MouseEvent, message: Message): void => {
@@ -203,7 +211,7 @@ onMounted(async () => {
 
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data)
-    if (message.author.id !== user.value.id) {
+    if (message.author.login !== user.value.login) {
       messagesRef.value.push(message)
       scrollToEnd()
     }
