@@ -2,16 +2,18 @@
 import { computed, type PropType, ref } from 'vue'
 import Button from 'primevue/button'
 
-import type { FetchedUser } from '@/types/userInterfaces'
 import { useUserStore } from '@/stores/user'
+import { useAssociationStore } from '@/stores/selectedAssociation'
+import type { UserDetail } from '@/types/userInterfaces'
 import type { Message } from '@/types/conversationInterfaces'
 import type { Association } from '@/types/associationInterfaces'
 
 const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
-const user = ref<FetchedUser>(userStore.user)
+const user = ref<UserDetail>(userStore.user)
 
-const associationId = localStorage.getItem('associationId')
+const associationStore = useAssociationStore()
+const associationId = associationStore.selectedAssociationId
 if (!associationId) throw new Error('No association selected') // TODO should be handled in another way
 const selectedAssociation = ref<Pick<Association, 'id'>>({ id: parseInt(associationId) })
 

@@ -14,15 +14,17 @@ import MessageComponent from '@/components/Messaging/MessageComponent.vue'
 import MessageService from '@/services/messaging/message'
 import type { Association } from '@/types/associationInterfaces'
 import { useUserStore } from '@/stores/user'
-import type { FetchedUser } from '@/types/userInterfaces'
+import type { UserDetail } from '@/types/userInterfaces'
 import SelectedAssoService from '@/services/association/selectedAsso'
 import type { MenuItem } from 'primevue/menuitem'
+import { useAssociationStore } from '@/stores/selectedAssociation'
 
 const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
-const user = ref<FetchedUser>(userStore.user)
+const user = ref<UserDetail>(userStore.user)
 
-const associationId = localStorage.getItem('associationId')
+const associationStore = useAssociationStore()
+const associationId = associationStore.selectedAssociationId
 if (!associationId) throw new Error('No association selected') // TODO should be handled in another way
 const selectedAssociation = ref<Pick<Association, 'id'>>({ id: parseInt(associationId) })
 
