@@ -24,7 +24,13 @@ export default class AssociationDetailService extends ApiService<
   yup.InferType<typeof associationDetailSchema>
 > {
   constructor(toast: ToastServiceMethods, associationId: number) {
-    super(toast, `associations/${associationId}/details/`, associationDetailSchema, null, `api/associations/${associationId}/details/`)
+    super(
+      toast,
+      `associations/${associationId}/details/`,
+      associationDetailSchema,
+      null,
+      `api/associations/${associationId}/details/`
+    )
   }
 
   async getAssociationDetail(): Promise<AssociationDetail> {
