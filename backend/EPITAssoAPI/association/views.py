@@ -136,7 +136,7 @@ class MemberListView(generics.ListAPIView):
     permission_classes = [IsMemberOfAssociation]
 
     def get_queryset(self):
-        association_id = self.kwargs["association_id"]
+        association_id = self.kwargs["pk"]
         return AssociateUserAndAssociation.objects.filter(association_id=association_id)
 
     @extend_schema(summary="List all Members")

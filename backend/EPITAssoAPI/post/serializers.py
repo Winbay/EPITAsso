@@ -1,17 +1,11 @@
 from rest_framework import serializers
-from .models import Tag, Post, Image
+from .models import Tag, Post
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ["id", "name", "text_color", "background_color"]
-
-
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Image
-        fields = "__all__"
 
 
 class PostSerializer(serializers.ModelSerializer):

@@ -11,6 +11,7 @@ export default class ApiService<SchemaType> {
   schema: yup.ObjectSchema<any>
   params: string | null
   replacePath?: string
+  apiPath: string = API_PATH
 
   constructor(
     toast: ToastServiceMethods | null,
@@ -31,7 +32,7 @@ export default class ApiService<SchemaType> {
       return this.replacePath
     }
     const associationId: string = SelectedAssoService.getAssociationId()
-    return `${API_PATH}/${associationId}/${this.basePath}`
+    return `${this.apiPath}/${associationId}/${this.basePath}`
   }
 
   // TODO not safe (ex: if omittedFields contains some fields in data)

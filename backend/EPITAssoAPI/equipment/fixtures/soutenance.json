@@ -7,7 +7,7 @@
     "asso_owner": 1,
     "quantity": 2,
     "equipment_request": null,
-    "photo": "https://m.media-amazon.com/images/I/816qsbv4dbL.jpg"
+    "photo": "hdmi.jpg"
   }
 },
 {
@@ -18,7 +18,7 @@
     "asso_owner": 2,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnlfxuNKHwFgF8MscRzaz1jfBBYNip5Fv2iw&s"
+    "photo": "crepiere.jpg"
   }
 },
 {
@@ -29,7 +29,7 @@
     "asso_owner": 9,
     "quantity": 5,
     "equipment_request": null,
-    "photo": "https://media.istockphoto.com/id/610241662/fr/photo/ballon-de-football-isol%C3%A9-sur-fond-blanc.jpg?s=612x612&w=0&k=20&c=yulUStMmoLbwnNrLT8eNcN_IX4Af8eyPLKhHyOPwFjY="
+    "photo": "ballon.jpg"
   }
 },
 {
@@ -40,7 +40,7 @@
     "asso_owner": 9,
     "quantity": 2,
     "equipment_request": null,
-    "photo": "https://www.sports82.fr/images/produits/zoom/2105_wallmount_basketball_hoop_-_54__gotek_11.jpg"
+    "photo": "panier_basket.jpg"
   }
 },
 {
@@ -51,7 +51,7 @@
     "asso_owner": 9,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://skandika.com/wp-content/uploads/Skandika-Tischtennisplatte-Outdoor-Kinder-SF-2920-01.png"
+    "photo": "table_ping.png"
   }
 },
 {
@@ -62,7 +62,7 @@
     "asso_owner": 9,
     "quantity": 6,
     "equipment_request": null,
-    "photo": "https://st2.depositphotos.com/3539679/7265/v/950/depositphotos_72651811-stock-illustration-tennis-racket-and-ball.jpg"
+    "photo": "raquette_tennis.jpg"
   }
 },
 {
@@ -73,7 +73,7 @@
     "asso_owner": 9,
     "quantity": 10,
     "equipment_request": null,
-    "photo": "https://www.ballons-publicitaires.fr/313-large_default/balles-de-tennis.jpg"
+    "photo": "balles-de-tennis.jpg"
   }
 },
 {
@@ -84,7 +84,7 @@
     "asso_owner": 9,
     "quantity": 20,
     "equipment_request": null,
-    "photo": "https://www.techni-contact.com/ressources/images/produits/zoom/74976421-1.jpg"
+    "photo": "plots.jpg"
   }
 },
 {
@@ -95,7 +95,7 @@
     "asso_owner": 9,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://www.sodexsport.fr/sodex_sport_library/Product-photos/FR/sports-de-raquette/tennis/filet/S25868/filet-retro-s25868.jpg"
+    "photo": "filet.jpg"
   }
 },
 {
@@ -106,7 +106,7 @@
     "asso_owner": 2,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://www.krampouz-pro.com/wp-content/uploads/2021/03/Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
+    "photo": "Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
   }
 },
 {
@@ -117,7 +117,7 @@
     "asso_owner": 2,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://www.krampouz-pro.com/wp-content/uploads/2021/03/Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
+    "photo": "Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
   }
 },
 {
@@ -128,7 +128,7 @@
     "asso_owner": 2,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://www.krampouz-pro.com/wp-content/uploads/2021/03/Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
+    "photo": "Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
   }
 },
 {
@@ -139,7 +139,7 @@
     "asso_owner": 2,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://www.krampouz-pro.com/wp-content/uploads/2021/03/Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
+    "photo": "Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
   }
 },
 {
@@ -150,7 +150,7 @@
     "asso_owner": 2,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://m.media-amazon.com/images/I/71TQkVQgYmL.jpg"
+    "photo": "gaufrier.jpg"
   }
 },
 {
@@ -161,7 +161,7 @@
     "asso_owner": 2,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://m.media-amazon.com/images/I/71TQkVQgYmL.jpg"
+    "photo": "gaufrier.jpg"
   }
 },
 {
@@ -172,7 +172,7 @@
     "asso_owner": 2,
     "quantity": 1,
     "equipment_request": null,
-    "photo": "https://m.media-amazon.com/images/I/71TQkVQgYmL.jpg"
+    "photo": "gaufrier.jpg"
   }
 }
 ]

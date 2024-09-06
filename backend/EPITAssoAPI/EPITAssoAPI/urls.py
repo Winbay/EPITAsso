@@ -16,7 +16,9 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.conf import settings
 from django.urls import path, include
+from django.conf.urls.static import static
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
@@ -42,21 +44,25 @@ urlpatterns = [
                     SpectacularRedocView.as_view(url_name="schema"),
                     name="redoc",
                 ),
-            ]
-        ),
-    ),
-    path(
-        "api/<int:association_id>/",
-        include(
-            [
-                # path("", include("user.urls")), TODO: change that
+                path(
+                    "<int:association_id>/",
+                    include(
+                        [
+                            # path("", include("user.urls")), TODO: change that
+                            path("", include("event.urls")),
+                            path("", include("post.urls")),
+                            path("", include("equipment.urls")),
+                            path("", include("messaging.urls")),
+                            path("", include("image.urls")),
+                        ]
+                    ),
+                ),
+                path("", include("user.urls")),
                 path("", include("association.urls")),
-                path("", include("event.urls")),
-                path("", include("post.urls")),
-                path("", include("equipment.urls")),
-                path("", include("messaging.urls")),
             ]
         ),
     ),
-    path("api/", include("user.urls")),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

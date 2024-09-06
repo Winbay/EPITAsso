@@ -5,7 +5,7 @@
   "fields": {
     "name": "BDE",
     "content": "Le BDE est l’association fédératrice des associations de l’école. Il organise les weekends d’intégration en SUP et après la piscine, le Gala, les soirées comme Halloween ou Christmas. Il est également présent pour animer les événements pédagogiques phares comme la piscine en ING1, les rushs ou les hackathons.",
-    "logo": "/images/kraken.png",
+    "logo": "kraken.png",
     "location": "under"
   }
 },
@@ -15,7 +15,7 @@
   "fields": {
     "name": "VJN",
     "content": "Cette association a pour but l'organisation d’évènements étudiants, les Villejuif Nights (VJN), au sein du pôle éducatif de IONIS, et plus particulièrement sur le pôle de Villejuif.",
-    "logo": "/images/vjn.png",
+    "logo": "vjn.png",
     "location": "under"
   }
 },
@@ -25,7 +25,7 @@
   "fields": {
     "name": "Lateb",
     "content": "Lateb se donne pour mission de faire découvrir des bières de qualité au sein du campus. A ce titre, elle organise des évènements proposant diverses activités autour de dégustations de bières sous forme de buffets, projections ou concerts. L’abus d’alcool est dangereux pour la santé, à consommer avec modération.",
-    "logo": "https://www.epita.fr/wp-content/uploads/lateb-association-epita.png",
+    "logo": "lateb-association-epita.png",
     "location": "under"
   }
 },
@@ -35,7 +35,7 @@
   "fields": {
     "name": "La Paillote",
     "content": "La Paillote est l’association des amoureux des mélanges de saveurs. Experts en l’art de titiller les papilles, ses membres proposent un large panel de cocktails, du plus classique à l’unique, spécialement inventé pour vous. L’abus d’alcool est dangereux pour la santé, à consommer avec modération.",
-    "logo": "https://www.epita.fr/wp-content/uploads/la-paillote-association-epita.png",
+    "logo": "la-paillote-association-epita.png",
     "location": "under"
   }
 },
@@ -45,7 +45,7 @@
   "fields": {
     "name": "EPTV",
     "content": "EPTV réunit depuis plus de 30 ans, les passionnés de vidéo qui capturent les événements marquants de la vie étudiante tout au long de l’année. L’association est accessible à tous et réalise en interne des formations sur le matériel et le montage vidéo.",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1n89yd_FEFrVZp4nI29hmq1yLuBgpnW0q1w&s",
+    "logo": "eptv.png",
     "location": "under"
   }
 },
@@ -55,7 +55,7 @@
   "fields": {
     "name": "Unisson",
     "content": "Unisson a pour but de promouvoir la musique électronique. Elle participe tout au long de l’année à la préparation des soirées étudiantes sur le campus. Elle s’organise autour de 3 pôles : MAO (musique assistée par ordinateur), MIX/Live, Scratch.",
-    "logo": "https://res.cloudinary.com/shotgun/image/upload/v1692983608/production/artworks/tiny_logo_unisson_ectn6c.png",
+    "logo": "tiny_logo_unisson_ectn6c.png",
     "location": "Under"
   }
 },
@@ -65,7 +65,7 @@
   "fields": {
     "name": "MTI frontend",
     "content": "MTI frontend est la branche dédiée au développement des interfaces utilisateur des applications web et mobiles. Les membres se concentrent sur la création de designs intuitifs et réactifs, utilisant les dernières technologies pour améliorer l'expérience utilisateur.",
-    "logo": "https://media.discordapp.net/attachments/1206931658603757598/1215956239465316402/image.png?ex=6675497e&is=6673f7fe&hm=6d569044b289eb7d447d3e39e2812e96aa7f90827992f5b42ac150140d50344f&format=webp&quality=lossless&width=621&height=662&",
+    "logo": "logo-mti.png",
     "location": "501"
   }
 },
@@ -75,7 +75,7 @@
   "fields": {
     "name": "MTI backend",
     "content": "MTI backend s'occupe de l'infrastructure et de la logique serveur des applications. Les membres gèrent les bases de données, les serveurs et les API, assurant la performance, la sécurité et la scalabilité des services.",
-    "logo": "https://media.discordapp.net/attachments/1206931658603757598/1215956239465316402/image.png?ex=6675497e&is=6673f7fe&hm=6d569044b289eb7d447d3e39e2812e96aa7f90827992f5b42ac150140d50344f&format=webp&quality=lossless&width=621&height=662&",
+    "logo": "logo-mti.png",
     "location": "501"
   }
 },
@@ -85,7 +85,7 @@
   "fields": {
     "name": "Episport",
     "content": "le sport c'est fou",
-    "logo": "https://www.epita.fr/wp-content/uploads/episport-association-epita.png",
+    "logo": "episport-association-epita.png",
     "location": "under"
   }
 },

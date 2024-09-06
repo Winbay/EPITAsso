@@ -19,14 +19,6 @@ class Tag(models.Model):
         return self.name
 
 
-class Image(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    link = models.TextField()  # Replace by "URLField" from Django ?
-
-    def __str__(self):
-        return self.link
-
-
 class Post(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField(max_length=255)

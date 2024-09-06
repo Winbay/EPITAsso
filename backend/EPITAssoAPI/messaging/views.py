@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import generics, serializers, status
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
@@ -19,6 +19,26 @@ class MessageListView(generics.ListCreateAPIView):
         conversation_id = self.kwargs.get("pk")
         return Message.objects.filter(conversation_id=conversation_id)
 
+    @extend_schema(
+        summary="List all Messages",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                description="Number of results to return",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="offset",
+                description="Initial offset in the results",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+        ],
+        responses=MessageSerializer(many=True),
+    )
     @extend_schema(summary="List all Messages")
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()
