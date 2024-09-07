@@ -1,6 +1,7 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import generics, serializers, status
 from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination
 from django.utils import timezone
 from django.db.models import Q, Subquery
 from association.models import Association
@@ -11,12 +12,33 @@ from .serializers import (
     EquipmentRequestSerializer,
 )
 
+class EquipmentPagination(LimitOffsetPagination):
+    default_limit = 10
+    max_limit = 100
 
 class EquipmentListView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
+    pagination_class = EquipmentPagination
 
-    @extend_schema(summary="List all Equipments")
+    @extend_schema(summary="List all Equipments",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                description="Number of results to return",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="offset",
+                description="Initial offset in the results",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+        ],
+        responses=EquipmentSerializer(many=True),)
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -139,10 +161,33 @@ class EquipmentRequestListView(generics.ListCreateAPIView):
     queryset = EquipmentRequest.objects.all()
     serializer_class = EquipmentRequestSerializer
 
+class EquipmentRequestPagination(LimitOffsetPagination):
+    default_limit = 10
+    max_limit = 100
 
 class EquipmentRequestReceivedView(generics.ListAPIView):
     serializer_class = EquipmentRequestSerializer
+    pagination_class = EquipmentRequestPagination
 
+    @extend_schema(summary="List all Equipment Requests received by an Association",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                description="Number of results to return",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="offset",
+                description="Initial offset in the results",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+        ],
+        responses=EquipmentRequestSerializer(many=True),
+    )
     def get_queryset(self):
         association_id = self.kwargs.get("association_id")
 
@@ -153,13 +198,32 @@ class EquipmentRequestReceivedView(generics.ListAPIView):
         queryset = EquipmentRequest.objects.filter(
             equipment_id__in=Subquery(equipments)
         )
-        print(queryset)
         return queryset
 
 
 class EquipmentRequestSentView(generics.ListAPIView):
     serializer_class = EquipmentRequestSerializer
+    pagination_class = EquipmentRequestPagination
 
+    @extend_schema(summary="List all Equipment Requests sent by an Association",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                description="Number of results to return",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="offset",
+                description="Initial offset in the results",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+        ],
+        responses=EquipmentRequestSerializer(many=True),
+     )
     def get_queryset(self):
         return EquipmentRequest.objects.filter(
             asso_borrower=self.kwargs.get("association_id")

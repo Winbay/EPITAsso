@@ -1,5 +1,6 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import generics
+from rest_framework.pagination import LimitOffsetPagination
 
 from association.models import Association
 from .models import Tag, Post
@@ -40,16 +41,38 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
+class PostPagination(LimitOffsetPagination):
+    default_limit = 10
+    max_limit = 100
 
 class PostListView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    pagination_class = PostPagination
 
     def get_queryset(self):
         association_id = self.kwargs["association_id"]
         return Post.objects.filter(association_id=association_id)
 
-    @extend_schema(summary="List all Posts")
+    @extend_schema(summary="List all Posts",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                description="Number of results to return",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="offset",
+                description="Initial offset in the results",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+        ],
+        responses=PostSerializer(many=True),
+    )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 

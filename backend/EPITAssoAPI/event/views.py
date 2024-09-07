@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from rest_framework import generics
 from django.utils.timezone import now
 from rest_framework.pagination import LimitOffsetPagination
@@ -43,15 +43,38 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
         return super().destroy(request, *args, **kwargs)
 
 
+class EventPagination(LimitOffsetPagination):
+    default_limit = 10
+    max_limit = 100
+
 class EventListView(generics.ListCreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    pagination_class = EventPagination
 
     def get_queryset(self):
         association_id = self.kwargs["association_id"]
         return Event.objects.filter(association_id=association_id)
 
-    @extend_schema(summary="List all Events")
+    @extend_schema(summary="List all Events",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                description="Number of results to return",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="offset",
+                description="Initial offset in the results",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+        ],
+        responses=EventSerializer(many=True),
+    )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
