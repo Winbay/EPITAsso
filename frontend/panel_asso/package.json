@@ -17,6 +17,7 @@
     "axios": "^1.6.8",
     "can-fixture": "^3.1.7",
     "form-data": "^4.0.0",
+    "crypto-js": "^4.2.0",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.1.7",
     "primeicons": "^7.0.0",
