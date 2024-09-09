@@ -43,15 +43,17 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
   }
 
   async createMessage(
-    message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'>
+    message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'>
   ): Promise<Message> {
     message.content = encryptMessage(message.content)
+    console.log('message.content', message.content)
     const data: yup.InferType<typeof messageSchema> = await this.create(message, [
       'id',
       'author',
       'conversation',
       'sent_at',
-      'association_sender'
+      'association_sender',
+      'updated_at'
     ])
     if (!data) throw new Error('No created message returned')
     data.content = decryptMessage(data.content)
@@ -98,15 +100,16 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
 
   async updateMessage(
     id: Message['id'],
-    message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'>
+    message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'>
   ): Promise<Message> {
     message.content = encryptMessage(message.content)
-    const data: yup.InferType<typeof messageSchema> = await this.patch(message, id, [
+    const data: yup.InferType<typeof messageSchema> = await this.patch<yup.InferType<typeof messageSchema>>(message, id, [
       'id',
       'author',
       'conversation',
       'sent_at',
-      'association_sender'
+      'association_sender',
+      'updated_at'
     ])
     if (!data) throw new Error('No updated message returned')
     data.content = decryptMessage(data.content)
@@ -125,7 +128,7 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
       author: message.author,
       associationSender: message.association_sender,
       sentAt: message.sent_at,
-      updatedAt: message.updated_at
+      updatedAt: message.updated_at || null
     }
   }
 }

@@ -41,12 +41,16 @@ const isUserMessage = computed(() => {
 
 const isMessageModified = computed(() => {
   const sentAt = new Date(props.message.sentAt)
-  const updatedAt = new Date(props.message.updatedAt)
+  const updatedAt = props.message.updatedAt ? new Date(props.message.updatedAt) : null
 
-  const sentAtSeconds = Math.floor(sentAt.getTime() / 1000)
-  const updatedAtSeconds = Math.floor(updatedAt.getTime() / 1000)
+  if (updatedAt === null) {
+    return false;
+  }
 
-  return sentAtSeconds !== updatedAtSeconds
+  const sentAtSeconds = Math.floor(sentAt.getTime() / 1000);
+  const updatedAtSeconds = Math.floor(updatedAt.getTime() / 1000);
+
+  return sentAtSeconds !== updatedAtSeconds;
 })
 
 const formatDate = (date: Date | string): string => {
