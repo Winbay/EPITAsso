@@ -68,7 +68,7 @@ export default class AssociationDetailService extends ApiService<
       content: associationDetails.content,
       location: associationDetails.location,
       logo: associationDetails.logo,
-      webhook: associationDetails.webhook ?? "",
+      webhook: associationDetails.webhook ?? '',
       socialNetworks: associationDetails.social_networks,
       faqs: associationDetails.faqs
     }

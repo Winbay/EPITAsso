@@ -39,7 +39,7 @@ const props = defineProps({
 const toast = useToast()
 const globalStore = useGlobalStore()
 const eventService: EventService = new EventService(toast)
-const postOnDiscord = ref<boolean>(!!globalStore.currentAssociation.webhook);
+const postOnDiscord = ref<boolean>(!!globalStore.currentAssociation.webhook)
 
 const getDefaultEvent = (): EventCreation | EventModification => ({
   name: '',
@@ -68,8 +68,14 @@ const editOrCreate = async (): Promise<void> => {
     await eventService.createEvent(currEventRef.value)
   }
   if (!!globalStore.currentAssociation.webhook && postOnDiscord.value) {
-    const discordMessages = DiscordWebhookService.eventContentToDiscordMessages(currEventRef.value.content)
-    await DiscordWebhookService.sendEventWebhook(globalStore.currentAssociation, currEventRef.value.name, discordMessages)
+    const discordMessages = DiscordWebhookService.eventContentToDiscordMessages(
+      currEventRef.value.content
+    )
+    await DiscordWebhookService.sendEventWebhook(
+      globalStore.currentAssociation,
+      currEventRef.value.name,
+      discordMessages
+    )
   }
   await props.reloadEvents()
   props.setHidden()
@@ -187,8 +193,16 @@ onMounted(() => {
         :binary="true"
         :disabled="!globalStore.currentAssociation.webhook"
       />
-      <label for="postOnDiscord" :class="'ml-2 mr-2' + (!!globalStore.currentAssociation.webhook ? '' : ' text-gray-500')">Poster l'évènement sur Discord</label>
-      <i class="pi pi-info-circle flex self-center" v-show="!globalStore.currentAssociation.webhook" v-tooltip.top="DiscordWebhookService.webhookTooltipDisabled"/>
+      <label
+        for="postOnDiscord"
+        :class="'ml-2 mr-2' + (!!globalStore.currentAssociation.webhook ? '' : ' text-gray-500')"
+        >Poster l'évènement sur Discord</label
+      >
+      <i
+        class="pi pi-info-circle flex self-center"
+        v-show="!globalStore.currentAssociation.webhook"
+        v-tooltip.top="DiscordWebhookService.webhookTooltipDisabled"
+      />
     </div>
     <div class="flex justify-start items-center">
       <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />

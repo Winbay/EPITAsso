@@ -8,7 +8,7 @@ const associationSchema = yup.object({
   content: yup.string().required(),
   location: yup.string().required(),
   logo: yup.string().required(),
-  webhook: yup.string().required(),
+  webhook: yup.string().required()
 })
 
 export default class SelectedAssoService {

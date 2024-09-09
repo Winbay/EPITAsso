@@ -75,7 +75,7 @@ async function checkLoginAndFetchUser(): Promise<void> {
 // Fix needed for Quill v2: https://github.com/primefaces/primevue/issues/5606#issuecomment-2203975395
 ;(Editor as any).methods.renderValue = function renderVallue(
   this: { quill?: Quill },
-  value: string,
+  value: string
 ) {
   if (this.quill) {
     if (value) {

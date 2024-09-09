@@ -14,7 +14,6 @@ import AssociationDetailService from '@/services/association/details'
 import DiscordWebhookService from '@/services/discordWebhook'
 import { emit } from '@/utils/eventBus'
 
-
 const props = defineProps({
   setHidden: {
     type: Function,
@@ -52,10 +51,10 @@ const saveUpdate = async (): Promise<void> => {
       toast.add({
         severity: 'error',
         summary: 'Webhook Discord',
-        detail: "Le lien du Webhook Discord est invalide.",
+        detail: 'Le lien du Webhook Discord est invalide.',
         life: 3000
       })
-      return;
+      return
     }
     await associationDetailService.updateAssociationDetail(currAssociationRef.value).then(() => {
       emit('association-changed', currAssociationRef.value.id)
@@ -152,9 +151,9 @@ const handleImageChange = (event: Event): void => {
       <div class="mb-6">
         <div class="flex items-center mb-2">
           <label for="associationWebhook" class="block mr-2 text-2xl font-bold text-wrap"
-          >Évènements - Webhook Discord (optionnel)</label
+            >Évènements - Webhook Discord (optionnel)</label
           >
-          <i class="pi pi-info-circle" v-tooltip.top="DiscordWebhookService.webhookTooltip"/>
+          <i class="pi pi-info-circle" v-tooltip.top="DiscordWebhookService.webhookTooltip" />
         </div>
 
         <InputText

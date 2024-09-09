@@ -86,11 +86,15 @@ const downloadPdf = async (eventId: number) => {
 
 const sendWebhookEvent = async (event: EventModification) => {
   const discordMessages = DiscordWebhookService.eventContentToDiscordMessages(event.content)
-  await DiscordWebhookService.sendEventWebhook(globalStore.currentAssociation, event.name, discordMessages)
+  await DiscordWebhookService.sendEventWebhook(
+    globalStore.currentAssociation,
+    event.name,
+    discordMessages
+  )
   toast.add({
     severity: 'success',
     summary: 'Évènement envoyé',
-    detail: 'L\'évènement a bien été posté sur le channel Discord',
+    detail: "L'évènement a bien été posté sur le channel Discord",
     life: 5000
   })
 }

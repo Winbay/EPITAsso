@@ -6,7 +6,7 @@ class Association(models.Model):
     name = models.CharField(max_length=255)
     content = models.TextField()
     logo = models.ImageField(upload_to="logos/", null=True, blank=True, max_length=255)
-    webhook = models.URLField(default='', blank=True)
+    webhook = models.URLField(default="", blank=True)
     location = models.CharField(max_length=255)  # TODO change for an enum of location ?
 
     def __str__(self):
