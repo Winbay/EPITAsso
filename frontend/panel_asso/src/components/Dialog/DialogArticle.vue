@@ -48,6 +48,7 @@ const editOrCreate = async (): Promise<void> => {
     await postService.createPost(currArticleRef.value)
   }
   await props.reloadArticles()
+  currArticleRef.value = getDefaultArticle()
   props.setHidden()
 }
 

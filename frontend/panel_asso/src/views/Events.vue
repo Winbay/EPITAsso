@@ -4,6 +4,8 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import ConfirmPopup from 'primevue/confirmpopup'
+import Tooltip from 'primevue/tooltip'
+import Paginator from 'primevue/paginator'
 
 import { ref, onMounted } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
@@ -27,6 +29,10 @@ const globalStore = useGlobalStore()
 
 const eventService: EventService = new EventService(toast)
 const tagService: TagService = new TagService(toast, 'events')
+
+const rowsPerPage = ref(5)
+const eventsCount = ref(0)
+const currentPage = ref(0)
 
 const confirmDelete = (event: Event, eventId: number) => {
   confirm.require({
@@ -53,7 +59,10 @@ const loadTags = async () => {
 }
 
 const reloadEvents = async () => {
-  eventsRef.value = await eventService.getEvents()
+  const offset = currentPage.value * rowsPerPage.value
+  const events = await eventService.getEvents(rowsPerPage.value, offset)
+  eventsRef.value = events.results
+  eventsCount.value = events.count
 }
 
 const deleteEvent = async (eventId: number) => {
@@ -139,9 +148,6 @@ const formatDate = (date: Date): string => {
       striped-rows
       tableStyle="min-width: 50rem"
       size="small"
-      paginator
-      :rows="5"
-      :rowsPerPageOptions="[5, 10, 20, 50]"
       removableSort
     >
       <Column field="name" header="Titre" sortable></Column>
@@ -201,6 +207,13 @@ const formatDate = (date: Date): string => {
         </template>
       </Column>
     </DataTable>
+    <Paginator
+      class="p-paginator-bottom"
+      :rows="rowsPerPage"
+      :totalRecords="eventsCount"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      @page="currentPage = $event.page; rowsPerPage = $event.rows; reloadEvents()"
+    />
   </div>
 </template>
 

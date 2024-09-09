@@ -35,9 +35,21 @@ export default class PostService extends ApiService<yup.InferType<typeof postSch
     await this.create(postDataToValidate, ['id', 'author'])
   }
 
-  async getPosts(): Promise<Post[]> {
-    const data = await this.getAll()
-    return data.map((post) => this.converterSchemaToInterface(post))
+  async getPosts(
+    limit: number,
+    offset: number
+  ): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: Post[]
+  }> {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    const { results, ...rest } = await this.getAllWithParams(params.toString())
+    const posts = results.map((post: yup.InferType<typeof postSchema>) =>
+      this.converterSchemaToInterface(post)
+    )
+    return { ...rest, results: posts }
   }
 
   async getPostById(id: number): Promise<Post> {
