@@ -121,13 +121,16 @@ const sendMessage = async (): Promise<void> => {
 const modifyMessage = async (): Promise<void> => {
   if (!selectedMessageRef.value) return
   const idSelectedMessage = selectedMessageRef.value.id
-  const modifiedMessage:  Omit<
+  const modifiedMessage: Omit<
     Message,
     'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'
   > = {
     content: newMessageContentRef.value
   }
-  const updatedMessage = await messageService.updateMessage(selectedMessageRef.value.id, modifiedMessage)
+  const updatedMessage = await messageService.updateMessage(
+    selectedMessageRef.value.id,
+    modifiedMessage
+  )
   const index = messagesRef.value.findIndex((msg) => msg.id === idSelectedMessage)
   messagesRef.value[index].content = updatedMessage.content
   messagesRef.value[index].updatedAt = updatedMessage.updatedAt
@@ -198,7 +201,7 @@ const onMessageRightClick = (event: MouseEvent, message: Message): void => {
 }
 
 const copyMessage = async (): Promise<void> => {
-  if (!selectedMessageRef.value) return;
+  if (!selectedMessageRef.value) return
 
   try {
     await navigator.clipboard.writeText(selectedMessageRef.value.content)
@@ -209,7 +212,7 @@ const copyMessage = async (): Promise<void> => {
 }
 
 const fillMessageContentForEditing = (): void => {
-  if (!selectedMessageRef.value) return;
+  if (!selectedMessageRef.value) return
 
   try {
     modifiedMessageRef.value = selectedMessageRef.value
