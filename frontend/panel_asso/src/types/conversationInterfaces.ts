@@ -18,7 +18,7 @@ export interface Message {
   content: string
   associationSender: Pick<Association, 'id' | 'name'>
   sentAt: Date
-  updatedAt: Date
+  updatedAt: Date | null | undefined
 }
 
 // TODO remove association_sender

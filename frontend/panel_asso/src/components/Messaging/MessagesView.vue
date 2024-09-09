@@ -109,7 +109,7 @@ const sendMessage = async (): Promise<void> => {
   if (!associationSender) throw new Error('Association not found')
   const newMessage: Omit<
     Message,
-    'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'
+    'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'
   > = {
     content: newMessageContentRef.value
   }
@@ -120,17 +120,15 @@ const sendMessage = async (): Promise<void> => {
 
 const modifyMessage = async (): Promise<void> => {
   if (!selectedMessageRef.value) return
-  const modifiedMessage: Omit<
+  const idSelectedMessage = selectedMessageRef.value.id
+  const modifiedMessage:  Omit<
     Message,
-    'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'
+    'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'
   > = {
     content: newMessageContentRef.value
   }
-  const updatedMessage = await messageService.updateMessage(
-    selectedMessageRef.value.id,
-    modifiedMessage
-  )
-  const index = messagesRef.value.findIndex((msg) => msg.id === selectedMessageRef.value.id)
+  const updatedMessage = await messageService.updateMessage(selectedMessageRef.value.id, modifiedMessage)
+  const index = messagesRef.value.findIndex((msg) => msg.id === idSelectedMessage)
   messagesRef.value[index].content = updatedMessage.content
   messagesRef.value[index].updatedAt = updatedMessage.updatedAt
   resetMessageContent()
@@ -199,8 +197,8 @@ const onMessageRightClick = (event: MouseEvent, message: Message): void => {
   selectedMessageRef.value = message
 }
 
-const copyMessage = async (): void => {
-  if (!selectedMessageRef.value) return
+const copyMessage = async (): Promise<void> => {
+  if (!selectedMessageRef.value) return;
 
   try {
     await navigator.clipboard.writeText(selectedMessageRef.value.content)
@@ -210,8 +208,8 @@ const copyMessage = async (): void => {
   }
 }
 
-const fillMessageContentForEditing = async (): void => {
-  if (!selectedMessageRef.value) return
+const fillMessageContentForEditing = (): void => {
+  if (!selectedMessageRef.value) return;
 
   try {
     modifiedMessageRef.value = selectedMessageRef.value

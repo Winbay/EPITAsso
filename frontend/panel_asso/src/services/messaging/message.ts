@@ -46,7 +46,7 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
     message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'>
   ): Promise<Message> {
     message.content = encryptMessage(message.content)
-    const data = await this.create(message, [
+    const data: yup.InferType<typeof messageSchema> = await this.create(message, [
       'id',
       'author',
       'conversation',
@@ -101,7 +101,7 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
     message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'>
   ): Promise<Message> {
     message.content = encryptMessage(message.content)
-    const data = await this.patch(message, id, [
+    const data: yup.InferType<typeof messageSchema> = await this.patch(message, id, [
       'id',
       'author',
       'conversation',

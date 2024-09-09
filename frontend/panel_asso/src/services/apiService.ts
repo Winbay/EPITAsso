@@ -101,7 +101,7 @@ export default class ApiService<SchemaType> {
     } else {
       validatedData = await this.validate(data as SchemaType)
     }
-    return await this.request<void>(
+    return await this.request<ReturnType>(
       'patch',
       `${this.getFullPath()}${id ? id + '/' : ''}`,
       validatedData
