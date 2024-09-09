@@ -71,7 +71,7 @@ const editOrCreate = async (): Promise<void> => {
     const discordMessages = DiscordWebhookService.eventContentToDiscordMessages(
       currEventRef.value.content
     )
-    await DiscordWebhookService.sendEventWebhook(
+    await DiscordWebhookService.sendWebhook(
       globalStore.currentAssociation,
       currEventRef.value.name,
       discordMessages
