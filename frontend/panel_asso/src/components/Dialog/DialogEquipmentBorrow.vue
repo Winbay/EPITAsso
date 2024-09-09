@@ -25,7 +25,7 @@ const props = defineProps({
   equipment: {
     type: Object as PropType<Equipment>,
     required: true
-  },
+  }
 })
 
 const toast = useToast()

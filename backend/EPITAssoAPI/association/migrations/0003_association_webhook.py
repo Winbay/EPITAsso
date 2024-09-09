@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('association', '0002_initial'),
+        ("association", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='association',
-            name='webhook',
-            field=models.URLField(blank=True, default=''),
+            model_name="association",
+            name="webhook",
+            field=models.URLField(blank=True, default=""),
         ),
     ]
