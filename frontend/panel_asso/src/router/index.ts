@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/components/Home.vue'
 
 import StudentEngagement from '@/views/StudentEngagement.vue'
 import Events from '@/views/Events.vue'

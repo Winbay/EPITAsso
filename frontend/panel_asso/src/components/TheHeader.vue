@@ -3,17 +3,19 @@ import { onMounted, ref } from 'vue'
 import Button from 'primevue/button'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
+import { useGlobalStore } from '@/stores/globalStore'
 import SelectAssociation from '@/components/SelectAssociation.vue'
 import SelectedAssoService from '@/services/association/selectedAsso'
-import type { AssociationWithLogo } from '@/types/associationInterfaces'
+import type { Association } from '@/types/associationInterfaces'
 import { on } from '@/utils/eventBus'
 import { ASSOCIATION_ID } from '@/services/api'
 
 const userStore = useUserStore()
+const globalStore = useGlobalStore()
 const user = ref(userStore.getUser)
 
-const userAssociations = ref<AssociationWithLogo[]>([])
-const selectedAssociation = ref<AssociationWithLogo | undefined>()
+const userAssociations = ref<Association[]>([])
+const selectedAssociation = ref<Association | undefined>()
 
 const stateMenu = () => {
   let sidePanel = document.getElementById('main-content')
@@ -39,6 +41,9 @@ const refreshUserAssociations = async (): Promise<void> => {
   selectedAssociation.value = userAssociations.value.find(
     (asso) => asso.id.toString() === SelectedAssoService.getAssociationId()
   )
+  if (selectedAssociation.value) {
+    globalStore.currentAssociation = selectedAssociation.value
+  }
 }
 
 onMounted(async () => {

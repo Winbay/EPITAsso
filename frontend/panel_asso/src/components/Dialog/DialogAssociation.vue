@@ -11,6 +11,7 @@ import type { AssociationDetail } from '@/types/associationInterfaces'
 import FAQ from '@/components/FAQ.vue'
 import SocialNetworks from '@/components/SocialNetworks.vue'
 import AssociationDetailService from '@/services/association/details'
+import DiscordWebhookService from '@/services/discordWebhook'
 import { emit } from '@/utils/eventBus'
 
 const props = defineProps({
@@ -37,6 +38,7 @@ const getDefaultAssociation = (): AssociationDetail => ({
   content: '',
   location: '',
   logo: '',
+  webhook: '',
   socialNetworks: [],
   faqs: []
 })
@@ -45,6 +47,15 @@ const currAssociationRef = ref<AssociationDetail>(props.association)
 
 const saveUpdate = async (): Promise<void> => {
   if (currAssociationRef.value) {
+    if (!DiscordWebhookService.checkAttributeValidity(currAssociationRef.value.webhook)) {
+      toast.add({
+        severity: 'error',
+        summary: 'Webhook Discord',
+        detail: 'Le lien du Webhook Discord est invalide.',
+        life: 3000
+      })
+      return
+    }
     await associationDetailService.updateAssociationDetail(currAssociationRef.value).then(() => {
       emit('association-changed', currAssociationRef.value.id)
     })
@@ -134,6 +145,25 @@ const handleImageChange = (event: Event): void => {
           class="w-full"
           rows="5"
           autoResize
+        />
+      </div>
+
+      <div class="mb-6">
+        <div class="flex items-center mb-2">
+          <label for="associationWebhook" class="block mr-2 text-2xl font-bold text-wrap"
+            >Évènements - Webhook Discord (optionnel)</label
+          >
+          <i class="pi pi-info-circle" v-tooltip.top="DiscordWebhookService.webhookTooltip" />
+        </div>
+
+        <InputText
+          id="associationWebhook"
+          v-model="currAssociationRef.webhook"
+          placeholder="Url du webhook"
+          maxlength="255"
+          type="url"
+          class="w-full"
+          :invalid="!DiscordWebhookService.checkAttributeValidity(currAssociationRef.webhook)"
         />
       </div>
 

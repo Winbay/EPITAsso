@@ -1,11 +1,14 @@
 import djangoApi, { ASSOCIATION_ID } from '@/services/api'
-import type { AssociationWithLogo } from '@/types/associationInterfaces'
+import type { Association } from '@/types/associationInterfaces'
 import * as yup from 'yup'
 
 const associationSchema = yup.object({
   id: yup.number().required(),
   name: yup.string().required(),
-  logo: yup.string().required()
+  content: yup.string().required(),
+  location: yup.string().required(),
+  logo: yup.string().required(),
+  webhook: yup.string().required()
 })
 
 export default class SelectedAssoService {
@@ -20,7 +23,7 @@ export default class SelectedAssoService {
     this.associationId = associationId
   }
 
-  static async getUserAssociations(): Promise<AssociationWithLogo[]> {
+  static async getUserAssociations(): Promise<Association[]> {
     try {
       const response = await djangoApi['get']<(typeof associationSchema)[]>(
         '/api/users/me/associations'
@@ -32,7 +35,7 @@ export default class SelectedAssoService {
   }
 
   static handleError(error: any, message: string): never {
-    console.log('API error:', error)
+    console.log('API error:', error, message)
     throw error
   }
 

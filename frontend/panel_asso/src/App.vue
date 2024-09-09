@@ -15,6 +15,8 @@ import UserDetailService from '@/services/user/details'
 import type { UserDetail } from '@/types/userInterfaces'
 import AuthenticationService from '@/services/authentication/authentification'
 import type { AuthenticationToken } from '@/types/authenticationInterface'
+import Editor from 'primevue/editor'
+import Quill from 'quill'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -68,6 +70,21 @@ async function checkLoginAndFetchUser(): Promise<void> {
     }
   }
   isLoading.value = false
+}
+
+// Fix needed for Quill v2: https://github.com/primefaces/primevue/issues/5606#issuecomment-2203975395
+;(Editor as any).methods.renderValue = function renderVallue(
+  this: { quill?: Quill },
+  value: string
+) {
+  if (this.quill) {
+    if (value) {
+      const delta = this.quill.clipboard.convert({ html: value })
+      this.quill.setContents(delta, 'silent')
+    } else {
+      this.quill.setText('')
+    }
+  }
 }
 
 onMounted(async () => {

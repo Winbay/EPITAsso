@@ -6,7 +6,7 @@ import AssociationDetails from '@/components/AssociationDetails.vue'
 import { onMounted, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import AssociationDetailService from '@/services/association/details'
-import type { AssociationDetail, AssociationWithLogo } from '@/types/associationInterfaces'
+import type { AssociationDetail, Association } from '@/types/associationInterfaces'
 import ProgressSpinner from 'primevue/progressspinner'
 import Members from '@/components/DataTable/DataTableMembers.vue'
 import SelectedAssoService from '@/services/association/selectedAsso'
@@ -20,7 +20,7 @@ const isLoading = ref(false)
 const membersLoaded = ref(false)
 const activeTab = ref(0)
 
-const userAssociations = ref<AssociationWithLogo[]>([])
+const userAssociations = ref<Association[]>([])
 
 const getDefaultAssociation = (): AssociationDetail => ({
   id: -1,
@@ -28,6 +28,7 @@ const getDefaultAssociation = (): AssociationDetail => ({
   content: '',
   location: '',
   logo: '',
+  webhook: '',
   socialNetworks: [],
   faqs: []
 })

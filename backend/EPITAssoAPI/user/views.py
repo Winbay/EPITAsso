@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 
 from association.models import AssociateUserAndAssociation, Association
-from association.serializers import AssociationSimpleWithLogoSerializer
+from association.serializers import AssociationSerializer
 from .models import User
 from .serializers import DetailUserSerializer
 from requests_oauthlib import OAuth2Session
@@ -193,7 +193,7 @@ class UserLoggedDetailView(generics.RetrieveAPIView):
 
 class UserLoggedAssociationsView(generics.ListAPIView):
     queryset = Association.objects.all()
-    serializer_class = AssociationSimpleWithLogoSerializer
+    serializer_class = AssociationSerializer
 
     def get_queryset(self):
         user = self.request.user

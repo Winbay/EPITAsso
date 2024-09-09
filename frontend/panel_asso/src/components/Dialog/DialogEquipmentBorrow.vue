@@ -25,10 +25,6 @@ const props = defineProps({
   equipment: {
     type: Object as PropType<Equipment>,
     required: true
-  },
-  currAsso: {
-    type: Object as PropType<Association>,
-    required: true
   }
 })
 

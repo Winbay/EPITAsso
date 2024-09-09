@@ -15,6 +15,7 @@ const associationDetailSchema = yup
     content: yup.string().required(),
     location: yup.string().required(),
     logo: yup.string().required(),
+    webhook: yup.string(),
     social_networks: socialNetworksSchema,
     faqs: faqsSchema
   })
@@ -51,6 +52,7 @@ export default class AssociationDetailService extends ApiService<
       content: associationDetail.content,
       location: associationDetail.location,
       logo: associationDetail.logo,
+      webhook: associationDetail.webhook,
       social_networks: associationDetail.socialNetworks,
       faqs: associationDetail.faqs
     }
@@ -66,6 +68,7 @@ export default class AssociationDetailService extends ApiService<
       content: associationDetails.content,
       location: associationDetails.location,
       logo: associationDetails.logo,
+      webhook: associationDetails.webhook ?? '',
       socialNetworks: associationDetails.social_networks,
       faqs: associationDetails.faqs
     }

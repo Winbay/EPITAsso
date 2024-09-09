@@ -27,7 +27,6 @@ defineProps({
 })
 
 const visibleBorrow = ref<number>(0)
-const currAsso = { id: 1, name: 'EPTV', logo: '/images/eptv.jpg', content: '', location: 'KB' }
 
 const filtersOtherAssos = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -123,7 +122,6 @@ const closeDialog = () => {
         <div class="flex flex-col">
           <DialogEquipmentBorrow
             :visible="visibleBorrow === slotProps.data.id"
-            :curr-asso="currAsso"
             :equipment="slotProps.data"
             :reload-equipment-requests="reloadEquipmentRequests"
             :reload-equipments="reloadEquipments"

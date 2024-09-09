@@ -5,7 +5,7 @@ from .models import AssociateUserAndAssociation, Association, Faq, SocialNetwork
 class AssociationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Association
-        fields = ["id", "name", "content", "logo", "location"]
+        fields = ["id", "name", "content", "logo", "location", "webhook"]
         read_only_fields = ["id"]
 
 
@@ -35,6 +35,7 @@ class AssociationDetailsSerializer(serializers.ModelSerializer):
             "content",
             "logo",
             "location",
+            "webhook",
             "faqs",
             "social_networks",
         ]
