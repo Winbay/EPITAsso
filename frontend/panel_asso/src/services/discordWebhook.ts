@@ -137,11 +137,13 @@ export default class DiscordWebhookService {
     return messages
   }
 
-  static async sendEventWebhook(
+  static async sendWebhook(
     currentAsso: Association,
     eventTitle: string,
     messages: DiscordMessage[]
-  ): Promise<void> {
+  ): Promise<boolean> {
+    if (!this.checkUrlValidity(currentAsso.webhook))
+      return false
     if (messages.length > 0) {
       messages[0].content = `# ${eventTitle}\n` + messages[0].content
     }
@@ -174,5 +176,6 @@ export default class DiscordWebhookService {
       form.append('payload_json', JSON.stringify(paylodJson))
       await axios.post(currentAsso.webhook, form)
     }
+    return true;
   }
 }

@@ -64,7 +64,7 @@ export default class EquipmentService extends ApiService<yup.InferType<typeof eq
     id: Equipment['id'],
     equipmentRequest: EquipmentRequestCreation
   ): Promise<void> {
-    const { borrowingDate, dueDate } = equipmentRequest
+    // const { borrowingDate, dueDate } = equipmentRequest
     await this.request<void>(
       'post',
       `${this.getFullPath()}${id}/borrow`,

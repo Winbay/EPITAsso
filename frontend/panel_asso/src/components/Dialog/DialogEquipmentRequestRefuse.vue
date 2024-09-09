@@ -5,9 +5,7 @@ import Dialog from 'primevue/dialog'
 
 import { ref, defineProps } from 'vue'
 import { useToast } from 'primevue/usetoast'
-import EquipmentRequestService, {
-  equipmentRequestSchema
-} from '@/services/equipment/equipmentRequest'
+import EquipmentRequestService from '@/services/equipment/equipmentRequest'
 
 const props = defineProps({
   setHidden: {

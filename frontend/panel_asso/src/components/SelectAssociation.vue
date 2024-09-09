@@ -2,19 +2,19 @@
 import Avatar from 'primevue/avatar'
 import Dropdown, { type DropdownChangeEvent } from 'primevue/dropdown'
 import { type PropType, ref } from 'vue'
-import type { AssociationWithLogo } from '@/types/associationInterfaces'
+import type { Association } from '@/types/associationInterfaces'
 import { useAssociationStore } from '@/stores/selectedAssociation'
 import SelectedAssoService from '@/services/association/selectedAsso'
 import { emit } from '@/utils/eventBus'
 
 defineProps({
   userAssociations: {
-    type: Array as PropType<AssociationWithLogo[]>,
+    type: Array as PropType<Association[]>,
     required: true
   }
 })
 
-const selectedAssociation = ref<AssociationWithLogo | undefined>()
+const selectedAssociation = ref<Association | undefined>()
 
 const associationStore = useAssociationStore()
 const handleSelectedAssoChange = (event: DropdownChangeEvent): void => {

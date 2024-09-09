@@ -4,7 +4,6 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import ConfirmPopup from 'primevue/confirmpopup'
-import Tooltip from 'primevue/tooltip'
 
 import { ref, onMounted } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
@@ -86,15 +85,24 @@ const downloadPdf = async (eventId: number) => {
 
 const sendWebhookEvent = async (event: EventModification) => {
   const discordMessages = DiscordWebhookService.eventContentToDiscordMessages(event.content)
-  await DiscordWebhookService.sendEventWebhook(
+  if (await DiscordWebhookService.sendWebhook(
     globalStore.currentAssociation,
     event.name,
     discordMessages
   )
+  ) {
+    toast.add({
+      severity: 'success',
+      summary: 'Évènement envoyé',
+      detail: "L'évènement a bien été posté sur le channel Discord",
+      life: 5000
+    })
+    return
+  }
   toast.add({
-    severity: 'success',
-    summary: 'Évènement envoyé',
-    detail: "L'évènement a bien été posté sur le channel Discord",
+    severity: 'error',
+    summary: 'L\'évènement n\'a pas pu être envoyé',
+    detail: "L'url du webhook n'est pas définie ou est fausse",
     life: 5000
   })
 }
@@ -117,39 +125,19 @@ const formatDate = (date: Date): string => {
     <div class="events-list-header h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Évènements</span>
       <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="visibleDialogRef = true" />
-      <DialogEvent
-        v-model:visible="visibleDialogRef"
-        :set-hidden="closeDialog"
-        :reloadEvents="reloadEvents"
-        :tags="tagsRef"
-      />
+      <DialogEvent v-model:visible="visibleDialogRef" :set-hidden="closeDialog" :reloadEvents="reloadEvents"
+        :tags="tagsRef" />
     </div>
-    <DataTable
-      :value="eventsRef"
-      show-gridlines
-      striped-rows
-      tableStyle="min-width: 50rem"
-      size="small"
-      paginator
-      :rows="5"
-      :rowsPerPageOptions="[5, 10, 20, 50]"
-      removableSort
-    >
+    <DataTable :value="eventsRef" show-gridlines striped-rows tableStyle="min-width: 50rem" size="small" paginator
+      :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" removableSort>
       <Column field="name" header="Titre" sortable></Column>
       <Column field="author" header="Auteur" sortable></Column>
       <Column header="Tags" class="max-w-60">
         <template #body="slotProps">
-          <Tag
-            v-for="(tag, index) in slotProps.data.tags"
-            :key="index"
-            :value="tag.name"
-            :style="{
-              backgroundColor: tag.backgroundColor ?? 'var(--primary-color)',
-              color: tag.textColor ?? ''
-            }"
-            severity="primary"
-            class="mx-1 my-0.5"
-          />
+          <Tag v-for="(tag, index) in slotProps.data.tags" :key="index" :value="tag.name" :style="{
+            backgroundColor: tag.backgroundColor ?? 'var(--primary-color)',
+            color: tag.textColor ?? ''
+          }" severity="primary" class="mx-1 my-0.5" />
         </template>
       </Column>
       <Column field="startDate" header="Date de l'évènement" class="max-w-48" sortable>
@@ -160,34 +148,17 @@ const formatDate = (date: Date): string => {
       <Column header="Actions">
         <template #body="slotProps">
           <div class="actions">
-            <Button
-              icon="pi pi-pen-to-square"
-              @click="visibleDialogRef = slotProps.data.id"
-              v-tooltip="'Editer l\'évènement'"
-            />
-            <DialogEvent
-              :visible="visibleDialogRef === slotProps.data.id"
-              :set-hidden="closeDialog"
-              :reloadEvents="reloadEvents"
-              :tags="tagsRef"
-              :event="JSON.parse(JSON.stringify(slotProps.data))"
-            />
+            <Button icon="pi pi-pen-to-square" @click="visibleDialogRef = slotProps.data.id"
+              v-tooltip="'Editer l\'évènement'" />
+            <DialogEvent :visible="visibleDialogRef === slotProps.data.id" :set-hidden="closeDialog"
+              :reloadEvents="reloadEvents" :tags="tagsRef" :event="JSON.parse(JSON.stringify(slotProps.data))" />
             <ConfirmPopup></ConfirmPopup>
-            <Button
-              icon="pi pi-trash"
-              @click="confirmDelete($event, slotProps.data.id)"
-              v-tooltip="'Supprimer l\'évènement'"
-            />
-            <Button
-              icon="pi pi-download"
-              @click="downloadPdf(slotProps.data.id)"
-              v-tooltip="'Télécharger la fiche évent'"
-            />
-            <Button
-              icon="pi pi-send"
-              @click="sendWebhookEvent(slotProps.data)"
-              v-tooltip="'Poster l\'évènement via le Webhook'"
-            />
+            <Button icon="pi pi-trash" @click="confirmDelete($event, slotProps.data.id)"
+              v-tooltip="'Supprimer l\'évènement'" />
+            <Button icon="pi pi-download" @click="downloadPdf(slotProps.data.id)"
+              v-tooltip="'Télécharger la fiche évent'" />
+            <Button icon="pi pi-send" @click="sendWebhookEvent(slotProps.data)"
+              v-tooltip="'Poster l\'évènement via le Webhook'" />
           </div>
         </template>
       </Column>

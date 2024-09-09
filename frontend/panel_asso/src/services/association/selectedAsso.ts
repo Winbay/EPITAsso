@@ -35,7 +35,7 @@ export default class SelectedAssoService {
   }
 
   static handleError(error: any, message: string): never {
-    console.log('API error:', error)
+    console.log('API error:', error, message)
     throw error
   }
 

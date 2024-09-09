@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import Tag from 'primevue/tag'
-import Avatar from 'primevue/avatar'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import { defineProps, type PropType, ref, computed } from 'vue'
+import { defineProps, type PropType, ref } from 'vue'
 import type { Equipment, EquipmentRequest } from '@/types/equipmentInterfaces'
 import DialogEquipmentRequestDetails from '@/components/Dialog/DialogEquipmentRequestDetails.vue'
 
