@@ -49,7 +49,6 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
     >
   ): Promise<Message> {
     message.content = encryptMessage(message.content)
-    console.log('message.content', message.content)
     const data: yup.InferType<typeof messageSchema> = await this.create(message, [
       'id',
       'author',
@@ -119,6 +118,13 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
 
   async deleteMessage(id: Message['id']): Promise<void> {
     await this.delete(id)
+  }
+
+  transformMessageFromWS(messageBackendData: yup.InferType<typeof messageSchema>): Message {
+    messageBackendData.content = decryptMessage(messageBackendData.content)
+    return this.converterSchemaToInterface(
+      messageBackendData as yup.InferType<typeof messageSchema>
+    )
   }
 
   protected converterSchemaToInterface(message: yup.InferType<typeof messageSchema>): Message {

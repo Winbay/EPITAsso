@@ -249,9 +249,9 @@ onMounted(async () => {
 
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data)
-    const messageType = data.type
-    const message = JSON.parse(data.message)
-    if (messageType === 'message_sent' && message.author.login !== user.value.login) {
+    const messageData = JSON.parse(data.message)
+    const message = messageService.transformMessageFromWS(messageData)
+    if (data.type === 'message_sent' && (message.author.login !== user.value.login || message.associationSender.id !== selectedAssociation.value.id)) {
       messagesRef.value.push(message)
       scrollToEnd()
     }
