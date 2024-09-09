@@ -22,11 +22,10 @@ export interface Association {
   content: string
   location: string
   logo: string
+  webhook: string
 }
 
 export interface AssociationDetail extends Association {
   socialNetworks: SocialNetwork[]
   faqs: Faq[]
 }
-
-export interface AssociationWithLogo extends Pick<Association, 'id' | 'name' | 'logo'> {}

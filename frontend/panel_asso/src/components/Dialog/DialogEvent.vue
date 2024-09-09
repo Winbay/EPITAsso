@@ -10,10 +10,12 @@ import Calendar from 'primevue/calendar'
 import FloatLabel from 'primevue/floatlabel'
 
 import { ref, onMounted, defineProps, type PropType } from 'vue'
+import { useGlobalStore } from '@/stores/globalStore'
 import type { EventTag } from '@/types/tagInterfaces'
 import type { EventCreation, EventModification } from '@/types/eventInterfaces'
 import { useToast } from 'primevue/usetoast'
 import EventService from '@/services/event/event'
+import DiscordWebhookService from '@/services/discordWebhook'
 
 const props = defineProps({
   setHidden: {
@@ -35,7 +37,9 @@ const props = defineProps({
 })
 
 const toast = useToast()
+const globalStore = useGlobalStore()
 const eventService: EventService = new EventService(toast)
+const postOnDiscord = ref<boolean>(!!globalStore.currentAssociation.webhook);
 
 const getDefaultEvent = (): EventCreation | EventModification => ({
   name: '',
@@ -62,6 +66,10 @@ const editOrCreate = async (): Promise<void> => {
     await eventService.updateEvent(currEventRef.value as EventModification)
   } else {
     await eventService.createEvent(currEventRef.value)
+  }
+  if (!!globalStore.currentAssociation.webhook && postOnDiscord.value) {
+    const discordMessages = DiscordWebhookService.eventContentToDiscordMessages(currEventRef.value.content)
+    await DiscordWebhookService.sendEventWebhook(globalStore.currentAssociation, currEventRef.value.name, discordMessages)
   }
   await props.reloadEvents()
   props.setHidden()
@@ -121,7 +129,7 @@ onMounted(() => {
         display="chip"
       />
     </div>
-    <div class="mb-6 flex flex-col justify-start">
+    <div class="mb-2 flex flex-col justify-start">
       <div class="mb-6 justify-start items-center">
         <label for="date" class="text-xl mr-8 font-bold text-wrap">Date de l'évènement</label>
       </div>
@@ -171,15 +179,25 @@ onMounted(() => {
           <label for="end-recurrence">Date de fin</label>
         </FloatLabel>
       </div>
-      <div class="flex justify-start items-center">
-        <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />
-        <Button
-          :label="props.event ? 'Sauvegarder' : 'Créer'"
-          severity="success"
-          class="w-1/4"
-          @click="editOrCreate"
-        />
-      </div>
+    </div>
+    <div class="mb-6 flex justify-start" v-if="!props.event">
+      <Checkbox
+        v-model="postOnDiscord"
+        inputId="postOnDiscord"
+        :binary="true"
+        :disabled="!globalStore.currentAssociation.webhook"
+      />
+      <label for="postOnDiscord" :class="'ml-2 mr-2' + (!!globalStore.currentAssociation.webhook ? '' : ' text-gray-500')">Poster l'évènement sur Discord</label>
+      <i class="pi pi-info-circle flex self-center" v-show="!globalStore.currentAssociation.webhook" v-tooltip.top="DiscordWebhookService.webhookTooltipDisabled"/>
+    </div>
+    <div class="flex justify-start items-center">
+      <Button label="Annuler" severity="secondary" class="w-1/4 mr-4" @click="cancelDialog" />
+      <Button
+        :label="props.event ? 'Sauvegarder' : 'Créer'"
+        severity="success"
+        class="w-1/4"
+        @click="editOrCreate"
+      />
     </div>
   </Dialog>
 </template>

@@ -14,6 +14,8 @@ import type { EventModification } from '@/types/eventInterfaces'
 import type { EventTag } from '@/types/tagInterfaces'
 import EventService from '@/services/event/event'
 import TagService from '@/services/tag'
+import DiscordWebhookService from '@/services/discordWebhook'
+import { useGlobalStore } from '@/stores/globalStore'
 
 const tagsRef = ref<EventTag[]>([])
 const eventsRef = ref<EventModification[]>([])
@@ -22,6 +24,7 @@ const visibleDialogRef = ref(false)
 const selectedEventRef = ref<EventModification | null>(null)
 const confirm = useConfirm()
 const toast = useToast()
+const globalStore = useGlobalStore()
 
 const eventService: EventService = new EventService(toast)
 const tagService: TagService = new TagService(toast, 'events')
@@ -79,6 +82,17 @@ const downloadPdf = async (eventId: number) => {
       life: 5000
     })
   }
+}
+
+const sendWebhookEvent = async (event: EventModification) => {
+  const discordMessages = DiscordWebhookService.eventContentToDiscordMessages(event.content)
+  await DiscordWebhookService.sendEventWebhook(globalStore.currentAssociation, event.name, discordMessages)
+  toast.add({
+    severity: 'success',
+    summary: 'Évènement envoyé',
+    detail: 'L\'évènement a bien été posté sur le channel Discord',
+    life: 5000
+  })
 }
 
 onMounted(async () => {
@@ -164,6 +178,11 @@ const formatDate = (date: Date): string => {
               icon="pi pi-download"
               @click="downloadPdf(slotProps.data.id)"
               v-tooltip="'Télécharger la fiche évent'"
+            />
+            <Button
+              icon="pi pi-send"
+              @click="sendWebhookEvent(slotProps.data)"
+              v-tooltip="'Poster l\'évènement via le Webhook'"
             />
           </div>
         </template>

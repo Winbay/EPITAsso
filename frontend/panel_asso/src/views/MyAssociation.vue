@@ -28,6 +28,7 @@ const getDefaultAssociation = (): AssociationDetail => ({
   content: '',
   location: '',
   logo: '',
+  webhook: '',
   socialNetworks: [],
   faqs: []
 })
