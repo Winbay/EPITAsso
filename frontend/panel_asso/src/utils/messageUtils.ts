@@ -25,9 +25,7 @@ export const decryptMessage = (encryptedMessage: string): string => {
       const key = CryptoJS.PBKDF2(keyValue, 'salt', { keySize: 256 / 32, iterations: 100 })
       const iv = CryptoJS.enc.Base64.parse(ivKey)
       const decrypted = CryptoJS.AES.decrypt(
-        CryptoJS.lib.CipherParams.create(
-                  { ciphertext: CryptoJS.enc.Hex.parse(encryptedMessage) }
-        ),
+        CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(encryptedMessage) }),
         key,
         { iv: iv, mode: CryptoJS.mode.CBC }
       )

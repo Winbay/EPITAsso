@@ -43,7 +43,10 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
   }
 
   async createMessage(
-    message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'>
+    message: Omit<
+      Message,
+      'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'
+    >
   ): Promise<Message> {
     message.content = encryptMessage(message.content)
     console.log('message.content', message.content)
@@ -100,17 +103,15 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
 
   async updateMessage(
     id: Message['id'],
-    message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'>
+    message: Omit<
+      Message,
+      'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'
+    >
   ): Promise<Message> {
     message.content = encryptMessage(message.content)
-    const data: yup.InferType<typeof messageSchema> = await this.patch<yup.InferType<typeof messageSchema>>(message, id, [
-      'id',
-      'author',
-      'conversation',
-      'sent_at',
-      'association_sender',
-      'updated_at'
-    ])
+    const data: yup.InferType<typeof messageSchema> = await this.patch<
+      yup.InferType<typeof messageSchema>
+    >(message, id, ['id', 'author', 'conversation', 'sent_at', 'association_sender', 'updated_at'])
     if (!data) throw new Error('No updated message returned')
     data.content = decryptMessage(data.content)
     return this.converterSchemaToInterface(data as yup.InferType<typeof messageSchema>)

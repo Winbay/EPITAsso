@@ -128,7 +128,10 @@ const modifyMessage = async (): Promise<void> => {
     content: newMessageContentRef.value
   }
   // TODO: backend should return the updateAt field in the response
-  const updatedMessage = await messageService.updateMessage(selectedMessageRef.value.id, modifiedMessage)
+  const updatedMessage = await messageService.updateMessage(
+    selectedMessageRef.value.id,
+    modifiedMessage
+  )
   const index = messagesRef.value.findIndex((msg) => msg.id === idSelectedMessage)
   messagesRef.value[index].content = updatedMessage.content
   messagesRef.value[index].updatedAt = new Date()
