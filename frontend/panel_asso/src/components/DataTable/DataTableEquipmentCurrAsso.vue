@@ -10,6 +10,7 @@ import IconField from 'primevue/iconfield'
 import Column from 'primevue/column'
 import { defineProps, ref } from 'vue'
 import type { Equipment } from '@/types/equipmentInterfaces'
+import Paginator from 'primevue/paginator'
 
 import DialogEquipmentCreation from '@/components/Dialog/DialogEquipmentCreation.vue'
 import DialogEquipmentModification from '@/components/Dialog/DialogEquipmentModification.vue'
@@ -27,6 +28,10 @@ const props = defineProps({
   },
   reloadEquipments: {
     type: Function,
+    required: true
+  },
+  paginatorData: {
+    type: Object as PropType<{ rowsPerPage: number; currentPage: number; equipmentCount: number }>,
     required: true
   }
 })
@@ -102,6 +107,12 @@ const timestampToString = (timestamp: number) => {
 
   return `${day}/${month}/${year}`
 }
+
+const emit = defineEmits(['pageChange'])
+
+const onPageChange = (event: any) => {
+  emit('pageChange', { component: "asso", page: event.page, rows: event.rows })
+}
 </script>
 
 <template>
@@ -122,9 +133,6 @@ const timestampToString = (timestamp: number) => {
     striped-rows
     tableStyle="min-width: 50rem"
     size="small"
-    paginator
-    :rows="10"
-    :rowsPerPageOptions="[10, 25, 50]"
     removableSort
   >
     <template #header>
@@ -224,6 +232,12 @@ const timestampToString = (timestamp: number) => {
       </template>
     </Column>
   </DataTable>
+  <Paginator
+    :rows="paginatorData.rowsPerPage"
+    :totalRecords="paginatorData.equipmentCount"
+    :rowsPerPageOptions="[5, 10, 20, 50]"
+    @page="onPageChange"
+  />
 </template>
 
 <style scoped></style>

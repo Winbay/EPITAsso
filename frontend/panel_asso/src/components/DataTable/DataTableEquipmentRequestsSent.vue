@@ -2,21 +2,22 @@
 import Tag from 'primevue/tag'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import Paginator from 'primevue/paginator'
 import { defineProps, type PropType, ref } from 'vue'
-import type { Equipment, EquipmentRequest } from '@/types/equipmentInterfaces'
+import type { EquipmentRequest } from '@/types/equipmentInterfaces'
 import DialogEquipmentRequestDetails from '@/components/Dialog/DialogEquipmentRequestDetails.vue'
 
 defineProps({
-  currAssoEquipments: {
-    type: Object as PropType<Equipment[]>,
-    required: true
-  },
   equipmentRequests: {
     type: Object as PropType<EquipmentRequest[]>,
     required: true
   },
   reloadEquipmentRequests: {
     type: Function,
+    required: true
+  },
+  paginatorData: {
+    type: Object as PropType<{ rowsPerPage: number; currentPage: number; equipmentCount: number }>,
     required: true
   }
 })
@@ -38,6 +39,12 @@ const closeDialog = () => {
   visibleRefuse.value = 0
   visibleDetails.value = 0
 }
+
+const emit = defineEmits(['pageChange'])
+
+const onPageChange = (event: any) => {
+  emit('pageChange', { component: "reqSent", page: event.page, rows: event.rows })
+}
 </script>
 
 <template>
@@ -47,11 +54,8 @@ const closeDialog = () => {
     striped-rows
     tableStyle="min-width: 50rem"
     size="small"
-    paginator
     sort-field="status"
     :sort-order="-1"
-    :rows="10"
-    :rowsPerPageOptions="[10, 25, 50]"
   >
     <Column field="status" header="Statut" class="w-28" sortable>
       <template #body="slotProps">
@@ -114,6 +118,12 @@ const closeDialog = () => {
       </template>
     </Column>
   </DataTable>
+  <Paginator
+    :rows="paginatorData.rowsPerPage"
+    :totalRecords="paginatorData.equipmentCount"
+    :rowsPerPageOptions="[5, 10, 20, 50]"
+    @page="onPageChange"
+  />
 </template>
 
 <style scoped></style>

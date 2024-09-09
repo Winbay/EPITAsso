@@ -4,7 +4,7 @@ import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 
-import { ref, defineProps, type PropType, onMounted } from 'vue'
+import { defineProps, type PropType } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type { EquipmentModification } from '@/types/equipmentInterfaces'
 import EquipmentService from '@/services/equipment/equipment'
@@ -27,28 +27,16 @@ const props = defineProps({
 const toast = useToast()
 const equipmentService: EquipmentService = new EquipmentService(toast)
 
-const currEquipment = ref<EquipmentModification>({
-  id: 0,
-  name: '',
-  quantity: 1,
-  photo: ''
-})
-
 const updateEquipment = async () => {
-  await equipmentService.patchEquipment(currEquipment.value)
+  await equipmentService.patchEquipment(props.equipment)
   await props.reloadEquipments()
   props.setHidden()
   return true
 }
 
 const cancelDialog = () => {
-  currEquipment.value = props.equipment
   props.setHidden()
 }
-
-onMounted(() => {
-  currEquipment.value = props.equipment
-})
 </script>
 
 <template>
@@ -62,7 +50,7 @@ onMounted(() => {
       <label for="name" class="mb-2 text-2xl font-bold text-wrap">Nom</label>
       <InputText
         id="name"
-        v-model="currEquipment.name"
+        v-model="$props.equipment.name"
         aria-describedby="username-help"
         placeholder="Nom du matériel"
         maxlength="255"
@@ -71,17 +59,17 @@ onMounted(() => {
     </div>
     <div class="content mb-6 flex flex-col justify-start">
       <label for="quantity" class="mb-2 text-2xl font-bold text-wrap">Quantité</label>
-      <InputNumber id="quantity" v-model="currEquipment.quantity" type="number" :min="1" />
+      <InputNumber id="quantity" v-model="$props.equipment.quantity" type="number" :min="1" />
     </div>
     <div class="content mb-6 flex flex-col justify-start">
       <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Photo (Optionnelle)</label>
       <InputText
         id="photo"
-        v-model="currEquipment.photo"
+        v-model="$props.equipment.photo"
         maxlength="255"
         placeholder="Url de l'image"
       />
-      <img v-if="currEquipment.photo !== ''" :src="currEquipment.photo" alt="Matériel photo" />
+      <img v-if="$props.equipment.photo !== ''" :src="$props.equipment.photo" alt="Matériel photo" />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">

@@ -3,17 +3,14 @@ import Tag from 'primevue/tag'
 import Avatar from 'primevue/avatar'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import Paginator from 'primevue/paginator'
 import { defineProps, type PropType, ref } from 'vue'
-import type { Equipment, EquipmentRequest } from '@/types/equipmentInterfaces'
+import type { EquipmentRequest } from '@/types/equipmentInterfaces'
 import DialogEquipmentRequestDetails from '@/components/Dialog/DialogEquipmentRequestDetails.vue'
 import DialogEquipmentRequestAccept from '@/components/Dialog/DialogEquipmentRequestAccept.vue'
 import DialogEquipmentRequestRefuse from '@/components/Dialog/DialogEquipmentRequestRefuse.vue'
 
 defineProps({
-  currAssoEquipments: {
-    type: Object as PropType<Equipment[]>,
-    required: true
-  },
   equipmentRequests: {
     type: Object as PropType<EquipmentRequest[]>,
     required: true
@@ -24,6 +21,10 @@ defineProps({
   },
   reloadEquipmentRequests: {
     type: Function,
+    required: true
+  },
+  paginatorData: {
+    type: Object as PropType<{ rowsPerPage: number; currentPage: number; equipmentCount: number }>,
     required: true
   }
 })
@@ -45,6 +46,12 @@ const closeDialog = () => {
   visibleRefuse.value = 0
   visibleDetails.value = 0
 }
+
+const emit = defineEmits(['pageChange'])
+
+const onPageChange = (event: any) => {
+  emit('pageChange', { component: "reqReceived", page: event.page, rows: event.rows })
+}
 </script>
 
 <template>
@@ -54,11 +61,8 @@ const closeDialog = () => {
     striped-rows
     tableStyle="min-width: 50rem"
     size="small"
-    paginator
     sort-field="status"
     :sort-order="-1"
-    :rows="10"
-    :rowsPerPageOptions="[10, 25, 50]"
   >
     <Column field="status" header="Statut" class="w-28" sortable>
       <template #body="slotProps">
@@ -155,6 +159,12 @@ const closeDialog = () => {
       </template>
     </Column>
   </DataTable>
+  <Paginator
+    :rows="paginatorData.rowsPerPage"
+    :totalRecords="paginatorData.equipmentCount"
+    :rowsPerPageOptions="[5, 10, 20, 50]"
+    @page="onPageChange"
+  />
 </template>
 
 <style scoped></style>

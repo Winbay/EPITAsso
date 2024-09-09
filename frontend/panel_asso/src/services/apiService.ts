@@ -80,6 +80,22 @@ export default class ApiService<SchemaType> {
     return { ...rest, results: res }
   }
 
+  protected async getAllCustomWithParams(route: string, params: string): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: SchemaType[]
+  }> {
+    const { results, ...rest } = await this.request<{
+      count: number
+      next: string | null
+      previous: string | null
+      results: SchemaType[]
+    }>('get', `${this.getFullPath()}${route}`, undefined, params)
+    const res = await this.validateArray(results, yup.array().of(this.schema).required())
+    return { ...rest, results: res }
+  }
+
   protected async getAllCustom(route: string): Promise<SchemaType[]> {
     const data = await this.request<SchemaType[]>('get', `${this.getFullPath()}${route}`)
     return this.validateArray(data, yup.array().of(this.schema).required())

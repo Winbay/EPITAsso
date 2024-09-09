@@ -36,9 +36,38 @@ export default class EquipmentService extends ApiService<yup.InferType<typeof eq
     await this.create(equipmentDataToValidate, ['id', 'asso_owner', 'equipment_request'])
   }
 
-  async getEquipments(): Promise<Equipment[]> {
-    const data = await this.getAll()
-    return data.map((equipment) => this.snakeToCamel(equipment))
+  async getAssoEquipments(
+    limit: number,
+    offset: number
+  ): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: Equipment[]
+  }> {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    const { results, ...rest } = await this.getAllWithParams(params.toString())
+    const equipments = results.map((equipment: yup.InferType<typeof equipmentSchema>) =>
+      this.converterSchemaToInterface(equipment)
+    )
+    return { ...rest, results: equipments.map((equipment) => this.snakeToCamel(equipment)) }
+  }
+
+  async getOtherAssoEquipments(
+    limit: number,
+    offset: number
+  ): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: Equipment[]
+  }> {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    const { results, ...rest } = await this.getAllWithParams(params.toString())
+    const equipments = results.map((equipment: yup.InferType<typeof equipmentSchema>) =>
+      this.converterSchemaToInterface(equipment)
+    )
+    return { ...rest, results: equipments.map((equipment) => this.snakeToCamel(equipment)) }
   }
 
   async getEquipmentById(id: Equipment['id']): Promise<Equipment> {
