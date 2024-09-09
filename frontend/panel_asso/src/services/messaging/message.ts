@@ -24,7 +24,8 @@ export const messageSchema = yup
     conversation: yup.number().required(),
     content: yup.string().required(),
     association_sender: associationSchema,
-    sent_at: yup.date().required()
+    sent_at: yup.date().required(),
+    updated_at: yup.date().nullable()
   })
   .required()
 
@@ -86,6 +87,25 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
     return { ...rest, messages }
   }
 
+  async updateMessage(
+    id: Message['id'],
+    message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'>
+  ): Promise<Message> {
+    const data = await this.patch(message, id, [
+      'id',
+      'author',
+      'conversation',
+      'sent_at',
+      'association_sender'
+    ])
+    if (!data) throw new Error('No updated message returned')
+    return this.converterSchemaToInterface(data as yup.InferType<typeof messageSchema>)
+  }
+
+  async deleteMessage(id: Message['id']): Promise<void> {
+    await this.delete(id)
+  }
+
   protected converterSchemaToInterface(message: yup.InferType<typeof messageSchema>): Message {
     return {
       id: message.id,
@@ -93,7 +113,8 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
       content: message.content,
       author: message.author,
       associationSender: message.association_sender,
-      sentAt: message.sent_at
+      sentAt: message.sent_at,
+      updatedAt: message.updated_at
     }
   }
 }

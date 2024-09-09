@@ -8,15 +8,15 @@ import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
 import ContextMenu from 'primevue/contextmenu'
+import type { MenuItem } from 'primevue/menuitem'
 
-import type { Conversation, Message } from '@/types/conversationInterfaces'
 import MessageComponent from '@/components/Messaging/MessageComponent.vue'
 import MessageService from '@/services/messaging/message'
+import type { Conversation, Message } from '@/types/conversationInterfaces'
 import type { Association } from '@/types/associationInterfaces'
-import { useUserStore } from '@/stores/user'
 import type { UserDetail } from '@/types/userInterfaces'
 import SelectedAssoService from '@/services/association/selectedAsso'
-import type { MenuItem } from 'primevue/menuitem'
+import { useUserStore } from '@/stores/user'
 import { useAssociationStore } from '@/stores/selectedAssociation'
 
 const userStore = useUserStore()
@@ -27,10 +27,6 @@ const associationStore = useAssociationStore()
 const associationId = associationStore.selectedAssociationId
 if (!associationId) throw new Error('No association selected') // TODO should be handled in another way
 const selectedAssociation = ref<Pick<Association, 'id'>>({ id: parseInt(associationId) })
-
-const isUserMessage = computed(() => {
-  return selectedMessageRef.value?.author.login === user.value.login && selectedMessageRef.value?.associationSender.id === selectedAssociation.value.id
-})
 
 const props = defineProps({
   conversation: {
@@ -43,6 +39,14 @@ const props = defineProps({
   }
 })
 
+const isUserMessage = computed(() => {
+  return selectedMessageRef.value?.author.login === user.value.login && selectedMessageRef.value?.associationSender.id === selectedAssociation.value.id
+})
+
+const isMessageEditing = computed(() => {
+  return buttonLabelTextRef.value === 'Modifier'
+})
+
 const toast = useToast()
 const messageService = new MessageService(toast, props.conversation.id)
 const associationsRef = ref<Association[]>(props.associations)
@@ -52,7 +56,7 @@ let socket: WebSocket | null = null
 const isLoading = ref(true)
 const messagesRef = ref<Message[]>([])
 const newMessageContentRef = ref('')
-let buttonLabelText = 'Envoyer'
+let buttonLabelTextRef = ref('Envoyer')
 const limit = 10
 const nextRef = ref<string | null | undefined>(undefined)
 
@@ -87,7 +91,7 @@ const sendOrModifyMessage = async (): Promise<void> => {
   // TODO: set right author and association sender
   // TODO: ahah taht convert
 
-  if (buttonLabelText === 'Modifier' && isUserMessage.value) {
+  if (isMessageEditing.value && isUserMessage.value) {
     await modifyMessage()
   } else {
     await sendMessage()
@@ -106,36 +110,46 @@ const sendMessage = async (): Promise<void> => {
     content: newMessageContentRef.value
   }
   messagesRef.value.push(await messageService.createMessage(newMessage))
-  newMessageContentRef.value = ''
+  resetMessageContent()
   await scrollToEnd()
 }
 
 const modifyMessage = async (): Promise<void> => {
   if (!selectedMessageRef.value) return
-  // const modifiedMessage:  Omit<
-  //   Message,
-  //   'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'
-  // > = {
-  //   content: newMessageContentRef.value
-  // }
-  // const updatedMessage = await messageService.updateMessage(selectedMessageRef.value.id, modifiedMessage)
-  // const index = messagesRef.value.findIndex((msg) => msg.id === updatedMessage.id)
-  // messagesRef.value[index] = updatedMessage
-  newMessageContentRef.value = ''
-  buttonLabelText = 'Envoyer'
+  const modifiedMessage:  Omit<
+    Message,
+    'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'
+  > = {
+    content: newMessageContentRef.value
+  }
+  const updatedMessage = await messageService.updateMessage(selectedMessageRef.value.id, modifiedMessage)
+  const index = messagesRef.value.findIndex((msg) => msg.id === selectedMessageRef.value.id)
+  messagesRef.value[index].content = updatedMessage.content
+  messagesRef.value[index].updatedAt = updatedMessage.updatedAt
+  resetMessageContent()
 }
 
+let lastScrollTop = 0;
+const scrollDeadzone = 10;
+
 const handleScrollTop = async (event: Event): Promise<void> => {
-  menuMessageRef.value?.hide()
-  const target = event.target as HTMLElement
-  const lastScrollHeight = target.scrollHeight
-  if (target.scrollTop === 0) {
-    await loadMessages()
-    await nextTick(() => {
-      target.scrollTop = target.scrollHeight - lastScrollHeight
-    })
+  const target = event.target as HTMLElement;
+  const currentScrollTop = target.scrollTop;
+
+  if (Math.abs(currentScrollTop - lastScrollTop) > scrollDeadzone) {
+    menuMessageRef.value?.hide();
   }
-}
+
+  lastScrollTop = currentScrollTop;
+
+  const lastScrollHeight = target.scrollHeight;
+  if (target.scrollTop === 0) {
+    await loadMessages();
+    await nextTick(() => {
+      target.scrollTop = target.scrollHeight - lastScrollHeight;
+    });
+  }
+};
 
 const scrollToEnd = async (): Promise<void> => {
   const messagesContainer = messageContainerRef.value
@@ -155,7 +169,8 @@ const handleTextAreaKeyDown = async (event: KeyboardEvent): Promise<void> => {
 
 const menuMessageRef = ref<ContextMenu | null>(null)
 const selectedMessageRef = ref<Message | null>(null)
-const items = ref<MenuItem[]>([
+const modifiedMessageRef = ref<Message | null>(null)
+const menuMessageItemsRef = ref<MenuItem[]>([
   { label: 'Copier', icon: 'pi pi-copy', command: () => copyMessage() },
   { label: 'Modifier', icon: 'pi pi-file-edit', command: () => fillMessageContentForEditing(), visible: () => isUserMessage.value},
   { label: 'Supprimer', icon: 'pi pi-trash', command: () => deleteMessage(), class: 'delete-item', visible: () => isUserMessage.value}
@@ -166,7 +181,7 @@ const onMessageRightClick = (event: MouseEvent, message: Message): void => {
   selectedMessageRef.value = message
 }
 
-const copyMessage = async () => {
+const copyMessage = async (): void => {
   if (!selectedMessageRef.value) return;
 
   try {
@@ -177,29 +192,30 @@ const copyMessage = async () => {
   }
 };
 
-const fillMessageContentForEditing = async () => {
+const fillMessageContentForEditing = async (): void => {
   if (!selectedMessageRef.value) return;
 
   try {
-    newMessageContentRef.value = selectedMessageRef.value.content;
-    buttonLabelText = 'Modifier';
+    modifiedMessageRef.value = selectedMessageRef.value;
+    newMessageContentRef.value = modifiedMessageRef.value.content;
+    buttonLabelTextRef.value = 'Modifier';
   } catch (err) {
     console.error('Failed to fill message content for editing:', err)
   }
 }
 
-const cancelModification = (): void => {
+const resetMessageContent = (): void => {
   selectedMessageRef.value = null;
   newMessageContentRef.value = '';
-  buttonLabelText = 'Envoyer';
+  buttonLabelTextRef.value = 'Envoyer';
 }
 
 const deleteMessage = async () => {
   if (!selectedMessageRef.value) return;
 
   try {
-    // await messageService.deleteMessage(selectedMessageRef.value.id);
-    // messagesRef.value = messagesRef.value.filter(msg => msg.id !== selectedMessageRef.value?.id);
+    await messageService.deleteMessage(selectedMessageRef.value.id);
+    messagesRef.value = messagesRef.value.filter(msg => msg.id !== selectedMessageRef.value?.id);
   } catch (err) {
     console.error('Failed to delete message:', err);
   }
@@ -212,8 +228,10 @@ onMounted(async () => {
   socket = new WebSocket(`${wsUrl}/chat/${props.conversation?.id}/?token=${accessToken}`)
 
   socket.onmessage = (event) => {
-    const message = JSON.parse(event.data)
-    if (message.author.login !== user.value.login) {
+    const data = JSON.parse(event.data)
+    const messageType = data.type
+    const message = JSON.parse(data.message)
+    if (messageType === "message_sent" && message.author.login !== user.value.login) {
       messagesRef.value.push(message)
       scrollToEnd()
     }
@@ -254,11 +272,15 @@ onBeforeMount(() => {
         <Divider />
         <div id="messagesContainer" ref="messageContainerRef" @scroll="handleScrollTop">
           <div v-for="message in messagesRef" :key="message.content">
-            <MessageComponent :message="message" class="mb-2" @on-right-click="onMessageRightClick"/>
+            <MessageComponent
+              :message="message"
+              :isEditing="modifiedMessageRef?.id === message.id && isMessageEditing"
+              class="mb-2"
+              @on-right-click="onMessageRightClick"/>
           </div>
           <ContextMenu
             ref="menuMessageRef"
-            :model="items"
+            :model="menuMessageItemsRef"
           />
         </div>
       </div>
@@ -271,16 +293,16 @@ onBeforeMount(() => {
           @keydown="handleTextAreaKeyDown"
         />
         <Button
-          v-if="buttonLabelText === 'Modifier'"
+          v-if="isMessageEditing"
           type="button"
           label="Annuler"
           class="ml-2 p-button-sm p-button-secondary justify-center"
-          @click="cancelModification"
+          @click="resetMessageContent"
         />
         <Button
           :disabled="newMessageContentRef.trim().length === 0"
           type="submit"
-          :label="buttonLabelText"
+          :label="buttonLabelTextRef"
           class="ml-2 p-button-sm p-button-primary justify-center"
         />
       </form>

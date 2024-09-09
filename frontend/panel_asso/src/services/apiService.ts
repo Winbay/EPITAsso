@@ -90,9 +90,18 @@ export default class ApiService<SchemaType> {
     await this.request<void>('put', `${this.getFullPath()}${id ? id + '/' : ''}`, validatedData)
   }
 
-  protected async patch(data: SchemaType, id?: number): Promise<void> {
-    const validatedData = await this.validate(data)
-    await this.request<void>('patch', `${this.getFullPath()}${id ? id + '/' : ''}`, validatedData)
+  protected async patch<ReturnType>(
+    data: Partial<SchemaType>,
+    id?: number,
+    omittedFields?: string[]
+  ): Promise<ReturnType> {
+    let validatedData
+    if (omittedFields && omittedFields.length > 0) {
+      validatedData = await this.validateWithoutFields(data, omittedFields)
+    } else {
+      validatedData = await this.validate(data as SchemaType)
+    }
+    return await this.request<void>('patch', `${this.getFullPath()}${id ? id + '/' : ''}`, validatedData)
   }
 
   protected async delete(id: number): Promise<void> {
