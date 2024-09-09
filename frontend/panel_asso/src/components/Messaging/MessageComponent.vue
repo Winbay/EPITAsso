@@ -33,7 +33,10 @@ const emits = defineEmits(['onRightClick'])
 const messageOnHover = ref(false)
 
 const isUserMessage = computed(() => {
-  return props.message.author.login === user.value.login && props.message.associationSender.id === selectedAssociation.value.id
+  return (
+    props.message.author.login === user.value.login &&
+    props.message.associationSender.id === selectedAssociation.value.id
+  )
 })
 
 const isMessageModified = computed(() => {
@@ -75,7 +78,11 @@ const openMessageMenu = (event: MouseEvent): void => {
   <div
     v-if="message"
     class="mb-4 relative w-full flex flex-col"
-    :class="{ 'message-user': isUserMessage, 'message-other': !isUserMessage, 'message-editing': props.isEditing }"
+    :class="{
+      'message-user': isUserMessage,
+      'message-other': !isUserMessage,
+      'message-editing': props.isEditing
+    }"
     @mouseover="messageOnHover = true"
     @mouseleave="messageOnHover = false"
   >
@@ -164,7 +171,9 @@ const openMessageMenu = (event: MouseEvent): void => {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .button-options:hover {
@@ -177,11 +186,11 @@ const openMessageMenu = (event: MouseEvent): void => {
 }
 
 .modified-text {
-   font-size: 12px;
-   color: #6b7280;
-   margin-top: 5px;
-   display: block;
- }
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 5px;
+  display: block;
+}
 
 .left-align {
   text-align: left;

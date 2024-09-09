@@ -101,7 +101,11 @@ export default class ApiService<SchemaType> {
     } else {
       validatedData = await this.validate(data as SchemaType)
     }
-    return await this.request<void>('patch', `${this.getFullPath()}${id ? id + '/' : ''}`, validatedData)
+    return await this.request<void>(
+      'patch',
+      `${this.getFullPath()}${id ? id + '/' : ''}`,
+      validatedData
+    )
   }
 
   protected async delete(id: number): Promise<void> {

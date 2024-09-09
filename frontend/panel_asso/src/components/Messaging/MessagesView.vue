@@ -40,7 +40,10 @@ const props = defineProps({
 })
 
 const isUserMessage = computed(() => {
-  return selectedMessageRef.value?.author.login === user.value.login && selectedMessageRef.value?.associationSender.id === selectedAssociation.value.id
+  return (
+    selectedMessageRef.value?.author.login === user.value.login &&
+    selectedMessageRef.value?.associationSender.id === selectedAssociation.value.id
+  )
 })
 
 const isMessageEditing = computed(() => {
@@ -65,9 +68,10 @@ const messageContainerRef = ref<HTMLElement | null>(null)
 const loadMessages = async (): Promise<void> => {
   if (nextRef.value === null) return // Already fetched all messages
   try {
-    const { next, messages } = nextRef.value === undefined
-      ? await messageService.getMessages(limit, 0)
-      : await messageService.getMessagesWithNext(nextRef.value)
+    const { next, messages } =
+      nextRef.value === undefined
+        ? await messageService.getMessages(limit, 0)
+        : await messageService.getMessagesWithNext(nextRef.value)
     messagesRef.value = [...messages.reverse(), ...messagesRef.value]
     nextRef.value = next
   } catch (error) {
@@ -116,40 +120,43 @@ const sendMessage = async (): Promise<void> => {
 
 const modifyMessage = async (): Promise<void> => {
   if (!selectedMessageRef.value) return
-  const modifiedMessage:  Omit<
+  const modifiedMessage: Omit<
     Message,
     'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'
   > = {
     content: newMessageContentRef.value
   }
-  const updatedMessage = await messageService.updateMessage(selectedMessageRef.value.id, modifiedMessage)
+  const updatedMessage = await messageService.updateMessage(
+    selectedMessageRef.value.id,
+    modifiedMessage
+  )
   const index = messagesRef.value.findIndex((msg) => msg.id === selectedMessageRef.value.id)
   messagesRef.value[index].content = updatedMessage.content
   messagesRef.value[index].updatedAt = updatedMessage.updatedAt
   resetMessageContent()
 }
 
-let lastScrollTop = 0;
-const scrollDeadzone = 10;
+let lastScrollTop = 0
+const scrollDeadzone = 10
 
 const handleScrollTop = async (event: Event): Promise<void> => {
-  const target = event.target as HTMLElement;
-  const currentScrollTop = target.scrollTop;
+  const target = event.target as HTMLElement
+  const currentScrollTop = target.scrollTop
 
   if (Math.abs(currentScrollTop - lastScrollTop) > scrollDeadzone) {
-    menuMessageRef.value?.hide();
+    menuMessageRef.value?.hide()
   }
 
-  lastScrollTop = currentScrollTop;
+  lastScrollTop = currentScrollTop
 
-  const lastScrollHeight = target.scrollHeight;
+  const lastScrollHeight = target.scrollHeight
   if (target.scrollTop === 0) {
-    await loadMessages();
+    await loadMessages()
     await nextTick(() => {
-      target.scrollTop = target.scrollHeight - lastScrollHeight;
-    });
+      target.scrollTop = target.scrollHeight - lastScrollHeight
+    })
   }
-};
+}
 
 const scrollToEnd = async (): Promise<void> => {
   const messagesContainer = messageContainerRef.value
@@ -172,9 +179,20 @@ const selectedMessageRef = ref<Message | null>(null)
 const modifiedMessageRef = ref<Message | null>(null)
 const menuMessageItemsRef = ref<MenuItem[]>([
   { label: 'Copier', icon: 'pi pi-copy', command: () => copyMessage() },
-  { label: 'Modifier', icon: 'pi pi-file-edit', command: () => fillMessageContentForEditing(), visible: () => isUserMessage.value},
-  { label: 'Supprimer', icon: 'pi pi-trash', command: () => deleteMessage(), class: 'delete-item', visible: () => isUserMessage.value}
-]);
+  {
+    label: 'Modifier',
+    icon: 'pi pi-file-edit',
+    command: () => fillMessageContentForEditing(),
+    visible: () => isUserMessage.value
+  },
+  {
+    label: 'Supprimer',
+    icon: 'pi pi-trash',
+    command: () => deleteMessage(),
+    class: 'delete-item',
+    visible: () => isUserMessage.value
+  }
+])
 
 const onMessageRightClick = (event: MouseEvent, message: Message): void => {
   menuMessageRef.value?.show(event)
@@ -182,44 +200,44 @@ const onMessageRightClick = (event: MouseEvent, message: Message): void => {
 }
 
 const copyMessage = async (): void => {
-  if (!selectedMessageRef.value) return;
+  if (!selectedMessageRef.value) return
 
   try {
-    await navigator.clipboard.writeText(selectedMessageRef.value.content);
-    selectedMessageRef.value = null;
+    await navigator.clipboard.writeText(selectedMessageRef.value.content)
+    selectedMessageRef.value = null
   } catch (err) {
-    console.error('Failed to copy:', err);
+    console.error('Failed to copy:', err)
   }
-};
+}
 
 const fillMessageContentForEditing = async (): void => {
-  if (!selectedMessageRef.value) return;
+  if (!selectedMessageRef.value) return
 
   try {
-    modifiedMessageRef.value = selectedMessageRef.value;
-    newMessageContentRef.value = modifiedMessageRef.value.content;
-    buttonLabelTextRef.value = 'Modifier';
+    modifiedMessageRef.value = selectedMessageRef.value
+    newMessageContentRef.value = modifiedMessageRef.value.content
+    buttonLabelTextRef.value = 'Modifier'
   } catch (err) {
     console.error('Failed to fill message content for editing:', err)
   }
 }
 
 const resetMessageContent = (): void => {
-  selectedMessageRef.value = null;
-  newMessageContentRef.value = '';
-  buttonLabelTextRef.value = 'Envoyer';
+  selectedMessageRef.value = null
+  newMessageContentRef.value = ''
+  buttonLabelTextRef.value = 'Envoyer'
 }
 
 const deleteMessage = async () => {
-  if (!selectedMessageRef.value) return;
+  if (!selectedMessageRef.value) return
 
   try {
-    await messageService.deleteMessage(selectedMessageRef.value.id);
-    messagesRef.value = messagesRef.value.filter(msg => msg.id !== selectedMessageRef.value?.id);
+    await messageService.deleteMessage(selectedMessageRef.value.id)
+    messagesRef.value = messagesRef.value.filter((msg) => msg.id !== selectedMessageRef.value?.id)
   } catch (err) {
-    console.error('Failed to delete message:', err);
+    console.error('Failed to delete message:', err)
   }
-};
+}
 
 onMounted(async () => {
   await fetchConversation()
@@ -231,7 +249,7 @@ onMounted(async () => {
     const data = JSON.parse(event.data)
     const messageType = data.type
     const message = JSON.parse(data.message)
-    if (messageType === "message_sent" && message.author.login !== user.value.login) {
+    if (messageType === 'message_sent' && message.author.login !== user.value.login) {
       messagesRef.value.push(message)
       scrollToEnd()
     }
@@ -276,12 +294,10 @@ onBeforeMount(() => {
               :message="message"
               :isEditing="modifiedMessageRef?.id === message.id && isMessageEditing"
               class="mb-2"
-              @on-right-click="onMessageRightClick"/>
+              @on-right-click="onMessageRightClick"
+            />
           </div>
-          <ContextMenu
-            ref="menuMessageRef"
-            :model="menuMessageItemsRef"
-          />
+          <ContextMenu ref="menuMessageRef" :model="menuMessageItemsRef" />
         </div>
       </div>
       <form @submit.prevent="sendOrModifyMessage" class="mt-3 flex items-center">
@@ -351,7 +367,7 @@ textarea {
   width: 100%;
   height: 100%;
   resize: none;
-  overflow-y:hidden;
+  overflow-y: hidden;
   padding: 0.5rem;
   border: 1px solid var(--surface-300);
   border-radius: 0.25rem;
@@ -367,15 +383,16 @@ textarea {
   font-size: 14px !important;
 }
 
-.delete-item .p-menuitem-text, .delete-item .p-menuitem-icon {
+.delete-item .p-menuitem-text,
+.delete-item .p-menuitem-icon {
   color: #da373c;
 }
 
 .delete-item:hover {
   background-color: #da373c;
-  .p-menuitem-text, .p-menuitem-icon {
+  .p-menuitem-text,
+  .p-menuitem-icon {
     color: white !important;
   }
 }
-
 </style>
