@@ -241,25 +241,34 @@ const deleteMessage = async () => {
   }
 }
 
+const handleWebSocketMessage = (event: MessageEvent): void => {
+  const data = JSON.parse(event.data)
+  const messageData = JSON.parse(data.message)
+
+  if (data.type === 'message_sent') {
+    const message = messageService.transformMessageFromWS(messageData)
+    if (message.author.login !== userStore.getUser.login || message.associationSender.id !== selectedAssociation.value.id) {
+      messagesRef.value.push(message)
+      scrollToEnd()
+    }
+  } else if (data.type === 'message_deleted') {
+    messagesRef.value = messagesRef.value.filter((msg) => msg.id !== messageData.id)
+  } else if (data.type === 'message_updated') {
+    const message = messageService.transformMessageFromWS(messageData)
+    const index = messagesRef.value.findIndex((msg) => msg.id === message.id)
+    if (index !== -1) {
+      messagesRef.value[index].content = message.content
+    }
+  }
+}
+
 onMounted(async () => {
   await fetchConversation()
   const accessToken = localStorage.getItem('accessToken')
   const wsUrl = import.meta.env.VITE_WS_URL
   socket = new WebSocket(`${wsUrl}/chat/${props.conversation?.id}/?token=${accessToken}`)
 
-  socket.onmessage = (event) => {
-    const data = JSON.parse(event.data)
-    const messageData = JSON.parse(data.message)
-    const message = messageService.transformMessageFromWS(messageData)
-    if (
-      data.type === 'message_sent' &&
-      (message.author.login !== user.value.login ||
-        message.associationSender.id !== selectedAssociation.value.id)
-    ) {
-      messagesRef.value.push(message)
-      scrollToEnd()
-    }
-  }
+  socket.onmessage = handleWebSocketMessage
 
   socket.onerror = (error) => {
     console.error('WebSocket error:', error)
