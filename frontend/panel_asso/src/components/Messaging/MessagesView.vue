@@ -247,7 +247,7 @@ const handleWebSocketMessage = (event: MessageEvent): void => {
 
   if (data.type === 'message_sent') {
     const message = messageService.transformMessageFromWS(messageData)
-    if (message.author.login !== userStore.getUser.login || message.associationSender.id !== selectedAssociation.value.id) {
+    if (message.author.login !== user.value.login || message.associationSender.id !== selectedAssociation.value.id) {
       messagesRef.value.push(message)
       scrollToEnd()
     }
