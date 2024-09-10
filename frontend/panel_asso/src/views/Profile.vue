@@ -15,15 +15,28 @@ const logout = () => {
   localStorage.removeItem(ASSOCIATION_ID)
   window.location.href = '/'
 }
+
+const emits = defineEmits(['close'])
+
+const closeProfile = (): void => {
+  emits('close')
+}
+
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen">
+  <div class="absolute z-50 flex justify-center items-center min-h-screen left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
     <Card
-      class="m-10 card flex flex-col justify-center text-center p-8 rounded-lg w-fit bg-gray-800 text-white shadow-lg"
+      class="relative m-10 card flex flex-col justify-center text-center p-8 rounded-lg w-fit bg-gray-800 text-white shadow-lg"
     >
       <template #title>
         <h2 class="text-2xl font-semibold mb-4">Profil Utilisateur</h2>
+        <Button
+          icon="pi pi-times"
+          class="p-button-secondary p-button-rounded p-button-text"
+          style="position: absolute; top: 1rem; right: 1rem;"
+          @click="closeProfile"
+        />
       </template>
       <template #content>
         <div class="p-fluid text-left flex gap-10">

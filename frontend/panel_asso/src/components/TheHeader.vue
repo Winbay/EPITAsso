@@ -9,6 +9,7 @@ import SelectedAssoService from '@/services/association/selectedAsso'
 import type { Association } from '@/types/associationInterfaces'
 import { on } from '@/utils/eventBus'
 import { ASSOCIATION_ID } from '@/services/api'
+import Profile from '@/views/Profile.vue'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
@@ -29,8 +30,9 @@ const stateMenu = () => {
   }
 }
 
-const openProfile = () => {
-  router.push('/profile')
+const showProfileModalRef = ref(false)
+const toggleOpenProfile = () => {
+  showProfileModalRef.value = !showProfileModalRef.value
 }
 
 const refreshUserAssociations = async (): Promise<void> => {
@@ -76,11 +78,12 @@ onMounted(async () => {
           :label="user!.login"
           icon="pi pi-user"
           class="text-white w-full h-8 pl-2 pr-2"
-          @click="openProfile"
+          @click="toggleOpenProfile"
         />
       </div>
     </div>
   </header>
+  <Profile v-if="showProfileModalRef" @close="showProfileModalRef = false" />
 </template>
 
 <style>
