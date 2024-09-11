@@ -3,19 +3,13 @@ import { computed, type PropType, ref } from 'vue'
 import Button from 'primevue/button'
 
 import { useUserStore } from '@/stores/user'
-import { useAssociationStore } from '@/stores/selectedAssociation'
 import type { UserDetail } from '@/types/userInterfaces'
 import type { Message } from '@/types/conversationInterfaces'
-import type { Association } from '@/types/associationInterfaces'
+import SelectedAssoService from '@/services/association/selectedAsso'
 
 const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
 const user = ref<UserDetail>(userStore.user)
-
-const associationStore = useAssociationStore()
-const associationId = associationStore.selectedAssociationId
-if (!associationId) throw new Error('No association selected') // TODO should be handled in another way
-const selectedAssociation = ref<Pick<Association, 'id'>>({ id: parseInt(associationId) })
 
 const props = defineProps({
   message: {
@@ -35,7 +29,7 @@ const messageOnHover = ref(false)
 const isUserMessage = computed(() => {
   return (
     props.message.author.login === user.value.login &&
-    props.message.associationSender.id === selectedAssociation.value.id
+    props.message.associationSender.id === +SelectedAssoService.getAssociationId()
   )
 })
 

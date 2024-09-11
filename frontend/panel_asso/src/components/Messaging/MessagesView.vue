@@ -17,16 +17,11 @@ import type { Association } from '@/types/associationInterfaces'
 import type { UserDetail } from '@/types/userInterfaces'
 import SelectedAssoService from '@/services/association/selectedAsso'
 import { useUserStore } from '@/stores/user'
-import { useAssociationStore } from '@/stores/selectedAssociation'
 
 const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
 const user = ref<UserDetail>(userStore.user)
 
-const associationStore = useAssociationStore()
-const associationId = associationStore.selectedAssociationId
-if (!associationId) throw new Error('No association selected') // TODO should be handled in another way
-const selectedAssociation = ref<Pick<Association, 'id'>>({ id: parseInt(associationId) })
 
 const props = defineProps({
   conversation: {
@@ -42,7 +37,7 @@ const props = defineProps({
 const isUserMessage = computed(() => {
   return (
     selectedMessageRef.value?.author.login === user.value.login &&
-    selectedMessageRef.value?.associationSender.id === selectedAssociation.value.id
+    selectedMessageRef.value?.associationSender.id === +SelectedAssoService.getAssociationId()
   )
 })
 
@@ -249,7 +244,7 @@ const handleWebSocketMessage = (event: MessageEvent): void => {
     const message = messageService.transformMessageFromWS(messageData)
     if (
       message.author.login !== user.value.login ||
-      message.associationSender.id !== selectedAssociation.value.id
+      message.associationSender.id !== +SelectedAssoService.getAssociationId()
     ) {
       messagesRef.value.push(message)
       scrollToEnd()

@@ -3,7 +3,6 @@ import Avatar from 'primevue/avatar'
 import Dropdown, { type DropdownChangeEvent } from 'primevue/dropdown'
 import { type PropType, ref } from 'vue'
 import type { Association } from '@/types/associationInterfaces'
-import { useAssociationStore } from '@/stores/selectedAssociation'
 import SelectedAssoService from '@/services/association/selectedAsso'
 import { emit } from '@/utils/eventBus'
 
@@ -16,11 +15,9 @@ defineProps({
 
 const selectedAssociation = ref<Association | undefined>()
 
-const associationStore = useAssociationStore()
 const handleSelectedAssoChange = (event: DropdownChangeEvent): void => {
-  SelectedAssoService.setAssociationId(event.value.id.toString())
-  if (associationStore.selectedAssociationId !== event.value.id.toString()) {
-    associationStore.setSelectedAssociation(event.value.id.toString())
+  if (SelectedAssoService.getAssociationId() !== event.value.id.toString()) {
+    SelectedAssoService.setAssociationId(event.value.id.toString())
     emit('association-changed', event.value.id.toString())
   }
 }
