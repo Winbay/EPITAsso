@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
@@ -21,11 +21,25 @@ const emits = defineEmits(['close'])
 const closeProfile = (): void => {
   emits('close')
 }
+const handleEscape = (event: KeyboardEvent): void => {
+  if (event.key === 'Escape') {
+    closeProfile()
+  }
+}
 
+onMounted(() => {
+  window.addEventListener('keydown', handleEscape)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleEscape)
+})
 </script>
 
 <template>
-  <div class="absolute z-50 flex justify-center items-center min-h-screen left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+  <div class="fixed inset-0 bg-black bg-opacity-50 z-40" @click="closeProfile"></div>
+
+  <div class="absolute z-50 flex justify-center items-center left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
     <Card
       class="relative m-10 card flex flex-col justify-center text-center p-8 rounded-lg w-fit bg-gray-800 text-white shadow-lg"
     >
