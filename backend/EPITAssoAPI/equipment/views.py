@@ -61,6 +61,64 @@ class EquipmentListView(generics.ListCreateAPIView):
         except Association.DoesNotExist:
             raise serializers.ValidationError("Invalid association ID")
         return association
+    
+class EquipmentStockListView(generics.ListAPIView):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
+    pagination_class = EquipmentPagination
+
+    @extend_schema(summary="List all Equipments in stock",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                description="Number of results to return",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="offset",
+                description="Initial offset in the results",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+        ],
+        responses=EquipmentSerializer(many=True),)
+    def get(self, request, *args, **kwargs):
+        association = getattr(request, 'association')
+        if association:
+            self.queryset = self.queryset.filter(asso_owner=association)
+        return super().get(request, *args, **kwargs)
+    
+class EquipmentOtherListView(generics.ListAPIView):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
+    pagination_class = EquipmentPagination
+
+    @extend_schema(summary="List all Equipments not owned by the Association",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                description="Number of results to return",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+            OpenApiParameter(
+                name="offset",
+                description="Initial offset in the results",
+                required=False,
+                type=int,
+                location=OpenApiParameter.QUERY,
+            ),
+        ],
+        responses=EquipmentSerializer(many=True),)
+    def get(self, request, *args, **kwargs):
+        association = getattr(request, 'association')
+        if association:
+            self.queryset = self.queryset.exclude(asso_owner=association)
+        return super().get(request, *args, **kwargs)
 
 
 class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):

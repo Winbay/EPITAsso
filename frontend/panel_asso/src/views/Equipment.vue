@@ -10,8 +10,6 @@ import DataTableEquipmentCurrAsso from '@/components/DataTable/DataTableEquipmen
 import DataTableEquipmentOtherAssos from '@/components/DataTable/DataTableEquipmentOtherAssos.vue'
 import DataTableEquipmentRequestsReceived from '@/components/DataTable/DataTableEquipmentRequestsReceived.vue'
 import DataTableEquipmentRequestsSent from '@/components/DataTable/DataTableEquipmentRequestsSent.vue'
-import SelectedAssoService from '@/services/association/selectedAsso'
-import { off } from 'process';
 
 const assoEquipments = ref<Equipment[]>([])
 const otherAssoEquipments = ref<Equipment[]>([])
