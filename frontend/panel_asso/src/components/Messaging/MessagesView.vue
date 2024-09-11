@@ -22,7 +22,6 @@ const userStore = useUserStore()
 if (userStore.user === null) throw new Error('User is not logged in') // TODO should be handled in another way
 const user = ref<UserDetail>(userStore.user)
 
-
 const props = defineProps({
   conversation: {
     type: Object as PropType<Conversation>,
