@@ -3,10 +3,10 @@ import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 import type { Message } from '@/types/conversationInterfaces'
 import djangoApi from '../api'
+import { decryptMessage, encryptMessage } from '@/utils/messageUtils'
 
 const authorSchema = yup
   .object({
-    id: yup.string().required(),
     login: yup.string().required()
   })
   .required()
@@ -25,7 +25,8 @@ export const messageSchema = yup
     conversation: yup.number().required(),
     content: yup.string().required(),
     association_sender: associationSchema,
-    sent_at: yup.date().required()
+    sent_at: yup.date().required(),
+    updated_at: yup.date().nullable()
   })
   .required()
 
@@ -42,16 +43,22 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
   }
 
   async createMessage(
-    message: Omit<Message, 'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender'>
+    message: Omit<
+      Message,
+      'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'
+    >
   ): Promise<Message> {
-    const data = await this.create(message, [
+    message.content = encryptMessage(message.content)
+    const data: yup.InferType<typeof messageSchema> = await this.create(message, [
       'id',
       'author',
       'conversation',
       'sent_at',
-      'association_sender'
+      'association_sender',
+      'updated_at'
     ])
     if (!data) throw new Error('No created message returned')
+    data.content = decryptMessage(data.content)
     return this.converterSchemaToInterface(data as yup.InferType<typeof messageSchema>)
   }
 
@@ -69,6 +76,9 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
     const messages = results.map((message: yup.InferType<typeof messageSchema>) =>
       this.converterSchemaToInterface(message)
     )
+    messages.forEach((message) => {
+      message.content = decryptMessage(message.content)
+    })
     return { ...rest, messages }
   }
 
@@ -84,7 +94,37 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
     const messages = results.map((message: yup.InferType<typeof messageSchema>) =>
       this.converterSchemaToInterface(message)
     )
+    messages.forEach((message) => {
+      message.content = decryptMessage(message.content)
+    })
     return { ...rest, messages }
+  }
+
+  async updateMessage(
+    id: Message['id'],
+    message: Omit<
+      Message,
+      'id' | 'author' | 'conversationId' | 'sentAt' | 'associationSender' | 'updatedAt'
+    >
+  ): Promise<Message> {
+    message.content = encryptMessage(message.content)
+    const data: yup.InferType<typeof messageSchema> = await this.patch<
+      yup.InferType<typeof messageSchema>
+    >(message, id, ['id', 'author', 'conversation', 'sent_at', 'association_sender', 'updated_at'])
+    if (!data) throw new Error('No updated message returned')
+    data.content = decryptMessage(data.content)
+    return this.converterSchemaToInterface(data as yup.InferType<typeof messageSchema>)
+  }
+
+  async deleteMessage(id: Message['id']): Promise<void> {
+    await this.delete(id)
+  }
+
+  transformMessageFromWS(messageBackendData: yup.InferType<typeof messageSchema>): Message {
+    messageBackendData.content = decryptMessage(messageBackendData.content)
+    return this.converterSchemaToInterface(
+      messageBackendData as yup.InferType<typeof messageSchema>
+    )
   }
 
   protected converterSchemaToInterface(message: yup.InferType<typeof messageSchema>): Message {
@@ -94,7 +134,8 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
       content: message.content,
       author: message.author,
       associationSender: message.association_sender,
-      sentAt: message.sent_at
+      sentAt: message.sent_at,
+      updatedAt: message.updated_at || null
     }
   }
 }

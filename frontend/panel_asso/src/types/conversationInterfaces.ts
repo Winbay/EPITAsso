@@ -13,11 +13,12 @@ export interface ConversationCreation extends Omit<Conversation, 'id' | 'lastSen
 
 export interface Message {
   id: number
-  author: User
+  author: Omit<User, 'id'>
   conversationId: Conversation['id']
   content: string
   associationSender: Pick<Association, 'id' | 'name'>
   sentAt: Date
+  updatedAt: Date | null
 }
 
 // TODO remove association_sender
