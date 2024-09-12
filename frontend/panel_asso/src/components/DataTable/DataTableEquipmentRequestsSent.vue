@@ -54,8 +54,6 @@ const onPageChange = (event: any) => {
     striped-rows
     tableStyle="min-width: 50rem"
     size="small"
-    sort-field="status"
-    :sort-order="-1"
   >
     <Column field="status" header="Statut" class="w-28" sortable>
       <template #body="slotProps">

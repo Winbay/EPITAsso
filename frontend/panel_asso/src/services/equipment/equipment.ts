@@ -23,7 +23,7 @@ const equipmentSchema = yup.object({
   asso_owner: associationSchema,
   quantity: yup.number().required(),
   equipment_request: equipmentRequestSchema.notRequired(),
-  photo: yup.string().required()
+  photo: yup.mixed().notRequired(),
 })
 
 export default class EquipmentService extends ApiService<yup.InferType<typeof equipmentSchema>> {
@@ -33,7 +33,7 @@ export default class EquipmentService extends ApiService<yup.InferType<typeof eq
 
   async createEquipment(equipment: EquipmentCreation): Promise<void> {
     const equipmentDataToValidate = this.camelToSnake(equipment)
-    await this.create(equipmentDataToValidate, ['id', 'asso_owner', 'equipment_request'])
+    await this.createFormData(equipmentDataToValidate)
   }
 
   async getAssoEquipments(
@@ -76,7 +76,14 @@ export default class EquipmentService extends ApiService<yup.InferType<typeof eq
   }
 
   async patchEquipment(equipment: EquipmentModification): Promise<void> {
-    await this.patch(this.camelToSnake(equipment), equipment.id)
+    const equipmentDataToValidate = this.camelToSnake(equipment)
+    const formData = new FormData()
+    for (const key in equipmentDataToValidate) {
+      if (equipmentDataToValidate[key] !== null) {
+        formData.append(key, equipmentDataToValidate[key])
+      }
+    }
+    await this.patchFormData(formData, equipment.id)
   }
 
   async deleteEquipment(id: Equipment['id']): Promise<void> {

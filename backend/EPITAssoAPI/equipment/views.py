@@ -1,9 +1,10 @@
+import os
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import generics, serializers, status
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from django.utils import timezone
-from django.db.models import Q, Subquery
+from django.db.models import Q, Subquery, Case, When, Value, IntegerField
 from association.models import Association
 from .models import Equipment, EquipmentRequest
 from .serializers import (
@@ -44,23 +45,23 @@ class EquipmentListView(generics.ListCreateAPIView):
 
     @extend_schema(summary="Create an Equipment")
     def post(self, request, *args, **kwargs):
-        request.data["asso_owner"] = kwargs.get("association_id")
-        request.data["equipment_request"] = None
-        serializer = self.get_serializer(data=request.data)
+        association = getattr(request, 'association')
+
+        data = request.data.copy()
+        data["asso_owner"] = kwargs.get("association_id")
+        data["equipment_request"] = None
+
+        photo = request.FILES.get('photo')
+        if not photo:
+            data["photo"] = None
+
+        serializer = self.get_serializer(data=data)
         if serializer.is_valid():
             serializer.save(
-                asso_owner=self.__get_association_owner(),
+                asso_owner=association
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def __get_association_owner(self):
-        association_id = self.kwargs.get("association_id")
-        try:
-            association = Association.objects.get(id=association_id)
-        except Association.DoesNotExist:
-            raise serializers.ValidationError("Invalid association ID")
-        return association
     
 class EquipmentStockListView(generics.ListAPIView):
     queryset = Equipment.objects.all()
@@ -124,6 +125,26 @@ class EquipmentOtherListView(generics.ListAPIView):
 class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
+
+    def patch(self, request, *args, **kwargs):
+        equipment = self.get_object()
+        old_photo = equipment.photo.path if equipment.photo else None
+
+        data = request.data.copy()
+
+        if 'photo' in request.FILES:
+            equipment.photo = request.FILES['photo']
+
+        serializer = self.get_serializer(equipment, data=data, partial=True)
+
+        if serializer.is_valid():
+            if old_photo and 'photo' in request.FILES:
+                if os.path.exists(old_photo):
+                    os.remove(old_photo)
+
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EquipmentRetrieveView(generics.UpdateAPIView):
@@ -256,6 +277,16 @@ class EquipmentRequestReceivedView(generics.ListAPIView):
         queryset = EquipmentRequest.objects.filter(
             equipment_id__in=Subquery(equipments)
         )
+
+        queryset = queryset.annotate(
+            status_order=Case(
+                When(status="waiting", then=Value(1)),
+                When(status="accepted", then=Value(2)),
+                When(status="refused", then=Value(3)),
+                output_field=IntegerField(),
+            )
+        ).order_by("status_order", "id")
+
         return queryset
 
 
@@ -283,9 +314,20 @@ class EquipmentRequestSentView(generics.ListAPIView):
         responses=EquipmentRequestSerializer(many=True),
      )
     def get_queryset(self):
-        return EquipmentRequest.objects.filter(
+        queryset = EquipmentRequest.objects.filter(
             asso_borrower=self.kwargs.get("association_id")
         )
+
+        queryset = queryset.annotate(
+            status_order=Case(
+                When(status="waiting", then=Value(1)),
+                When(status="accepted", then=Value(2)),
+                When(status="refused", then=Value(3)),
+                output_field=IntegerField(),
+            )
+        ).order_by("status_order", "id")
+
+        return queryset
 
 
 class EquipmentRequestDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -310,6 +352,10 @@ class EquipmentRequestAcceptView(generics.UpdateAPIView):
 
         equipment_request.save()
         serializer = self.get_serializer(equipment_request)
+
+        equipment = Equipment.objects.get(id=equipment_request.equipment_id)
+        equipment.equipment_request = equipment_request
+        equipment.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

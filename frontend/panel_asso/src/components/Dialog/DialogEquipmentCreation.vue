@@ -3,6 +3,7 @@ import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
+import ImageUploader from '@/components/ImageUploader.vue'
 
 import { ref, defineProps } from 'vue'
 import { useToast } from 'primevue/usetoast'
@@ -26,7 +27,7 @@ const equipmentService: EquipmentService = new EquipmentService(toast)
 const currEquipment = ref<EquipmentCreation>({
   name: '',
   quantity: 1,
-  photo: ''
+  photo: null
 })
 
 const createEquipment = async () => {
@@ -41,7 +42,7 @@ const cancelDialog = () => {
   currEquipment.value = {
     name: '',
     quantity: 1,
-    photo: ''
+    photo: null
   }
   props.setHidden()
 }
@@ -71,13 +72,7 @@ const cancelDialog = () => {
     </div>
     <div class="content mb-6 flex flex-col justify-start">
       <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Photo (Optionnelle)</label>
-      <InputText
-        id="photo"
-        v-model="currEquipment.photo"
-        maxlength="255"
-        placeholder="Url de l'image"
-      />
-      <img v-if="currEquipment.photo !== ''" :src="currEquipment.photo" alt="Matériel photo" />
+      <ImageUploader v-model="currEquipment.photo" />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">

@@ -49,6 +49,16 @@ export default class ApiService<SchemaType> {
     return await this.request<ReturnType>('post', this.getFullPath(), validatedData)
   }
 
+  protected async createFormData<ReturnType>(
+    data: Partial<SchemaType>
+  ): Promise<ReturnType> {
+    const formData = new FormData()
+    for (const key in data) {
+      formData.append(key, data[key])
+    }
+    return await this.requestFormData<ReturnType>('post', this.getFullPath(), formData)
+  } 
+
   protected async get(): Promise<SchemaType> {
     const data = await this.request<SchemaType>('get', `${this.getFullPath()}`)
     return this.validate(data)
@@ -124,6 +134,10 @@ export default class ApiService<SchemaType> {
     )
   }
 
+  protected async patchFormData(data: FormData, id?: number): Promise<void> {
+    await this.requestFormData<void>('patch', `${this.getFullPath()}${id ? id + '/' : ''}`, data)
+  }
+
   protected async delete(id: number): Promise<void> {
     await this.request<void>('delete', `${this.getFullPath()}${id}/`)
   }
@@ -138,6 +152,26 @@ export default class ApiService<SchemaType> {
       params = this.params ? this.params + (params ? '&' + params : '') : params
       const fullUrl = params ? `${url}?${params}` : url
       const response = await djangoApi[method]<ReturnType>(fullUrl, data)
+      return response.data
+    } catch (error) {
+      this.handleError(error, `${method.toUpperCase()}: An error occured.`)
+    }
+  }
+
+  protected async requestFormData<ReturnType>(
+    method: 'post' | 'get' | 'put' | 'patch' | 'delete',
+    url: string,
+    data: FormData,
+    params?: string | null
+  ): Promise<ReturnType> {
+    try {
+      params = this.params ? this.params + (params ? '&' + params : '') : params
+      const fullUrl = params ? `${url}?${params}` : url
+      const response = await djangoApi[method]<ReturnType>(fullUrl, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
       return response.data
     } catch (error) {
       this.handleError(error, `${method.toUpperCase()}: An error occured.`)
@@ -222,7 +256,11 @@ export default class ApiService<SchemaType> {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
         let newKey = key.replace(/[A-Z]/g, (match) => `_${match.toLowerCase()}`)
         newKey = newKey.startsWith('_') ? newKey.substring(1) : newKey
-        newObj[newKey] = this.camelToSnake(obj[key])
+        if (obj[key] instanceof File) {
+          newObj[newKey] = obj[key]
+        } else {
+          newObj[newKey] = this.camelToSnake(obj[key])
+        }
       }
     }
 

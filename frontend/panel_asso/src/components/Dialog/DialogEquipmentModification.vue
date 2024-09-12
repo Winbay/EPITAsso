@@ -3,8 +3,9 @@ import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
+import ImageUploader from '@/components/ImageUploader.vue'
 
-import { defineProps, type PropType } from 'vue'
+import { defineProps, type PropType, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type { EquipmentModification } from '@/types/equipmentInterfaces'
 import EquipmentService from '@/services/equipment/equipment'
@@ -27,8 +28,12 @@ const props = defineProps({
 const toast = useToast()
 const equipmentService: EquipmentService = new EquipmentService(toast)
 
+const newPhoto = ref<File | null>(null)
+
 const updateEquipment = async () => {
-  await equipmentService.patchEquipment(props.equipment)
+  const newEquipment = { ...props.equipment }
+  newEquipment.photo = newPhoto.value
+  await equipmentService.patchEquipment(newEquipment)
   await props.reloadEquipments()
   props.setHidden()
   return true
@@ -61,15 +66,15 @@ const cancelDialog = () => {
       <label for="quantity" class="mb-2 text-2xl font-bold text-wrap">Quantité</label>
       <InputNumber id="quantity" v-model="$props.equipment.quantity" type="number" :min="1" />
     </div>
+    <div class="content mb-6 flex flex-col justify-start" v-if="$props.equipment.photo">
+      <label class="text-2xl font-bold text-wrap">Photo actuelle</label>
+      <div class="w-1/3 h-1/3 mt-2">
+        <img :src="$props.equipment.photo" alt="Matériel photo" />
+      </div>
+    </div>
     <div class="content mb-6 flex flex-col justify-start">
-      <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Photo (Optionnelle)</label>
-      <InputText
-        id="photo"
-        v-model="$props.equipment.photo"
-        maxlength="255"
-        placeholder="Url de l'image"
-      />
-      <img v-if="$props.equipment.photo !== ''" :src="$props.equipment.photo" alt="Matériel photo" />
+      <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Nouvelle photo (Optionnelle)</label>
+      <ImageUploader v-model="newPhoto" />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">
