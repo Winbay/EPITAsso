@@ -114,15 +114,15 @@ onMounted(async () => {
             <a
               href="javascript:void(0)"
               class="hover:underline"
-              @click="selectedArticleRef = slotProps.data.id"
+              @click="selectedArticleRef = slotProps.data"
               >Editer</a
             >
             <DialogArticle
-              :visible="selectedArticleRef === slotProps.data.id"
+              :visible="selectedArticleRef === slotProps.data"
               :set-hidden="closeDialog"
               :reload-articles="reloadArticles"
               :tags="tagsRef"
-              :article="JSON.parse(JSON.stringify(slotProps.data))"
+              :article="slotProps.data"
             />
             <ConfirmPopup></ConfirmPopup>
             <a

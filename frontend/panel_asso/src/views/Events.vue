@@ -4,7 +4,6 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import ConfirmPopup from 'primevue/confirmpopup'
-import Tooltip from 'primevue/tooltip'
 import Paginator from 'primevue/paginator'
 
 import { ref, onMounted } from 'vue'
@@ -177,15 +176,15 @@ const formatDate = (date: Date): string => {
           <div class="actions">
             <Button
               icon="pi pi-pen-to-square"
-              @click="visibleDialogRef = slotProps.data.id"
+              @click="visibleDialogRef = slotProps.data"
               v-tooltip="'Editer l\'évènement'"
             />
             <DialogEvent
-              :visible="visibleDialogRef === slotProps.data.id"
+              :visible="visibleDialogRef === slotProps.data"
               :set-hidden="closeDialog"
               :reloadEvents="reloadEvents"
               :tags="tagsRef"
-              :event="JSON.parse(JSON.stringify(slotProps.data))"
+              :event="slotProps.data"
             />
             <ConfirmPopup></ConfirmPopup>
             <Button

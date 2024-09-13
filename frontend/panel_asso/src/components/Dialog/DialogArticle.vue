@@ -5,7 +5,7 @@ import Button from 'primevue/button'
 import MultiSelect from 'primevue/multiselect'
 import Dialog from 'primevue/dialog'
 
-import { ref, onMounted, defineProps, type PropType } from 'vue'
+import { ref, onMounted, defineProps, type PropType, watch } from 'vue'
 import type { ArticleTag } from '@/types/tagInterfaces'
 import type { ArticleCreation, ArticleModification } from '@/types/articleInterfaces'
 import { useToast } from 'primevue/usetoast'
@@ -41,6 +41,14 @@ const getDefaultArticle = (): ArticleCreation | ArticleModification => ({
 
 const currArticleRef = ref<ArticleCreation | ArticleModification>(getDefaultArticle())
 
+watch(() => props.article, (newArticle) => {
+  if (newArticle) {
+    currArticleRef.value = newArticle
+  } else {
+    currArticleRef.value = getDefaultArticle()
+  }
+}, { immediate: true })
+
 const editOrCreate = async (): Promise<void> => {
   if (props.article) {
     await postService.updatePost(currArticleRef.value as ArticleModification)
@@ -48,7 +56,6 @@ const editOrCreate = async (): Promise<void> => {
     await postService.createPost(currArticleRef.value)
   }
   await props.reloadArticles()
-  currArticleRef.value = getDefaultArticle()
   props.setHidden()
 }
 

@@ -9,7 +9,7 @@ import Checkbox from 'primevue/checkbox'
 import Calendar from 'primevue/calendar'
 import FloatLabel from 'primevue/floatlabel'
 
-import { ref, onMounted, defineProps, type PropType } from 'vue'
+import { ref, onMounted, defineProps, type PropType, watch } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import type { EventTag } from '@/types/tagInterfaces'
 import type { EventCreation, EventModification } from '@/types/eventInterfaces'
@@ -56,6 +56,14 @@ const currEventRef = ref<EventCreation | EventModification>({
   ...getDefaultEvent(),
   ...(props.event || {}) // Spread existing event if it's passed
 })
+
+watch(() => props.event, (newEvent) => {
+  if (newEvent) {
+    currEventRef.value = newEvent
+  } else {
+    currEventRef.value = getDefaultEvent()
+  }
+}, { immediate: true })
 
 const startDate = ref(currEventRef.value.startDate)
 const endDate = ref(currEventRef.value.endDate)

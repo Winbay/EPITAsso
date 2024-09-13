@@ -5,7 +5,6 @@ import Dialog from 'primevue/dialog'
 import { ref, defineProps, type PropType, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type { Equipment, EquipmentRequestCreation } from '@/types/equipmentInterfaces'
-import type { Association } from '@/types/associationInterfaces'
 import Calendar from 'primevue/calendar'
 import EquipmentService from '@/services/equipment/equipment'
 
