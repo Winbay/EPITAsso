@@ -140,7 +140,11 @@ onMounted(async () => {
       :rows="rowsPerPage"
       :totalRecords="articlesCount"
       :rowsPerPageOptions="[5, 10, 20, 50]"
-      @page="currentPage = $event.page; rowsPerPage = $event.rows; reloadArticles()"
+      @page="
+        currentPage = $event.page
+        rowsPerPage = $event.rows
+        reloadArticles()
+      "
     />
   </div>
 </template>

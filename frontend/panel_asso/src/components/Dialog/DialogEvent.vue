@@ -57,13 +57,17 @@ const currEventRef = ref<EventCreation | EventModification>({
   ...(props.event || {}) // Spread existing event if it's passed
 })
 
-watch(() => props.event, (newEvent) => {
-  if (newEvent) {
-    currEventRef.value = { ...newEvent }
-  } else {
-    currEventRef.value = getDefaultEvent()
-  }
-}, { immediate: true })
+watch(
+  () => props.event,
+  (newEvent) => {
+    if (newEvent) {
+      currEventRef.value = { ...newEvent }
+    } else {
+      currEventRef.value = getDefaultEvent()
+    }
+  },
+  { immediate: true }
+)
 
 const startDate = ref(currEventRef.value.startDate)
 const endDate = ref(currEventRef.value.endDate)

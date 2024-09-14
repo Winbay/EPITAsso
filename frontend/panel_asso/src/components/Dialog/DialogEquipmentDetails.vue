@@ -82,7 +82,9 @@ const timestampToString = (timestamp: number) => {
           class="flex align-items-center justify-content-center mr-2"
         />
         <div class="flex flex-col mr-4">
-          <span>Nom de l'association : {{ props.equipment.equipmentRequest.assoBorrower.name }}</span>
+          <span
+            >Nom de l'association : {{ props.equipment.equipmentRequest.assoBorrower.name }}</span
+          >
           <span>Responsable : {{ props.equipment.equipmentRequest.userRespoBorrower.login }}</span>
           <span class="text-xs"
             >Emprunt : {{ timestampToString(props.equipment.equipmentRequest.borrowingDate) }}</span

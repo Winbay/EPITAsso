@@ -13,16 +13,19 @@ from .serializers import (
     EquipmentRequestSerializer,
 )
 
+
 class EquipmentPagination(LimitOffsetPagination):
     default_limit = 10
     max_limit = 100
+
 
 class EquipmentListView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
     pagination_class = EquipmentPagination
 
-    @extend_schema(summary="List all Equipments",
+    @extend_schema(
+        summary="List all Equipments",
         parameters=[
             OpenApiParameter(
                 name="limit",
@@ -39,36 +42,37 @@ class EquipmentListView(generics.ListCreateAPIView):
                 location=OpenApiParameter.QUERY,
             ),
         ],
-        responses=EquipmentSerializer(many=True),)
+        responses=EquipmentSerializer(many=True),
+    )
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
     @extend_schema(summary="Create an Equipment")
     def post(self, request, *args, **kwargs):
-        association = getattr(request, 'association')
+        association = getattr(request, "association")
 
         data = request.data.copy()
         data["asso_owner"] = kwargs.get("association_id")
         data["equipment_request"] = None
 
-        photo = request.FILES.get('photo')
+        photo = request.FILES.get("photo")
         if not photo:
             data["photo"] = None
 
         serializer = self.get_serializer(data=data)
         if serializer.is_valid():
-            serializer.save(
-                asso_owner=association
-            )
+            serializer.save(asso_owner=association)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class EquipmentStockListView(generics.ListAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
     pagination_class = EquipmentPagination
 
-    @extend_schema(summary="List all Equipments in stock",
+    @extend_schema(
+        summary="List all Equipments in stock",
         parameters=[
             OpenApiParameter(
                 name="limit",
@@ -85,19 +89,22 @@ class EquipmentStockListView(generics.ListAPIView):
                 location=OpenApiParameter.QUERY,
             ),
         ],
-        responses=EquipmentSerializer(many=True),)
+        responses=EquipmentSerializer(many=True),
+    )
     def get(self, request, *args, **kwargs):
-        association = getattr(request, 'association')
+        association = getattr(request, "association")
         if association:
             self.queryset = self.queryset.filter(asso_owner=association)
         return super().get(request, *args, **kwargs)
-    
+
+
 class EquipmentOtherListView(generics.ListAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
     pagination_class = EquipmentPagination
 
-    @extend_schema(summary="List all Equipments not owned by the Association",
+    @extend_schema(
+        summary="List all Equipments not owned by the Association",
         parameters=[
             OpenApiParameter(
                 name="limit",
@@ -114,9 +121,10 @@ class EquipmentOtherListView(generics.ListAPIView):
                 location=OpenApiParameter.QUERY,
             ),
         ],
-        responses=EquipmentSerializer(many=True),)
+        responses=EquipmentSerializer(many=True),
+    )
     def get(self, request, *args, **kwargs):
-        association = getattr(request, 'association')
+        association = getattr(request, "association")
         if association:
             self.queryset = self.queryset.exclude(asso_owner=association)
         return super().get(request, *args, **kwargs)
@@ -132,13 +140,13 @@ class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         data = request.data.copy()
 
-        if 'photo' in request.FILES:
-            equipment.photo = request.FILES['photo']
+        if "photo" in request.FILES:
+            equipment.photo = request.FILES["photo"]
 
         serializer = self.get_serializer(equipment, data=data, partial=True)
 
         if serializer.is_valid():
-            if old_photo and 'photo' in request.FILES:
+            if old_photo and "photo" in request.FILES:
                 if os.path.exists(old_photo):
                     os.remove(old_photo)
 
@@ -240,15 +248,18 @@ class EquipmentRequestListView(generics.ListCreateAPIView):
     queryset = EquipmentRequest.objects.all()
     serializer_class = EquipmentRequestSerializer
 
+
 class EquipmentRequestPagination(LimitOffsetPagination):
     default_limit = 10
     max_limit = 100
+
 
 class EquipmentRequestReceivedView(generics.ListAPIView):
     serializer_class = EquipmentRequestSerializer
     pagination_class = EquipmentRequestPagination
 
-    @extend_schema(summary="List all Equipment Requests received by an Association",
+    @extend_schema(
+        summary="List all Equipment Requests received by an Association",
         parameters=[
             OpenApiParameter(
                 name="limit",
@@ -294,7 +305,8 @@ class EquipmentRequestSentView(generics.ListAPIView):
     serializer_class = EquipmentRequestSerializer
     pagination_class = EquipmentRequestPagination
 
-    @extend_schema(summary="List all Equipment Requests sent by an Association",
+    @extend_schema(
+        summary="List all Equipment Requests sent by an Association",
         parameters=[
             OpenApiParameter(
                 name="limit",
@@ -312,7 +324,7 @@ class EquipmentRequestSentView(generics.ListAPIView):
             ),
         ],
         responses=EquipmentRequestSerializer(many=True),
-     )
+    )
     def get_queryset(self):
         queryset = EquipmentRequest.objects.filter(
             asso_borrower=self.kwargs.get("association_id")

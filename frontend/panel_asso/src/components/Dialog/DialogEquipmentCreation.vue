@@ -81,7 +81,7 @@ const onImageChange = (file: File | null) => {
     </div>
     <div class="content mb-6 flex flex-col justify-start">
       <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Photo (Optionnelle)</label>
-      <ImageUploader v-on:update:model-value="onImageChange"/>
+      <ImageUploader v-on:update:model-value="onImageChange" />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">

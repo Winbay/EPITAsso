@@ -41,13 +41,17 @@ const getDefaultArticle = (): ArticleCreation | ArticleModification => ({
 
 const currArticleRef = ref<ArticleCreation | ArticleModification>(getDefaultArticle())
 
-watch(() => props.article, (newArticle) => {
-  if (newArticle) {
-    currArticleRef.value = { ...newArticle }
-  } else {
-    currArticleRef.value = getDefaultArticle()
-  }
-}, { immediate: true })
+watch(
+  () => props.article,
+  (newArticle) => {
+    if (newArticle) {
+      currArticleRef.value = { ...newArticle }
+    } else {
+      currArticleRef.value = getDefaultArticle()
+    }
+  },
+  { immediate: true }
+)
 
 const editOrCreate = async (): Promise<void> => {
   if (props.article) {

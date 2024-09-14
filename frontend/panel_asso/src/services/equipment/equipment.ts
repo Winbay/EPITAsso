@@ -23,7 +23,7 @@ const equipmentSchema = yup.object({
   asso_owner: associationSchema,
   quantity: yup.number().required(),
   equipment_request: equipmentRequestSchema.notRequired(),
-  photo: yup.mixed().notRequired(),
+  photo: yup.mixed().notRequired()
 })
 
 export default class EquipmentService extends ApiService<yup.InferType<typeof equipmentSchema>> {
@@ -46,7 +46,7 @@ export default class EquipmentService extends ApiService<yup.InferType<typeof eq
     results: Equipment[]
   }> {
     const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-    const { results, ...rest } = await this.getAllCustomWithParams("stock", params.toString())
+    const { results, ...rest } = await this.getAllCustomWithParams('stock', params.toString())
     const equipments = results.map((equipment: yup.InferType<typeof equipmentSchema>) =>
       this.converterSchemaToInterface(equipment)
     )
@@ -63,7 +63,7 @@ export default class EquipmentService extends ApiService<yup.InferType<typeof eq
     results: Equipment[]
   }> {
     const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-    const { results, ...rest } = await this.getAllCustomWithParams("other", params.toString())
+    const { results, ...rest } = await this.getAllCustomWithParams('other', params.toString())
     const equipments = results.map((equipment: yup.InferType<typeof equipmentSchema>) =>
       this.converterSchemaToInterface(equipment)
     )

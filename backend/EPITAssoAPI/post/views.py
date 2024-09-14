@@ -41,9 +41,11 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
+
 class PostPagination(LimitOffsetPagination):
     default_limit = 10
     max_limit = 100
+
 
 class PostListView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
@@ -54,7 +56,8 @@ class PostListView(generics.ListCreateAPIView):
         association_id = self.kwargs["association_id"]
         return Post.objects.filter(association_id=association_id)
 
-    @extend_schema(summary="List all Posts",
+    @extend_schema(
+        summary="List all Posts",
         parameters=[
             OpenApiParameter(
                 name="limit",

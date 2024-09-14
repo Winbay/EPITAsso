@@ -49,20 +49,18 @@ export default class ApiService<SchemaType> {
     return await this.request<ReturnType>('post', this.getFullPath(), validatedData)
   }
 
-  protected async createFormData<ReturnType>(
-    data: Partial<SchemaType>
-  ): Promise<ReturnType> {
+  protected async createFormData<ReturnType>(data: Partial<SchemaType>): Promise<ReturnType> {
     const formData = new FormData()
     for (const key in data) {
       const value = data[key]
       if (typeof value === 'object' && !(value instanceof Blob)) {
-        formData.append(key, JSON.stringify(value));
+        formData.append(key, JSON.stringify(value))
       } else {
-        formData.append(key, value as string | Blob);
+        formData.append(key, value as string | Blob)
       }
     }
     return await this.requestFormData<ReturnType>('post', this.getFullPath(), formData)
-  } 
+  }
 
   protected async get(): Promise<SchemaType> {
     const data = await this.request<SchemaType>('get', `${this.getFullPath()}`)
@@ -95,7 +93,10 @@ export default class ApiService<SchemaType> {
     return { ...rest, results: res }
   }
 
-  protected async getAllCustomWithParams(route: string, params: string): Promise<{
+  protected async getAllCustomWithParams(
+    route: string,
+    params: string
+  ): Promise<{
     count: number
     next: string | null
     previous: string | null

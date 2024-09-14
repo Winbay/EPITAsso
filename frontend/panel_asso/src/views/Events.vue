@@ -181,7 +181,10 @@ const openNewEventDialog = () => {
           <div class="actions">
             <Button
               icon="pi pi-pen-to-square"
-              @click="visibleDialogRef = true; selectedEventRef = slotProps.data"
+              @click="
+                visibleDialogRef = true
+                selectedEventRef = slotProps.data
+              "
               v-tooltip="'Editer l\'évènement'"
             />
             <DialogEvent
@@ -216,7 +219,11 @@ const openNewEventDialog = () => {
       :rows="rowsPerPage"
       :totalRecords="eventsCount"
       :rowsPerPageOptions="[5, 10, 20, 50]"
-      @page="currentPage = $event.page; rowsPerPage = $event.rows; reloadEvents()"
+      @page="
+        currentPage = $event.page
+        rowsPerPage = $event.rows
+        reloadEvents()
+      "
     />
   </div>
 </template>

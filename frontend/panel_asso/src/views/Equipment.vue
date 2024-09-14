@@ -43,24 +43,32 @@ const equipmentRequestSentPaginator = ref({
   equipmentCount: 0
 })
 
-const handlePageChange = ({ component, page, rows }: { component: "asso" | "otherAsso" | "reqReceived" | "reqSent" ,page: number; rows: number }) => {
+const handlePageChange = ({
+  component,
+  page,
+  rows
+}: {
+  component: 'asso' | 'otherAsso' | 'reqReceived' | 'reqSent'
+  page: number
+  rows: number
+}) => {
   switch (component) {
-    case "asso":
+    case 'asso':
       assoEquipmentPaginator.value.currentPage = page
       assoEquipmentPaginator.value.rowsPerPage = rows
       reloadAssociationEquipments()
       break
-    case "otherAsso":
+    case 'otherAsso':
       otherAssoEquipmentPaginator.value.currentPage = page
       otherAssoEquipmentPaginator.value.rowsPerPage = rows
       reloadOtherAssociationEquipments()
       break
-    case "reqReceived":
+    case 'reqReceived':
       equipmentRequestPaginator.value.currentPage = page
       equipmentRequestPaginator.value.rowsPerPage = rows
       reloadEquipmentRequests()
       break
-    case "reqSent":
+    case 'reqSent':
       equipmentRequestSentPaginator.value.currentPage = page
       equipmentRequestSentPaginator.value.rowsPerPage = rows
       reloadEquipmentRequests()
@@ -70,26 +78,42 @@ const handlePageChange = ({ component, page, rows }: { component: "asso" | "othe
 
 async function reloadAssociationEquipments() {
   const offset = assoEquipmentPaginator.value.currentPage * assoEquipmentPaginator.value.rowsPerPage
-  const equipments = await equipmentService.getAssoEquipments(assoEquipmentPaginator.value.rowsPerPage, offset)
+  const equipments = await equipmentService.getAssoEquipments(
+    assoEquipmentPaginator.value.rowsPerPage,
+    offset
+  )
   assoEquipments.value = equipments.results
   assoEquipmentPaginator.value.equipmentCount = equipments.count
 }
 
 async function reloadOtherAssociationEquipments() {
-  const offset = otherAssoEquipmentPaginator.value.currentPage * otherAssoEquipmentPaginator.value.rowsPerPage
-  const equipments = await equipmentService.getOtherAssoEquipments(otherAssoEquipmentPaginator.value.rowsPerPage, offset)
+  const offset =
+    otherAssoEquipmentPaginator.value.currentPage * otherAssoEquipmentPaginator.value.rowsPerPage
+  const equipments = await equipmentService.getOtherAssoEquipments(
+    otherAssoEquipmentPaginator.value.rowsPerPage,
+    offset
+  )
   otherAssoEquipments.value = equipments.results
   otherAssoEquipmentPaginator.value.equipmentCount = equipments.count
 }
 
 async function reloadEquipmentRequests() {
-  const offsetReceived = equipmentRequestPaginator.value.currentPage * equipmentRequestPaginator.value.rowsPerPage
-  const request = await equipmentRequestService.getRequestsReceived(equipmentRequestPaginator.value.rowsPerPage, offsetReceived)
+  const offsetReceived =
+    equipmentRequestPaginator.value.currentPage * equipmentRequestPaginator.value.rowsPerPage
+  const request = await equipmentRequestService.getRequestsReceived(
+    equipmentRequestPaginator.value.rowsPerPage,
+    offsetReceived
+  )
   equipmentRequestsReceived.value = request.results
   equipmentRequestPaginator.value.equipmentCount = request.count
 
-  const offsetSent = equipmentRequestSentPaginator.value.currentPage * equipmentRequestSentPaginator.value.rowsPerPage
-  const sent = await equipmentRequestService.getRequestsSent(equipmentRequestSentPaginator.value.rowsPerPage, offsetSent)
+  const offsetSent =
+    equipmentRequestSentPaginator.value.currentPage *
+    equipmentRequestSentPaginator.value.rowsPerPage
+  const sent = await equipmentRequestService.getRequestsSent(
+    equipmentRequestSentPaginator.value.rowsPerPage,
+    offsetSent
+  )
   equipmentRequestsSent.value = sent.results
   equipmentRequestSentPaginator.value.equipmentCount = sent.count
 }

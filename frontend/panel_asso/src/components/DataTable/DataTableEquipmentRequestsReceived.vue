@@ -50,7 +50,7 @@ const closeDialog = () => {
 const emit = defineEmits(['pageChange'])
 
 const onPageChange = (event: any) => {
-  emit('pageChange', { component: "reqReceived", page: event.page, rows: event.rows })
+  emit('pageChange', { component: 'reqReceived', page: event.page, rows: event.rows })
 }
 </script>
 
