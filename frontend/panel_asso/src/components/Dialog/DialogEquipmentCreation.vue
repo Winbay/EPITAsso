@@ -34,6 +34,11 @@ const createEquipment = async () => {
   // TODO use POST return object to update the list of equipments
   await equipmentService.createEquipment(currEquipment.value)
   await props.reloadEquipments()
+  currEquipment.value = {
+    name: '',
+    quantity: 1,
+    photo: null
+  }
   props.setHidden()
   return true // TODO why ?
 }
