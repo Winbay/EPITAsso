@@ -54,7 +54,12 @@ export default class ApiService<SchemaType> {
   ): Promise<ReturnType> {
     const formData = new FormData()
     for (const key in data) {
-      formData.append(key, data[key])
+      const value = data[key]
+      if (typeof value === 'object' && !(value instanceof Blob)) {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value as string | Blob);
+      }
     }
     return await this.requestFormData<ReturnType>('post', this.getFullPath(), formData)
   } 

@@ -202,6 +202,7 @@ const onPageChange = (event: any) => {
             :equipment="JSON.parse(JSON.stringify(slotProps.data))"
             :reload-equipments="reloadEquipments"
             :set-hidden="closeDialog"
+            :old-photo="slotProps.data.photo"
           />
           <a
             href="javascript:void(0)"

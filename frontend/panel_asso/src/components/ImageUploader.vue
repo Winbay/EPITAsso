@@ -1,20 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const props = defineProps({
-  modelValue: {
-    type: File,
-    default: null
-  }
-})
-
 const fileInput = ref<HTMLInputElement | null>(null)
 const imageUrl = ref<string | null>(null)
 const file = ref<File | null>(null)
-
-if (props.modelValue) {
-  file.value = props.modelValue
-}
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: File | null): void

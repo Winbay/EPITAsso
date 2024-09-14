@@ -22,6 +22,10 @@ const props = defineProps({
   equipment: {
     type: Object as PropType<EquipmentModification>,
     required: true
+  },
+  oldPhoto: {
+    type: String,
+    required: true
   }
 })
 
@@ -41,6 +45,10 @@ const updateEquipment = async () => {
 
 const cancelDialog = () => {
   props.setHidden()
+}
+
+const onImageChange = (file: File | null) => {
+  newPhoto.value = file
 }
 </script>
 
@@ -69,12 +77,12 @@ const cancelDialog = () => {
     <div class="content mb-6 flex flex-col justify-start" v-if="$props.equipment.photo">
       <label class="text-2xl font-bold text-wrap">Photo actuelle</label>
       <div class="w-1/3 h-1/3 mt-2">
-        <img :src="$props.equipment.photo" alt="Matériel photo" />
+        <img :src="props.oldPhoto" alt="Matériel photo" />
       </div>
     </div>
     <div class="content mb-6 flex flex-col justify-start">
       <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Nouvelle photo (Optionnelle)</label>
-      <ImageUploader v-model="newPhoto" />
+      <ImageUploader v-on:update:model-value="onImageChange" />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">
