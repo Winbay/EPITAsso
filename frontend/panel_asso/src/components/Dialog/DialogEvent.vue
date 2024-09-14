@@ -59,7 +59,7 @@ const currEventRef = ref<EventCreation | EventModification>({
 
 watch(() => props.event, (newEvent) => {
   if (newEvent) {
-    currEventRef.value = newEvent
+    currEventRef.value = { ...newEvent }
   } else {
     currEventRef.value = getDefaultEvent()
   }
@@ -85,13 +85,14 @@ const editOrCreate = async (): Promise<void> => {
       discordMessages
     )
   }
+  currEventRef.value = getDefaultEvent()
   await props.reloadEvents()
   props.setHidden()
 }
 
 const cancelDialog = () => {
   if (props.event) {
-    currEventRef.value = props.event
+    currEventRef.value = { ...props.event }
   } else {
     currEventRef.value = getDefaultEvent()
   }
@@ -103,7 +104,7 @@ const cancelDialog = () => {
 
 onMounted(() => {
   if (props.event) {
-    currEventRef.value = props.event
+    currEventRef.value = { ...props.event }
     startDate.value = new Date(props.event.startDate)
     endDate.value = new Date(props.event.endDate)
     endRecurrence.value = new Date(props.event.endRecurrence)

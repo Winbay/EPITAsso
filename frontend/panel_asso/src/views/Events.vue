@@ -127,13 +127,18 @@ const formatDate = (date: Date): string => {
   const pad = (num: number) => num.toString().padStart(2, '0')
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
+
+const openNewEventDialog = () => {
+  selectedEventRef.value = null
+  visibleDialogRef.value = true
+}
 </script>
 
 <template>
   <div class="events-list w-full h-full px-10 py-8">
     <div class="events-list-header h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Évènements</span>
-      <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="visibleDialogRef = true" />
+      <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="openNewEventDialog" />
       <DialogEvent
         v-model:visible="visibleDialogRef"
         :set-hidden="closeDialog"
@@ -176,11 +181,11 @@ const formatDate = (date: Date): string => {
           <div class="actions">
             <Button
               icon="pi pi-pen-to-square"
-              @click="visibleDialogRef = slotProps.data"
+              @click="visibleDialogRef = true; selectedEventRef = slotProps.data"
               v-tooltip="'Editer l\'évènement'"
             />
             <DialogEvent
-              :visible="visibleDialogRef === slotProps.data"
+              :visible="visibleDialogRef && selectedEventRef === slotProps.data"
               :set-hidden="closeDialog"
               :reloadEvents="reloadEvents"
               :tags="tagsRef"

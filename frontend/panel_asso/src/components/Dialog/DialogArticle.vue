@@ -43,7 +43,7 @@ const currArticleRef = ref<ArticleCreation | ArticleModification>(getDefaultArti
 
 watch(() => props.article, (newArticle) => {
   if (newArticle) {
-    currArticleRef.value = newArticle
+    currArticleRef.value = { ...newArticle }
   } else {
     currArticleRef.value = getDefaultArticle()
   }
@@ -56,12 +56,13 @@ const editOrCreate = async (): Promise<void> => {
     await postService.createPost(currArticleRef.value)
   }
   await props.reloadArticles()
+  currArticleRef.value = getDefaultArticle()
   props.setHidden()
 }
 
 const cancelDialog = () => {
   if (props.article) {
-    currArticleRef.value = props.article
+    currArticleRef.value = { ...props.article }
   } else {
     currArticleRef.value = getDefaultArticle()
   }
@@ -70,7 +71,7 @@ const cancelDialog = () => {
 
 onMounted(() => {
   if (props.article) {
-    currArticleRef.value = props.article
+    currArticleRef.value = { ...props.article }
   }
 })
 </script>
