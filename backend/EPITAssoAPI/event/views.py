@@ -1,6 +1,7 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
-
+from django.utils.timezone import now
+from rest_framework.pagination import LimitOffsetPagination
 from association.models import Association
 from .models import Event
 from post.models import Tag
@@ -79,3 +80,35 @@ class EventDetailView(generics.RetrieveUpdateDestroyAPIView):
     @extend_schema(summary="Delete an Event")
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
+
+
+class UpcomingEventsView(generics.ListAPIView):
+    serializer_class = EventSerializer
+    queryset = Event.objects.all()
+
+    def get_queryset(self):
+        limit = self.request.query_params.get('limit', 3)
+        try:
+            limit = int(limit)
+            if limit <= 0:
+                limit = 3
+        except ValueError:
+            limit = 3
+        return Event.objects.filter(start_date__gte=now()).order_by('start_date')[:limit]
+
+    @extend_schema(summary="Retrieve the 'limit' upcoming events (all associations) (default: 3)")
+    def get(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+
+class EventListPaginationView(generics.ListAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        return super().get_queryset().order_by('-start_date')
+
+    @extend_schema(summary="List all Events of all Associations with pagination")
+    def get(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

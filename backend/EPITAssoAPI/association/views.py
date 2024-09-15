@@ -1,5 +1,7 @@
 from drf_spectacular.utils import extend_schema
+from django.db.models import Count
 from rest_framework import generics
+from rest_framework.pagination import LimitOffsetPagination
 from .models import AssociateUserAndAssociation, Association, Faq, SocialNetwork
 from .serializers import (
     AssociationDetailsSerializer,
@@ -21,6 +23,26 @@ class AssociationListView(generics.ListCreateAPIView):
     @extend_schema(summary="Create an Association")
     def post(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+    
+
+class AssociationListPaginationView(generics.ListAPIView):
+    queryset = Association.objects.all()
+    serializer_class = AssociationSerializer
+    pagination_class = LimitOffsetPagination
+
+    @extend_schema(summary="List all Associations with pagination (limit, offset)")
+    def get(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+
+class AssociationSlugView(generics.RetrieveAPIView):
+    queryset = Association.objects.all()
+    serializer_class = AssociationSerializer
+    lookup_field = "slug"
+
+    @extend_schema(summary="Retrieve an Association by slug")
+    def get(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 
 class AssociationDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -156,3 +178,34 @@ class MemberDetailView(generics.RetrieveUpdateAPIView):
     @extend_schema(summary="Update a Member")
     def put(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
+    
+
+class LargestAssociationView(generics.ListAPIView):
+    queryset = Association.objects.all()
+    serializer_class = AssociationSerializer
+
+    def get_queryset(self):
+        limit = self.request.query_params.get('limit', 6)
+        try:
+            limit = int(limit)
+            if limit <= 0:
+                limit = 6
+        except ValueError:
+            limit = 6
+        return Association.objects.annotate(members_count=Count('associateuserandassociation')).order_by('-members_count')[:limit]
+
+    @extend_schema(summary="Retrieve 'limit' largest Association (default: 6)")
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+
+class AssociationGetBDEView(generics.ListAPIView):
+    queryset = Association.objects.all()
+    serializer_class = AssociationSerializer
+
+    def get_queryset(self):
+        return Association.objects.filter(type="BDE")
+
+    @extend_schema(summary="Retrieve Associations of type BDE")
+    def get(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
