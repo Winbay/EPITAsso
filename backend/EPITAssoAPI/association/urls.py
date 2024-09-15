@@ -15,7 +15,11 @@ from .views import (
 
 urlpatterns = [
     path("associations/", AssociationListView.as_view(), name="associations"),
-    path("associations/list/", AssociationListPaginationView.as_view(), name="association-list"),
+    path(
+        "associations/list/",
+        AssociationListPaginationView.as_view(),
+        name="association-list",
+    ),
     path(
         "associations/<int:pk>/",
         AssociationDetailView.as_view(),
@@ -47,6 +51,10 @@ urlpatterns = [
         MemberDetailView.as_view(),
         name="association-member",
     ),
-    path('associations/largest/', LargestAssociationView.as_view(), name='largest-associations'),
-    path('associations/bde/', AssociationGetBDEView.as_view(), name='associations-bde'),
+    path(
+        "associations/largest/",
+        LargestAssociationView.as_view(),
+        name="largest-associations",
+    ),
+    path("associations/bde/", AssociationGetBDEView.as_view(), name="associations-bde"),
 ]

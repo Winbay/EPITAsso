@@ -23,7 +23,7 @@ class AssociationListView(generics.ListCreateAPIView):
     @extend_schema(summary="Create an Association")
     def post(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
-    
+
 
 class AssociationListPaginationView(generics.ListAPIView):
     queryset = Association.objects.all()
@@ -178,21 +178,23 @@ class MemberDetailView(generics.RetrieveUpdateAPIView):
     @extend_schema(summary="Update a Member")
     def put(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
-    
+
 
 class LargestAssociationView(generics.ListAPIView):
     queryset = Association.objects.all()
     serializer_class = AssociationSerializer
 
     def get_queryset(self):
-        limit = self.request.query_params.get('limit', 6)
+        limit = self.request.query_params.get("limit", 6)
         try:
             limit = int(limit)
             if limit <= 0:
                 limit = 6
         except ValueError:
             limit = 6
-        return Association.objects.annotate(members_count=Count('associateuserandassociation')).order_by('-members_count')[:limit]
+        return Association.objects.annotate(
+            members_count=Count("associateuserandassociation")
+        ).order_by("-members_count")[:limit]
 
     @extend_schema(summary="Retrieve 'limit' largest Association (default: 6)")
     def get(self, request, *args, **kwargs):

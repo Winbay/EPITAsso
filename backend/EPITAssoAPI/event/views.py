@@ -87,16 +87,20 @@ class UpcomingEventsView(generics.ListAPIView):
     queryset = Event.objects.all()
 
     def get_queryset(self):
-        limit = self.request.query_params.get('limit', 3)
+        limit = self.request.query_params.get("limit", 3)
         try:
             limit = int(limit)
             if limit <= 0:
                 limit = 3
         except ValueError:
             limit = 3
-        return Event.objects.filter(start_date__gte=now()).order_by('start_date')[:limit]
+        return Event.objects.filter(start_date__gte=now()).order_by("start_date")[
+            :limit
+        ]
 
-    @extend_schema(summary="Retrieve the 'limit' upcoming events (all associations) (default: 3)")
+    @extend_schema(
+        summary="Retrieve the 'limit' upcoming events (all associations) (default: 3)"
+    )
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -107,7 +111,7 @@ class EventListPaginationView(generics.ListAPIView):
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
-        return super().get_queryset().order_by('-start_date')
+        return super().get_queryset().order_by("-start_date")
 
     @extend_schema(summary="List all Events of all Associations with pagination")
     def get(self, request, *args, **kwargs):
