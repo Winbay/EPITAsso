@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import AssoCarousel from "@/components/Home/AssoCarousel.vue";
+import MyAsso from "@/components/Home/Modules/MyAsso.vue";
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
+  <main class="py-6">
+    <AssoCarousel />
+    <div>
+<!--      <MyAsso />-->
+    </div>
   </main>
 </template>
+
+<style scoped>
+</style>
