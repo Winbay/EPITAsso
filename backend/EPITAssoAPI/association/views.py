@@ -1,12 +1,31 @@
-from drf_spectacular.utils import extend_schema
-from django.db.models import Count
-from rest_framework import generics
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiParameter,
+    OpenApiResponse,
+    OpenApiTypes,
+)
+from django.db.models import Count, Sum
+from django.utils.dateparse import parse_datetime
+from rest_framework import generics, status
 from rest_framework.pagination import LimitOffsetPagination
-from .models import AssociateUserAndAssociation, Association, Faq, SocialNetwork
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from event.serializers import EventMemberCommitmentsResumeForOneUser
+from event.models import EventMemberCommitment
+from .models import (
+    AssociateUserAndAssociation,
+    Association,
+    Commitment,
+    Faq,
+    MemberCommitment,
+    SocialNetwork,
+)
 from .serializers import (
     AssociationDetailsSerializer,
     AssociationListPaginationSerializer,
     AssociationSerializer,
+    CommitmentSerializer,
     FaqSerializer,
     MemberSerializer,
 )
@@ -209,6 +228,200 @@ class AssociationGetBDEView(generics.ListAPIView):
     def get_queryset(self):
         return Association.objects.filter(type="BDE")
 
-    @extend_schema(summary="Retrieve Associations of type BDE")
+    @extend_schema(summary="List all Associations of type BDE")
+    def get(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+
+class CommitmentListView(generics.ListCreateAPIView):
+    queryset = Commitment.objects.all()
+    serializer_class = CommitmentSerializer
+    permission_classes = [IsMemberOfAssociation]
+
+    def get_queryset(self):
+        association_id = self.kwargs["pk"]
+        return Commitment.objects.filter(association_id=association_id)
+
+    @extend_schema(summary="List all Commitments")
+    def get(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(summary="Create a Commitment and all MemberCommitments needed")
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        association_id = self.kwargs["pk"]
+        association = Association.objects.get(id=association_id)
+        serializer.save(association=association)
+
+
+class CommitmentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Commitment.objects.all()
+    serializer_class = CommitmentSerializer
+    permission_classes = [IsMemberOfAssociation]
+
+    @extend_schema(summary="Retrieve a Commitment")
+    def get(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(summary="Update a Commitment")
+    def put(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @extend_schema(summary="Delete a Commitment")
+    def delete(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
+
+
+class ResumeAllCommitmentsView(APIView):
+    permission_classes = [IsMemberOfAssociation]
+
+    @extend_schema(
+        summary="Retrieve all commitments and event commitments for an association",
+        description="Get a summary of all commitments (Commitments) and event commitments (EventMemberCommitments) of an association's members. Optional filtering can be done using `start_date`, `end_date`, and `login` (min 3 characters).",
+        parameters=[
+            OpenApiParameter(
+                "start_date",
+                description="Start date for filtering commitments",
+                required=False,
+                type=OpenApiTypes.DATETIME,
+            ),
+            OpenApiParameter(
+                "end_date",
+                description="End date for filtering commitments",
+                required=False,
+                type=OpenApiTypes.DATETIME,
+            ),
+            OpenApiParameter(
+                "login",
+                description="Filter members by login",
+                required=False,
+                type=OpenApiTypes.STR,
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(
+                description="List of members with their commitment hours and event commitment hours",
+                examples={
+                    "application/json": [
+                        {
+                            "id": 1,
+                            "login": "john_doe",
+                            "first_name": "John",
+                            "last_name": "Doe",
+                            "commitment_hours": 10,
+                            "event_commitment_hours": 5,
+                            "total_hours": 15,
+                        },
+                        {
+                            "id": 2,
+                            "login": "jane_smith",
+                            "first_name": "Jane",
+                            "last_name": "Smith",
+                            "commitment_hours": 8,
+                            "event_commitment_hours": 7,
+                            "total_hours": 15,
+                        },
+                    ]
+                },
+            ),
+            400: OpenApiResponse(description="Bad request"),
+            404: OpenApiResponse(description="Association not found"),
+        },
+    )
+    def get(self, request, *args, **kwargs):
+        association_id = kwargs["pk"]
+
+        # Retrieve date parameters from request
+        start_date_str = request.query_params.get("start_date")
+        end_date_str = request.query_params.get("end_date")
+        start_date = parse_datetime(start_date_str) if start_date_str else None
+        end_date = parse_datetime(end_date_str) if end_date_str else None
+
+        login_filter = request.query_params.get("login")
+
+        try:
+            association = Association.objects.get(id=association_id)
+        except Association.DoesNotExist:
+            return Response(
+                {"error": "Association not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        members = AssociateUserAndAssociation.objects.filter(association=association)
+        if login_filter:
+            members = members.filter(user__username__icontains=login_filter)
+
+        commitments = Commitment.objects.filter(association=association)
+        if start_date and end_date:
+            commitments = commitments.filter(
+                start_date__gte=start_date, end_date__lte=end_date
+            )
+        elif start_date:
+            commitments = commitments.filter(start_date__gte=start_date)
+        elif end_date:
+            commitments = commitments.filter(end_date__lte=end_date)
+
+        events_commitments = EventMemberCommitment.objects.filter(member__in=members)
+        if start_date and end_date:
+            events_commitments = events_commitments.filter(
+                event__start_date__gte=start_date, event__end_date__lte=end_date
+            )
+        elif start_date:
+            events_commitments = events_commitments.filter(
+                event__start_date__gte=start_date
+            )
+        elif end_date:
+            events_commitments = events_commitments.filter(
+                event__end_date__lte=end_date
+            )
+
+        member_hours = {
+            member: {"commitment_hours": 0, "event_commitment_hours": 0}
+            for member in members
+        }
+
+        for commitment in commitments:
+            for member in members:
+                member_hours[member]["commitment_hours"] += (
+                    MemberCommitment.objects.filter(
+                        commitment=commitment, member=member
+                    ).aggregate(total_hours=Sum("hours"))["total_hours"]
+                    or 0
+                )
+
+        for event_commitment in events_commitments:
+            member_hours[event_commitment.member]["event_commitment_hours"] += (
+                event_commitment.hours
+            )
+
+        response_data = []
+        for member, hours in member_hours.items():
+            response_data.append(
+                {
+                    "id": member.id,
+                    "login": member.user.username,
+                    "first_name": member.user.first_name,
+                    "last_name": member.user.last_name,
+                    "commitment_hours": hours["commitment_hours"],
+                    "event_commitment_hours": hours["event_commitment_hours"],
+                    "total_hours": hours["commitment_hours"]
+                    + hours["event_commitment_hours"],
+                }
+            )
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class ResumeEventsCommitmentsForOneMemberView(generics.ListAPIView):
+    queryset = EventMemberCommitment.objects.all()
+    serializer_class = EventMemberCommitmentsResumeForOneUser
+    permission_classes = [IsMemberOfAssociation]
+
+    def get_queryset(self):
+        member_id = self.kwargs["member_id"]
+        return EventMemberCommitment.objects.filter(member__id=member_id)
+
+    @extend_schema(summary="List all EventMemberCommitments for one user")
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

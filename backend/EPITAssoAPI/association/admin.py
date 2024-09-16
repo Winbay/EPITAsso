@@ -1,11 +1,19 @@
 from django.contrib import admin
-from .models import Association, AssociateUserAndAssociation, Faq, SocialNetwork
+from .models import (
+    Association,
+    AssociateUserAndAssociation,
+    Commitment,
+    Faq,
+    MemberCommitment,
+    SocialNetwork,
+)
 
 
 @admin.register(AssociateUserAndAssociation)
 class AssociateUserAndAssociationAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "association", "role")
     search_fields = ("user", "association", "role")
+    list_filter = ("association", "user", "role")
 
 
 @admin.register(Association)
@@ -25,3 +33,17 @@ class FaqAdmin(admin.ModelAdmin):
 class SocialNetworkAdmin(admin.ModelAdmin):
     list_display = ("name", "link", "association")
     search_fields = ("name", "link", "association")
+
+
+@admin.register(Commitment)
+class CommitmentAdmin(admin.ModelAdmin):
+    list_display = ("id", "association", "start_date", "end_date")
+    search_fields = ("association", "start_date", "end_date")
+    list_filter = ("association",)
+
+
+@admin.register(MemberCommitment)
+class MemberCommitmentAdmin(admin.ModelAdmin):
+    list_display = ("id", "hours", "member")
+    search_fields = ("hours", "member")
+    list_filter = ("member",)

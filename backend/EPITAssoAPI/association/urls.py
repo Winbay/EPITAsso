@@ -6,8 +6,12 @@ from .views import (
     AssociationDetailView,
     AssociationDetailsView,
     AssociationSlugView,
+    CommitmentDetailView,
+    CommitmentListView,
     FaqListView,
     FaqDetailView,
+    ResumeAllCommitmentsView,
+    ResumeEventsCommitmentsForOneMemberView,
     LargestAssociationView,
     MemberDetailView,
     MemberListView,
@@ -57,4 +61,24 @@ urlpatterns = [
         name="largest-associations",
     ),
     path("associations/bde/", AssociationGetBDEView.as_view(), name="associations-bde"),
+    path(
+        "associations/<int:pk>/commitments/",
+        CommitmentListView.as_view(),
+        name="association-commitments",
+    ),
+    path(
+        "associations/<int:pk>/commitments/<int:commitment_id>/",
+        CommitmentDetailView.as_view(),
+        name="association-commitment",
+    ),
+    path(
+        "associations/<int:pk>/commitments/resume-all/",
+        ResumeAllCommitmentsView.as_view(),
+        name="resume-all-commitments",
+    ),
+    path(
+        "associations/<int:pk>/commitments/resume/<int:member_id>/",
+        ResumeEventsCommitmentsForOneMemberView.as_view(),
+        name="resume-all-commitments",
+    ),
 ]

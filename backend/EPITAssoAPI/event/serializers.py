@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Event
+
+from association.serializers import MemberSerializer
+from .models import Event, EventMemberCommitment
 from post.models import Tag
 from post.serializers import TagSerializer
 from association.serializers import AssociationSimpleWithLogoSerializer
@@ -53,3 +55,19 @@ class EventSerializer(serializers.ModelSerializer):
     def _get_tag_instances(self, tags_data):
         tag_names = [tag["name"] for tag in tags_data if "name" in tag]
         return Tag.objects.filter(name__in=tag_names)
+
+
+class EventMemberCommitmentSerializer(serializers.ModelSerializer):
+    member = MemberSerializer(read_only=True)
+
+    class Meta:
+        model = EventMemberCommitment
+        fields = ["id", "hours", "member"]
+
+
+class EventMemberCommitmentsResumeForOneUser(serializers.ModelSerializer):
+    name = serializers.CharField(source="event.name")
+
+    class Meta:
+        model = EventMemberCommitment
+        fields = ["id", "name", "hours"]
