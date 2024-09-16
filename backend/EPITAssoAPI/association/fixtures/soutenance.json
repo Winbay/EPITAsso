@@ -6,7 +6,8 @@
     "name": "BDE",
     "content": "Le BDE est l’association fédératrice des associations de l’école. Il organise les weekends d’intégration en SUP et après la piscine, le Gala, les soirées comme Halloween ou Christmas. Il est également présent pour animer les événements pédagogiques phares comme la piscine en ING1, les rushs ou les hackathons.",
     "logo": "kraken.png",
-    "location": "under"
+    "location": "under",
+    "slug": "bde"
   }
 },
 {
@@ -16,7 +17,8 @@
     "name": "VJN",
     "content": "Cette association a pour but l'organisation d’évènements étudiants, les Villejuif Nights (VJN), au sein du pôle éducatif de IONIS, et plus particulièrement sur le pôle de Villejuif.",
     "logo": "vjn.png",
-    "location": "under"
+    "location": "under",
+    "slug": "vjn"
   }
 },
 {
@@ -26,7 +28,8 @@
     "name": "Lateb",
     "content": "Lateb se donne pour mission de faire découvrir des bières de qualité au sein du campus. A ce titre, elle organise des évènements proposant diverses activités autour de dégustations de bières sous forme de buffets, projections ou concerts. L’abus d’alcool est dangereux pour la santé, à consommer avec modération.",
     "logo": "lateb-association-epita.png",
-    "location": "under"
+    "location": "under",
+    "slug": "lateb"
   }
 },
 {
@@ -36,7 +39,8 @@
     "name": "La Paillote",
     "content": "La Paillote est l’association des amoureux des mélanges de saveurs. Experts en l’art de titiller les papilles, ses membres proposent un large panel de cocktails, du plus classique à l’unique, spécialement inventé pour vous. L’abus d’alcool est dangereux pour la santé, à consommer avec modération.",
     "logo": "la-paillote-association-epita.png",
-    "location": "under"
+    "location": "under",
+    "slug": "la-paillote"
   }
 },
 {
@@ -46,7 +50,8 @@
     "name": "EPTV",
     "content": "EPTV réunit depuis plus de 30 ans, les passionnés de vidéo qui capturent les événements marquants de la vie étudiante tout au long de l’année. L’association est accessible à tous et réalise en interne des formations sur le matériel et le montage vidéo.",
     "logo": "eptv.png",
-    "location": "under"
+    "location": "under",
+    "slug": "eptv"
   }
 },
 {
@@ -56,7 +61,8 @@
     "name": "Unisson",
     "content": "Unisson a pour but de promouvoir la musique électronique. Elle participe tout au long de l’année à la préparation des soirées étudiantes sur le campus. Elle s’organise autour de 3 pôles : MAO (musique assistée par ordinateur), MIX/Live, Scratch.",
     "logo": "tiny_logo_unisson_ectn6c.png",
-    "location": "Under"
+    "location": "Under",
+    "slug": "unisson"
   }
 },
 {
@@ -66,7 +72,8 @@
     "name": "MTI frontend",
     "content": "MTI frontend est la branche dédiée au développement des interfaces utilisateur des applications web et mobiles. Les membres se concentrent sur la création de designs intuitifs et réactifs, utilisant les dernières technologies pour améliorer l'expérience utilisateur.",
     "logo": "logo-mti.png",
-    "location": "501"
+    "location": "MTI Lab",
+    "slug": "mti-frontend"
   }
 },
 {
@@ -76,7 +83,8 @@
     "name": "MTI backend",
     "content": "MTI backend s'occupe de l'infrastructure et de la logique serveur des applications. Les membres gèrent les bases de données, les serveurs et les API, assurant la performance, la sécurité et la scalabilité des services.",
     "logo": "logo-mti.png",
-    "location": "501"
+    "location": "MTI lab",
+    "slug": "mti-backend"
   }
 },
 {
@@ -86,7 +94,8 @@
     "name": "Episport",
     "content": "le sport c'est fou",
     "logo": "episport-association-epita.png",
-    "location": "under"
+    "location": "under",
+    "slug": "episport"
   }
 },
 {

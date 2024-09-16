@@ -48,7 +48,6 @@ urlpatterns = [
                     "<int:association_id>/",
                     include(
                         [
-                            # path("", include("user.urls")), TODO: change that
                             path("", include("event.urls")),
                             path("", include("post.urls")),
                             path("", include("equipment.urls")),
@@ -59,6 +58,7 @@ urlpatterns = [
                 ),
                 path("", include("user.urls")),
                 path("", include("association.urls")),
+                path("", include("event.urls_without_association_id")),
             ]
         ),
     ),

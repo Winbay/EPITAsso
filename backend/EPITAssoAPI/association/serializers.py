@@ -5,7 +5,17 @@ from .models import AssociateUserAndAssociation, Association, Faq, SocialNetwork
 class AssociationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Association
-        fields = ["id", "name", "content", "logo", "location", "webhook"]
+        fields = [
+            "id",
+            "name",
+            "content",
+            "logo",
+            "location",
+            "webhook",
+            "category",
+            "type",
+            "slug",
+        ]
         read_only_fields = ["id"]
 
 
@@ -38,6 +48,9 @@ class AssociationDetailsSerializer(serializers.ModelSerializer):
             "webhook",
             "faqs",
             "social_networks",
+            "category",
+            "type",
+            "slug",
         ]
         read_only_fields = ["id"]
         depth = 1

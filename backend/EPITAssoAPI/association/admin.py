@@ -10,7 +10,7 @@ class AssociateUserAndAssociationAdmin(admin.ModelAdmin):
 
 @admin.register(Association)
 class AssociationAdmin(admin.ModelAdmin):
-    list_display = ("name", "id", "location")
+    list_display = ("name", "id", "location", "type", "slug")
     search_fields = ("name", "location")
     # list_filter = ('location',) # TODO uncomment this line once location is an enum or object
 

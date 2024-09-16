@@ -1,13 +1,38 @@
 from django.db import models
+from django.utils.text import slugify
 
 
 class Association(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
+    slug = models.CharField(max_length=255, unique=True, blank=True)
+    category = models.CharField(max_length=255, default="", blank=True)
     content = models.TextField()
     logo = models.ImageField(upload_to="logos/", null=True, blank=True, max_length=255)
     webhook = models.URLField(default="", blank=True)
     location = models.CharField(max_length=255)  # TODO change for an enum of location ?
+
+    NORMAL = "Normal"
+    BDE = "BDE"
+    ADMIN = "Admin"
+
+    ASSOCIATION_TYPE_CHOICES = [
+        (NORMAL, "Normal"),
+        (BDE, "BDE"),
+        (ADMIN, "Admin"),
+    ]
+
+    type = models.CharField(
+        max_length=10,
+        choices=ASSOCIATION_TYPE_CHOICES,
+        default=NORMAL,
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            super().save(*args, **kwargs)
+            self.slug = slugify(f"{self.name}")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
