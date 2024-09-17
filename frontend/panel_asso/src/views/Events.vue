@@ -4,6 +4,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import ConfirmPopup from 'primevue/confirmpopup'
+import Paginator from 'primevue/paginator'
 
 import { ref, onMounted } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
@@ -27,6 +28,10 @@ const globalStore = useGlobalStore()
 
 const eventService: EventService = new EventService(toast)
 const tagService: TagService = new TagService(toast, 'events')
+
+const rowsPerPage = ref(5)
+const eventsCount = ref(0)
+const currentPage = ref(0)
 
 const confirmDelete = (event: Event, eventId: number) => {
   confirm.require({
@@ -53,7 +58,10 @@ const loadTags = async () => {
 }
 
 const reloadEvents = async () => {
-  eventsRef.value = await eventService.getEvents()
+  const offset = currentPage.value * rowsPerPage.value
+  const events = await eventService.getEvents(rowsPerPage.value, offset)
+  eventsRef.value = events.results
+  eventsCount.value = events.count
 }
 
 const deleteEvent = async (eventId: number) => {
@@ -119,13 +127,24 @@ const formatDate = (date: Date): string => {
   const pad = (num: number) => num.toString().padStart(2, '0')
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
+
+const openNewEventDialog = () => {
+  selectedEventRef.value = null
+  visibleDialogRef.value = true
+}
+
+const handlePageChange = (event: { page: number; rows: number }) => {
+  currentPage.value = event.page
+  rowsPerPage.value = event.rows
+  reloadEvents()
+}
 </script>
 
 <template>
   <div class="events-list w-full h-full px-10 py-8">
     <div class="events-list-header h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Évènements</span>
-      <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="visibleDialogRef = true" />
+      <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="openNewEventDialog" />
       <DialogEvent
         v-model:visible="visibleDialogRef"
         :set-hidden="closeDialog"
@@ -139,9 +158,6 @@ const formatDate = (date: Date): string => {
       striped-rows
       tableStyle="min-width: 50rem"
       size="small"
-      paginator
-      :rows="5"
-      :rowsPerPageOptions="[5, 10, 20, 50]"
       removableSort
     >
       <Column field="name" header="Titre" sortable></Column>
@@ -171,15 +187,15 @@ const formatDate = (date: Date): string => {
           <div class="actions">
             <Button
               icon="pi pi-pen-to-square"
-              @click="visibleDialogRef = slotProps.data.id"
+              @click="(visibleDialogRef = true), (selectedEventRef = slotProps.data)"
               v-tooltip="'Editer l\'évènement'"
             />
             <DialogEvent
-              :visible="visibleDialogRef === slotProps.data.id"
+              :visible="visibleDialogRef && selectedEventRef === slotProps.data"
               :set-hidden="closeDialog"
               :reloadEvents="reloadEvents"
               :tags="tagsRef"
-              :event="JSON.parse(JSON.stringify(slotProps.data))"
+              :event="slotProps.data"
             />
             <ConfirmPopup></ConfirmPopup>
             <Button
@@ -201,6 +217,13 @@ const formatDate = (date: Date): string => {
         </template>
       </Column>
     </DataTable>
+    <Paginator
+      class="p-paginator-bottom"
+      :rows="rowsPerPage"
+      :totalRecords="eventsCount"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      @page="handlePageChange($event)"
+    />
   </div>
 </template>
 

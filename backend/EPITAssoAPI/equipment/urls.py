@@ -11,10 +11,14 @@ from .views import (
     EquipmentRequestDetailView,
     EquipmentRequestAcceptView,
     EquipmentRequestRefuseView,
+    EquipmentStockListView,
+    EquipmentOtherListView,
 )
 
 urlpatterns = [
     path("equipments/", EquipmentListView.as_view(), name="equipment-list"),
+    path("equipments/stock/", EquipmentStockListView.as_view(), name="equipment-stock"),
+    path("equipments/other/", EquipmentOtherListView.as_view(), name="equipment-other"),
     path(
         "equipments/<int:pk>/", EquipmentDetailView.as_view(), name="equipment-detail"
     ),

@@ -18,7 +18,6 @@ import ConversationService from '@/services/messaging/conversation'
 import AssociationService from '@/services/association/association'
 import SelectedAssoService from '@/services/association/selectedAsso'
 import { on } from '@/utils/eventBus'
-import AssociationDetailService from '@/services/association/details'
 
 const confirm = useConfirm()
 const toast = useToast()

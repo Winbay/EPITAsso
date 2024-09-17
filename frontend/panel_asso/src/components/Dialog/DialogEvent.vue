@@ -9,7 +9,7 @@ import Checkbox from 'primevue/checkbox'
 import Calendar from 'primevue/calendar'
 import FloatLabel from 'primevue/floatlabel'
 
-import { ref, onMounted, defineProps, type PropType } from 'vue'
+import { ref, onMounted, defineProps, type PropType, watch } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import type { EventTag } from '@/types/tagInterfaces'
 import type { EventCreation, EventModification } from '@/types/eventInterfaces'
@@ -57,6 +57,18 @@ const currEventRef = ref<EventCreation | EventModification>({
   ...(props.event || {}) // Spread existing event if it's passed
 })
 
+watch(
+  () => props.event,
+  (newEvent) => {
+    if (newEvent) {
+      currEventRef.value = { ...newEvent }
+    } else {
+      currEventRef.value = getDefaultEvent()
+    }
+  },
+  { immediate: true }
+)
+
 const startDate = ref(currEventRef.value.startDate)
 const endDate = ref(currEventRef.value.endDate)
 const endRecurrence = ref(currEventRef.value.endRecurrence)
@@ -77,13 +89,14 @@ const editOrCreate = async (): Promise<void> => {
       discordMessages
     )
   }
+  currEventRef.value = getDefaultEvent()
   await props.reloadEvents()
   props.setHidden()
 }
 
 const cancelDialog = () => {
   if (props.event) {
-    currEventRef.value = props.event
+    currEventRef.value = { ...props.event }
   } else {
     currEventRef.value = getDefaultEvent()
   }
@@ -95,7 +108,7 @@ const cancelDialog = () => {
 
 onMounted(() => {
   if (props.event) {
-    currEventRef.value = props.event
+    currEventRef.value = { ...props.event }
     startDate.value = new Date(props.event.startDate)
     endDate.value = new Date(props.event.endDate)
     endRecurrence.value = new Date(props.event.endRecurrence)

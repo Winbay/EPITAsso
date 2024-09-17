@@ -36,14 +36,38 @@ export default class EquipmentRequestService extends ApiService<
     super(toast, 'equipments/requests/', equipmentRequestSchema)
   }
 
-  async getRequestsReceived(): Promise<EquipmentRequest[]> {
-    const data = await this.getAllCustom('received')
-    return data.map((req) => this.snakeToCamel(req))
+  async getRequestsReceived(
+    limit: number,
+    offset: number
+  ): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: EquipmentRequest[]
+  }> {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    const { results, ...rest } = await this.getAllCustomWithParams('received', params.toString())
+    const equipments = results.map((equipment: yup.InferType<typeof equipmentRequestSchema>) =>
+      this.converterSchemaToInterface(equipment)
+    )
+    return { ...rest, results: equipments.map((equipment) => this.snakeToCamel(equipment)) }
   }
 
-  async getRequestsSent(): Promise<EquipmentRequest[]> {
-    const data = await this.getAllCustom('sent')
-    return data.map((req) => this.snakeToCamel(req))
+  async getRequestsSent(
+    limit: number,
+    offset: number
+  ): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: EquipmentRequest[]
+  }> {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    const { results, ...rest } = await this.getAllCustomWithParams('sent', params.toString())
+    const equipments = results.map((equipment: yup.InferType<typeof equipmentRequestSchema>) =>
+      this.converterSchemaToInterface(equipment)
+    )
+    return { ...rest, results: equipments.map((equipment) => this.snakeToCamel(equipment)) }
   }
 
   async acceptRequest(equipmentRequest: Pick<EquipmentRequest, 'id' | 'comment'>): Promise<void> {

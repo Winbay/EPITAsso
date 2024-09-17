@@ -4,6 +4,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import ConfirmPopup from 'primevue/confirmpopup'
+import Paginator from 'primevue/paginator'
 
 import { ref, onMounted } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
@@ -23,6 +24,10 @@ const confirm = useConfirm()
 const toast = useToast()
 const tagService: TagService = new TagService(toast, 'posts')
 const postService: PostService = new PostService(toast)
+
+const rowsPerPage = ref(5)
+const articlesCount = ref(0)
+const currentPage = ref(0)
 
 const confirmDelete = (event: Event, articleId: number) => {
   confirm.require({
@@ -49,7 +54,10 @@ const loadTags = async () => {
 }
 
 const reloadArticles = async () => {
-  articlesRef.value = await postService.getPosts()
+  const offset = currentPage.value * rowsPerPage.value
+  const articles = await postService.getPosts(rowsPerPage.value, offset)
+  articlesCount.value = articles.count
+  articlesRef.value = articles.results
 }
 
 const deleteArticle = async (articleId: number) => {
@@ -61,6 +69,12 @@ onMounted(async () => {
   await loadTags()
   await reloadArticles()
 })
+
+const handlePageChange = (event: { page: number; rows: number }) => {
+  currentPage.value = event.page
+  rowsPerPage.value = event.rows
+  reloadArticles()
+}
 </script>
 
 <template>
@@ -81,9 +95,6 @@ onMounted(async () => {
       striped-rows
       tableStyle="min-width: 50rem"
       size="small"
-      paginator
-      :rows="5"
-      :rowsPerPageOptions="[5, 10, 20, 50]"
       removableSort
     >
       <Column field="title" header="Titre" sortable></Column>
@@ -109,15 +120,15 @@ onMounted(async () => {
             <a
               href="javascript:void(0)"
               class="hover:underline"
-              @click="selectedArticleRef = slotProps.data.id"
+              @click="selectedArticleRef = slotProps.data"
               >Editer</a
             >
             <DialogArticle
-              :visible="selectedArticleRef === slotProps.data.id"
+              :visible="selectedArticleRef === slotProps.data"
               :set-hidden="closeDialog"
               :reload-articles="reloadArticles"
               :tags="tagsRef"
-              :article="JSON.parse(JSON.stringify(slotProps.data))"
+              :article="slotProps.data"
             />
             <ConfirmPopup></ConfirmPopup>
             <a
@@ -130,6 +141,13 @@ onMounted(async () => {
         </template>
       </Column>
     </DataTable>
+    <Paginator
+      class="p-paginator-bottom"
+      :rows="rowsPerPage"
+      :totalRecords="articlesCount"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      @page="handlePageChange($event)"
+    />
   </div>
 </template>
 

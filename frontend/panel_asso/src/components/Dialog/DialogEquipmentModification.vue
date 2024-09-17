@@ -3,8 +3,9 @@ import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
+import ImageUploader from '@/components/ImageUploader.vue'
 
-import { ref, defineProps, type PropType, onMounted } from 'vue'
+import { defineProps, type PropType, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type { EquipmentModification } from '@/types/equipmentInterfaces'
 import EquipmentService from '@/services/equipment/equipment'
@@ -21,34 +22,34 @@ const props = defineProps({
   equipment: {
     type: Object as PropType<EquipmentModification>,
     required: true
+  },
+  oldPhoto: {
+    type: String,
+    required: true
   }
 })
 
 const toast = useToast()
 const equipmentService: EquipmentService = new EquipmentService(toast)
 
-const currEquipment = ref<EquipmentModification>({
-  id: 0,
-  name: '',
-  quantity: 1,
-  photo: ''
-})
+const newPhoto = ref<File | null>(null)
 
 const updateEquipment = async () => {
-  await equipmentService.patchEquipment(currEquipment.value)
+  const newEquipment = { ...props.equipment }
+  newEquipment.photo = newPhoto.value
+  await equipmentService.patchEquipment(newEquipment)
   await props.reloadEquipments()
   props.setHidden()
   return true
 }
 
 const cancelDialog = () => {
-  currEquipment.value = props.equipment
   props.setHidden()
 }
 
-onMounted(() => {
-  currEquipment.value = props.equipment
-})
+const onImageChange = (file: File | null) => {
+  newPhoto.value = file
+}
 </script>
 
 <template>
@@ -62,7 +63,7 @@ onMounted(() => {
       <label for="name" class="mb-2 text-2xl font-bold text-wrap">Nom</label>
       <InputText
         id="name"
-        v-model="currEquipment.name"
+        v-model="$props.equipment.name"
         aria-describedby="username-help"
         placeholder="Nom du matériel"
         maxlength="255"
@@ -71,17 +72,19 @@ onMounted(() => {
     </div>
     <div class="content mb-6 flex flex-col justify-start">
       <label for="quantity" class="mb-2 text-2xl font-bold text-wrap">Quantité</label>
-      <InputNumber id="quantity" v-model="currEquipment.quantity" type="number" :min="1" />
+      <InputNumber id="quantity" v-model="$props.equipment.quantity" type="number" :min="1" />
+    </div>
+    <div class="content mb-6 flex flex-col justify-start" v-if="$props.equipment.photo">
+      <label class="text-2xl font-bold text-wrap">Photo actuelle</label>
+      <div class="w-1/3 h-1/3 mt-2">
+        <img :src="props.oldPhoto" alt="Matériel photo" />
+      </div>
     </div>
     <div class="content mb-6 flex flex-col justify-start">
-      <label for="photo" class="mb-2 text-2xl font-bold text-wrap">Photo (Optionnelle)</label>
-      <InputText
-        id="photo"
-        v-model="currEquipment.photo"
-        maxlength="255"
-        placeholder="Url de l'image"
-      />
-      <img v-if="currEquipment.photo !== ''" :src="currEquipment.photo" alt="Matériel photo" />
+      <label for="photo" class="mb-2 text-2xl font-bold text-wrap"
+        >Nouvelle photo (Optionnelle)</label
+      >
+      <ImageUploader v-on:update:model-value="onImageChange" />
     </div>
     <div class="mb-6 flex flex-col justify-start">
       <div class="flex justify-start items-center">

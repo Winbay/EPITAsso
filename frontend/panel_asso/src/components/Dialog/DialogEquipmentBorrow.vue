@@ -5,7 +5,6 @@ import Dialog from 'primevue/dialog'
 import { ref, defineProps, type PropType, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type { Equipment, EquipmentRequestCreation } from '@/types/equipmentInterfaces'
-import type { Association } from '@/types/associationInterfaces'
 import Calendar from 'primevue/calendar'
 import EquipmentService from '@/services/equipment/equipment'
 
@@ -31,14 +30,13 @@ const props = defineProps({
 const toast = useToast()
 const equipmentService: EquipmentService = new EquipmentService(toast)
 
-const currEquipment = ref<Equipment>()
 const currEquipmentRequest = ref<EquipmentRequestCreation>()
 const borrowingDate = ref(new Date(Date.now()))
 const dueDate = ref(new Date(Date.now()))
 const invalidDates = ref<Date[]>([])
 
 const borrowEquipment = async () => {
-  if (!currEquipment.value || !currEquipmentRequest.value) {
+  if (!props.equipment || !currEquipmentRequest.value) {
     return
   }
   if (borrowingDate.value < new Date()) {
@@ -59,7 +57,8 @@ const borrowEquipment = async () => {
     })
     return false
   }
-  await equipmentService.borrowEquipment(currEquipment.value.id, {
+  currEquipmentRequest.value.equipmentId = props.equipment.id
+  await equipmentService.borrowEquipment(props.equipment.id, {
     ...currEquipmentRequest.value,
     borrowingDate: borrowingDate.value.getTime() / 1000,
     dueDate: dueDate.value.getTime() / 1000
@@ -95,7 +94,6 @@ const loadInvalidDates = async () => {
 }
 
 onMounted(() => {
-  currEquipment.value = props.equipment
   currEquipmentRequest.value = {
     equipmentId: props.equipment.id,
     borrowingDate: Date.now() / 1000,
@@ -109,20 +107,20 @@ onMounted(() => {
     modal
     @update:visible="cancelDialog"
     header="Emprunt du matériel"
-    v-if="currEquipment && currEquipmentRequest"
+    v-if="props.equipment && currEquipmentRequest"
     @show="loadInvalidDates()"
   >
     <div class="mb-6 flex">
       <div class="title flex flex-col justify-start">
         <label for="name" class="mb-2 text-xl font-bold text-wrap">Matériel</label>
-        <span>Nom : {{ currEquipment.name }}</span>
-        <span>Quantité : {{ currEquipment.quantity }}</span>
+        <span>Nom : {{ props.equipment.name }}</span>
+        <span>Quantité : {{ props.equipment.quantity }}</span>
       </div>
       <div
-        v-if="currEquipment.photo !== ''"
+        v-if="props.equipment.photo !== ''"
         class="photo flex justify-start max-w-32 max-h-32 ml-6"
       >
-        <img :src="currEquipment.photo" alt="Matériel photo" />
+        <img :src="props.equipment.photo" alt="Matériel photo" />
       </div>
     </div>
 

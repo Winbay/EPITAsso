@@ -43,9 +43,21 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
     await this.create(eventDataToValidate, ['id', 'author'])
   }
 
-  async getEvents(): Promise<Event[]> {
-    const data = await this.getAll()
-    return data.map((event) => this.converterSchemaToInterface(event))
+  async getEvents(
+    limit: number,
+    offset: number
+  ): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: Event[]
+  }> {
+    const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
+    const { results, ...rest } = await this.getAllWithParams(params.toString())
+    const events = results.map((event: yup.InferType<typeof eventSchema>) =>
+      this.converterSchemaToInterface(event)
+    )
+    return { ...rest, results: events }
   }
 
   async getEventById(id: Event['id']): Promise<Event> {

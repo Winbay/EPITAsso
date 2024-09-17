@@ -24,9 +24,14 @@ export interface EquipmentRequest {
 }
 
 export interface EquipmentCreation
-  extends Omit<Equipment, 'id' | 'assoOwner' | 'equipmentRequest'> {}
+  extends Omit<Equipment, 'id' | 'assoOwner' | 'equipmentRequest' | 'photo'> {
+  photo: File | null
+}
 
-export interface EquipmentModification extends Omit<Equipment, 'assoOwner' | 'equipmentRequest'> {}
+export interface EquipmentModification
+  extends Omit<Equipment, 'assoOwner' | 'equipmentRequest' | 'photo'> {
+  photo: File | null
+}
 
 export interface EquipmentRequestCreation
   extends Omit<
