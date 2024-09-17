@@ -132,6 +132,12 @@ const openNewEventDialog = () => {
   selectedEventRef.value = null
   visibleDialogRef.value = true
 }
+
+const handlePageChange = (event: { page: number; rows: number }) => {
+  currentPage.value = event.page
+  rowsPerPage.value = event.rows
+  reloadEvents()
+}
 </script>
 
 <template>
@@ -219,11 +225,7 @@ const openNewEventDialog = () => {
       :rows="rowsPerPage"
       :totalRecords="eventsCount"
       :rowsPerPageOptions="[5, 10, 20, 50]"
-      @page="
-        currentPage = $event.page;
-        rowsPerPage = $event.rows;
-        reloadEvents()
-      "
+      @page="handlePageChange($event)"
     />
   </div>
 </template>

@@ -69,6 +69,12 @@ onMounted(async () => {
   await loadTags()
   await reloadArticles()
 })
+
+const handlePageChange = (event: { page: number; rows: number }) => {
+  currentPage.value = event.page
+  rowsPerPage.value = event.rows
+  reloadArticles()
+}
 </script>
 
 <template>
@@ -140,11 +146,7 @@ onMounted(async () => {
       :rows="rowsPerPage"
       :totalRecords="articlesCount"
       :rowsPerPageOptions="[5, 10, 20, 50]"
-      @page="
-        currentPage = $event.page;
-        rowsPerPage = $event.rows;
-        reloadArticles()
-      "
+      @page="handlePageChange($event)"
     />
   </div>
 </template>
