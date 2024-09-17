@@ -141,8 +141,8 @@ onMounted(async () => {
       :totalRecords="articlesCount"
       :rowsPerPageOptions="[5, 10, 20, 50]"
       @page="
-        currentPage = $event.page;
-        rowsPerPage = $event.rows;
+        currentPage = $event.page
+        rowsPerPage = $event.rows
         reloadArticles()
       "
     />
