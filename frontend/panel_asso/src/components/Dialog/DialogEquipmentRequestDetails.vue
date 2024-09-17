@@ -54,13 +54,27 @@ const timestampToString = (timestamp: number) => {
       }}</label>
       <div class="flex items-center">
         <Avatar
-          :image="props.received ? equipmentRequest.assoBorrower.logo : equipmentRequest.assoOwner.logo"
+          :image="
+            props.received ? equipmentRequest.assoBorrower.logo : equipmentRequest.assoOwner.logo
+          "
           size="xlarge"
           class="flex align-items-center justify-content-center mr-2"
         />
         <div class="flex flex-col mr-4">
-          <span>Nom de l'association : {{ props.received ? equipmentRequest.assoBorrower.name : equipmentRequest.assoOwner.name }}</span>
-          <span>Responsable : {{ props.received ? equipmentRequest.userRespoBorrower.login : equipmentRequest.userRespoOwner?.login }}</span>
+          <span
+            >Nom de l'association :
+            {{
+              props.received ? equipmentRequest.assoBorrower.name : equipmentRequest.assoOwner.name
+            }}</span
+          >
+          <span
+            >Responsable :
+            {{
+              props.received
+                ? equipmentRequest.userRespoBorrower.login
+                : equipmentRequest.userRespoOwner?.login
+            }}</span
+          >
           <span class="text-xs"
             >Emprunt : {{ timestampToString(equipmentRequest.borrowingDate) }}</span
           >

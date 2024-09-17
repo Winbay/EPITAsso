@@ -5,16 +5,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('association', '0004_association_slug_association_type_association_category'),
-        ('equipment', '0002_initial'),
+        ("association", "0004_association_slug_association_type_association_category"),
+        ("equipment", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='equipmentrequest',
-            name='asso_owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='equipment_owner_requests', to='association.association'),
+            model_name="equipmentrequest",
+            name="asso_owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="equipment_owner_requests",
+                to="association.association",
+            ),
         ),
     ]

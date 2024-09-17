@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from django.utils import timezone
 from django.db.models import Q, Subquery, Case, When, Value, IntegerField
-from association.models import Association
 from .models import Equipment, EquipmentRequest
 from .serializers import (
     EquipmentRequestSimpleSerializer,
