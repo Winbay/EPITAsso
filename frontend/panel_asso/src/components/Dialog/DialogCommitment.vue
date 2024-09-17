@@ -69,7 +69,7 @@ onMounted(() => {
         <Listbox :options="commitmentResumeEvents" optionLabel="name">
           <template #option="slotProps">
             <div class="flex justify-between items-center">
-              <div>{{ slotProps.option.event.name }}</div>
+              <div>{{ slotProps.option.name }}</div>
               <div>{{ slotProps.option.hours }} h</div>
             </div>
           </template>

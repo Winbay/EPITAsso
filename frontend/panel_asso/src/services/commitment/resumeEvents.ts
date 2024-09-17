@@ -3,13 +3,10 @@ import type { ToastServiceMethods } from 'primevue/toastservice'
 import type { EventMemberCommitment } from '@/types/commitmentInterface'
 import * as yup from 'yup'
 import type { Association } from '@/types/associationInterfaces'
-import { memberSchema } from '@/services/association/member'
-import { eventSchema } from '@/services/event/event'
 
 export const CommitmentResumeEventsSchema = yup.object({
   id: yup.number().required(),
-  member: memberSchema.required(),
-  event: eventSchema.required(),
+  name: yup.string().required(),
   hours: yup.number().required()
 }).required()
 
@@ -31,54 +28,12 @@ export default class CommitmentResumeEventsService extends ApiService<
     return [
       {
         id: 1,
-        member: {
-          id: 1,
-          login: 'john.doe',
-          firstName: 'John',
-          lastName: 'Doe',
-          role: 'member',
-          school: 'school'
-        },
-        event: {
-          id: 1,
-          name: 'event1',
-          start_date: new Date(),
-          end_date: new Date(),
-          description: 'description',
-          association: {
-            id: 1,
-            name: 'association',
-            description: 'description',
-            school: 'school',
-            members: []
-          }
-        },
+        name: 'Event 1',
         hours: 5
       },
       {
         id: 2,
-        member: {
-          id: 1,
-          login: 'john.doe',
-          firstName: 'John',
-          lastName: 'Doe',
-          role: 'member',
-          school: 'school'
-        },
-        event: {
-          id: 2,
-          name: 'event2',
-          start_date: new Date(),
-          end_date: new Date(),
-          description: 'description',
-          association: {
-            id: 2,
-            name: 'association',
-            description: 'description',
-            school: 'school',
-            members: []
-          }
-        },
+        name: 'Event 2',
         hours: 5
       }
     ]
@@ -89,15 +44,7 @@ export default class CommitmentResumeEventsService extends ApiService<
   ): EventMemberCommitment {
     return {
       id: commitmentResumeEvents.id,
-      member: {
-        id: commitmentResumeEvents.member.id,
-        login: commitmentResumeEvents.member.login,
-        firstName: commitmentResumeEvents.member.first_name,
-        lastName: commitmentResumeEvents.member.last_name,
-        role: commitmentResumeEvents.member.role,
-        school: commitmentResumeEvents.member.school
-      },
-      event: commitmentResumeEvents.event,
+      name: commitmentResumeEvents.name,
       hours: commitmentResumeEvents.hours
     }
   }

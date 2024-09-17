@@ -26,9 +26,16 @@ export default class CommitmentResumeService extends ApiService<
     )
   }
 
-  async getCommitmentsResume(): Promise<CommitmentResume[]> {
-    // const data = await this.getAll()
-    // return this.converterSchemaToInterface(data)
+  async getCommitmentsResume(startDate: Date | null, endDate: Date | null): Promise<CommitmentResume[]> {
+    // if (startDate === null && endDate === null) {
+    //   const { results } = await this.getAll()
+    //   return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume));
+    // }
+    //
+    // const params = new URLSearchParams({ start_date: startDate.toISOString(), end_date: endDate.toISOString() })
+    // const { results } = await this.getAllWithParams(params.toString())
+    // return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume))
+
     return [
       {
         id: 1,

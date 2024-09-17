@@ -6,13 +6,14 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
+import Toolbar from 'primevue/toolbar';
 import { FilterMatchMode } from 'primevue/api';
 import Calendar from 'primevue/calendar';
 import DialogStudentCommitment from '@/components/Dialog/DialogCommitment.vue'
 import { useToast } from 'primevue/usetoast'
 import type { CommitmentResume } from '@/types/commitmentInterface'
 import SelectedAssoService from '@/services/association/selectedAsso'
-import CommitmentResumeService from '@/services/commitment/resume'  // Import du composant Dialog
+import CommitmentResumeService from '@/services/commitment/resume'
 
 
 const toast = useToast()
@@ -27,7 +28,7 @@ const selectedCommitmentId = ref<number>();
 const fetchCommitments = async () => {
   loading.value = true;
   try {
-    commitmentsRef.value = await commitmentResumeService.getCommitmentsResume();
+    commitmentsRef.value = await commitmentResumeService.getCommitmentsResume(filters.value.dateRange.value[0], filters.value.dateRange.value[1]);
     // studentsCommitmentRef.value = [
     //   {
     //     id: 1,
@@ -58,7 +59,13 @@ const fetchCommitments = async () => {
 const initFilters = () => {
   filters.value = {
     login: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    dateRange: { value: null, matchMode: FilterMatchMode.BETWEEN }
+    dateRange: {
+      value: [
+        new Date(new Date().getFullYear() - 3, new Date().getMonth(), new Date().getDate()),
+        new Date()
+      ],
+      matchMode: FilterMatchMode.BETWEEN
+    }
   };
 };
 
@@ -76,7 +83,7 @@ const columns = [
   { field: 'login', header: 'Login' },
   { field: 'lastName', header: 'Nom',  hidden: true },
   { field: 'firstName', header: 'Prénom', hidden: true },
-  { field: 'commitmentHours', header: 'Nombre d’heures de “bureau”' },
+  { field: 'commitmentHours', header: 'Nombre d’heures de bureau' },
   { field: 'eventCommitmentHours', header: 'Nombre d’heures staff' },
   { field: 'totalHours', header: 'Total' }
 ];
@@ -128,23 +135,28 @@ onMounted(() => {
     <div class="h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Engagement Étudiant</span>
     </div>
-    <DataTable v-model:filters="filters" :value="commitmentsRef" paginator showGridlines :rows="10" dataKey="id"
-               filterDisplay="menu" :loading="loading" selectionMode="single"
+    <DataTable :value="commitmentsRef" paginator showGridlines :rows="10" dataKey="id" :loading="loading" selectionMode="single"
                @row-select="onRowSelect">
       <template #header>
-        <div class="flex justify-between items-center">
-          <div class="flex gap-4">
-            <Button icon="pi pi-external-link" label="Exporter" @click="exportCSV($event)" />
-            <Button type="button" icon="pi pi-filter-slash" label="Réinitialiser" outlined @click="clearFilter()" />
-          </div>
-          <IconField>
-            <InputIcon>
-              <i class="pi pi-search" />
-            </InputIcon>
-            <InputText v-model="filters['login'].value" placeholder="Recherche par login" />
-          </IconField>
-          <Calendar v-model="filters['dateRange'].value" selectionMode="range" placeholder="Sélectionnez une période" showIcon />
-        </div>
+        <Toolbar style="border: none;" class="p-0">
+          <template #start>
+            <Button icon="pi pi-external-link" severity="secondary" text @click="exportCSV" v-tooltip.top="'Exporter'"/>
+            <Button icon="pi pi-filter-slash" severity="secondary" text @click="clearFilter" v-tooltip.top="'Réinitialiser les filtres'"/>
+          </template>
+
+          <template #center>
+            <IconField>
+              <InputIcon>
+                <i class="pi pi-search" />
+              </InputIcon>
+              <InputText v-model="filters['login'].value" placeholder="Recherche par login" />
+            </IconField>
+          </template>
+
+          <template #end>
+              <Calendar v-model="filters['dateRange'].value" selectionMode="range" placeholder="Sélectionnez une période" showIcon />
+          </template>
+        </Toolbar>
       </template>
       <template #empty> Aucun étudiant trouvé. </template>
       <template #loading> Chargement des données des étudiants. Veuillez patienter. </template>

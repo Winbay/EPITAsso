@@ -20,7 +20,6 @@ export interface CommitmentResume {
 
 export interface EventMemberCommitment {
   id: number
-  member: Omit<Member, 'id'>
-  event: Omit<Event, 'id'>
+  name: string
   hours: number
 }
