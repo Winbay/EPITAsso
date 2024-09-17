@@ -194,11 +194,13 @@ class EquipmentBorrowView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            association_borrower = self.__get_association_borrower()
+            association_borrower = getattr(request, "association")
+            asso_owner = equipment.asso_owner
 
             serializer.save(
                 user_respo_borrower=request.user,
                 asso_borrower=association_borrower,
+                asso_owner=asso_owner,
                 user_respo_owner=None,
             )
 
@@ -209,14 +211,6 @@ class EquipmentBorrowView(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def __get_association_borrower(self):
-        association_id = self.kwargs.get("association_id")
-        try:
-            association = Association.objects.get(id=association_id)
-        except Association.DoesNotExist:
-            raise serializers.ValidationError("Invalid association ID")
-        return association
 
     def __get_equipment(self, equipment_id):
         try:

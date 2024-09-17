@@ -3,6 +3,13 @@ from django.db import models
 
 class EquipmentRequest(models.Model):
     id = models.AutoField(primary_key=True)
+    asso_owner = models.ForeignKey(
+        "association.Association",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="equipment_owner_requests",
+    )
     user_respo_owner = models.ForeignKey(
         "user.User",
         on_delete=models.SET_NULL,
