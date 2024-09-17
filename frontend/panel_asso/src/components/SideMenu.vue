@@ -33,7 +33,7 @@ const items = [
     items: [
       {
         label: 'Engagement étudiant',
-        path: 'engagement-etudiant'
+        path: 'commitments'
       },
       { label: 'Fiche évènement' },
       { label: "Création d'association" }

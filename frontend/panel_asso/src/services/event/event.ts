@@ -6,7 +6,7 @@ import { tagSchema } from '../tag'
 
 const tagsSchema = yup.array().of(tagSchema).required()
 
-const eventSchema = yup
+export const eventSchema = yup
   .object({
     id: yup.number().required(),
     author: yup.string().required(),
