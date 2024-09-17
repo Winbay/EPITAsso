@@ -188,7 +188,7 @@ const handlePageChange = (event: { page: number; rows: number }) => {
             <Button
               icon="pi pi-pen-to-square"
               @click="
-                visibleDialogRef = true;
+                visibleDialogRef = true
                 selectedEventRef = slotProps.data
               "
               v-tooltip="'Editer l\'évènement'"
