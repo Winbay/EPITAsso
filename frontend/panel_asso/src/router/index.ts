@@ -5,7 +5,6 @@ import Events from '@/views/Events.vue'
 import Articles from '@/views/Articles.vue'
 import Login from '@/components/Login.vue'
 import MyAssociation from '@/views/MyAssociation.vue'
-import Profile from '@/views/Profile.vue'
 import Messaging from '@/views/Messaging.vue'
 import Equipment from '@/views/Equipment.vue'
 import { ASSOCIATION_ID } from '@/services/api'
@@ -19,7 +18,6 @@ const router = createRouter({
     { path: '/articles', component: Articles },
     // { path: '/mon-association', component: MyAssociation },
     { path: '/login', component: Login },
-    { path: '/profile', component: Profile },
     { path: '/messaging', component: Messaging },
     { path: '/equipment', component: Equipment }
   ]
