@@ -66,8 +66,8 @@ class AssociationSimpleSerializer(serializers.ModelSerializer):
 class AssociationSimpleWithLogoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Association
-        fields = ["id", "name", "logo"]
-        read_only_fields = ["id", "name", "logo"]
+        fields = ["id", "name", "logo", "slug"]
+        read_only_fields = ["id", "name", "logo", "slug"]
 
 
 class MemberSerializer(serializers.ModelSerializer):
