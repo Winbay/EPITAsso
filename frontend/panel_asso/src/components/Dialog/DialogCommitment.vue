@@ -26,26 +26,23 @@ const props = defineProps({
 const toast = useToast();
 const commitmentResumeEventsService: CommitmentResumeEventsService = new CommitmentResumeEventsService(toast, +SelectedAssoService.getAssociationId() ,props.selectedCommitmentId);
 
-const commitmentResumeEvents = ref<EventMemberCommitment[]>(commitmentResumeEventsService.getCommitmentResumeEvents());
+const commitmentResumeEvents = ref<EventMemberCommitment[]>([]);
 
 const cancelDialog = () => {
   props.setHidden();
 };
 
-onMounted(() => {
-
+onMounted(async () => {
+  commitmentResumeEvents.value = await commitmentResumeEventsService.getCommitmentResumeEvents(props.selectedCommitmentId);
 });
 </script>
 
 <template>
   <Dialog modal :visible="true" @update:visible="cancelDialog" :style="{ width: '40vw' }">
-    <!-- Custom header -->
     <template #header>
       <div class="items-center">
         <h2 class="m-0 font-semibold text-xl text-primary">{{ commitmentResume.firstName }}
           {{ commitmentResume.lastName }}</h2>
-<!--        <p class="m-0 text-sm text-secondary">{{ studentCommitmentDetail.member.role }} - -->
-<!--          {{ studentCommitmentDetail.member.school }}</p>-->
       </div>
     </template>
 

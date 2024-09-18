@@ -18,25 +18,14 @@ export default class CommitmentResumeEventsService extends ApiService<
       toast,
       `associations/${associationId}/commitments/resume/${memberId}/`,
       CommitmentResumeEventsSchema,
+      null,
       `api/associations/${associationId}/commitments/resume/${memberId}/`
     )
   }
 
-  getCommitmentResumeEvents(): EventMemberCommitment[] {
-    // const data = await this.getAll()
-    // return data.map((commitmentResumeEvents) => this.converterSchemaToInterface(commitmentResumeEvents))
-    return [
-      {
-        id: 1,
-        name: 'Event 1',
-        hours: 5
-      },
-      {
-        id: 2,
-        name: 'Event 2',
-        hours: 5
-      }
-    ]
+  async getCommitmentResumeEvents(): Promise<EventMemberCommitment[]> {
+    const data = await this.getAll()
+    return data.map((commitmentResumeEvents) => this.converterSchemaToInterface(commitmentResumeEvents))
   }
 
   protected converterSchemaToInterface(

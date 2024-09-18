@@ -12,7 +12,7 @@ export const commitmentResumeSchema = yup.object({
   commitment_hours: yup.number().required(),
   event_commitment_hours: yup.number().required(),
   total_hours: yup.number().required(),
-});
+}).required();
 
 export default class CommitmentResumeService extends ApiService<
   yup.InferType<typeof commitmentResumeSchema>
@@ -22,40 +22,20 @@ export default class CommitmentResumeService extends ApiService<
       toast,
       `associations/${associationId}/commitments/resume-all/`,
       commitmentResumeSchema,
+      null,
       `api/associations/${associationId}/commitments/resume-all/`
     )
   }
 
-  async getCommitmentsResume(startDate: Date | null, endDate: Date | null): Promise<CommitmentResume[]> {
-    // if (startDate === null && endDate === null) {
-    //   const { results } = await this.getAll()
-    //   return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume));
-    // }
-    //
-    // const params = new URLSearchParams({ start_date: startDate.toISOString(), end_date: endDate.toISOString() })
-    // const { results } = await this.getAllWithParams(params.toString())
-    // return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume))
+  async getCommitmentsResume(startDate: Date | null, endDate: Date | null, login: string | null): Promise<CommitmentResume[]> {
+    if (startDate === null && endDate === null) {
+      const { results } = await this.getAll()
+      return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume));
+    }
 
-    return [
-      {
-        id: 1,
-        login: 'john.doe',
-        firstName: 'John',
-        lastName: 'Doe',
-        commitmentHours: 5,
-        eventCommitmentHours: 5,
-        totalHours: 10,
-      },
-      {
-        id: 2,
-        login: 'jane.doe',
-        firstName: 'Jane',
-        lastName: 'Doe',
-        commitmentHours: 5,
-        eventCommitmentHours: 5,
-        totalHours: 10,
-      }
-    ]
+    const params = new URLSearchParams({ end_date: endDate.toISOString(), start_date: startDate.toISOString(), login: login ? login: ""  })
+    const results = await this.getAllCustom("?" + params.toString())
+    return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume))
   }
 
   protected converterSchemaToInterface(

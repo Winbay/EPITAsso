@@ -28,27 +28,7 @@ const selectedCommitmentId = ref<number>();
 const fetchCommitments = async () => {
   loading.value = true;
   try {
-    commitmentsRef.value = await commitmentResumeService.getCommitmentsResume(filters.value.dateRange.value[0], filters.value.dateRange.value[1]);
-    // studentsCommitmentRef.value = [
-    //   {
-    //     id: 1,
-    //     login: 'john.doe',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     commitmentHours: 5,
-    //     eventCommitmentHours: 5,
-    //     totalHours: 10,
-    //   },
-    //   {
-    //     id: 2,
-    //     login: 'jane.doe',
-    //     firstName: 'Jane',
-    //     lastName: 'Doe',
-    //     commitmentHours: 5,
-    //     eventCommitmentHours: 5,
-    //     totalHours: 10,
-    //   }
-    // ];
+    commitmentsRef.value = await commitmentResumeService.getCommitmentsResume(filters.value.dateRange.value[0], filters.value.dateRange.value[1], filters.value['login'].value);
   } catch (error) {
     console.error(error);
   } finally {
@@ -58,7 +38,7 @@ const fetchCommitments = async () => {
 
 const initFilters = () => {
   filters.value = {
-    login: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    login: { value: "", matchMode: FilterMatchMode.CONTAINS },
     dateRange: {
       value: [
         new Date(new Date().getFullYear() - 3, new Date().getMonth(), new Date().getDate()),
@@ -115,7 +95,7 @@ watch(() => filters.value.dateRange.value, (newVal, oldVal) => {
 });
 
 watch(() => filters.value['login'].value, (newVal, oldVal) => {
-  if (newVal !== oldVal) {
+  if (newVal !== oldVal && newVal.length % 3 === 0) {
     fetchCommitments();
   }
 });
