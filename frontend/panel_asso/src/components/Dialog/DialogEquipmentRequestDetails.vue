@@ -37,8 +37,13 @@ const timestampToString = (timestamp: number) => {
 </script>
 
 <template>
-  <Dialog class="dialog-details" modal @update:visible="cancelDialog" header="Détails de la demande"
-    v-if="equipmentRequest">
+  <Dialog
+    class="dialog-details"
+    modal
+    @update:visible="cancelDialog"
+    header="Détails de la demande"
+    v-if="equipmentRequest"
+  >
     <div class="title mb-6 flex flex-col justify-start">
       <label for="name" class="mb-2 text-xl font-bold text-wrap underline">Matériel</label>
       <span>{{ equipmentRequest.equipmentName }}</span>
@@ -48,18 +53,26 @@ const timestampToString = (timestamp: number) => {
         props.received ? 'Association emprunteuse' : 'Association propriétaire'
       }}</label>
       <div class="flex items-center">
-        <Avatar :image="props.received ? equipmentRequest.assoBorrower.logo : equipmentRequest.assoOwner.logo
-          " size="xlarge" class="flex align-items-center justify-content-center mr-2" />
+        <Avatar
+          :image="
+            props.received ? equipmentRequest.assoBorrower.logo : equipmentRequest.assoOwner.logo
+          "
+          size="xlarge"
+          class="flex align-items-center justify-content-center mr-2"
+        />
         <div class="flex flex-col mr-4">
-          <span>Nom de l'association :
+          <span
+            >Nom de l'association :
             {{
               props.received ? equipmentRequest.assoBorrower.name : equipmentRequest.assoOwner.name
-            }}</span>
-          <span v-if="props.received">Responsable :
-            {{
-              equipmentRequest.userRespoBorrower.login
-            }}</span>
-          <span class="text-xs">Emprunt : {{ timestampToString(equipmentRequest.borrowingDate) }}</span>
+            }}</span
+          >
+          <span v-if="props.received"
+            >Responsable : {{ equipmentRequest.userRespoBorrower.login }}</span
+          >
+          <span class="text-xs"
+            >Emprunt : {{ timestampToString(equipmentRequest.borrowingDate) }}</span
+          >
           <span class="text-xs">Retour : {{ timestampToString(equipmentRequest.dueDate) }}</span>
         </div>
       </div>
