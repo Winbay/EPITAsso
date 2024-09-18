@@ -5,7 +5,9 @@ import * as yup from 'yup'
 const associationSchema = yup.object({
   id: yup.number().required(),
   name: yup.string().required(),
-  logo: yup.string().required()
+  logo: yup.string().required(),
+  category: yup.string().required(),
+  slug: yup.string().required()
 })
 
 export default class SelectedAssoService {
@@ -24,6 +26,17 @@ export default class SelectedAssoService {
     try {
       const response = await djangoApi['get']<(typeof associationSchema)[]>(
         '/api/users/me/associations'
+      )
+      return response.data.map((asso) => this.snakeToCamel(asso))
+    } catch (error) {
+      this.handleError(error, `GET: An error occured.`)
+    }
+  }
+
+  static async getLargestAssociations(): Promise<AssociationWithLogo[]> {
+    try {
+      const response = await djangoApi['get']<(typeof associationSchema)[]>(
+        '/api/associations/largest'
       )
       return response.data.map((asso) => this.snakeToCamel(asso))
     } catch (error) {

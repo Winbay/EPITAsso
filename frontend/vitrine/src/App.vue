@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MainHeader from "@/components/common/layout/MainHeader.vue";
+import MainFooter from "@/components/common/layout/MainFooter.vue";
 import {onMounted} from "vue";
 import {useUserStore} from "@/stores/user";
 import Toast from "primevue/toast";
@@ -14,6 +15,7 @@ onMounted(async () => {
 <template>
   <MainHeader/>
   <router-view/>
+  <MainFooter />
   <Toast />
 </template>
 

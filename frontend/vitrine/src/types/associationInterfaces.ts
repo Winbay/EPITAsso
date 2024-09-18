@@ -22,6 +22,8 @@ export interface Association {
   content: string
   location: string
   logo: string
+  category: string
+  slug: string
 }
 
 export interface AssociationDetail extends Association {
@@ -29,7 +31,7 @@ export interface AssociationDetail extends Association {
   faqs: Faq[]
 }
 
-export interface AssociationWithLogo extends Pick<Association, 'id' | 'name' | 'logo'> {}
+export interface AssociationWithLogo extends Pick<Association, 'id' | 'name' | 'logo' | 'category' | 'slug'> {}
 
 export interface AssociationCarousel {
   name: string

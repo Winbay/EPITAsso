@@ -81,7 +81,7 @@ export default class ApiService<SchemaType> {
   }
 
   protected async getAllCustom(route: string): Promise<SchemaType[]> {
-    const data = await this.request<SchemaType[]>('get', `${this.getFullPath()}${route}`)
+    const data = await this.request<SchemaType[]>('get', `${route}`)
     return this.validateArray(data, yup.array().of(this.schema).required())
   }
 
