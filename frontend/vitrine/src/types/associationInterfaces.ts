@@ -44,6 +44,8 @@ export interface AssociationWithSN extends AssociationWithSNTemp {
   socialNetworks: SocialNetwork[]
 }
 
+export interface AssociationInEvent extends Pick<Association, 'id' | 'name' | 'logo' | 'slug'> {}
+
 export interface AssociationCarousel {
   name: string
   content: string
