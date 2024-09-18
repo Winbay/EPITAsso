@@ -82,7 +82,7 @@ header {
   box-shadow: none;
 }
 
-header .header-right .btn-connection {
+.btn-connection {
   background-color: #4482A1;
   border-radius: 8px;
 }
