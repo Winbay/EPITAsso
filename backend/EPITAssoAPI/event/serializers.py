@@ -2,10 +2,12 @@ from rest_framework import serializers
 from .models import Event
 from post.models import Tag
 from post.serializers import TagSerializer
+from association.serializers import AssociationSimpleWithLogoSerializer
 
 
 class EventSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
+    association = AssociationSimpleWithLogoSerializer(read_only=True)
     author = serializers.SerializerMethodField()
 
     class Meta:
@@ -13,7 +15,7 @@ class EventSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "author",
-            # "association",
+            "association",
             "name",
             "content",
             "start_date",
