@@ -42,8 +42,8 @@ onMounted(async () => {
           <span class="text-sm text-gray-500">- {{ formatDate(event.startDate) }}</span>
         </div>
         <div class="asso-info flex gap-1 items-center">
-          <img alt="Logo test" src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"/>
-          <span>Association Name</span>
+          <img :alt="'Logo ' + event.association.name" :src="event.association.logo"/>
+          <span>{{ event.association.name }}</span>
         </div>
       </div>
       <span class="event-content">{{ getInnerText(event.content) }}</span>

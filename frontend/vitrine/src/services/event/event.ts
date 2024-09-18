@@ -6,6 +6,14 @@ import { tagSchema } from '../tag'
 
 const tagsSchema = yup.array().of(tagSchema).required()
 
+const associationInEventSchema = yup
+  .object({
+    id: yup.number().required(),
+    name: yup.string().required(),
+    logo: yup.string().required(),
+    slug: yup.string().required()
+  })
+
 const eventSchema = yup
   .object({
     id: yup.number().required(),
@@ -17,7 +25,8 @@ const eventSchema = yup
     end_date: yup.date().required(),
     recurrent: yup.boolean().required(),
     frequency: yup.number().required(),
-    end_recurrence: yup.date().required()
+    end_recurrence: yup.date().required(),
+    association: associationInEventSchema
   })
   .required()
 
@@ -100,7 +109,13 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
       endDate: event.end_date,
       recurrent: event.recurrent,
       frequency: event.frequency,
-      endRecurrence: event.end_recurrence
+      endRecurrence: event.end_recurrence,
+      association: {
+        id: event.association.id,
+        name: event.association.name,
+        logo: event.association.logo,
+        slug: event.association.slug
+      }
     }
   }
 }

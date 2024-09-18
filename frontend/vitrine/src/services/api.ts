@@ -60,7 +60,7 @@ djangoApi.interceptors.request.use(
           } catch (error) {
             console.error('Failed to refresh token:', error)
             const userStore = useUserStore()
-            userStore.setUser(null)
+            userStore.user = null
             localStorage.removeItem(ACCESS_TOKEN_KEY)
             localStorage.removeItem(REFRESH_TOKEN_KEY)
             window.location.href = '/'
@@ -76,7 +76,7 @@ djangoApi.interceptors.request.use(
   },
   (error) => {
     const userStore = useUserStore()
-    userStore.setUser(null)
+    userStore.user = null
     localStorage.removeItem(ACCESS_TOKEN_KEY)
     localStorage.removeItem(REFRESH_TOKEN_KEY)
     window.location.href = '/'

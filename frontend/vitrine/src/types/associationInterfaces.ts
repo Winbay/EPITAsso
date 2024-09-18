@@ -33,6 +33,8 @@ export interface AssociationDetail extends Association {
 
 export interface AssociationWithLogo extends Pick<Association, 'id' | 'name' | 'logo' | 'category' | 'slug'> {}
 
+export interface AssociationInEvent extends Pick<Association, 'id' | 'name' | 'logo' | 'slug'> {}
+
 export interface AssociationCarousel {
   name: string
   content: string

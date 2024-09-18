@@ -1,4 +1,5 @@
 import type { EventTag } from './tagInterfaces'
+import type {AssociationInEvent} from "@/types/associationInterfaces";
 
 export interface Event {
   id: number
@@ -11,6 +12,7 @@ export interface Event {
   recurrent: boolean
   frequency: number
   endRecurrence: Date
+  association: AssociationInEvent
 
   // association: Association
   // placesNumber: number

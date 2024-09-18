@@ -5,6 +5,14 @@ import type {CustomToast} from "@/types/toastInterfaces";
 
 const API_PATH = 'api'
 
+const createApiPaginationSchema = <T>(resultsSchema: yup.Schema<T>) =>
+  yup.object({
+    count: yup.number().required(),
+    next: yup.string().nullable().required(),
+    previous: yup.string().nullable().required(),
+    results: yup.array().of(resultsSchema).required(),
+  });
+
 export default class ApiService<SchemaType> {
   toast: CustomToast | null
   basePath: string
@@ -62,6 +70,15 @@ export default class ApiService<SchemaType> {
   protected async getAll(): Promise<SchemaType[]> {
     const data = await this.request<SchemaType[]>('get', `${this.getFullPath()}`)
     return this.validateArray(data, yup.array().of(this.schema).required())
+  }
+
+  protected async getAllPagination(
+    limit: number, offset: number
+  ): Promise<{ count: number; next: string | null; previous: string | null; results: SchemaType[] }> {
+    const url = `${this.getFullPath()}?limit=${limit}&offset=${offset}`
+    const data = await this.request<SchemaType[]>('get', url)
+    const paginationSchema = createApiPaginationSchema(this.schema);
+    return await paginationSchema.validate(data, {abortEarly: false});
   }
 
   protected async getAllWithParams(params: string): Promise<{
