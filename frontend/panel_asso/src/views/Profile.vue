@@ -39,7 +39,9 @@ onBeforeUnmount(() => {
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 z-40" @click="closeProfile"></div>
 
-  <div class="absolute z-50 flex justify-center items-center left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+  <div
+    class="absolute z-50 flex justify-center items-center left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+  >
     <Card
       class="relative m-10 card flex flex-col justify-center text-center p-8 rounded-lg w-fit bg-gray-800 text-white shadow-lg"
     >
@@ -48,7 +50,7 @@ onBeforeUnmount(() => {
         <Button
           icon="pi pi-times"
           class="p-button-secondary p-button-rounded p-button-text"
-          style="position: absolute; top: 1rem; right: 1rem;"
+          style="position: absolute; top: 1rem; right: 1rem"
           @click="closeProfile"
         />
       </template>
