@@ -9,6 +9,7 @@ from .models import Equipment, EquipmentRequest
 
 class EquipmentRequestSerializer(serializers.ModelSerializer):
     asso_borrower = AssociationSimpleWithLogoSerializer(read_only=True)
+    asso_owner = AssociationSimpleWithLogoSerializer(read_only=True)
     user_respo_borrower = UserSimpleSerializer(read_only=True)
     user_respo_owner = UserSimpleSerializer(read_only=True)
     borrowing_date = serializers.IntegerField()
@@ -18,6 +19,7 @@ class EquipmentRequestSerializer(serializers.ModelSerializer):
         model = EquipmentRequest
         fields = [
             "id",
+            "asso_owner",
             "user_respo_owner",
             "asso_borrower",
             "user_respo_borrower",

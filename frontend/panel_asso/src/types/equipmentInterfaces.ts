@@ -14,6 +14,7 @@ export interface EquipmentRequest {
   id: number
   equipmentId: number // Foreign key
   equipmentName: string // Qu'on garde le nom quand un equipment est delete
+  assoOwner: Pick<Association, 'id' | 'name' | 'logo'>
   userRespoOwner: Pick<User, 'id' | 'login'> | null
   assoBorrower: Pick<Association, 'id' | 'name' | 'logo'>
   userRespoBorrower: Pick<User, 'id' | 'login'>
@@ -39,6 +40,7 @@ export interface EquipmentRequestCreation
     | 'id'
     | 'equipmentName'
     | 'userRespoOwner'
+    | 'assoOwner'
     | 'assoBorrower'
     | 'userRespoBorrower'
     | 'status'
