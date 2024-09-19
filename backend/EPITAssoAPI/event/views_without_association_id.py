@@ -8,13 +8,11 @@ from .serializers import (
     EventMemberCommitmentSerializer,
     EventSerializer,
 )
-from user.permissions import IsMemberOfAssociation
 
 
 class UpcomingEventsView(generics.ListAPIView):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
-    permission_classes = [IsMemberOfAssociation]
 
     def get_queryset(self):
         limit = self.request.query_params.get("limit", 3)
@@ -39,7 +37,6 @@ class EventListPaginationView(generics.ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     pagination_class = LimitOffsetPagination
-    permission_classes = [IsMemberOfAssociation]
 
     def get_queryset(self):
         return super().get_queryset().order_by("-start_date")
@@ -52,7 +49,6 @@ class EventListPaginationView(generics.ListAPIView):
 class EventMemberCommitmentListView(generics.ListAPIView):
     queryset = EventMemberCommitment.objects.all()
     serializer_class = EventMemberCommitmentSerializer
-    permission_classes = [IsMemberOfAssociation]
 
     def get_queryset(self):
         event_id = self.kwargs["pk"]
@@ -66,7 +62,6 @@ class EventMemberCommitmentListView(generics.ListAPIView):
 class EventMemberCommitmentBulkUpdateView(generics.UpdateAPIView):
     queryset = EventMemberCommitment.objects.all()
     serializer_class = EventMemberCommitmentSerializer
-    permission_classes = [IsMemberOfAssociation]
 
     @extend_schema(
         summary="Bulk update EventMemberCommitments",

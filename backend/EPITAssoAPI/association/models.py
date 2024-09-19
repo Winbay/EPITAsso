@@ -84,9 +84,10 @@ class Commitment(models.Model):
     def save(self, *args, **kwargs):
         if self.start_date > self.end_date:
             raise ValueError("Start date must be before end date.")
+        is_new = self._state.adding
         super().save(*args, **kwargs)
 
-        if self.association:
+        if is_new and self.association:
             members = AssociateUserAndAssociation.objects.filter(
                 association=self.association
             )

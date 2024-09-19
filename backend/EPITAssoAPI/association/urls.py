@@ -10,6 +10,7 @@ from .views import (
     CommitmentListView,
     FaqListView,
     FaqDetailView,
+    MemberCommitmentBulkUpdateView,
     ResumeAllCommitmentsView,
     ResumeEventsCommitmentsForOneMemberView,
     LargestAssociationView,
@@ -80,5 +81,10 @@ urlpatterns = [
         "associations/<int:pk>/commitments/resume/<int:member_id>/",
         ResumeEventsCommitmentsForOneMemberView.as_view(),
         name="resume-all-commitments",
+    ),
+    path(
+        "associations/<int:pk>/commitments/bulk-update/",
+        MemberCommitmentBulkUpdateView.as_view(),
+        name="bulk-update-commitments",
     ),
 ]

@@ -3,6 +3,7 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiResponse,
     OpenApiTypes,
+    OpenApiExample,
 )
 from django.db.models import Count, Sum
 from django.utils.dateparse import parse_datetime
@@ -27,6 +28,7 @@ from .serializers import (
     AssociationSerializer,
     CommitmentSerializer,
     FaqSerializer,
+    MemberCommitmentSerializer,
     MemberSerializer,
 )
 from user.permissions import IsMemberOfAssociation
@@ -400,7 +402,7 @@ class ResumeAllCommitmentsView(APIView):
             response_data.append(
                 {
                     "id": member.id,
-                    "login": member.user.username,
+                    "login": member.user.login,
                     "first_name": member.user.first_name,
                     "last_name": member.user.last_name,
                     "commitment_hours": hours["commitment_hours"],
@@ -425,3 +427,93 @@ class ResumeEventsCommitmentsForOneMemberView(generics.ListAPIView):
     @extend_schema(summary="List all EventMemberCommitments for one user")
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+
+class MemberCommitmentBulkUpdateView(generics.UpdateAPIView):
+    queryset = MemberCommitment.objects.all()
+    serializer_class = MemberCommitmentSerializer
+    # permission_classes = [IsMemberOfAssociation]
+
+    @extend_schema(
+        summary="Bulk update MemberCommitments",
+        description=(
+            "This endpoint allows bulk updating of multiple MemberCommitments. "
+            "Each commitment must be identified by its ID, and the `hours` field can be updated. "
+            "The request body should be a list of objects, each containing an `id` and any fields to be updated."
+        ),
+        request={
+            "application/json": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "example": 1,
+                            "description": "The ID of the MemberCommitment to update",
+                        },
+                        "hours": {
+                            "type": "integer",
+                            "example": 5,
+                            "description": "Number of hours committed",
+                        },
+                    },
+                    "required": ["id"],
+                },
+            }
+        },
+        responses={
+            status.HTTP_200_OK: OpenApiExample(
+                "Success",
+                summary="Successful update",
+                value=[
+                    {"id": 1, "member": 1, "hours": 5},
+                    {"id": 2, "member": 2, "hours": 3},
+                ],
+            ),
+            status.HTTP_400_BAD_REQUEST: OpenApiExample(
+                "Invalid request",
+                summary="Invalid request data",
+                value={"error": "Request data should be a list of commitments"},
+            ),
+            status.HTTP_404_NOT_FOUND: OpenApiExample(
+                "Commitment not found",
+                summary="Commitment not found",
+                value={"error": "MemberCommitment with ID 5 not found"},
+            ),
+        },
+    )
+    def patch(self, request, *args, **kwargs):
+        commitments_data = request.data
+
+        if not isinstance(commitments_data, list):
+            return Response(
+                {"error": "Request data should be a list of commitments"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        updated_commitments = []
+
+        for commitment_data in commitments_data:
+            try:
+                commitment_instance = MemberCommitment.objects.get(
+                    id=commitment_data["id"]
+                )
+            except MemberCommitment.DoesNotExist:
+                return Response(
+                    {
+                        "error": f"MemberCommitment with ID {commitment_data['id']} not found"
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            serializer = self.get_serializer(
+                commitment_instance, data=commitment_data, partial=True
+            )
+            if serializer.is_valid():
+                serializer.save()
+                updated_commitments.append(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(updated_commitments, status=status.HTTP_200_OK)
