@@ -80,3 +80,20 @@ class MemberSerializer(serializers.ModelSerializer):
         model = AssociateUserAndAssociation
         fields = ["id", "role", "login", "first_name", "last_name", "school"]
         read_only_fields = ["id", "role", "login", "first_name", "last_name", "school"]
+
+
+class AssociationListPaginationSerializer(serializers.ModelSerializer):
+    social_networks = SocialNetworkSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Association
+        fields = [
+            "id",
+            "name",
+            "content",
+            "logo",
+            "slug",
+            "social_networks",
+        ]
+        read_only_fields = ["id"]
+        depth = 1

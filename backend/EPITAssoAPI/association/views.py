@@ -5,6 +5,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from .models import AssociateUserAndAssociation, Association, Faq, SocialNetwork
 from .serializers import (
     AssociationDetailsSerializer,
+    AssociationListPaginationSerializer,
     AssociationSerializer,
     FaqSerializer,
     MemberSerializer,
@@ -27,7 +28,7 @@ class AssociationListView(generics.ListCreateAPIView):
 
 class AssociationListPaginationView(generics.ListAPIView):
     queryset = Association.objects.all()
-    serializer_class = AssociationSerializer
+    serializer_class = AssociationListPaginationSerializer
     pagination_class = LimitOffsetPagination
 
     @extend_schema(summary="List all Associations with pagination (limit, offset)")
