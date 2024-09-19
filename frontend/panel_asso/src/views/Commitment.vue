@@ -7,28 +7,36 @@ import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import Toolbar from 'primevue/toolbar';
+import Paginator from 'primevue/paginator'
 import { FilterMatchMode } from 'primevue/api';
 import Calendar from 'primevue/calendar';
+
 import DialogStudentCommitment from '@/components/Dialog/DialogCommitment.vue'
 import { useToast } from 'primevue/usetoast'
 import type { CommitmentResume } from '@/types/commitmentInterface'
 import SelectedAssoService from '@/services/association/selectedAsso'
 import CommitmentResumeService from '@/services/commitment/resume'
 
-
 const toast = useToast()
 const commitmentResumeService: CommitmentResumeService = new CommitmentResumeService(toast, +SelectedAssoService.getAssociationId());
 
 const commitmentsRef = ref<CommitmentResume[]>([]);
-const filters = ref();
+const filters = ref({});
 const loading = ref(true);
 const visibleDialogRef = ref(false)
 const selectedCommitmentId = ref<number>();
 
+const rowsPerPage = ref(5)
+const currentPage = ref(0)
+const commitmentsCount = ref(0);
+
 const fetchCommitments = async () => {
   loading.value = true;
   try {
+    const offset = currentPage.value * rowsPerPage.value
+    // TODO: call api to get commitments with pagination
     commitmentsRef.value = await commitmentResumeService.getCommitmentsResume(filters.value.dateRange.value[0], filters.value.dateRange.value[1], filters.value['login'].value);
+    commitmentsCount.value = commitmentsRef.value.length;
   } catch (error) {
     console.error(error);
   } finally {
@@ -108,6 +116,12 @@ const onRowSelect = (event) => {
 onMounted(() => {
   fetchCommitments();
 });
+
+const handlePageChange = (event: { page: number; rows: number }) => {
+  currentPage.value = event.page
+  rowsPerPage.value = event.rows
+  fetchCommitments()
+}
 </script>
 
 <template>
@@ -115,8 +129,16 @@ onMounted(() => {
     <div class="h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Engagement Étudiant</span>
     </div>
-    <DataTable :value="commitmentsRef" paginator showGridlines :rows="10" dataKey="id" :loading="loading" selectionMode="single"
-               @row-select="onRowSelect">
+    <DataTable
+      :value="commitmentsRef"
+      showGridlines
+      striped-rows
+      :loading="loading"
+      selectionMode="single"
+      tableStyle="min-width: 50rem"
+      size="small"
+      @row-select="onRowSelect"
+    >
       <template #header>
         <Toolbar style="border: none;" class="p-0">
           <template #start>
@@ -147,6 +169,13 @@ onMounted(() => {
         </template>
       </Column>
     </DataTable>
+    <Paginator
+      class="p-paginator-bottom"
+      :rows="rowsPerPage"
+      :totalRecords="commitmentsCount"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      @page="handlePageChange($event)"
+    />
 
     <DialogStudentCommitment
       v-if="visibleDialogRef"

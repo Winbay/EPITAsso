@@ -40,6 +40,7 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
       })),
       ...rest
     }
+    console.log(eventDataToValidate)
     await this.create(eventDataToValidate, ['id', 'author'])
   }
 
@@ -53,7 +54,7 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
     results: Event[]
   }> {
     const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-    const { results, ...rest } = await this.getAllWithParams(params.toString())
+    const { results, ...rest } = await this.getAllWithPaginationParams(params.toString())
     const events = results.map((event: yup.InferType<typeof eventSchema>) =>
       this.converterSchemaToInterface(event)
     )

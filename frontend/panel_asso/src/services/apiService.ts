@@ -77,7 +77,7 @@ export default class ApiService<SchemaType> {
     return this.validateArray(data, yup.array().of(this.schema).required())
   }
 
-  protected async getAllWithParams(params: string): Promise<{
+  protected async getAllWithPaginationParams(params: string): Promise<{
     count: number
     next: string | null
     previous: string | null
@@ -91,6 +91,11 @@ export default class ApiService<SchemaType> {
     }>('get', this.getFullPath(), undefined, params)
     const res = await this.validateArray(results, yup.array().of(this.schema).required())
     return { ...rest, results: res }
+  }
+
+  protected async getAllWithParams(params: string): Promise<SchemaType[]> {
+    const data = await this.request<SchemaType[]>('get', `${this.getFullPath()}`, undefined, params)
+    return this.validateArray(data, yup.array().of(this.schema).required())
   }
 
   protected async getAllCustomWithParams(
@@ -115,6 +120,11 @@ export default class ApiService<SchemaType> {
   protected async getAllCustom(route: string): Promise<SchemaType[]> {
     const data = await this.request<SchemaType[]>('get', `${this.getFullPath()}${route}`)
     return this.validateArray(data, yup.array().of(this.schema).required())
+  }
+
+  protected async bulkUpdate<ReturnType>(data: SchemaType[]): Promise<ReturnType> {
+    const validatedData = await this.validateArray(data, yup.array().of(this.schema).required())
+    return await this.request<ReturnType>('patch', `${this.getFullPath()}`, validatedData)
   }
 
   protected async update(data: SchemaType, id?: number): Promise<void> {

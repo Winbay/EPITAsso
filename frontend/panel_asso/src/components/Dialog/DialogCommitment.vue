@@ -2,11 +2,12 @@
 import Dialog from 'primevue/dialog';
 import Divider from 'primevue/divider';
 import Listbox from 'primevue/listbox';
-import { defineProps, ref, onMounted, type PropType } from 'vue'
+import Calendar from 'primevue/calendar';
+import { defineProps, ref, onMounted, type PropType } from 'vue';
 import { useToast } from 'primevue/usetoast';
-import type { CommitmentResume, EventMemberCommitment } from '@/types/commitmentInterface'
-import CommitmentResumeEventsService from '@/services/commitment/resumeEvents'
-import SelectedAssoService from '@/services/association/selectedAsso'
+import type { CommitmentResume, EventMemberCommitment } from '@/types/commitmentInterface';
+import CommitmentResumeEventsService from '@/services/commitment/resumeEvents';
+import SelectedAssoService from '@/services/association/selectedAsso';
 
 const props = defineProps({
   setHidden: {
@@ -24,16 +25,21 @@ const props = defineProps({
 });
 
 const toast = useToast();
-const commitmentResumeEventsService: CommitmentResumeEventsService = new CommitmentResumeEventsService(toast, +SelectedAssoService.getAssociationId() ,props.selectedCommitmentId);
+const commitmentResumeEventsService: CommitmentResumeEventsService = new CommitmentResumeEventsService(toast, +SelectedAssoService.getAssociationId(), props.selectedCommitmentId);
 
-const commitmentResumeEvents = ref<EventMemberCommitment[]>([]);
+const commitmentResumeEventsRef = ref<EventMemberCommitment[]>([]);
+const commitmentResume = ref({ ...props.commitmentResume });
+const startDate = ref<Date | null>(null);
+const endDate = ref<Date | null>(null);
 
 const cancelDialog = () => {
   props.setHidden();
 };
 
 onMounted(async () => {
-  commitmentResumeEvents.value = await commitmentResumeEventsService.getCommitmentResumeEvents(props.selectedCommitmentId);
+  commitmentResumeEventsRef.value = await commitmentResumeEventsService.getCommitmentResumeEvents(props.selectedCommitmentId).then((events) => {
+    return events.filter((event) => event.hours > 0);
+  });
 });
 </script>
 
@@ -46,24 +52,35 @@ onMounted(async () => {
       </div>
     </template>
 
-    <div v-if="commitmentResumeEvents">
-      <div>
-        <div class="text-sm text-secondary">
-          <div class="flex gap-3 items-center justify-center">
-            <p class="m-0 font-medium">Heures Staff :</p>
-            <p class="m-0">{{ commitmentResume.eventCommitmentHours }} h</p>
-          </div>
-          <div class="flex gap-3 items-center justify-center">
-            <p class="m-0 font-medium">Heures Bureau :</p>
-            <p class="m-0">{{ commitmentResume.commitmentHours }} h</p>
-          </div>
-        </div>
+    <div class="flex flex-col">
+      <div class="flex gap-3 items-center justify-center">
+        <label for="officeHours">Heures de bureau</label>
+        <p id="officeHours" class="hours-display">{{ commitmentResume.commitmentHours }} h</p>
       </div>
 
-      <Divider clas="m-0"/>
-      <div v-if="commitmentResumeEvents.length > 0">
-        <h3 class="text-lg pb-2 font-semibold text-primary">Évènements</h3>
-        <Listbox :options="commitmentResumeEvents" optionLabel="name">
+      <div class="flex gap-5 pl-5 pr-5">
+        <div class="flex flex-col gap-3 items-center justify-center">
+          <label for="startDate">Date et Heure de Début</label>
+          <Calendar id="startDate" v-model="startDate" showTime />
+        </div>
+
+        <div class="flex flex-col gap-3 items-center justify-center">
+          <label for="endDate">Date et Heure de Fin</label>
+          <Calendar id="endDate" v-model="endDate" showTime />
+        </div>
+      </div>
+    </div>
+
+    <Divider class="mt-4 mb-2"/>
+
+    <p v-if="commitmentResume.eventCommitmentHours === 0" class="flex justify-center">Aucun évènement pour cet engagement</p>
+    <div v-else-if="commitmentResumeEventsRef">
+      <div v-if="commitmentResumeEventsRef.length > 0">
+        <div class="flex justify-between p-2">
+          <h3 class="text-lg font-semibold text-primary">Évènements</h3>
+          <div class="text-lg font-semibold text-primary">{{ commitmentResume.eventCommitmentHours }} h</div>
+        </div>
+        <Listbox :options="commitmentResumeEventsRef" optionLabel="name">
           <template #option="slotProps">
             <div class="flex justify-between items-center">
               <div>{{ slotProps.option.name }}</div>
@@ -80,8 +97,10 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.text-secondary {
-  color: #757575;
+.hours-display {
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-radius: 4px;
 }
-
 </style>

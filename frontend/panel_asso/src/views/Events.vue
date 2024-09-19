@@ -16,11 +16,13 @@ import EventService from '@/services/event/event'
 import TagService from '@/services/tag'
 import DiscordWebhookService from '@/services/discordWebhook'
 import { useGlobalStore } from '@/stores/globalStore'
+import DialogEventCommitment from '@/components/Dialog/DialogEventCommitment.vue'
 
 const tagsRef = ref<EventTag[]>([])
 const eventsRef = ref<EventModification[]>([])
 
 const visibleDialogRef = ref(false)
+const visibleEventCommitmentDialog = ref(false)
 const selectedEventRef = ref<EventModification | null>(null)
 const confirm = useConfirm()
 const toast = useToast()
@@ -51,6 +53,10 @@ const confirmDelete = (event: Event, eventId: number) => {
 const closeDialog = () => {
   visibleDialogRef.value = false
   selectedEventRef.value = null
+}
+
+const closeEventCommitmentDialog = () => {
+  visibleEventCommitmentDialog.value = false
 }
 
 const loadTags = async () => {
@@ -191,6 +197,7 @@ const handlePageChange = (event: { page: number; rows: number }) => {
               v-tooltip="'Editer l\'évènement'"
             />
             <DialogEvent
+              v-if="visibleDialogRef && selectedEventRef === slotProps.data"
               :visible="visibleDialogRef && selectedEventRef === slotProps.data"
               :set-hidden="closeDialog"
               :reloadEvents="reloadEvents"
@@ -212,6 +219,17 @@ const handlePageChange = (event: { page: number; rows: number }) => {
               icon="pi pi-send"
               @click="sendWebhookEvent(slotProps.data)"
               v-tooltip="'Poster l\'évènement via le Webhook'"
+            />
+            <Button
+              icon="pi pi-users"
+              @click="(visibleEventCommitmentDialog = true), (selectedEventRef = slotProps.data)"
+              v-tooltip="'Voir les engagements'"
+            />
+            <DialogEventCommitment
+              v-if="visibleEventCommitmentDialog && selectedEventRef === slotProps.data"
+              :visible="visibleEventCommitmentDialog && selectedEventRef === slotProps.data"
+              :set-hidden="closeEventCommitmentDialog"
+              :event="slotProps.data"
             />
           </div>
         </template>

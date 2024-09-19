@@ -34,7 +34,7 @@ export default class CommitmentResumeService extends ApiService<
     }
 
     const params = new URLSearchParams({ end_date: endDate.toISOString(), start_date: startDate.toISOString(), login: login ? login: ""  })
-    const results = await this.getAllCustom("?" + params.toString())
+    const results = await this.getAllWithParams(params.toString())
     return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume))
   }
 
