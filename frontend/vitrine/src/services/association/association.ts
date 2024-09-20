@@ -23,9 +23,16 @@ export default class AssociationService extends ApiService<
     return data.map((ass) => this.converterSchemaToInterface(ass)) as Association[]
   }
 
-  async getAssociationsPagination(limit: number, offset: number): Promise<Association[]> {
+  async getAssociationsPagination(limit: number, offset: number)
+    : Promise<{ count: number; next: string | null; previous: string | null; results: Association[]}> {
     const data = await this.getAllPagination(limit, offset)
-    return data.map((ass) => this.converterSchemaToInterface(ass)) as Association[]
+    const assos: Association[] = data.results.map((ass) => this.converterSchemaToInterface(ass)) as Association[]
+    return {
+      count: data.count,
+      next: data.next,
+      previous: data.previous,
+      results: assos
+    };
   }
 
   async getBde(): Promise<Association[]> {
