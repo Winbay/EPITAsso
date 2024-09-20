@@ -42,7 +42,7 @@ const toggleMenu = () => {
 
 <template>
   <header class="h-14 w-full px-6 flex items-center justify-between">
-    <div class="header-left h-full w-full flex items-center justify-start gap-4">
+    <div class="header-left h-full flex items-center justify-start gap-4">
       <div class="logo ">
         <img class="h-12" alt="Epita logo" src="/images/EPI.png"/>
       </div>
@@ -78,6 +78,10 @@ header {
   border-bottom: solid 1px var(--surface-300);
 }
 
+header .header-left {
+  width: 100%;
+}
+
 .p-button:focus {
   box-shadow: none;
 }
@@ -94,5 +98,15 @@ header .header-right .btn-connection span {
 header .header-right .user-menu {
   user-select: none;
   cursor: pointer;
+}
+
+@media (max-width: 708px) {
+  header .header-left > *:not(.logo) {
+    display: none;
+  }
+
+  header .header-right {
+    display: none;
+  }
 }
 </style>

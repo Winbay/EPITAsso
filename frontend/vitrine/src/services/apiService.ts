@@ -80,7 +80,7 @@ export default class ApiService<SchemaType> {
   protected async getAllPagination(
     limit: number, offset: number
   ): Promise<{ count: number; next: string | null; previous: string | null; results: SchemaType[] }> {
-    const url = `${this.getFullPath()}/list?limit=${limit}&offset=${offset}`
+    const url = `${this.getFullPath()}?limit=${limit}&offset=${offset}`
     const data = await this.request<{ count: number; next: string | null; previous: string | null; results: SchemaType[] }>('get', url)
     const paginationSchema = createApiPaginationSchema(this.schema);
     return await paginationSchema.validate(data);
