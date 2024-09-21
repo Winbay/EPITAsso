@@ -10,6 +10,7 @@ import SelectedAssoService from '@/services/association/selectedAsso'
 import type { Commitment, MemberCommitment } from '@/types/commitmentInterface'
 import Paginator from 'primevue/paginator'
 import MemberCommitmentUpdateService from '@/services/association/memberCommitmentUpdate'
+import Divider from 'primevue/divider'
 
 const toast = useToast()
 const commitmentService: CommitmentService = new CommitmentService(
@@ -150,7 +151,7 @@ const addedHours = computed(() => {
     v-if="selectedCommitment"
     :visible="visibleDialogRef"
     @update:visible="closeDialog"
-    :style="{ width: '40vw' }">
+   >
     <template #header>
       <div class="items-center">
         <h2 class="m-0 font-semibold text-xl text-primary">{{ selectedCommitment.login }}</h2>
@@ -158,7 +159,7 @@ const addedHours = computed(() => {
     </template>
 
     <div class="flex flex-col">
-      <div class="flex gap-3 items-center justify-center pb-2">
+      <div class="flex gap-3 items-center justify-center">
         <label for="officeHours">Heures de bureau</label>
         <p id="officeHours" class="hours-display">
           {{ selectedCommitment.hours }} h
@@ -166,17 +167,23 @@ const addedHours = computed(() => {
         </p>
       </div>
     </div>
-    <div class="flex gap-5 pl-5 pr-5">
 
-    <div class="flex flex-col gap-3 items-center justify-center">
-      <label for="startDate">Date et Heure de Début</label>
-      <Calendar id="startDate" v-model="startDate" showTime />
+    <Divider class="mt-4 mb-4"/>
+
+    <div class="flex flex-col items-center justify-center mb-4">
+      <h3>Sélectionnez la période pour ajouter des heures</h3>
     </div>
 
-    <div class="flex flex-col gap-3 items-center justify-center">
-      <label for="endDate">Date et Heure de Fin</label>
-      <Calendar id="endDate" v-model="endDate" showTime />
-    </div>
+    <div class="flex gap-5 pl-5 pr-5 items-center justify-center">
+      <div class="flex flex-col gap-3 items-center justify-center">
+        <label for="startDate">Date et Heure de Début</label>
+        <Calendar id="startDate" v-model="startDate" showTime />
+      </div>
+
+      <div class="flex flex-col gap-3 items-center justify-center">
+        <label for="endDate">Date et Heure de Fin</label>
+        <Calendar id="endDate" v-model="endDate" showTime />
+      </div>
   </div>
   </Dialog>
 </template>
