@@ -5,11 +5,13 @@ import type { Event } from '@/types/eventInterfaces'
 import * as yup from 'yup'
 import type { MemberCommitment } from '@/types/commitmentInterface'
 
-export const eventCommitmentSchema = yup.object({
-  id: yup.number().required(),
-  hours: yup.number().required(),
-  member: memberSchema.required(),
-}).required();
+export const eventCommitmentSchema = yup
+  .object({
+    id: yup.number().required(),
+    hours: yup.number().required(),
+    member: memberSchema.required()
+  })
+  .required()
 
 export default class EventCommitmentService extends ApiService<
   yup.InferType<typeof eventCommitmentSchema>
@@ -42,7 +44,7 @@ export default class EventCommitmentService extends ApiService<
         lastName: eventCommitment.member.last_name,
         role: eventCommitment.member.role,
         school: eventCommitment.member.school
-      },
+      }
     }
   }
 }

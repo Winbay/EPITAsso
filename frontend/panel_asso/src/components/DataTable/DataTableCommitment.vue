@@ -18,18 +18,19 @@ const commitmentService: CommitmentService = new CommitmentService(
   +SelectedAssoService.getAssociationId()
 )
 
-const memberCommitmentUpdateService: MemberCommitmentUpdateService = new MemberCommitmentUpdateService(toast, +SelectedAssoService.getAssociationId());
+const memberCommitmentUpdateService: MemberCommitmentUpdateService =
+  new MemberCommitmentUpdateService(toast, +SelectedAssoService.getAssociationId())
 
 const commitmentsRef = ref<Commitment[]>([])
 const memberCommitments = ref<MemberCommitment[]>([])
-const groupedMemberCommitments = ref<{ id: number, login: string; hours: number }[]>([])
+const groupedMemberCommitments = ref<{ id: number; login: string; hours: number }[]>([])
 
-const loading = ref(true);
-const visibleDialogRef = ref(false);
-const selectedCommitment = ref<{ id: number, login: string; hours: number }>();
-const rowsPerPage = ref(5);
-const currentPage = ref(0);
-const commitmentsCount = ref(0);
+const loading = ref(true)
+const visibleDialogRef = ref(false)
+const selectedCommitment = ref<{ id: number; login: string; hours: number }>()
+const rowsPerPage = ref(5)
+const currentPage = ref(0)
+const commitmentsCount = ref(0)
 
 const groupMemberCommitments = () => {
   groupedMemberCommitments.value = memberCommitments.value.reduce(
@@ -42,7 +43,7 @@ const groupMemberCommitments = () => {
       }
       return acc
     },
-    [] as { id: number, login: string; hours: number }[]
+    [] as { id: number; login: string; hours: number }[]
   )
 
   groupedMemberCommitments.value.sort((a, b) => a.login.localeCompare(b.login))
@@ -66,10 +67,12 @@ const fetchCommitments = async () => {
 
 const updateMemberCommitment = async () => {
   if (selectedCommitment.value && addedHours.value > 0) {
-    await memberCommitmentUpdateService.updateMemberCommitment([{
-      id: selectedCommitment.value.id,
-      hours: selectedCommitment.value.hours + addedHours.value
-    }])
+    await memberCommitmentUpdateService.updateMemberCommitment([
+      {
+        id: selectedCommitment.value.id,
+        hours: selectedCommitment.value.hours + addedHours.value
+      }
+    ])
   }
 }
 
@@ -77,18 +80,18 @@ onMounted(async () => {
   await fetchCommitments()
 })
 
-const onRowSelect = (event: { data: { id: number, login: string, hours: number } }) => {
-  selectedCommitment.value = event.data;
-  visibleDialogRef.value = true;
-};
+const onRowSelect = (event: { data: { id: number; login: string; hours: number } }) => {
+  selectedCommitment.value = event.data
+  visibleDialogRef.value = true
+}
 
 const closeDialog = async () => {
   await updateMemberCommitment()
-  visibleDialogRef.value = false;
-  startDate.value = null;
-  endDate.value = null;
+  visibleDialogRef.value = false
+  startDate.value = null
+  endDate.value = null
   await fetchCommitments()
-};
+}
 
 const columns = [
   { field: 'login', header: 'Login' },
@@ -96,27 +99,26 @@ const columns = [
 ]
 
 const handlePageChange = async (event: { page: number; rows: number }) => {
-  currentPage.value = event.page;
-  rowsPerPage.value = event.rows;
-  await fetchCommitments();
-};
+  currentPage.value = event.page
+  rowsPerPage.value = event.rows
+  await fetchCommitments()
+}
 
-const startDate = ref<Date | null>(null);
-const endDate = ref<Date | null>(null);
+const startDate = ref<Date | null>(null)
+const endDate = ref<Date | null>(null)
 
 const calculateAddedHours = (start: Date | null, end: Date | null): number => {
   if (start && end) {
-    const diff = end.getTime() - start.getTime();
-    const hours = diff / (1000 * 60 * 60);
-    return hours > 0 ? hours : 0;
+    const diff = end.getTime() - start.getTime()
+    const hours = diff / (1000 * 60 * 60)
+    return hours > 0 ? hours : 0
   }
-  return 0;
-};
+  return 0
+}
 
 const addedHours = computed(() => {
-  return calculateAddedHours(startDate.value, endDate.value);
-});
-
+  return calculateAddedHours(startDate.value, endDate.value)
+})
 </script>
 
 <template>
@@ -146,12 +148,7 @@ const addedHours = computed(() => {
     @page="handlePageChange"
   />
 
-  <Dialog
-    modal
-    v-if="selectedCommitment"
-    :visible="visibleDialogRef"
-    @update:visible="closeDialog"
-   >
+  <Dialog modal v-if="selectedCommitment" :visible="visibleDialogRef" @update:visible="closeDialog">
     <template #header>
       <div class="items-center">
         <h2 class="m-0 font-semibold text-xl text-primary">{{ selectedCommitment.login }}</h2>
@@ -168,7 +165,7 @@ const addedHours = computed(() => {
       </div>
     </div>
 
-    <Divider class="mt-4 mb-4"/>
+    <Divider class="mt-4 mb-4" />
 
     <div class="flex flex-col items-center justify-center mb-4">
       <h3>Sélectionnez la période pour ajouter des heures</h3>
@@ -184,7 +181,7 @@ const addedHours = computed(() => {
         <label for="endDate">Date et Heure de Fin</label>
         <Calendar id="endDate" v-model="endDate" showTime />
       </div>
-  </div>
+    </div>
   </Dialog>
 </template>
 

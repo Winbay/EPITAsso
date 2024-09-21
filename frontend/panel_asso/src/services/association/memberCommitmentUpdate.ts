@@ -5,17 +5,22 @@ import { memberSchema } from '@/services/association/member'
 import * as yup from 'yup'
 import type { Association } from '@/types/associationInterfaces'
 
-export const memberCommitmentUpdateBodySchema = yup.object().shape({
-  id: yup.number().required(),
-  hours: yup.number().required(),
-}).required();
+export const memberCommitmentUpdateBodySchema = yup
+  .object()
+  .shape({
+    id: yup.number().required(),
+    hours: yup.number().required()
+  })
+  .required()
 
-export const memberCommitmentUpdateResponseSchema = yup.object().shape({
-  id: yup.number().required(),
-  hours: yup.number().required(),
-  member: memberSchema.required(),
-}).required();
-
+export const memberCommitmentUpdateResponseSchema = yup
+  .object()
+  .shape({
+    id: yup.number().required(),
+    hours: yup.number().required(),
+    member: memberSchema.required()
+  })
+  .required()
 
 export default class MemberCommitmentUpdateService extends ApiService<
   yup.InferType<typeof memberCommitmentUpdateBodySchema>

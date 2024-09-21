@@ -91,7 +91,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
 class AssociationListPaginationSerializer(serializers.ModelSerializer):
     social_networks = SocialNetworkSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = Association
         fields = [

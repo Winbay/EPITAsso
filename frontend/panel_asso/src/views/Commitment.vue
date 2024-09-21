@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import DialogStudentCommitment from '@/components/Dialog/DialogCommitment.vue';
+import { ref } from 'vue'
+import DialogStudentCommitment from '@/components/Dialog/DialogCommitment.vue'
 import DataTableCommitmentResume from '@/components/DataTable/DataTableCommitmentResume.vue'
 import type { CommitmentResume } from '@/types/commitmentInterface'
 import DataTableCommitment from '@/components/DataTable/DataTableCommitment.vue'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 
-const visibleDialogRef = ref(false);
-const selectedCommitment = ref<CommitmentResume>();
+const visibleDialogRef = ref(false)
+const selectedCommitment = ref<CommitmentResume>()
 const commitmentResumeLoaded = ref(true)
 
 const closeDialog = () => {
-  visibleDialogRef.value = false;
-};
+  visibleDialogRef.value = false
+}
 
 const onRowSelect = (event: { data: CommitmentResume }) => {
-  selectedCommitment.value = event.data;
-  visibleDialogRef.value = true;
-};
+  selectedCommitment.value = event.data
+  visibleDialogRef.value = true
+}
 
 const handleTabChange = (event: { index: number }): void => {
-  commitmentResumeLoaded.value = event.index === 0;
+  commitmentResumeLoaded.value = event.index === 0
 }
 </script>
 
@@ -35,7 +35,7 @@ const handleTabChange = (event: { index: number }): void => {
         <DataTableCommitmentResume v-if="commitmentResumeLoaded" @rowSelect="onRowSelect" />
       </TabPanel>
       <TabPanel header="Détails">
-        <DataTableCommitment v-if="!commitmentResumeLoaded"/>
+        <DataTableCommitment v-if="!commitmentResumeLoaded" />
       </TabPanel>
     </TabView>
     <DialogStudentCommitment

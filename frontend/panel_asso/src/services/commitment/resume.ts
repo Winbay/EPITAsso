@@ -4,15 +4,17 @@ import type { CommitmentResume } from '@/types/commitmentInterface'
 import * as yup from 'yup'
 import type { Association } from '@/types/associationInterfaces'
 
-export const commitmentResumeSchema = yup.object({
-  id: yup.number().required(),
-  login: yup.string().required(),
-  first_name: yup.string().required(),
-  last_name: yup.string().required(),
-  commitment_hours: yup.number().required(),
-  event_commitment_hours: yup.number().required(),
-  total_hours: yup.number().required(),
-}).required();
+export const commitmentResumeSchema = yup
+  .object({
+    id: yup.number().required(),
+    login: yup.string().required(),
+    first_name: yup.string().required(),
+    last_name: yup.string().required(),
+    commitment_hours: yup.number().required(),
+    event_commitment_hours: yup.number().required(),
+    total_hours: yup.number().required()
+  })
+  .required()
 
 export default class CommitmentResumeService extends ApiService<
   yup.InferType<typeof commitmentResumeSchema>
@@ -27,31 +29,33 @@ export default class CommitmentResumeService extends ApiService<
     )
   }
 
-  async getCommitmentsResume(startDate: Date | null, endDate: Date | null, login: string | null): Promise<CommitmentResume[]> {
+  async getCommitmentsResume(
+    startDate: Date | null,
+    endDate: Date | null,
+    login: string | null
+  ): Promise<CommitmentResume[]> {
     if (startDate === null && endDate === null) {
-      const results = await this.getAll();
+      const results = await this.getAll()
       return results.map((commitmentResume: yup.InferType<typeof commitmentResumeSchema>) =>
         this.converterSchemaToInterface(commitmentResume)
-      );
+      )
     } else {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams()
 
       if (startDate) {
-        params.append('start_date', startDate.toISOString());
+        params.append('start_date', startDate.toISOString())
       }
 
       if (endDate) {
-        params.append('end_date', endDate.toISOString());
+        params.append('end_date', endDate.toISOString())
       }
 
       if (login) {
-        params.append('login', login);
+        params.append('login', login)
       }
 
-      const results = await this.getAllWithParams(params.toString());
-      return results.map((commitmentResume) =>
-        this.converterSchemaToInterface(commitmentResume)
-      );
+      const results = await this.getAllWithParams(params.toString())
+      return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume))
     }
   }
 

@@ -21,8 +21,13 @@ const props = defineProps({
 })
 const toast = useToast()
 
-const eventCommitmentUpdateService: EventCommitmentUpdateService = new EventCommitmentUpdateService(toast)
-const eventCommitmentService: EventCommitmentService = new EventCommitmentService(toast, props.event.id)
+const eventCommitmentUpdateService: EventCommitmentUpdateService = new EventCommitmentUpdateService(
+  toast
+)
+const eventCommitmentService: EventCommitmentService = new EventCommitmentService(
+  toast,
+  props.event.id
+)
 const eventCommitmentsRef = ref<MemberCommitment[]>([])
 const originalCommitments = ref<MemberCommitment[]>([])
 

@@ -4,11 +4,13 @@ import type { EventMemberCommitment } from '@/types/commitmentInterface'
 import * as yup from 'yup'
 import type { Association } from '@/types/associationInterfaces'
 
-export const CommitmentResumeEventsSchema = yup.object({
-  id: yup.number().required(),
-  name: yup.string().required(),
-  hours: yup.number().required()
-}).required()
+export const CommitmentResumeEventsSchema = yup
+  .object({
+    id: yup.number().required(),
+    name: yup.string().required(),
+    hours: yup.number().required()
+  })
+  .required()
 
 export default class CommitmentResumeEventsService extends ApiService<
   yup.InferType<typeof CommitmentResumeEventsSchema>
@@ -25,7 +27,9 @@ export default class CommitmentResumeEventsService extends ApiService<
 
   async getCommitmentResumeEvents(): Promise<EventMemberCommitment[]> {
     const data = await this.getAll()
-    return data.map((commitmentResumeEvents) => this.converterSchemaToInterface(commitmentResumeEvents))
+    return data.map((commitmentResumeEvents) =>
+      this.converterSchemaToInterface(commitmentResumeEvents)
+    )
   }
 
   protected converterSchemaToInterface(

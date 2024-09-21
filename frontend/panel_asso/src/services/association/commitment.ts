@@ -8,17 +8,17 @@ import type { ToastServiceMethods } from 'primevue/toastservice'
 import type { Association } from '@/types/associationInterfaces'
 import type { Commitment } from '@/types/commitmentInterface'
 
-export const commitmentSchema = yup.object().shape({
-  id: yup.number().required(),
-  start_date: yup.date().required(),
-  end_date: yup.date().required(),
-  member_commitments: yup.array().of(memberCommitmentUpdateResponseSchema).required(),
-}).required();
+export const commitmentSchema = yup
+  .object()
+  .shape({
+    id: yup.number().required(),
+    start_date: yup.date().required(),
+    end_date: yup.date().required(),
+    member_commitments: yup.array().of(memberCommitmentUpdateResponseSchema).required()
+  })
+  .required()
 
-
-export default class CommitmentService extends ApiService<
-  yup.InferType<typeof commitmentSchema>
-> {
+export default class CommitmentService extends ApiService<yup.InferType<typeof commitmentSchema>> {
   constructor(toast: ToastServiceMethods, associationId: Association['id']) {
     super(
       toast,
@@ -51,7 +51,7 @@ export default class CommitmentService extends ApiService<
           lastName: memberCommitment.member.last_name,
           role: memberCommitment.member.role,
           school: memberCommitment.member.school
-        },
+        }
       }))
     }
   }

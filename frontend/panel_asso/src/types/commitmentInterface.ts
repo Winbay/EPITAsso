@@ -2,8 +2,8 @@ import type { Member } from '@/types/associationInterfaces'
 
 export interface Commitment {
   id: number
-  startDate: Date,
-  endDate: Date,
+  startDate: Date
+  endDate: Date
   memberCommitments: MemberCommitment[]
 }
 
