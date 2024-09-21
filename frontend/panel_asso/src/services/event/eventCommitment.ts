@@ -1,9 +1,9 @@
 import { memberSchema } from '@/services/association/member'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import ApiService from '../apiService'
-import type { Event } from '@/types/eventInterface'
+import type { Event } from '@/types/eventInterfaces'
 import * as yup from 'yup'
-import type { EventCommitment } from '@/types/eventInterfaces'
+import type { MemberCommitment } from '@/types/commitmentInterface'
 
 export const eventCommitmentSchema = yup.object({
   id: yup.number().required(),
@@ -24,14 +24,14 @@ export default class EventCommitmentService extends ApiService<
     )
   }
 
-  async getEventCommitments(): Promise<EventCommitment[]> {
+  async getEventCommitments(): Promise<MemberCommitment[]> {
     const data = await this.getAll()
     return data.map((eventCommitment) => this.converterSchemaToInterface(eventCommitment))
   }
 
   protected converterSchemaToInterface(
     eventCommitment: yup.InferType<typeof eventCommitmentSchema>
-  ): EventCommitment {
+  ): MemberCommitment {
     return {
       id: eventCommitment.id,
       hours: eventCommitment.hours,

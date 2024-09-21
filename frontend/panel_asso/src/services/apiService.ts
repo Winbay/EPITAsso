@@ -161,7 +161,7 @@ export default class ApiService<SchemaType> {
   protected async request<ReturnType>(
     method: 'post' | 'get' | 'put' | 'patch' | 'delete',
     url: string,
-    data?: SchemaType | Partial<SchemaType>,
+    data?: SchemaType | Partial<SchemaType> | SchemaType[],
     params?: string | null
   ): Promise<ReturnType> {
     try {

@@ -2,7 +2,6 @@
 import Dialog from 'primevue/dialog';
 import Divider from 'primevue/divider';
 import Listbox from 'primevue/listbox';
-import Calendar from 'primevue/calendar';
 import { defineProps, ref, onMounted, type PropType } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import type { CommitmentResume, EventMemberCommitment } from '@/types/commitmentInterface';
@@ -14,10 +13,6 @@ const props = defineProps({
     type: Function,
     required: true
   },
-  selectedCommitmentId: {
-    type: Number,
-    required: true
-  },
   commitmentResume: {
     type: Object as PropType<CommitmentResume>,
     required: true
@@ -25,26 +20,24 @@ const props = defineProps({
 });
 
 const toast = useToast();
-const commitmentResumeEventsService: CommitmentResumeEventsService = new CommitmentResumeEventsService(toast, +SelectedAssoService.getAssociationId(), props.selectedCommitmentId);
+const commitmentResumeEventsService: CommitmentResumeEventsService = new CommitmentResumeEventsService(toast, +SelectedAssoService.getAssociationId(), props.commitmentResume?.id);
 
 const commitmentResumeEventsRef = ref<EventMemberCommitment[]>([]);
-const commitmentResume = ref({ ...props.commitmentResume });
-const startDate = ref<Date | null>(null);
-const endDate = ref<Date | null>(null);
+const commitmentResume = ref<CommitmentResume>({ ...props.commitmentResume });
 
-const cancelDialog = () => {
+const closeDialog = async () => {
   props.setHidden();
 };
 
 onMounted(async () => {
-  commitmentResumeEventsRef.value = await commitmentResumeEventsService.getCommitmentResumeEvents(props.selectedCommitmentId).then((events) => {
+  commitmentResumeEventsRef.value = await commitmentResumeEventsService.getCommitmentResumeEvents().then((events) => {
     return events.filter((event) => event.hours > 0);
   });
 });
 </script>
 
 <template>
-  <Dialog modal :visible="true" @update:visible="cancelDialog" :style="{ width: '40vw' }">
+  <Dialog modal :visible="true" @update:visible="closeDialog" :style="{ width: '40vw' }">
     <template #header>
       <div class="items-center">
         <h2 class="m-0 font-semibold text-xl text-primary">{{ commitmentResume.firstName }}
@@ -53,21 +46,11 @@ onMounted(async () => {
     </template>
 
     <div class="flex flex-col">
-      <div class="flex gap-3 items-center justify-center">
+      <div class="flex gap-3 items-center justify-center pb-2">
         <label for="officeHours">Heures de bureau</label>
-        <p id="officeHours" class="hours-display">{{ commitmentResume.commitmentHours }} h</p>
-      </div>
-
-      <div class="flex gap-5 pl-5 pr-5">
-        <div class="flex flex-col gap-3 items-center justify-center">
-          <label for="startDate">Date et Heure de Début</label>
-          <Calendar id="startDate" v-model="startDate" showTime />
-        </div>
-
-        <div class="flex flex-col gap-3 items-center justify-center">
-          <label for="endDate">Date et Heure de Fin</label>
-          <Calendar id="endDate" v-model="endDate" showTime />
-        </div>
+        <p id="officeHours" class="hours-display">
+          {{ commitmentResume.commitmentHours }} h
+        </p>
       </div>
     </div>
 
@@ -100,7 +83,6 @@ onMounted(async () => {
 .hours-display {
   font-size: 1.25rem;
   font-weight: bold;
-  padding: 0.5rem;
-  border-radius: 4px;
+  margin-top: 0;
 }
 </style>

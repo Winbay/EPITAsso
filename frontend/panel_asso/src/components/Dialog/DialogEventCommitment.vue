@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref, computed, type PropType } from 'vue'
-import type { EventCommitment, EventModification } from '@/types/eventInterfaces'
+import type { EventModification } from '@/types/eventInterfaces'
 import Dialog from 'primevue/dialog'
 import Listbox from 'primevue/listbox'
 import InputNumber from 'primevue/inputnumber'
 import EventCommitmentService from '@/services/event/eventCommitment'
 import { useToast } from 'primevue/usetoast'
 import EventCommitmentUpdateService from '@/services/event/eventCommitmentUpdate'
+import type { MemberCommitment } from '@/types/commitmentInterface'
 
 const props = defineProps({
   setHidden: {
@@ -14,16 +15,16 @@ const props = defineProps({
     required: true
   },
   event: {
-    type: Object as PropType<EventModification | null>,
+    type: Object as PropType<EventModification>,
     default: null
   }
 })
 const toast = useToast()
 
 const eventCommitmentUpdateService: EventCommitmentUpdateService = new EventCommitmentUpdateService(toast)
-const eventCommitmentService: EventCommitmentService = new EventCommitmentService(toast, props.event?.id)
-const eventCommitmentsRef = ref<EventCommitment[]>([])
-const originalCommitments = ref<EventCommitment[]>([])
+const eventCommitmentService: EventCommitmentService = new EventCommitmentService(toast, props.event.id)
+const eventCommitmentsRef = ref<MemberCommitment[]>([])
+const originalCommitments = ref<MemberCommitment[]>([])
 
 const fetchEventCommitment = async () => {
   eventCommitmentsRef.value = await eventCommitmentService.getEventCommitments()

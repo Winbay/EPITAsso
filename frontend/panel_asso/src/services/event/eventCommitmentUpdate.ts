@@ -1,6 +1,6 @@
 import ApiService from '@/services/apiService'
 import type { ToastServiceMethods } from 'primevue/toastservice'
-import type { EventCommitment } from '@/types/eventInterfaces'
+import type { MemberCommitment } from '@/types/commitmentInterface'
 import { memberSchema } from '@/services/association/member'
 import * as yup from 'yup'
 
@@ -29,7 +29,7 @@ export default class EventCommitmentUpdateService extends ApiService<
     )
   }
 
-  async updateEventCommitment(eventCommitments: EventCommitment[]): Promise<void> {
+  async updateEventCommitment(eventCommitments: MemberCommitment[]): Promise<void> {
     const data = eventCommitments.map((eventCommitment) => ({
       id: eventCommitment.id,
       hours: eventCommitment.hours,

@@ -29,13 +29,30 @@ export default class CommitmentResumeService extends ApiService<
 
   async getCommitmentsResume(startDate: Date | null, endDate: Date | null, login: string | null): Promise<CommitmentResume[]> {
     if (startDate === null && endDate === null) {
-      const { results } = await this.getAll()
-      return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume));
-    }
+      const results = await this.getAll();
+      return results.map((commitmentResume: yup.InferType<typeof commitmentResumeSchema>) =>
+        this.converterSchemaToInterface(commitmentResume)
+      );
+    } else {
+      const params = new URLSearchParams();
 
-    const params = new URLSearchParams({ end_date: endDate.toISOString(), start_date: startDate.toISOString(), login: login ? login: ""  })
-    const results = await this.getAllWithParams(params.toString())
-    return results.map((commitmentResume) => this.converterSchemaToInterface(commitmentResume))
+      if (startDate) {
+        params.append('start_date', startDate.toISOString());
+      }
+
+      if (endDate) {
+        params.append('end_date', endDate.toISOString());
+      }
+
+      if (login) {
+        params.append('login', login);
+      }
+
+      const results = await this.getAllWithParams(params.toString());
+      return results.map((commitmentResume) =>
+        this.converterSchemaToInterface(commitmentResume)
+      );
+    }
   }
 
   protected converterSchemaToInterface(

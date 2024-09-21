@@ -1,5 +1,4 @@
 import type { EventTag } from './tagInterfaces'
-import type { Member } from '@/types/associationInterfaces'
 
 export interface Event {
   id: number
@@ -24,11 +23,3 @@ export interface Event {
 export interface EventCreation extends Omit<Event, 'id' | 'author'> {}
 
 export interface EventModification extends Event {}
-
-export interface EventCommitment {
-  id: number
-  hours: number
-  member: Member
-}
-
-export interface EventCommitmentModification extends  Omit<EventCommitment, 'member'> {}

@@ -1,12 +1,19 @@
-import type { Association, Member } from '@/types/associationInterfaces'
-import type { Event } from '@/types/eventInterfaces'
+import type { Member } from '@/types/associationInterfaces'
 
 export interface Commitment {
   id: number
-  association: Association
-  startDate: Date
-  endDate: Date
+  startDate: Date,
+  endDate: Date,
+  memberCommitments: MemberCommitment[]
 }
+
+export interface MemberCommitment {
+  id: number
+  hours: number
+  member: Member
+}
+
+export interface CommitmentModification extends Omit<MemberCommitment, 'member'> {}
 
 export interface CommitmentResume {
   id: number
