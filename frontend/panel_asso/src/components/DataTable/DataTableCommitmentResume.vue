@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
+
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Paginator from 'primevue/paginator'
@@ -15,6 +16,7 @@ import type { CommitmentResume } from '@/types/commitmentInterface'
 import CommitmentResumeService from '@/services/commitment/resume'
 import SelectedAssoService from '@/services/association/selectedAsso'
 import { useToast } from 'primevue/usetoast'
+import DialogStudentCommitment from '@/components/Dialog/DialogCommitment.vue'
 
 const toast = useToast()
 const commitmentResumeService: CommitmentResumeService = new CommitmentResumeService(
@@ -23,22 +25,7 @@ const commitmentResumeService: CommitmentResumeService = new CommitmentResumeSer
 )
 
 const commitmentsRef = ref<CommitmentResume[]>([])
-const filters = ref({
-  login: { value: '', matchMode: FilterMatchMode.CONTAINS },
-  dateRange: {
-    value: [
-      new Date(new Date().getFullYear() - 3, new Date().getMonth(), new Date().getDate()),
-      new Date()
-    ],
-    matchMode: FilterMatchMode.BETWEEN
-  }
-})
 const loading = ref(true)
-const rowsPerPage = ref(5)
-const currentPage = ref(0)
-const commitmentsCount = ref(0)
-
-defineEmits(['rowSelect'])
 
 const fetchCommitments = async () => {
   loading.value = true
@@ -57,14 +44,6 @@ const fetchCommitments = async () => {
   }
 }
 
-const clearFilter = () => {
-  filters.value.login.value = ''
-  filters.value.dateRange.value = [
-    new Date(new Date().getFullYear() - 3, new Date().getMonth(), new Date().getDate()),
-    new Date()
-  ]
-}
-
 const columns = [
   { field: 'login', header: 'Login' },
   { field: 'lastName', header: 'Nom', hidden: true },
@@ -73,6 +52,38 @@ const columns = [
   { field: 'eventCommitmentHours', header: 'Nombre d’heures staff' },
   { field: 'totalHours', header: 'Total' }
 ]
+
+const filters = ref({
+  login: { value: '', matchMode: FilterMatchMode.CONTAINS },
+  dateRange: {
+    value: [
+      new Date(new Date().getFullYear() - 3, new Date().getMonth(), new Date().getDate()),
+      new Date()
+    ],
+    matchMode: FilterMatchMode.BETWEEN
+  }
+})
+
+const clearFilter = () => {
+  filters.value.login.value = ''
+  filters.value.dateRange.value = [
+    new Date(new Date().getFullYear() - 3, new Date().getMonth(), new Date().getDate()),
+    new Date()
+  ]
+}
+
+const selectedCommitment = ref<CommitmentResume>()
+
+const onRowSelect = (event: { data: CommitmentResume }) => {
+  selectedCommitment.value = event.data
+  visibleCommitmentDetailsDialogRef.value = true
+}
+
+const visibleCommitmentDetailsDialogRef = ref(false)
+
+const closeDialog = async () => {
+  visibleCommitmentDetailsDialogRef.value = false
+}
 
 const exportCSV = () => {
   const csvContent = [
@@ -113,15 +124,20 @@ watch(
   }
 )
 
-onMounted(async () => {
-  await fetchCommitments()
-})
+const rowsPerPage = ref(5)
+const currentPage = ref(0)
+const commitmentsCount = ref(0)
 
 const handlePageChange = async (event: { page: number; rows: number }) => {
   currentPage.value = event.page
   rowsPerPage.value = event.rows
   await fetchCommitments()
 }
+
+onMounted(async () => {
+  await fetchCommitments()
+})
+
 </script>
 
 <template>
@@ -133,7 +149,7 @@ const handlePageChange = async (event: { page: number; rows: number }) => {
     selectionMode="single"
     tableStyle="min-width: 50rem"
     size="small"
-    @row-select="$emit('rowSelect', $event)"
+    @row-select="onRowSelect"
   >
     <template #header>
       <Toolbar style="border: none" class="p-0">
@@ -194,5 +210,12 @@ const handlePageChange = async (event: { page: number; rows: number }) => {
     :totalRecords="commitmentsCount"
     :rowsPerPageOptions="[5, 10, 20, 50]"
     @page="handlePageChange"
+  />
+
+  <DialogStudentCommitment
+    v-if="visibleCommitmentDetailsDialogRef && selectedCommitment"
+    v-model:visible="visibleCommitmentDetailsDialogRef"
+    :set-hidden="closeDialog"
+    :commitment-resume="selectedCommitment"
   />
 </template>

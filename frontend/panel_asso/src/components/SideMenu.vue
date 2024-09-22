@@ -28,16 +28,9 @@ const items = [
     path: 'articles'
   },
   {
-    label: 'Formulaires',
-    icon: 'pi pi-list',
-    items: [
-      {
-        label: 'Engagement étudiant',
-        path: 'commitments'
-      },
-      { label: 'Fiche évènement' },
-      { label: "Création d'association" }
-    ]
+    label: 'Engagement étudiant',
+    icon: 'pi pi-users',
+    path: 'commitments'
   },
   {
     label: 'Matériel',

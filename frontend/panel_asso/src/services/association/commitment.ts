@@ -1,6 +1,5 @@
 import * as yup from 'yup'
 import {
-  memberCommitmentUpdateBodySchema,
   memberCommitmentUpdateResponseSchema
 } from '@/services/association/memberCommitmentUpdate'
 import ApiService from '@/services/apiService'
@@ -12,8 +11,8 @@ export const commitmentSchema = yup
   .object()
   .shape({
     id: yup.number().required(),
-    start_date: yup.date().required(),
-    end_date: yup.date().required(),
+    start_date: yup.string().required(),
+    end_date: yup.string().required(),
     member_commitments: yup.array().of(memberCommitmentUpdateResponseSchema).required()
   })
   .required()
@@ -32,6 +31,19 @@ export default class CommitmentService extends ApiService<yup.InferType<typeof c
   async getCommitments(): Promise<Commitment[]> {
     const data = await this.getAll()
     return data.map((commitment) => this.converterSchemaToInterface(commitment))
+  }
+
+  async createCommitment(startDate: Date, endDate: Date): Promise<Commitment> {
+    const data = {
+      start_date: startDate.toISOString(),
+      end_date: endDate.toISOString()
+    }
+    const result = await this.create<yup.InferType<typeof commitmentSchema>>(data, ['id', 'member_commitments'])
+    return this.converterSchemaToInterface(result)
+  }
+
+  async deleteCommitment(commitmentId: number): Promise<void> {
+    await this.delete(commitmentId)
   }
 
   protected converterSchemaToInterface(

@@ -35,7 +35,11 @@ export default class MemberCommitmentUpdateService extends ApiService<
     )
   }
 
-  async updateMemberCommitment(memberCommitment: CommitmentModification[]): Promise<void> {
-    await this.bulkUpdate(memberCommitment)
+  async updateMemberCommitment(memberCommitments: CommitmentModification[]): Promise<void> {
+    const data = memberCommitments.map((memberCommitment) => ({
+      id: memberCommitment.id,
+      hours: memberCommitment.hours
+    }))
+    await this.bulkUpdate(data)
   }
 }
