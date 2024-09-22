@@ -137,7 +137,6 @@ const handlePageChange = async (event: { page: number; rows: number }) => {
 onMounted(async () => {
   await fetchCommitments()
 })
-
 </script>
 
 <template>

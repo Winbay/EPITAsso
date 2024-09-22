@@ -1,7 +1,5 @@
 import * as yup from 'yup'
-import {
-  memberCommitmentUpdateResponseSchema
-} from '@/services/association/memberCommitmentUpdate'
+import { memberCommitmentUpdateResponseSchema } from '@/services/association/memberCommitmentUpdate'
 import ApiService from '@/services/apiService'
 import type { ToastServiceMethods } from 'primevue/toastservice'
 import type { Association } from '@/types/associationInterfaces'
@@ -38,7 +36,10 @@ export default class CommitmentService extends ApiService<yup.InferType<typeof c
       start_date: startDate.toISOString(),
       end_date: endDate.toISOString()
     }
-    const result = await this.create<yup.InferType<typeof commitmentSchema>>(data, ['id', 'member_commitments'])
+    const result = await this.create<yup.InferType<typeof commitmentSchema>>(data, [
+      'id',
+      'member_commitments'
+    ])
     return this.converterSchemaToInterface(result)
   }
 

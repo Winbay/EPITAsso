@@ -87,7 +87,11 @@ const closeDialogWithoutUpdate = async () => {
   <div class="card w-full h-full px-10 py-8">
     <div class="h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Engagement Étudiant</span>
-      <Button label="Ajouter un engagement" class="add-btn py-0 px-4 h-full" @click="openOverlayPanel($event)" />
+      <Button
+        label="Ajouter un engagement"
+        class="add-btn py-0 px-4 h-full"
+        @click="openOverlayPanel($event)"
+      />
     </div>
 
     <DataTableCommitmentResume v-if="!loading" />
@@ -161,7 +165,6 @@ const closeDialogWithoutUpdate = async () => {
     </Dialog>
   </div>
 </template>
-
 
 <style>
 .add-btn {
