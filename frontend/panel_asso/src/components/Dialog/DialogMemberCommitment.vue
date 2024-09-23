@@ -3,7 +3,7 @@ import Dialog from 'primevue/dialog'
 import InputNumber from 'primevue/inputnumber'
 import Listbox from 'primevue/listbox'
 import Button from 'primevue/button'
-import { type PropType, computed } from 'vue'
+import { type PropType, computed, ref, onMounted } from 'vue'
 import type CommitmentService from '@/services/association/commitment'
 import type { MemberCommitment } from '@/types/commitmentInterface'
 
@@ -15,17 +15,23 @@ const props = defineProps({
   memberCommitments: {
     type: Array as PropType<MemberCommitment[]>,
     required: true
-  },
-  originalMemberCommitments: {
-    type: Array as PropType<MemberCommitment[]>,
-    required: true
   }
 })
 
 const emits = defineEmits(['updateMemberCommitments', 'closeDialogWithoutUpdate'])
 
+const memberCommitmentsRef = ref<MemberCommitment[]>([])
+const originalMemberCommitmentsRef = ref<MemberCommitment[]>([])
+
 const sortedMemberCommitments = computed(() => {
-  return [...props.memberCommitments].sort((a, b) => a.member.login.localeCompare(b.member.login))
+  return [...memberCommitmentsRef.value].sort((a, b) =>
+    a.member.login.localeCompare(b.member.login)
+  )
+})
+
+onMounted(() => {
+  memberCommitmentsRef.value = props.memberCommitments.map(commitment => ({ ...commitment }))
+  originalMemberCommitmentsRef.value = props.memberCommitments.map(commitment => ({ ...commitment }))
 })
 </script>
 
@@ -76,7 +82,7 @@ const sortedMemberCommitments = computed(() => {
         label="Mettre à jour"
         icon="pi pi-check"
         class="p-button-success"
-        @click="emits('updateMemberCommitments', memberCommitments, originalMemberCommitments)"
+        @click="emits('updateMemberCommitments', memberCommitmentsRef, originalMemberCommitmentsRef)"
       />
     </div>
   </Dialog>

@@ -30,6 +30,7 @@ const loading = ref(true)
 const fetchCommitments = async () => {
   loading.value = true
   try {
+    // TODO: Implement pagination
     const offset = currentPage.value * rowsPerPage.value
     commitmentsRef.value = await commitmentResumeService.getCommitmentsResume(
       filters.value.dateRange.value[0],
@@ -37,10 +38,10 @@ const fetchCommitments = async () => {
       filters.value['login'].value
     )
     commitmentsCount.value = commitmentsRef.value.length
+    commitmentsRef.value = commitmentsRef.value.slice(offset, offset + rowsPerPage.value)
+    loading.value = false
   } catch (error) {
     console.error(error)
-  } finally {
-    loading.value = false
   }
 }
 
@@ -57,7 +58,7 @@ const filters = ref({
   login: { value: '', matchMode: FilterMatchMode.CONTAINS },
   dateRange: {
     value: [
-      new Date(new Date().getFullYear() - 3, new Date().getMonth(), new Date().getDate()),
+      new Date(new Date().getFullYear(), new Date().getMonth() - 6, new Date().getDate()),
       new Date()
     ],
     matchMode: FilterMatchMode.BETWEEN
@@ -184,6 +185,7 @@ onMounted(async () => {
             selectionMode="range"
             placeholder="Sélectionnez une période"
             showIcon
+            dateFormat="dd/mm/yy"
           />
         </template>
       </Toolbar>
@@ -208,7 +210,7 @@ onMounted(async () => {
     :rows="rowsPerPage"
     :totalRecords="commitmentsCount"
     :rowsPerPageOptions="[5, 10, 20, 50]"
-    @page="handlePageChange"
+    @page="handlePageChange($event)"
   />
 
   <DialogStudentCommitment
