@@ -1,6 +1,6 @@
 import ApiService from '@/services/apiService'
 import type { ToastServiceMethods } from 'primevue/toastservice'
-import type { CommitmentModification } from '@/types/commitmentInterface'
+import type { CommitmentModification, MemberCommitment } from '@/types/commitmentInterface'
 import { memberSchema } from '@/services/association/member'
 import * as yup from 'yup'
 import type { Association } from '@/types/associationInterfaces'
@@ -35,7 +35,7 @@ export default class MemberCommitmentUpdateService extends ApiService<
     )
   }
 
-  async updateMemberCommitment(memberCommitments: CommitmentModification[]): Promise<void> {
+  async updateMemberCommitment(memberCommitments: MemberCommitment[]): Promise<void> {
     const data = memberCommitments.map((memberCommitment) => ({
       id: memberCommitment.id,
       hours: memberCommitment.hours

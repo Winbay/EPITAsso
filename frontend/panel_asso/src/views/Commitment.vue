@@ -3,15 +3,14 @@ import { ref } from 'vue'
 import DataTableCommitmentResume from '@/components/DataTable/DataTableCommitmentResume.vue'
 import type { Commitment, MemberCommitment } from '@/types/commitmentInterface'
 import Button from 'primevue/button'
-import Dialog from 'primevue/dialog'
 import OverlayPanel from 'primevue/overlaypanel'
 import Calendar from 'primevue/calendar'
 import { useToast } from 'primevue/usetoast'
 import CommitmentService from '@/services/association/commitment'
 import SelectedAssoService from '@/services/association/selectedAsso'
-import InputNumber from 'primevue/inputnumber'
-import Listbox from 'primevue/listbox'
 import MemberCommitmentUpdateService from '@/services/association/memberCommitmentUpdate'
+import DataTableMemberCommitment from '@/components/DataTable/DataTableMemberCommitment.vue'
+import DialogMemberCommitment from '@/components/Dialog/DialogMemberCommitment.vue'
 
 const toast = useToast()
 const commitmentService: CommitmentService = new CommitmentService(
@@ -26,8 +25,8 @@ const visibleDialogRef = ref(false)
 const loading = ref(false)
 
 const createdCommitmentRef = ref<Commitment>()
-const memberCommitments = ref<MemberCommitment[]>([])
-const originalMemberCommitments = ref<MemberCommitment[]>([])
+const memberCommitmentsRef = ref<MemberCommitment[]>([])
+const originalMemberCommitmentsRef = ref<MemberCommitment[]>([])
 
 const overlayPanelRef = ref<OverlayPanel>()
 const dateRange = ref<[Date, Date]>([new Date(), new Date()])
@@ -39,25 +38,27 @@ const openOverlayPanel = async (event: Event): Promise<void> => {
 }
 
 const openCommitmentDialog = async () => {
+  loading.value = true
   try {
     if (!dateRange.value || !dateRange.value[0] || !dateRange.value[1]) {
       return
     }
     const [startDate, endDate] = dateRange.value
     createdCommitmentRef.value = await commitmentService.createCommitment(startDate, endDate)
-    memberCommitments.value = createdCommitmentRef.value.memberCommitments
-    originalMemberCommitments.value = JSON.parse(JSON.stringify(memberCommitments.value))
+    memberCommitmentsRef.value = createdCommitmentRef.value.memberCommitments
+    originalMemberCommitmentsRef.value = JSON.parse(JSON.stringify(memberCommitmentsRef.value))
     overlayPanelRef.value?.hide()
     dateRange.value = [new Date(), new Date()]
     visibleDialogRef.value = true
+    loading.value = false
   } catch (error) {
     console.error(error)
   }
 }
 
-const updateMemberCommitment = async () => {
-  const modifiedMemberCommitments = memberCommitments.value.filter((commitment, index) => {
-    return JSON.stringify(commitment) !== JSON.stringify(originalMemberCommitments.value[index])
+const updateMemberCommitment = async (memberCommitments: MemberCommitment[], originalCommitments: MemberCommitment[]) => {
+  const modifiedMemberCommitments = memberCommitments.filter((commitment, index) => {
+    return JSON.stringify(commitment) !== JSON.stringify(originalCommitments[index])
   })
   try {
     loading.value = true
@@ -65,14 +66,10 @@ const updateMemberCommitment = async () => {
       await memberCommitmentUpdateService.updateMemberCommitment(modifiedMemberCommitments)
     }
     loading.value = false
-    closeDialog()
+    visibleDialogRef.value = false
   } catch (error) {
     console.error(error)
   }
-}
-
-const closeDialog = () => {
-  visibleDialogRef.value = false
 }
 
 const closeDialogWithoutUpdate = async () => {
@@ -94,7 +91,18 @@ const closeDialogWithoutUpdate = async () => {
       />
     </div>
 
-    <DataTableCommitmentResume v-if="!loading" />
+    <div class="flex flex-col mb-5">
+      <span class="text-xl font-semibold mb-2">Liste des Engagements de Bureau</span>
+      <DataTableMemberCommitment
+        v-if="!loading"
+        :commitment-service="commitmentService"
+        :update-member-commitment="updateMemberCommitment"
+      />
+    </div>
+    <div class="flex flex-col pb-5">
+      <span class="text-xl font-semibold mb-2">Résumé des engagements</span>
+      <DataTableCommitmentResume v-if="!loading" />
+    </div>
 
     <OverlayPanel ref="overlayPanelRef">
       <div class="flex flex-col gap-4">
@@ -115,54 +123,14 @@ const closeDialogWithoutUpdate = async () => {
       </div>
     </OverlayPanel>
 
-    <Dialog
-      modal
+    <DialogMemberCommitment
       v-model:visible="visibleDialogRef"
-      @update:visible="closeDialog"
-      :style="{ width: '40vw' }"
-    >
-      <template #header>
-        <h2 class="m-0 font-semibold text-xl text-primary">Nouvel engagement</h2>
-      </template>
-
-      <Listbox
-        :options="memberCommitments"
-        optionLabel="member.login"
-        filter
-        filterPlaceholder="Rechercher un engagement"
-        emptyFilterMessage="Aucun engagement trouvé"
-      >
-        <template #option="slotProps">
-          <div class="flex justify-between items-center">
-            <div>{{ slotProps.option.member.login }}</div>
-            <InputNumber
-              id="hoursInput"
-              v-model="slotProps.option.hours"
-              :value="slotProps.option.hours || 0"
-              type="number"
-              :min="0"
-              showButtons
-              :step="1"
-              suffix=" h"
-            />
-          </div>
-        </template>
-      </Listbox>
-      <template #footer>
-        <Button
-          label="Annuler"
-          icon="pi pi-times"
-          class="p-button-secondary"
-          @click="closeDialogWithoutUpdate"
-        />
-        <Button
-          label="Mettre à jour"
-          icon="pi pi-check"
-          class="p-button-success"
-          @click="updateMemberCommitment"
-        />
-      </template>
-    </Dialog>
+      :member-commitments="memberCommitmentsRef"
+      :commitment-service="commitmentService"
+      :original-member-commitments="originalMemberCommitmentsRef"
+      @update-member-commitments="updateMemberCommitment"
+      @close-dialog-without-update="closeDialogWithoutUpdate"
+    />
   </div>
 </template>
 
