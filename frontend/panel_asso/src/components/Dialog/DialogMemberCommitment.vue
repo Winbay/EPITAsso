@@ -30,8 +30,10 @@ const sortedMemberCommitments = computed(() => {
 })
 
 onMounted(() => {
-  memberCommitmentsRef.value = props.memberCommitments.map(commitment => ({ ...commitment }))
-  originalMemberCommitmentsRef.value = props.memberCommitments.map(commitment => ({ ...commitment }))
+  memberCommitmentsRef.value = props.memberCommitments.map((commitment) => ({ ...commitment }))
+  originalMemberCommitmentsRef.value = props.memberCommitments.map((commitment) => ({
+    ...commitment
+  }))
 })
 </script>
 
@@ -82,7 +84,9 @@ onMounted(() => {
         label="Mettre à jour"
         icon="pi pi-check"
         class="p-button-success"
-        @click="emits('updateMemberCommitments', memberCommitmentsRef, originalMemberCommitmentsRef)"
+        @click="
+          emits('updateMemberCommitments', memberCommitmentsRef, originalMemberCommitmentsRef)
+        "
       />
     </div>
   </Dialog>

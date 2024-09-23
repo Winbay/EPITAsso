@@ -21,14 +21,11 @@ const handleTabChange = (event: { index: number }): void => {
       <TabPanel header="Résumé">
         <DataTableCommitmentResume v-if="activeTabIndex === 0" />
       </TabPanel>
-      <TabPanel header="Engagements de bureau " >
-        <DataTableMemberCommitment
-          v-if="activeTabIndex === 1"
-        />
+      <TabPanel header="Engagements de bureau ">
+        <DataTableMemberCommitment v-if="activeTabIndex === 1" />
       </TabPanel>
     </TabView>
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
