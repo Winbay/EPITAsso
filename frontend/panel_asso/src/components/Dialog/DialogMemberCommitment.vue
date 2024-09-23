@@ -25,9 +25,7 @@ const props = defineProps({
 const emits = defineEmits(['updateMemberCommitments', 'closeDialogWithoutUpdate'])
 
 const sortedMemberCommitments = computed(() => {
-  return [...props.memberCommitments].sort((a, b) =>
-    a.member.login.localeCompare(b.member.login)
-  )
+  return [...props.memberCommitments].sort((a, b) => a.member.login.localeCompare(b.member.login))
 })
 </script>
 
@@ -84,6 +82,4 @@ const sortedMemberCommitments = computed(() => {
   </Dialog>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

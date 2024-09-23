@@ -56,7 +56,10 @@ const openCommitmentDialog = async () => {
   }
 }
 
-const updateMemberCommitment = async (memberCommitments: MemberCommitment[], originalCommitments: MemberCommitment[]) => {
+const updateMemberCommitment = async (
+  memberCommitments: MemberCommitment[],
+  originalCommitments: MemberCommitment[]
+) => {
   const modifiedMemberCommitments = memberCommitments.filter((commitment, index) => {
     return JSON.stringify(commitment) !== JSON.stringify(originalCommitments[index])
   })

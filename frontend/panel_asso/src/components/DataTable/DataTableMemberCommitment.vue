@@ -19,7 +19,9 @@ const props = defineProps({
     required: true
   },
   updateMemberCommitment: {
-    type: Function as PropType<(memberCommitments: MemberCommitment[], originalCommitments: MemberCommitment[]) => void>,
+    type: Function as PropType<
+      (memberCommitments: MemberCommitment[], originalCommitments: MemberCommitment[]) => void
+    >,
     required: true
   }
 })
@@ -112,16 +114,12 @@ onMounted(async () => {
         tableStyle="min-width: 50rem"
         size="small"
       >
-        <Column
-          field="startDate"
-          header="Date de début">
+        <Column field="startDate" header="Date de début">
           <template #body="{ data, field }">
             {{ formatDateTime(data[field]) }}
           </template>
         </Column>
-        <Column
-          field="endDate"
-          header="Date de fin">
+        <Column field="endDate" header="Date de fin">
           <template #body="{ data, field }">
             {{ formatDateTime(data[field]) }}
           </template>
