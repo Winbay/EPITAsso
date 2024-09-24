@@ -38,6 +38,7 @@ class Association(models.Model):
         return self.name
 
 
+# Call as "Member"
 class AssociateUserAndAssociation(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey("user.User", on_delete=models.CASCADE)
@@ -72,3 +73,42 @@ class SocialNetwork(models.Model):
 
     def __str__(self):
         return f"{self.name} of {self.link} for {self.association}."
+
+
+class Commitment(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    association = models.ForeignKey("association.Association", on_delete=models.CASCADE)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if self.start_date > self.end_date:
+            raise ValueError("Start date must be before end date.")
+        is_new = self._state.adding
+        super().save(*args, **kwargs)
+
+        if is_new and self.association:
+            members = AssociateUserAndAssociation.objects.filter(
+                association=self.association
+            )
+            for member in members:
+                MemberCommitment.objects.create(
+                    member=member,
+                    commitment=self,
+                    hours=0,
+                )
+
+    def __str__(self):
+        return f"{self.association} has a commitment from {self.start_date} to {self.end_date}."
+
+
+class MemberCommitment(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    member = models.ForeignKey(
+        "association.AssociateUserAndAssociation", on_delete=models.CASCADE
+    )
+    hours = models.IntegerField()
+    commitment = models.ForeignKey("association.Commitment", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.member} has a commitment of {self.hours} hours for {self.commitment}."

@@ -72,7 +72,7 @@ export default class MessageService extends ApiService<yup.InferType<typeof mess
     messages: Message[]
   }> {
     const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-    const { results, ...rest } = await this.getAllWithParams(params.toString())
+    const { results, ...rest } = await this.getAllWithPaginationParams(params.toString())
     const messages = results.map((message: yup.InferType<typeof messageSchema>) =>
       this.converterSchemaToInterface(message)
     )

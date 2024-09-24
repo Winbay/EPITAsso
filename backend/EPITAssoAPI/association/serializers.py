@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from .models import AssociateUserAndAssociation, Association, Faq, SocialNetwork
+from .models import (
+    AssociateUserAndAssociation,
+    Association,
+    Commitment,
+    Faq,
+    MemberCommitment,
+    SocialNetwork,
+)
 
 
 class AssociationSerializer(serializers.ModelSerializer):
@@ -84,7 +91,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
 class AssociationListPaginationSerializer(serializers.ModelSerializer):
     social_networks = SocialNetworkSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = Association
         fields = [
@@ -97,3 +104,25 @@ class AssociationListPaginationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
         depth = 1
+
+
+class CommitmentSerializer(serializers.ModelSerializer):
+    member_commitments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Commitment
+        fields = ["id", "start_date", "end_date", "member_commitments"]
+        read_only_fields = ["id"]
+
+    def get_member_commitments(self, obj):
+        commitments = MemberCommitment.objects.filter(commitment=obj)
+        return MemberCommitmentSerializer(commitments, many=True).data
+
+
+class MemberCommitmentSerializer(serializers.ModelSerializer):
+    member = MemberSerializer()
+
+    class Meta:
+        model = MemberCommitment
+        fields = ["id", "hours", "member"]
+        read_only_fields = ["id", "member"]

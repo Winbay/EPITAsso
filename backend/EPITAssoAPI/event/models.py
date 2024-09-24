@@ -1,5 +1,7 @@
 from django.db import models
 
+from association.models import AssociateUserAndAssociation
+
 
 # Not used right now
 class EventSheet(models.Model):
@@ -23,7 +25,7 @@ class EventSheet(models.Model):
     drinks = models.CharField(max_length=255, blank=True, null=True)
     special_comments = models.TextField(blank=True, null=True)
 
-    def str(self):
+    def __str__(self):
         return f"{self.name} on {self.date}"
 
 
@@ -65,5 +67,36 @@ class Event(models.Model):
     )
     tasks = models.ManyToManyField(EventTaskList, related_name="events", blank=True)
 
-    def str(self):
+    def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+        super().save(*args, **kwargs)
+
+        if is_new and self.association:
+            members = AssociateUserAndAssociation.objects.filter(
+                association=self.association
+            )
+            for member in members:
+                EventMemberCommitment.objects.create(
+                    member=member,
+                    event=self,
+                    hours=0,
+                )
+
+
+class EventMemberCommitment(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    member = models.ForeignKey(
+        "association.AssociateUserAndAssociation",
+        on_delete=models.CASCADE,
+        related_name="event_commitments",
+    )
+    event = models.ForeignKey(
+        Event, on_delete=models.CASCADE, related_name="members_commitments"
+    )
+    hours = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.member} committed to {self.event} for {self.hours} hours."

@@ -45,7 +45,7 @@ export default class PostService extends ApiService<yup.InferType<typeof postSch
     results: Post[]
   }> {
     const params = new URLSearchParams({ limit: limit.toString(), offset: offset.toString() })
-    const { results, ...rest } = await this.getAllWithParams(params.toString())
+    const { results, ...rest } = await this.getAllWithPaginationParams(params.toString())
     const posts = results.map((post: yup.InferType<typeof postSchema>) =>
       this.converterSchemaToInterface(post)
     )
