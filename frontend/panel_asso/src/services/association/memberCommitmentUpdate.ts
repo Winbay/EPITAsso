@@ -1,6 +1,10 @@
 import ApiService from '@/services/apiService'
 import type { ToastServiceMethods } from 'primevue/toastservice'
-import type { Commitment, CommitmentModification, MemberCommitment } from '@/types/commitmentInterface'
+import type {
+  Commitment,
+  CommitmentModification,
+  MemberCommitment
+} from '@/types/commitmentInterface'
 import { memberSchema } from '@/services/association/member'
 import * as yup from 'yup'
 import type { Association } from '@/types/associationInterfaces'
@@ -41,7 +45,8 @@ export default class MemberCommitmentUpdateService extends ApiService<
       id: memberCommitment.id,
       hours: memberCommitment.hours
     }))
-    const results = await this.bulkUpdate<yup.InferType<typeof memberCommitmentUpdateResponseSchema>[]>(data)
+    const results =
+      await this.bulkUpdate<yup.InferType<typeof memberCommitmentUpdateResponseSchema>[]>(data)
     return results.map((memberCommitment) => this.converterSchemaToInterface(memberCommitment))
   }
 

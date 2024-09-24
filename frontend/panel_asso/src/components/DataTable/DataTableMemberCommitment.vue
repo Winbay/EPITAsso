@@ -40,7 +40,7 @@ const handlePageChange = async (event: { page: number; rows: number }) => {
 }
 
 const overlayPanelRef = ref<OverlayPanel>()
-const dateRangeDefault: [Date, Date] = [new Date(), new Date()];
+const dateRangeDefault: [Date, Date] = [new Date(), new Date()]
 const dateRange = ref<[Date, Date]>(dateRangeDefault)
 
 const openOverlayPanel = (event: Event): void => {
@@ -84,7 +84,8 @@ const updateMemberCommitment = async (
   })
   try {
     if (modifiedMemberCommitments.length > 0) {
-      const results: MemberCommitment[] = await memberCommitmentUpdateService.updateMemberCommitment(modifiedMemberCommitments)
+      const results: MemberCommitment[] =
+        await memberCommitmentUpdateService.updateMemberCommitment(modifiedMemberCommitments)
       memberCommitmentsRef.value.map((memberCommitment) => {
         const updatedCommitment = results.find((result) => result.id === memberCommitment.id)
         if (updatedCommitment) {
