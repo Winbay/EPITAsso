@@ -4,6 +4,7 @@ from .views_without_association_id import (
     EventMemberCommitmentListView,
     UpcomingEventsView,
     EventListPaginationView,
+    EventLikeView,
 )
 
 urlpatterns = [
@@ -19,4 +20,5 @@ urlpatterns = [
         EventMemberCommitmentBulkUpdateView.as_view(),
         name="bulk-update-commitments",
     ),
+    path('events/<int:pk>/like/', EventLikeView.as_view(), name='event-like'),
 ]

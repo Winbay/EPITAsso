@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from association.serializers import MemberSerializer
-from .models import Event, EventMemberCommitment
+from .models import Event, EventMemberCommitment, Like
 from post.models import Tag
 from post.serializers import TagSerializer
 from association.serializers import AssociationSimpleWithLogoSerializer
@@ -11,6 +11,8 @@ class EventSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     association = AssociationSimpleWithLogoSerializer(read_only=True)
     author = serializers.SerializerMethodField()
+    like_count = serializers.SerializerMethodField()
+    is_liked_by_user = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
@@ -26,10 +28,21 @@ class EventSerializer(serializers.ModelSerializer):
             "frequency",
             "end_recurrence",
             "tags",
+            "like_count",
+            "is_liked_by_user",
         ]
 
     def get_author(self, obj):
         return obj.author.login
+    
+    def get_like_count(self, obj):
+        return Like.objects.filter(event=obj).count()
+    
+    def get_is_liked_by_user(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return Like.objects.filter(event=obj, user=request.user).exists()
+        return False
 
     def create(self, validated_data):
         tags_data = validated_data.pop("tags", [])

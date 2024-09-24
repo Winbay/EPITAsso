@@ -1,18 +1,20 @@
-from drf_spectacular.utils import extend_schema, OpenApiExample
+from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import generics, status
 from django.utils.timezone import now
 from rest_framework.pagination import LimitOffsetPagination
-from .models import Event, EventMemberCommitment
+from .models import Event, EventMemberCommitment, Like
 from .serializers import (
     EventMemberCommitmentSerializer,
     EventSerializer,
 )
 
-
 class UpcomingEventsView(generics.ListAPIView):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         limit = self.request.query_params.get("limit", 3)
@@ -27,7 +29,18 @@ class UpcomingEventsView(generics.ListAPIView):
         ]
 
     @extend_schema(
-        summary="Retrieve the 'limit' upcoming events (all associations) (default: 3)"
+        summary="Retrieve the 'limit' upcoming events (all associations) (default: 3)",
+        description="Retrieve the 'limit' upcoming events, sorted by start date.",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                type=int,
+                required=False,
+                location=OpenApiParameter.QUERY,
+                description="Number of events to retrieve (default: 3)",
+                default=3,
+        )
+    ],
     )
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -37,6 +50,7 @@ class EventListPaginationView(generics.ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     pagination_class = LimitOffsetPagination
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return super().get_queryset().order_by("-start_date")
@@ -146,3 +160,41 @@ class EventMemberCommitmentBulkUpdateView(generics.UpdateAPIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(updated_commitments, status=status.HTTP_200_OK)
+
+
+class EventLikeView(generics.CreateAPIView, generics.DestroyAPIView):
+    @extend_schema(
+        summary="Like an event",
+        description="Allows a user to like an event. If the user has already liked the event, an error will be returned.",
+        responses={
+            201: "Event liked successfully",
+            400: "You have already liked this event"
+        }
+    )
+    def post(self, request, pk):
+        event = get_object_or_404(Event, id=pk)
+        user = request.user
+        if Like.objects.filter(user=user, event=event).exists():
+            return Response({"detail": "You have already liked this event."}, status=status.HTTP_400_BAD_REQUEST)
+        Like.objects.create(user=user, event=event)
+        return Response({"detail": "Event liked successfully."}, status=status.HTTP_201_CREATED)
+
+    @extend_schema(
+        summary="Unlike an event",
+        description="Allows a user to unlike an event. If the user has not liked the event, an error will be returned.",
+        responses={
+            204: "Like removed successfully",
+            400: "You haven't liked this event"
+        }
+    )
+    def delete(self, request, pk):
+        event = get_object_or_404(Event, id=pk)
+        user = request.user
+
+        like = Like.objects.filter(user=user, event=event).first()
+
+        if like:
+            like.delete()
+            return Response({"detail": "Like removed successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+        return Response({"detail": "You haven't liked this event."}, status=status.HTTP_400_BAD_REQUEST)
