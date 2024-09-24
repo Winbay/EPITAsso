@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import (
     extend_schema,
     OpenApiParameter,
@@ -262,6 +263,10 @@ class CommitmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Commitment.objects.all()
     serializer_class = CommitmentSerializer
     permission_classes = [IsMemberOfAssociation]
+
+    def get_object(self):
+        commitment_id = self.kwargs.get("commitment_id")
+        return get_object_or_404(Commitment, id=commitment_id)
 
     @extend_schema(summary="Retrieve a Commitment")
     def get(self, request, *args, **kwargs):
