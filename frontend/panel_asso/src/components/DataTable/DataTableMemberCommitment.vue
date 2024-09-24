@@ -146,7 +146,9 @@ const confirmDelete = (event: Event, commitmentId: number) => {
 const deleteCommitment = async (commitmentId: number) => {
   try {
     await commitmentService.deleteCommitment(commitmentId)
-    commitmentsRef.value = commitmentsRef.value.filter(commitment => commitment.id !== commitmentId);
+    commitmentsRef.value = commitmentsRef.value.filter(
+      (commitment) => commitment.id !== commitmentId
+    )
   } catch (error) {
     console.error(error)
   }

@@ -363,8 +363,7 @@ class ResumeAllCommitmentsView(APIView):
         commitments = Commitment.objects.filter(association=association)
         if start_date and end_date:
             commitments = commitments.filter(
-                ~Q(start_date__gt=end_date) &
-                ~Q(end_date__lt=start_date)
+                ~Q(start_date__gt=end_date) & ~Q(end_date__lt=start_date)
             )
 
         events_commitments = EventMemberCommitment.objects.filter(member__in=members)
