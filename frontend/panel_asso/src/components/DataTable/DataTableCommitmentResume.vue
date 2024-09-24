@@ -3,7 +3,6 @@ import { ref, watch, onMounted } from 'vue'
 
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import Paginator from 'primevue/paginator'
 import Toolbar from 'primevue/toolbar'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
@@ -37,8 +36,6 @@ const fetchCommitments = async () => {
       filters.value.dateRange.value[1],
       filters.value['login'].value
     )
-    commitmentsCount.value = commitmentsRef.value.length
-    commitmentsRef.value = commitmentsRef.value.slice(offset, offset + rowsPerPage.value)
     loading.value = false
   } catch (error) {
     console.error(error)
@@ -126,7 +123,6 @@ watch(
 
 const rowsPerPage = ref(5)
 const currentPage = ref(0)
-const commitmentsCount = ref(0)
 
 const handlePageChange = async (event: { page: number; rows: number }) => {
   currentPage.value = event.page
@@ -149,6 +145,10 @@ onMounted(async () => {
     tableStyle="min-width: 50rem"
     size="small"
     @row-select="onRowSelect"
+    paginator
+    :rows="rowsPerPage"
+    :rowsPerPageOptions="[5, 10, 20, 50]"
+    @page="handlePageChange($event)"
   >
     <template #header>
       <Toolbar style="border: none" class="p-0">
@@ -204,14 +204,6 @@ onMounted(async () => {
       </template>
     </Column>
   </DataTable>
-
-  <Paginator
-    class="p-paginator-bottom"
-    :rows="rowsPerPage"
-    :totalRecords="commitmentsCount"
-    :rowsPerPageOptions="[5, 10, 20, 50]"
-    @page="handlePageChange($event)"
-  />
 
   <DialogStudentCommitment
     v-if="visibleCommitmentDetailsDialogRef && selectedCommitment"

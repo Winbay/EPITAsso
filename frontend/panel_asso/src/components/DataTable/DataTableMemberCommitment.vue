@@ -7,7 +7,6 @@ import ConfirmPopup from 'primevue/confirmpopup'
 import { onMounted, ref } from 'vue'
 import CommitmentService from '@/services/association/commitment'
 import type { Commitment, MemberCommitment } from '@/types/commitmentInterface'
-import Paginator from 'primevue/paginator'
 import DialogMemberCommitment from '@/components/Dialog/DialogMemberCommitment.vue'
 import { useConfirm } from 'primevue/useconfirm'
 import OverlayPanel from 'primevue/overlaypanel'
@@ -31,7 +30,6 @@ const loading = ref(false)
 
 const rowsPerPage = ref(5)
 const currentPage = ref(0)
-const commitmentsCount = ref(0)
 
 const handlePageChange = async (event: { page: number; rows: number }) => {
   currentPage.value = event.page
@@ -67,6 +65,7 @@ const createCommitment = async () => {
     createdCommitmentRef.value = await commitmentService.createCommitment(startDate, endDate)
     commitmentsRef.value.unshift(createdCommitmentRef.value)
     memberCommitmentsRef.value = createdCommitmentRef.value.memberCommitments
+
     resetOverlayPanel()
     visibleDialogRef.value = true
     loading.value = false
@@ -118,8 +117,6 @@ const fetchOfficeCommitments = async () => {
     // TODO: Implement pagination
     const offset = currentPage.value * rowsPerPage.value
     commitmentsRef.value = await commitmentService.getCommitments()
-    commitmentsCount.value = commitmentsRef.value.length
-    commitmentsRef.value = commitmentsRef.value.slice(offset, offset + rowsPerPage.value)
     loading.value = false
   } catch (error) {
     console.error(error)
@@ -149,7 +146,7 @@ const confirmDelete = (event: Event, commitmentId: number) => {
 const deleteCommitment = async (commitmentId: number) => {
   try {
     await commitmentService.deleteCommitment(commitmentId)
-    await fetchOfficeCommitments()
+    commitmentsRef.value = commitmentsRef.value.filter(commitment => commitment.id !== commitmentId);
   } catch (error) {
     console.error(error)
   }
@@ -185,6 +182,10 @@ onMounted(async () => {
         :loading="loading"
         tableStyle="min-width: 50rem"
         size="small"
+        paginator
+        :rows="rowsPerPage"
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        @page="handlePageChange($event)"
       >
         <Column field="startDate" header="Date de début">
           <template #body="{ data, field }">
@@ -214,13 +215,6 @@ onMounted(async () => {
           </template>
         </Column>
       </DataTable>
-      <Paginator
-        class="p-paginator-bottom"
-        :rows="rowsPerPage"
-        :totalRecords="commitmentsCount"
-        :rowsPerPageOptions="[5, 10, 20, 50]"
-        @page="handlePageChange($event)"
-      />
     </div>
   </div>
 
