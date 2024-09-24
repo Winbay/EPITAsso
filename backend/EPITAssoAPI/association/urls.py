@@ -9,6 +9,8 @@ from .views import (
     CommitmentDetailView,
     CommitmentListView,
     AssociationEventsView,
+    CommitmentDetailView,
+    CommitmentListView,
     FaqListView,
     FaqDetailView,
     MemberCommitmentBulkUpdateView,
