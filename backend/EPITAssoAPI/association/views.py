@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from drf_spectacular.utils import (
     extend_schema,
     OpenApiParameter,
@@ -362,12 +363,9 @@ class ResumeAllCommitmentsView(APIView):
         commitments = Commitment.objects.filter(association=association)
         if start_date and end_date:
             commitments = commitments.filter(
-                start_date__gte=start_date, end_date__lte=end_date
+                ~Q(start_date__gt=end_date) &
+                ~Q(end_date__lt=start_date)
             )
-        elif start_date:
-            commitments = commitments.filter(start_date__gte=start_date)
-        elif end_date:
-            commitments = commitments.filter(end_date__lte=end_date)
 
         events_commitments = EventMemberCommitment.objects.filter(member__in=members)
         if start_date and end_date:
