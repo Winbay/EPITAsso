@@ -54,23 +54,22 @@ const columns = [
   { field: 'totalHours', header: 'Total' }
 ]
 
+const dateRangeDefault = [
+  new Date(new Date().getFullYear(), new Date().getMonth() - 6, new Date().getDate()),
+  new Date()
+]
+
 const filters = ref({
   login: { value: '', matchMode: FilterMatchMode.CONTAINS },
   dateRange: {
-    value: [
-      new Date(new Date().getFullYear(), new Date().getMonth() - 6, new Date().getDate()),
-      new Date()
-    ],
+    value: dateRangeDefault,
     matchMode: FilterMatchMode.BETWEEN
   }
 })
 
 const clearFilter = () => {
   filters.value.login.value = ''
-  filters.value.dateRange.value = [
-    new Date(new Date().getFullYear() - 3, new Date().getMonth(), new Date().getDate()),
-    new Date()
-  ]
+  filters.value.dateRange.value = dateRangeDefault
 }
 
 const selectedCommitment = ref<CommitmentResume>()
@@ -186,6 +185,7 @@ onMounted(async () => {
             placeholder="Sélectionnez une période"
             showIcon
             dateFormat="dd/mm/yy"
+            :hide-on-range-selection="true"
           />
         </template>
       </Toolbar>

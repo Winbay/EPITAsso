@@ -1,9 +1,10 @@
 import ApiService from '@/services/apiService'
 import type { ToastServiceMethods } from 'primevue/toastservice'
-import type { CommitmentModification, MemberCommitment } from '@/types/commitmentInterface'
+import type { Commitment, CommitmentModification, MemberCommitment } from '@/types/commitmentInterface'
 import { memberSchema } from '@/services/association/member'
 import * as yup from 'yup'
 import type { Association } from '@/types/associationInterfaces'
+import { commitmentSchema } from '@/services/association/commitment'
 
 export const memberCommitmentUpdateBodySchema = yup
   .object()
@@ -35,11 +36,29 @@ export default class MemberCommitmentUpdateService extends ApiService<
     )
   }
 
-  async updateMemberCommitment(memberCommitments: MemberCommitment[]): Promise<void> {
+  async updateMemberCommitment(memberCommitments: MemberCommitment[]): Promise<MemberCommitment[]> {
     const data = memberCommitments.map((memberCommitment) => ({
       id: memberCommitment.id,
       hours: memberCommitment.hours
     }))
-    await this.bulkUpdate(data)
+    const results = await this.bulkUpdate<yup.InferType<typeof memberCommitmentUpdateResponseSchema>[]>(data)
+    return results.map((memberCommitment) => this.converterSchemaToInterface(memberCommitment))
+  }
+
+  protected converterSchemaToInterface(
+    memberCommitment: yup.InferType<typeof memberCommitmentUpdateResponseSchema>
+  ): MemberCommitment {
+    return {
+      id: memberCommitment.id,
+      hours: memberCommitment.hours,
+      member: {
+        id: memberCommitment.member.id,
+        login: memberCommitment.member.login,
+        firstName: memberCommitment.member.first_name,
+        lastName: memberCommitment.member.last_name,
+        role: memberCommitment.member.role,
+        school: memberCommitment.member.school
+      }
+    }
   }
 }

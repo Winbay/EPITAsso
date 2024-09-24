@@ -40,12 +40,18 @@ const handlePageChange = async (event: { page: number; rows: number }) => {
 }
 
 const overlayPanelRef = ref<OverlayPanel>()
-const dateRange = ref<[Date, Date]>([new Date(), new Date()])
+const dateRangeDefault: [Date, Date] = [new Date(), new Date()];
+const dateRange = ref<[Date, Date]>(dateRangeDefault)
 
-const openOverlayPanel = async (event: Event): Promise<void> => {
+const openOverlayPanel = (event: Event): void => {
   if (overlayPanelRef.value) {
     overlayPanelRef.value.toggle(event)
   }
+}
+
+const resetOverlayPanel = (): void => {
+  dateRange.value = dateRangeDefault
+  overlayPanelRef.value?.hide()
 }
 
 const createdCommitmentRef = ref<Commitment | null>(null)
@@ -59,9 +65,9 @@ const createCommitment = async () => {
     }
     const [startDate, endDate] = dateRange.value
     createdCommitmentRef.value = await commitmentService.createCommitment(startDate, endDate)
+    commitmentsRef.value.unshift(createdCommitmentRef.value)
     memberCommitmentsRef.value = createdCommitmentRef.value.memberCommitments
-    overlayPanelRef.value?.hide()
-    dateRange.value = [new Date(), new Date()]
+    resetOverlayPanel()
     visibleDialogRef.value = true
     loading.value = false
   } catch (error) {
@@ -78,13 +84,17 @@ const updateMemberCommitment = async (
   })
   try {
     if (modifiedMemberCommitments.length > 0) {
-      await memberCommitmentUpdateService.updateMemberCommitment(modifiedMemberCommitments)
+      const results: MemberCommitment[] = await memberCommitmentUpdateService.updateMemberCommitment(modifiedMemberCommitments)
+      memberCommitmentsRef.value.map((memberCommitment) => {
+        const updatedCommitment = results.find((result) => result.id === memberCommitment.id)
+        if (updatedCommitment) {
+          memberCommitment.hours = updatedCommitment.hours
+        }
+        return memberCommitment
+      })
     }
-    if (createdCommitmentRef.value) {
-      createdCommitmentRef.value = null
-    }
+    createdCommitmentRef.value = null
     visibleDialogRef.value = false
-    await fetchOfficeCommitments()
   } catch (error) {
     console.error(error)
   }
@@ -93,6 +103,7 @@ const updateMemberCommitment = async (
 const closeDialogWithoutUpdate = async () => {
   if (createdCommitmentRef.value) {
     await commitmentService.deleteCommitment(createdCommitmentRef.value.id)
+    commitmentsRef.value.shift()
   }
   visibleDialogRef.value = false
 }
@@ -221,6 +232,7 @@ onMounted(async () => {
         placeholder="Sélectionnez une période"
         showIcon
         dateFormat="dd/mm/yy"
+        :hide-on-range-selection="true"
       />
       <Button
         icon="pi pi-plus"
