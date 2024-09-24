@@ -5,10 +5,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework import generics, status
 from django.utils.timezone import now
 from rest_framework.pagination import LimitOffsetPagination
-from .models import Event, EventMemberCommitment, Like
+from .models import Event, EventMemberCommitment, Like, Comment
 from .serializers import (
     EventMemberCommitmentSerializer,
     EventSerializer,
+    CommentSerializer,
 )
 
 class UpcomingEventsView(generics.ListAPIView):
@@ -198,3 +199,38 @@ class EventLikeView(generics.CreateAPIView, generics.DestroyAPIView):
             return Response({"detail": "Like removed successfully."}, status=status.HTTP_204_NO_CONTENT)
 
         return Response({"detail": "You haven't liked this event."}, status=status.HTTP_400_BAD_REQUEST)
+    
+class EventCommentCreateListView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    pagination_class = LimitOffsetPagination
+
+    def perform_create(self, serializer):
+        event = get_object_or_404(Event, id=self.kwargs['id'])
+        serializer.save(user=self.request.user, event=event)
+
+    def get_queryset(self):
+        event_id = self.kwargs['id']
+        return Comment.objects.filter(event__id=event_id).order_by('-publication_date')
+    
+
+class EventCommentDeleteUpdateView(generics.DestroyAPIView, generics.GenericAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+    def get_object(self):
+        comment = get_object_or_404(Comment, id=self.kwargs['commentId'], event_id=self.kwargs['id'])
+        if comment.user != self.request.user:
+            return Response({"detail": "You do not have permission to delete this comment."}, status=status.HTTP_403_FORBIDDEN)
+        return comment
+    
+    def perform_update(self, serializer):
+        serializer.save()
+    
+    def patch(self, request, *args, **kwargs):
+        comment = self.get_object()
+        serializer = self.get_serializer(comment, data=request.data, partial=True)
+        
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)

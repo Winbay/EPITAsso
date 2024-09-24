@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from association.serializers import MemberSerializer
-from .models import Event, EventMemberCommitment, Like
+from .models import Event, EventMemberCommitment, Like, Comment
 from post.models import Tag
 from post.serializers import TagSerializer
 from association.serializers import AssociationSimpleWithLogoSerializer
@@ -84,3 +84,11 @@ class EventMemberCommitmentsResumeForOneUser(serializers.ModelSerializer):
     class Meta:
         model = EventMemberCommitment
         fields = ["id", "name", "hours"]
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.login')
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'user', 'content', 'publication_date']
+        read_only_fields = ['id', 'publication_date']

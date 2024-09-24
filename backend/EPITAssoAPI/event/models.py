@@ -102,5 +102,16 @@ class EventMemberCommitment(models.Model):
         return f"{self.member} committed to {self.event} for {self.hours} hours."
     
 class Like(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey("user.User", on_delete=models.CASCADE)
     event = models.ForeignKey("event.Event", on_delete=models.CASCADE)
+
+class Comment(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey("user.User", on_delete=models.CASCADE)
+    event = models.ForeignKey("event.Event", on_delete=models.CASCADE)
+    content = models.TextField()
+    publication_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} commented on {self.event} at {self.date}"
