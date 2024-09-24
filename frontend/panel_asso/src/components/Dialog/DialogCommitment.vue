@@ -73,7 +73,7 @@ onMounted(async () => {
             {{ commitmentResume.eventCommitmentHours }} h
           </div>
         </div>
-        <Listbox :options="commitmentResumeEventsRef" optionLabel="name">
+        <Listbox class="non-interactive-listbox" :options="commitmentResumeEventsRef" optionLabel="name">
           <template #option="slotProps">
             <div class="flex justify-between items-center">
               <div>{{ slotProps.option.name }}</div>
@@ -89,10 +89,19 @@ onMounted(async () => {
   </Dialog>
 </template>
 
-<style scoped>
+<style>
 .hours-display {
   font-size: 1.25rem;
   font-weight: bold;
   margin-top: 0;
+}
+
+.non-interactive-listbox .p-listbox-item {
+  pointer-events: none;
+  background-color: transparent;
+}
+
+.non-interactive-listbox .p-listbox-item:hover {
+  background-color: transparent !important;
 }
 </style>
