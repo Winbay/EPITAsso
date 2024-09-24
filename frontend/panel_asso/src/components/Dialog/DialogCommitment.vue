@@ -73,7 +73,11 @@ onMounted(async () => {
             {{ commitmentResume.eventCommitmentHours }} h
           </div>
         </div>
-        <Listbox class="non-interactive-listbox" :options="commitmentResumeEventsRef" optionLabel="name">
+        <Listbox
+          class="non-interactive-listbox"
+          :options="commitmentResumeEventsRef"
+          optionLabel="name"
+        >
           <template #option="slotProps">
             <div class="flex justify-between items-center">
               <div>{{ slotProps.option.name }}</div>
