@@ -85,10 +85,11 @@ class EventMemberCommitmentsResumeForOneUser(serializers.ModelSerializer):
         model = EventMemberCommitment
         fields = ["id", "name", "hours"]
 
+
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.login')
+    login = serializers.ReadOnlyField(source='user.login')
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'content', 'publication_date']
+        fields = ['id', 'login', 'content', 'publication_date']
         read_only_fields = ['id', 'publication_date']
