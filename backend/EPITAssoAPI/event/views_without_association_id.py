@@ -12,6 +12,7 @@ from .serializers import (
     CommentSerializer,
 )
 
+
 class UpcomingEventsView(generics.ListAPIView):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
@@ -40,8 +41,8 @@ class UpcomingEventsView(generics.ListAPIView):
                 location=OpenApiParameter.QUERY,
                 description="Number of events to retrieve (default: 3)",
                 default=3,
-        )
-    ],
+            )
+        ],
     )
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -169,24 +170,29 @@ class EventLikeView(generics.CreateAPIView, generics.DestroyAPIView):
         description="Allows a user to like an event. If the user has already liked the event, an error will be returned.",
         responses={
             201: "Event liked successfully",
-            400: "You have already liked this event"
-        }
+            400: "You have already liked this event",
+        },
     )
     def post(self, request, pk):
         event = get_object_or_404(Event, id=pk)
         user = request.user
         if Like.objects.filter(user=user, event=event).exists():
-            return Response({"detail": "You have already liked this event."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "You have already liked this event."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         Like.objects.create(user=user, event=event)
-        return Response({"detail": "Event liked successfully."}, status=status.HTTP_201_CREATED)
+        return Response(
+            {"detail": "Event liked successfully."}, status=status.HTTP_201_CREATED
+        )
 
     @extend_schema(
         summary="Unlike an event",
         description="Allows a user to unlike an event. If the user has not liked the event, an error will be returned.",
         responses={
             204: "Like removed successfully",
-            400: "You haven't liked this event"
-        }
+            400: "You haven't liked this event",
+        },
     )
     def delete(self, request, pk):
         event = get_object_or_404(Event, id=pk)
@@ -196,40 +202,52 @@ class EventLikeView(generics.CreateAPIView, generics.DestroyAPIView):
 
         if like:
             like.delete()
-            return Response({"detail": "Like removed successfully."}, status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {"detail": "Like removed successfully."},
+                status=status.HTTP_204_NO_CONTENT,
+            )
 
-        return Response({"detail": "You haven't liked this event."}, status=status.HTTP_400_BAD_REQUEST)
-    
+        return Response(
+            {"detail": "You haven't liked this event."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
 class EventCommentCreateListView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
     pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
-        event = get_object_or_404(Event, id=self.kwargs['id'])
+        event = get_object_or_404(Event, id=self.kwargs["id"])
         serializer.save(user=self.request.user, event=event)
 
     def get_queryset(self):
-        event_id = self.kwargs['id']
-        return Comment.objects.filter(event__id=event_id).order_by('-publication_date')
-    
+        event_id = self.kwargs["id"]
+        return Comment.objects.filter(event__id=event_id).order_by("-publication_date")
+
 
 class EventCommentDeleteUpdateView(generics.DestroyAPIView, generics.GenericAPIView):
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
 
     def get_object(self):
-        comment = get_object_or_404(Comment, id=self.kwargs['commentId'], event_id=self.kwargs['id'])
+        comment = get_object_or_404(
+            Comment, id=self.kwargs["commentId"], event_id=self.kwargs["id"]
+        )
         if comment.user != self.request.user:
-            return Response({"detail": "You do not have permission to delete this comment."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "You do not have permission to delete this comment."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         return comment
-    
+
     def perform_update(self, serializer):
         serializer.save()
-    
+
     def patch(self, request, *args, **kwargs):
         comment = self.get_object()
         serializer = self.get_serializer(comment, data=request.data, partial=True)
-        
+
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 

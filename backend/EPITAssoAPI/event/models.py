@@ -100,11 +100,13 @@ class EventMemberCommitment(models.Model):
 
     def __str__(self):
         return f"{self.member} committed to {self.event} for {self.hours} hours."
-    
+
+
 class Like(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey("user.User", on_delete=models.CASCADE)
     event = models.ForeignKey("event.Event", on_delete=models.CASCADE)
+
 
 class Comment(models.Model):
     id = models.BigAutoField(primary_key=True)

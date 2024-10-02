@@ -6,26 +6,36 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0004_like'),
+        ("event", "0004_like"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='like',
-            name='id',
+            model_name="like",
+            name="id",
             field=models.BigAutoField(primary_key=True, serialize=False),
         ),
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('content', models.TextField()),
-                ('publication_date', models.DateTimeField(auto_now_add=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='event.event')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("content", models.TextField()),
+                ("publication_date", models.DateTimeField(auto_now_add=True)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="event.event"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

@@ -34,12 +34,12 @@ class EventSerializer(serializers.ModelSerializer):
 
     def get_author(self, obj):
         return obj.author.login
-    
+
     def get_like_count(self, obj):
         return Like.objects.filter(event=obj).count()
-    
+
     def get_is_liked_by_user(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if request and request.user.is_authenticated:
             return Like.objects.filter(event=obj, user=request.user).exists()
         return False
@@ -87,9 +87,9 @@ class EventMemberCommitmentsResumeForOneUser(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    login = serializers.ReadOnlyField(source='user.login')
+    login = serializers.ReadOnlyField(source="user.login")
 
     class Meta:
         model = Comment
-        fields = ['id', 'login', 'content', 'publication_date']
-        read_only_fields = ['id', 'publication_date']
+        fields = ["id", "login", "content", "publication_date"]
+        read_only_fields = ["id", "publication_date"]

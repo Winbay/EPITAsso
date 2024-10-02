@@ -22,7 +22,15 @@ urlpatterns = [
         EventMemberCommitmentBulkUpdateView.as_view(),
         name="bulk-update-commitments",
     ),
-    path('events/<int:pk>/like/', EventLikeView.as_view(), name='event-like'),
-    path('events/<int:id>/comments/', EventCommentCreateListView.as_view(), name='event-comments-list-create'),
-    path('events/<int:id>/comments/<int:commentId>/', EventCommentDeleteUpdateView.as_view(), name='event-comment-update-delete'),
+    path("events/<int:pk>/like/", EventLikeView.as_view(), name="event-like"),
+    path(
+        "events/<int:id>/comments/",
+        EventCommentCreateListView.as_view(),
+        name="event-comments-list-create",
+    ),
+    path(
+        "events/<int:id>/comments/<int:commentId>/",
+        EventCommentDeleteUpdateView.as_view(),
+        name="event-comment-update-delete",
+    ),
 ]
