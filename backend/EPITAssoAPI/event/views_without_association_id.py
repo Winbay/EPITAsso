@@ -1,18 +1,22 @@
-from drf_spectacular.utils import extend_schema, OpenApiExample
+from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import generics, status
 from django.utils.timezone import now
 from rest_framework.pagination import LimitOffsetPagination
-from .models import Event, EventMemberCommitment
+from .models import Event, EventMemberCommitment, Like, Comment
 from .serializers import (
     EventMemberCommitmentSerializer,
     EventSerializer,
+    CommentSerializer,
 )
 
 
 class UpcomingEventsView(generics.ListAPIView):
     serializer_class = EventSerializer
     queryset = Event.objects.all()
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         limit = self.request.query_params.get("limit", 3)
@@ -27,7 +31,18 @@ class UpcomingEventsView(generics.ListAPIView):
         ]
 
     @extend_schema(
-        summary="Retrieve the 'limit' upcoming events (all associations) (default: 3)"
+        summary="Retrieve the 'limit' upcoming events (all associations) (default: 3)",
+        description="Retrieve the 'limit' upcoming events, sorted by start date.",
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                type=int,
+                required=False,
+                location=OpenApiParameter.QUERY,
+                description="Number of events to retrieve (default: 3)",
+                default=3,
+            )
+        ],
     )
     def get(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -37,6 +52,7 @@ class EventListPaginationView(generics.ListAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     pagination_class = LimitOffsetPagination
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         return super().get_queryset().order_by("-start_date")
@@ -146,3 +162,93 @@ class EventMemberCommitmentBulkUpdateView(generics.UpdateAPIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(updated_commitments, status=status.HTTP_200_OK)
+
+
+class EventLikeView(generics.CreateAPIView, generics.DestroyAPIView):
+    @extend_schema(
+        summary="Like an event",
+        description="Allows a user to like an event. If the user has already liked the event, an error will be returned.",
+        responses={
+            201: "Event liked successfully",
+            400: "You have already liked this event",
+        },
+    )
+    def post(self, request, pk):
+        event = get_object_or_404(Event, id=pk)
+        user = request.user
+        if Like.objects.filter(user=user, event=event).exists():
+            return Response(
+                {"detail": "You have already liked this event."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        Like.objects.create(user=user, event=event)
+        return Response(
+            {"detail": "Event liked successfully."}, status=status.HTTP_201_CREATED
+        )
+
+    @extend_schema(
+        summary="Unlike an event",
+        description="Allows a user to unlike an event. If the user has not liked the event, an error will be returned.",
+        responses={
+            204: "Like removed successfully",
+            400: "You haven't liked this event",
+        },
+    )
+    def delete(self, request, pk):
+        event = get_object_or_404(Event, id=pk)
+        user = request.user
+
+        like = Like.objects.filter(user=user, event=event).first()
+
+        if like:
+            like.delete()
+            return Response(
+                {"detail": "Like removed successfully."},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+
+        return Response(
+            {"detail": "You haven't liked this event."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class EventCommentCreateListView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    pagination_class = LimitOffsetPagination
+
+    def perform_create(self, serializer):
+        event = get_object_or_404(Event, id=self.kwargs["id"])
+        serializer.save(user=self.request.user, event=event)
+
+    def get_queryset(self):
+        event_id = self.kwargs["id"]
+        return Comment.objects.filter(event__id=event_id).order_by("-publication_date")
+
+
+class EventCommentDeleteUpdateView(generics.DestroyAPIView, generics.GenericAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+    def get_object(self):
+        comment = get_object_or_404(
+            Comment, id=self.kwargs["commentId"], event_id=self.kwargs["id"]
+        )
+        if comment.user != self.request.user:
+            return Response(
+                {"detail": "You do not have permission to delete this comment."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return comment
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def patch(self, request, *args, **kwargs):
+        comment = self.get_object()
+        serializer = self.get_serializer(comment, data=request.data, partial=True)
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
