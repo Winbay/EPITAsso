@@ -11,7 +11,7 @@ import CurrentBDE from "@/components/Home/Modules/CurrentBDE.vue";
   <main class="py-6">
     <VideoIframe />
     <AssoCarousel />
-    <div class="flex justify-center gap-4">
+    <div class="modules flex justify-center gap-4">
       <div class="modules-left flex flex-col gap-4">
         <MyAsso />
         <UpcomingEvents/>
@@ -32,5 +32,20 @@ main .modules-left {
 
 main .modules-right {
   width: 340px;
+}
+
+@media (max-width: 708px) {
+  main .modules {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  main .modules-left {
+    min-width: 90%;
+  }
+
+  main .modules-right {
+    width: 90%;
+  }
 }
 </style>

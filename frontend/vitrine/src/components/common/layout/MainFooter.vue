@@ -18,7 +18,7 @@
         <a href="https://epita.it/" target=”_blank”>> Epita.it</a>
       </div>
     </div>
-    <span class="text-sm">Ce site n'est pas directement affilié à Epita ou Epitech.</span>
+    <span class="info text-sm">Ce site n'est pas directement affilié à Epita ou Epitech.</span>
   </footer>
 </template>
 
@@ -29,5 +29,19 @@ footer {
 
 footer .websites > a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 708px) {
+  footer .websites > span {
+    font-size: 1rem;
+  }
+
+  footer .websites > a {
+    font-size: 0.75rem;
+  }
+
+  footer .info {
+    font-size: 0.75rem;
+  }
 }
 </style>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {type PropType} from "vue";
 import type {AssociationWithSN} from "@/types/associationInterfaces";
+import {useFunctionsStore} from "@/stores/functions";
 
 const props = defineProps({
   association: {
@@ -9,31 +10,7 @@ const props = defineProps({
   }
 })
 
-const getSocialNetworkIcon = (name: string): string => {
-  switch (name) {
-    case "Website": {
-      return "pi pi-globe";
-    }
-    case "Mail": {
-      return "pi pi-at"
-    }
-    case "Facebook": {
-      return "pi pi-facebook"
-    }
-    case "Instagram": {
-      return "pi pi-instagram"
-    }
-    case "X": {
-      return "pi pi-twitter"
-    }
-    case "Discord": {
-      return "pi pi-discord"
-    }
-    default: {
-      return "pi pi-external-link\n"
-    }
-  }
-}
+const functionsStore = useFunctionsStore();
 </script>
 
 <template>
@@ -46,7 +23,7 @@ const getSocialNetworkIcon = (name: string): string => {
     <div class="flex justify-center w-full gap-4">
       <div v-for="(socialNetwork, index) of association.socialNetworks" :key="index">
         <a :href="socialNetwork.link" target="_blank" rel="noopener noreferrer">
-          <i :class="getSocialNetworkIcon(socialNetwork.name)" class="text-3xl cursor-pointer"/>
+          <i :class="functionsStore.getSocialNetworkIcon(socialNetwork.name)" class="text-3xl cursor-pointer"/>
         </a>
       </div>
     </div>

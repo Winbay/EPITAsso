@@ -2,11 +2,10 @@
 import type {Event} from "@/types/eventInterfaces";
 import EventService from "@/services/event/event";
 import {onMounted, ref} from "vue";
-import {useToast} from "primevue/usetoast";
+import * as toast from '@/composables/toast'
 
 const listLastEvents = ref<Event[]>([]);
 
-const toast = useToast();
 const eventService = new EventService(toast);
 
 const loadLastEvents = async () => {
@@ -36,7 +35,7 @@ onMounted(async () => {
   <div class="module-last-events flex flex-col items-center gap-2">
     <span class="text-xl font-semibold">Derniers évènements</span>
     <div v-for="(event, index) of listLastEvents" :key="index" class="event-item flex flex-col gap-2 w-full">
-      <div class="flex justify-between">
+      <div class="header flex justify-between">
         <div class="flex gap-1 items-center">
           <span class="title font-semibold">{{ event.name }}</span>
           <span class="text-sm text-gray-500">- {{ formatDate(event.startDate) }}</span>
@@ -93,5 +92,11 @@ onMounted(async () => {
 .module-last-events .event-item:not(:last-child) {
   border-bottom: solid 1px var(--surface-300);
   padding-bottom: 5px;
+}
+
+@media (max-width: 708px) {
+  .module-last-events .header {
+    flex-direction: column;
+  }
 }
 </style>

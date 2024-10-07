@@ -1,8 +1,8 @@
 import type { Event } from '@/types/eventInterfaces'
-import type { ToastServiceMethods } from 'primevue/toastservice'
 import * as yup from 'yup'
 import ApiService from '../apiService'
 import { tagSchema } from '../tag'
+import type {CustomToast} from "@/types/toastInterfaces";
 
 const tagsSchema = yup.array().of(tagSchema).required()
 
@@ -31,7 +31,7 @@ const eventSchema = yup
   .required()
 
 export default class EventService extends ApiService<yup.InferType<typeof eventSchema>> {
-  constructor(toast: ToastServiceMethods) {
+  constructor(toast: CustomToast) {
     super(toast, `events/`, eventSchema)
   }
 
@@ -65,6 +65,11 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
   async getEventById(id: Event['id']): Promise<Event> {
     const data = await this.getById(id)
     return this.converterSchemaToInterface(data)
+  }
+
+  async getAssoEvents(slug: string): Promise<Event[]> {
+    const data = await this.getAllCustom(`/api/associations/slug/${slug}/events`);
+    return data.map((event) => this.converterSchemaToInterface(event));
   }
 
   async updateEvent(event: Event): Promise<void> {

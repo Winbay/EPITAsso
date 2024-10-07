@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import Carousel from "primevue/carousel";
 import type {AssociationCarousel} from "@/types/associationInterfaces";
+import {useFunctionsStore} from "@/stores/functions";
+
+const functionsStore = useFunctionsStore();
 
 const carouselItems: AssociationCarousel[] = [
   {
@@ -49,37 +52,11 @@ const getBackgroundImageStyle = (url: string) => {
     backgroundImage: `url(${url})`
   };
 };
-
-const getSocialNetworkIcon = (name: string): string => {
-  switch (name) {
-    case "Website": {
-      return "pi pi-globe";
-    }
-    case "Mail": {
-      return "pi pi-at"
-    }
-    case "Facebook": {
-      return "pi pi-facebook"
-    }
-    case "Instagram": {
-      return "pi pi-instagram"
-    }
-    case "X": {
-      return "pi pi-twitter"
-    }
-    case "Discord": {
-      return "pi pi-discord"
-    }
-    default: {
-      return "pi pi-external-link\n"
-    }
-  }
-}
 </script>
 
 <template>
   <Carousel :value="carouselItems" :num-visible="1" :num-scroll="1" circular
-            :autoplay-interval="5000">
+            :autoplay-interval="5000" class="module-carousel">
     <template #item="slotProps">
       <div class="asso-carousel h-80 w-full relative">
         <div class="h-full w-full bg-cover bg-center"
@@ -95,7 +72,7 @@ const getSocialNetworkIcon = (name: string): string => {
               <div class="flex gap-4">
                 <div v-for="(socialNetwork, index) of slotProps.data.socialNetworks" :key="index">
                   <a :href="socialNetwork.link" target="_blank" rel="noopener noreferrer">
-                    <i :class="getSocialNetworkIcon(socialNetwork.name)" class="text-2xl cursor-pointer"/>
+                    <i :class="functionsStore.getSocialNetworkIcon(socialNetwork.name)" class="text-2xl cursor-pointer"/>
                   </a>
                 </div>
               </div>
@@ -150,6 +127,12 @@ const getSocialNetworkIcon = (name: string): string => {
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 5;
+  }
+}
+
+@media (max-width: 708px) {
+  .module-carousel {
+    display: none;
   }
 }
 </style>

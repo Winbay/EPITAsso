@@ -38,7 +38,7 @@ onMounted(() => {
     ></iframe>
     <div class="frost-overlay">
       <div class="flex flex-col gap-4 overlay-text px-12">
-        <h1 class="text-7xl">Associations</h1>
+        <h1 class="title text-7xl">Associations</h1>
         <div class="flex">
           <span ref="typedText" class="typed-text text-2xl"></span>
           <span class="cursor" ref="cursor">_</span>
@@ -140,5 +140,29 @@ main .wei-overlay a {
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 12px;
+}
+
+@media (max-width: 708px) {
+  main .frost-overlay {
+    width: 100%;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    justify-content: center;
+  }
+
+  main .frost-overlay .title {
+    font-size: 2.5rem;
+  }
+
+  main .frost-overlay .typed-text {
+    display: none;
+  }
+
+  main .frost-overlay .cursor {
+    display: none;
+  }
+
+  main .wei-overlay {
+    display: none;
+  }
 }
 </style>

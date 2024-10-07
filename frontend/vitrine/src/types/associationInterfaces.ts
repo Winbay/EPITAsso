@@ -24,6 +24,7 @@ export interface Association {
   logo: string
   category: string
   slug: string
+  webhook: string
 }
 
 export interface AssociationDetail extends Association {

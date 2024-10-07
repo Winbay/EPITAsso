@@ -47,6 +47,11 @@ const toggleMenu = () => {
         <img class="h-12" alt="Epita logo" src="/images/EPI.png"/>
       </div>
       <RouterMenu/>
+      <div class="menu-icons items-center gap-4">
+        <router-link to="/"><i class="pi pi-home" /></router-link>
+        <router-link to="/associations"><i class="pi pi-graduation-cap" /></router-link>
+        <router-link to="/events"><i class="pi pi-calendar" /></router-link>
+      </div>
     </div>
     <div class="header-right h-full w-fit flex items-center justify-end">
       <Button
@@ -82,6 +87,15 @@ header .header-left {
   width: 100%;
 }
 
+header .menu-icons {
+  display: none;
+  cursor: pointer;
+}
+
+header .menu-icons i {
+  font-size: 1.5rem;
+}
+
 .p-button:focus {
   box-shadow: none;
 }
@@ -101,12 +115,12 @@ header .header-right .user-menu {
 }
 
 @media (max-width: 708px) {
-  header .header-left > *:not(.logo) {
+  header .header-left > * {
     display: none;
   }
 
-  header .header-right {
-    display: none;
+  header .menu-icons {
+    display: flex;
   }
 }
 </style>

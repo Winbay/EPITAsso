@@ -39,7 +39,7 @@ onMounted(async () => {
 <template>
   <div v-if="assoToDisplay" class="module-my-asso flex">
     <img :src="assoToDisplay.logo" :alt="assoToDisplay.name + ' logo'" class="mr-7"/>
-    <div class="flex flex-col justify-center gap-2">
+    <div class="content flex flex-col justify-center gap-2">
       <div class="flex flex-col">
         <span class="text-2xl font-bold">{{ assoToDisplay.name }}</span>
         <span class="font-semibold text-gray-500">{{ assoToDisplay.category }}</span>
@@ -80,5 +80,11 @@ onMounted(async () => {
   background-color: #287094;
   border-radius: 6px;
   color: white;
+}
+
+@media (max-width: 708px) {
+  .module-my-asso .content > div {
+    flex-direction: column;
+  }
 }
 </style>
