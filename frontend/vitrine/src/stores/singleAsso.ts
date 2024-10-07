@@ -18,6 +18,7 @@ export const useSingleAssoStore = defineStore('single-asso', () => {
     assoDetailsService.value = new AssociationDetailSlugService(toast, slug);
     eventService.value = new EventService(toast);
     await fetchAssoDetails();
+    await fetchAssoEvents();
   }
 
   async function fetchAssoDetails(): Promise<void> {
