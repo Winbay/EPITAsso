@@ -89,6 +89,14 @@ urlpatterns = [
         MemberCommitmentBulkUpdateView.as_view(),
         name="bulk-update-commitments",
     ),
-    path('associations/favorites/', AssociationFavoriteView.as_view(), name='favorite-list-add'),
-    path('associations/favorites/<int:association_id>/', AssociationFavoriteDeleteView.as_view(), name='favorite-delete'),
+    path(
+        "associations/favorites/",
+        AssociationFavoriteView.as_view(),
+        name="favorite-list-add",
+    ),
+    path(
+        "associations/favorites/<int:association_id>/",
+        AssociationFavoriteDeleteView.as_view(),
+        name="favorite-delete",
+    ),
 ]

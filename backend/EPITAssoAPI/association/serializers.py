@@ -128,10 +128,11 @@ class MemberCommitmentSerializer(serializers.ModelSerializer):
         fields = ["id", "hours", "member"]
         read_only_fields = ["id", "member"]
 
+
 class AssociationFavoriteSerializer(serializers.ModelSerializer):
     association = AssociationSimpleWithLogoSerializer()
 
     class Meta:
         model = AssociationFavorite
-        fields = ['id', 'user', 'association']
-        read_only_fields = ['id']
+        fields = ["id", "user", "association"]
+        read_only_fields = ["id"]
