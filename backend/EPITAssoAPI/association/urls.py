@@ -6,7 +6,6 @@ from .views import (
     AssociationDetailView,
     AssociationDetailsView,
     AssociationSlugView,
-    AssociationEventsView,
     CommitmentDetailView,
     CommitmentListView,
     FaqListView,
@@ -37,11 +36,6 @@ urlpatterns = [
         "associations/slug/<slug:slug>/",
         AssociationSlugView.as_view(),
         name="association-slug",
-    ),
-    path(
-        "associations/slug/<slug:slug>/events",
-        AssociationEventsView.as_view(),
-        name="association-upcoming-events",
     ),
     path(
         "associations/<int:pk>/details/",
@@ -95,14 +89,6 @@ urlpatterns = [
         MemberCommitmentBulkUpdateView.as_view(),
         name="bulk-update-commitments",
     ),
-    path(
-        "associations/favorites/",
-        AssociationFavoriteView.as_view(),
-        name="favorite-list-add",
-    ),
-    path(
-        "associations/favorites/<int:association_id>/",
-        AssociationFavoriteDeleteView.as_view(),
-        name="favorite-delete",
-    ),
+    path('associations/favorites/', AssociationFavoriteView.as_view(), name='favorite-list-add'),
+    path('associations/favorites/<int:association_id>/', AssociationFavoriteDeleteView.as_view(), name='favorite-delete'),
 ]

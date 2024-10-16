@@ -112,18 +112,13 @@ class MemberCommitment(models.Model):
 
     def __str__(self):
         return f"{self.member} has a commitment of {self.hours} hours for {self.commitment}."
-
-
+    
 class AssociationFavorite(models.Model):
-    user = models.ForeignKey(
-        "user.User", on_delete=models.CASCADE, related_name="favorites"
-    )
-    association = models.ForeignKey(
-        Association, on_delete=models.CASCADE, related_name="favorited_by"
-    )
+    user = models.ForeignKey("user.User", on_delete=models.CASCADE, related_name='favorites')
+    association = models.ForeignKey(Association, on_delete=models.CASCADE, related_name='favorited_by')
 
     class Meta:
-        unique_together = ["user", "association"]
+        unique_together = ['user', 'association']
 
     def __str__(self):
         return f"{self.association.name} is favorite asso of {self.user.username}"
