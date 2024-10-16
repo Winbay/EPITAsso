@@ -139,7 +139,6 @@ class MemberCommitmentSerializer(serializers.ModelSerializer):
         fields = ["id", "hours", "member"]
         read_only_fields = ["id", "member"]
 
-
 class AssociationFavoriteSerializer(serializers.ModelSerializer):
     association = AssociationSimpleWithLogoSerializer()
 
