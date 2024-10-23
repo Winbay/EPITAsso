@@ -19,7 +19,8 @@ const associationDetailSchema = yup
     category: yup.string().defined(),
     slug: yup.string().required(),
     social_networks: socialNetworksSchema,
-    faqs: faqsSchema
+    faqs: faqsSchema,
+    is_favorite: yup.boolean().required()
   })
   .required()
 
@@ -54,7 +55,8 @@ export default class AssociationDetailSlugService extends ApiService<
       category: associationDetails.category,
       slug: associationDetails.slug,
       socialNetworks: associationDetails.social_networks,
-      faqs: associationDetails.faqs
+      faqs: associationDetails.faqs,
+      isFavorite: associationDetails.is_favorite
     }
   }
 }

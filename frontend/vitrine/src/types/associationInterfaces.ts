@@ -30,6 +30,7 @@ export interface Association {
 export interface AssociationDetail extends Association {
   socialNetworks: SocialNetwork[]
   faqs: Faq[]
+  isFavorite: boolean
 }
 
 export interface AssociationWithLogo

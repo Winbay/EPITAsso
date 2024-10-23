@@ -17,7 +17,7 @@ const associationDetailSchema = yup
     logo: yup.string().required(),
     webhook: yup.string(),
     social_networks: socialNetworksSchema,
-    faqs: faqsSchema
+    faqs: faqsSchema,
   })
   .required()
 
@@ -34,7 +34,7 @@ export default class AssociationDetailService extends ApiService<
     )
   }
 
-  async getAssociationDetail(): Promise<Omit<AssociationDetail, 'category' | 'slug'>> {
+  async getAssociationDetail(): Promise<Omit<AssociationDetail, 'category' | 'slug' | 'isFavorite'>> {
     const data = await this.get()
     return this.converterSchemaToInterface(data)
   }
@@ -61,7 +61,7 @@ export default class AssociationDetailService extends ApiService<
 
   protected converterSchemaToInterface(
     associationDetails: yup.InferType<typeof associationDetailSchema>
-  ): Omit<AssociationDetail, 'category' | 'slug'> {
+  ): Omit<AssociationDetail, 'category' | 'slug' | 'isFavorite'> {
     return {
       id: associationDetails.id,
       name: associationDetails.name,
@@ -70,7 +70,7 @@ export default class AssociationDetailService extends ApiService<
       logo: associationDetails.logo,
       webhook: associationDetails.webhook ?? '',
       socialNetworks: associationDetails.social_networks,
-      faqs: associationDetails.faqs
+      faqs: associationDetails.faqs,
     }
   }
 }
