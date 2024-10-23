@@ -60,3 +60,5 @@ export interface AssociationCarousel {
   banner: string
   socialNetworks: SocialNetwork[]
 }
+
+export interface AssociationFavorite extends Pick<Association, 'id' | 'name' | 'logo' | 'slug'> {}
