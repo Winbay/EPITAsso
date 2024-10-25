@@ -6,6 +6,7 @@ from .views import (
     AssociationDetailView,
     AssociationDetailsView,
     AssociationSlugView,
+    AssociationEventsView,
     CommitmentDetailView,
     CommitmentListView,
     FaqListView,
@@ -34,6 +35,11 @@ urlpatterns = [
         "associations/slug/<slug:slug>/",
         AssociationSlugView.as_view(),
         name="association-slug",
+    ),
+    path(
+        "associations/slug/<slug:slug>/events",
+        AssociationEventsView.as_view(),
+        name="association-upcoming-events",
     ),
     path(
         "associations/<int:pk>/details/",
