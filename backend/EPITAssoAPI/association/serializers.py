@@ -6,10 +6,13 @@ from .models import (
     Faq,
     MemberCommitment,
     SocialNetwork,
+    AssociationFavorite,
 )
 
 
 class AssociationSerializer(serializers.ModelSerializer):
+    is_favorite = serializers.SerializerMethodField()
+
     class Meta:
         model = Association
         fields = [
@@ -22,8 +25,17 @@ class AssociationSerializer(serializers.ModelSerializer):
             "category",
             "type",
             "slug",
+            "is_favorite",
         ]
         read_only_fields = ["id"]
+
+    def get_is_favorite(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return AssociationFavorite.objects.filter(
+                user=request.user, association=obj
+            ).exists()
+        return False
 
 
 class FaqSerializer(serializers.ModelSerializer):
@@ -126,3 +138,12 @@ class MemberCommitmentSerializer(serializers.ModelSerializer):
         model = MemberCommitment
         fields = ["id", "hours", "member"]
         read_only_fields = ["id", "member"]
+
+
+class AssociationFavoriteSerializer(serializers.ModelSerializer):
+    association = AssociationSimpleWithLogoSerializer()
+
+    class Meta:
+        model = AssociationFavorite
+        fields = ["id", "user", "association"]
+        read_only_fields = ["id"]

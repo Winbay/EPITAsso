@@ -6,6 +6,7 @@ from .models import (
     Faq,
     MemberCommitment,
     SocialNetwork,
+    AssociationFavorite,
 )
 
 
@@ -47,3 +48,10 @@ class MemberCommitmentAdmin(admin.ModelAdmin):
     list_display = ("id", "hours", "member")
     search_fields = ("hours", "member")
     list_filter = ("member",)
+
+
+@admin.register(AssociationFavorite)
+class AssociationFavoriteAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "association")
+    search_fields = ("user", "association")
+    list_filter = ("user", "association")
