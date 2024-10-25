@@ -13,6 +13,8 @@ export interface Event {
   frequency: number
   endRecurrence: Date
   association: AssociationInEvent
+  likeCount: number
+  isLikedByUser: boolean
 
   // association: Association
   // placesNumber: number
@@ -22,6 +24,6 @@ export interface Event {
   // tasks: undefined[]
 }
 
-export interface EventCreation extends Omit<Event, 'id' | 'author'> {}
+export interface EventCreation extends Omit<Event, 'id' | 'author' | 'likeCount' | 'isLikedByUser'> {}
 
 export interface EventModification extends Event {}

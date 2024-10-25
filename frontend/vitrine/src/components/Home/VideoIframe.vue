@@ -1,40 +1,44 @@
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
+import { ref, onMounted } from 'vue'
 
 const videoId = 'dTTm-LRku-c'
-const videoUrl = ref(`https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&mute=1&controls=0&modestbranding=1&disablekb=1&showinfo=0&rel=0`)
+const videoUrl = ref(
+  `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}&mute=1&controls=0&modestbranding=1&disablekb=1&showinfo=0&rel=0`
+)
 
-const text = "Vie associative de l'EPITA et l'EPITECH";
-const typedText = ref<HTMLElement | null>(null);
-const cursor = ref<HTMLElement | null>(null);
+const text = "Vie associative de l'EPITA et l'EPITECH"
+const typedText = ref<HTMLElement>()
+const cursor = ref<HTMLElement>()
 
 onMounted(() => {
-  let index = 0;
+  let index = 0
 
   const type = () => {
-    if (!typedText.value) return;
+    if (!typedText.value) return
     if (index < text.length) {
-      typedText.value.innerHTML += text.charAt(index);
-      index++;
-      setTimeout(type, 40);
+      typedText.value.innerHTML += text.charAt(index)
+      index++
+      setTimeout(type, 40)
     } else {
-      cursor.value.style.display = "none";
+      if (cursor.value) {
+        cursor.value.style.display = 'none'
+      }
     }
-  };
+  }
 
-  setTimeout(type, 500);
-});
+  setTimeout(type, 500)
+})
 </script>
 
 <template>
   <div class="video-container mb-6">
     <iframe
-        width="100%"
-        :src="videoUrl"
-        frameborder="0"
-        tabindex="-1"
-        allow="autoplay; loop; muted"
-        allowfullscreen
+      width="100%"
+      :src="videoUrl"
+      frameborder="0"
+      tabindex="-1"
+      allow="autoplay; loop; muted"
+      allowfullscreen
     ></iframe>
     <div class="frost-overlay">
       <div class="flex flex-col gap-4 overlay-text px-12">
@@ -133,7 +137,7 @@ main .wei-overlay span {
 
 main .wei-overlay a {
   display: inline-block;
-  background-image: url("/images/YouTube.jpg");
+  background-image: url('/images/YouTube.jpg');
   width: 160px;
   height: 60px;
   background-size: cover;

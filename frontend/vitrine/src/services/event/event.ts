@@ -26,7 +26,9 @@ const eventSchema = yup
     recurrent: yup.boolean().required(),
     frequency: yup.number().required(),
     end_recurrence: yup.date().required(),
-    association: associationInEventSchema
+    association: associationInEventSchema,
+    like_count: yup.number().required(),
+    is_liked_by_user: yup.boolean().required()
   })
   .required()
 
@@ -35,7 +37,7 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
     super(toast, `events/`, eventSchema)
   }
 
-  async createEvent(event: Omit<Event, 'id' | 'author'>): Promise<void> {
+  async createEvent(event: Omit<Event, 'id' | 'author' | 'likeCount' | 'isLikedByUser'>): Promise<void> {
     const { startDate, endDate, endRecurrence, tags, ...rest } = event
     const eventDataToValidate = {
       start_date: startDate,
@@ -49,7 +51,7 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
       })),
       ...rest
     }
-    await this.create(eventDataToValidate, ['id', 'author'])
+    await this.create(eventDataToValidate, ['id', 'author', 'like_count', 'is_liked_by_user'])
   }
 
   async getEvents(): Promise<Event[]> {
@@ -73,7 +75,7 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
   }
 
   async updateEvent(event: Event): Promise<void> {
-    const { startDate, endDate, endRecurrence, tags, ...rest } = event
+    const { startDate, endDate, endRecurrence, tags, likeCount, isLikedByUser, ...rest } = event
     const eventDataToValidate = {
       start_date: startDate,
       end_date: endDate,
@@ -84,6 +86,8 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
         background_color: tag.backgroundColor,
         text_color: tag.textColor
       })),
+      like_count : likeCount,
+      is_liked_by_user : isLikedByUser,
       ...rest
     }
     await this.update(eventDataToValidate, eventDataToValidate.id)
@@ -120,7 +124,9 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
         name: event.association.name,
         logo: event.association.logo,
         slug: event.association.slug
-      }
+      },
+      likeCount: event.like_count,
+      isLikedByUser: event.is_liked_by_user
     }
   }
 }

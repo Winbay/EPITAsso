@@ -34,7 +34,7 @@ export default class AssociationDetailService extends ApiService<
     )
   }
 
-  async getAssociationDetail(): Promise<AssociationDetail> {
+  async getAssociationDetail(): Promise<Omit<AssociationDetail, 'category' | 'slug'>> {
     const data = await this.get()
     return this.converterSchemaToInterface(data)
   }
@@ -61,7 +61,7 @@ export default class AssociationDetailService extends ApiService<
 
   protected converterSchemaToInterface(
     associationDetails: yup.InferType<typeof associationDetailSchema>
-  ): AssociationDetail {
+  ): Omit<AssociationDetail, 'category' | 'slug'> {
     return {
       id: associationDetails.id,
       name: associationDetails.name,

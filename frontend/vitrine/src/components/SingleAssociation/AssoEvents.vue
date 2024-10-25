@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useSingleAssoStore} from "@/stores/singleAsso";
 import {useFunctionsStore} from "@/stores/functions";
+import CommentAndLike from '@/components/Events/CommentAndLike.vue'
 
 const singleAssoStore = useSingleAssoStore();
 const functionsStore = useFunctionsStore();
@@ -19,6 +20,7 @@ const functionsStore = useFunctionsStore();
         </div>
       </div>
       <div class="content" v-html="event.content"></div>
+      <CommentAndLike :event="event" />
     </div>
   </div>
 </template>
