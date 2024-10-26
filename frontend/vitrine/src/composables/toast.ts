@@ -1,5 +1,5 @@
 import toasteventbus from 'primevue/toasteventbus'
-import type {ToastMessageOptions} from "primevue/toast";
+import type { ToastMessageOptions } from 'primevue/toast'
 
 export function add(message: ToastMessageOptions) {
   toasteventbus.emit('add', message)

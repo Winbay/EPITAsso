@@ -1,22 +1,24 @@
 import djangoApi from './api'
 import SelectedAssoService from '@/services/association/selectedAsso'
 import * as yup from 'yup'
-import type {CustomToast} from "@/types/toastInterfaces";
+import type { CustomToast } from '@/types/toastInterfaces'
 
 const API_PATH = 'api'
 
-const createApiPaginationSchema = <T>(resultsSchema: yup.Schema<T>): yup.ObjectSchema<{
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
+const createApiPaginationSchema = <T>(
+  resultsSchema: yup.Schema<T>
+): yup.ObjectSchema<{
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
 }> =>
   yup.object({
     count: yup.number().required(),
     next: yup.string().nullable().defined(),
     previous: yup.string().nullable().defined(),
-    results: yup.array().of(resultsSchema).required(),
-  });
+    results: yup.array().of(resultsSchema).required()
+  })
 
 export default class ApiService<SchemaType> {
   toast: CustomToast | null
@@ -78,12 +80,23 @@ export default class ApiService<SchemaType> {
   }
 
   protected async getAllPagination(
-    limit: number, offset: number
-  ): Promise<{ count: number; next: string | null; previous: string | null; results: SchemaType[] }> {
+    limit: number,
+    offset: number
+  ): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: SchemaType[]
+  }> {
     const url = `${this.getFullPath()}?limit=${limit}&offset=${offset}`
-    const data = await this.request<{ count: number; next: string | null; previous: string | null; results: SchemaType[] }>('get', url)
-    const paginationSchema = createApiPaginationSchema(this.schema);
-    return await paginationSchema.validate(data);
+    const data = await this.request<{
+      count: number
+      next: string | null
+      previous: string | null
+      results: SchemaType[]
+    }>('get', url)
+    const paginationSchema = createApiPaginationSchema(this.schema)
+    return await paginationSchema.validate(data)
   }
 
   protected async getAllWithParams(params: string): Promise<{
@@ -123,7 +136,11 @@ export default class ApiService<SchemaType> {
     } else {
       validatedData = await this.validate(data as SchemaType)
     }
-    return await this.request<SchemaType>('patch', `${this.getFullPath()}${id ? id + '/' : ''}`, validatedData)
+    return await this.request<SchemaType>(
+      'patch',
+      `${this.getFullPath()}${id ? id + '/' : ''}`,
+      validatedData
+    )
   }
 
   protected async delete(id: number | null = null): Promise<void> {

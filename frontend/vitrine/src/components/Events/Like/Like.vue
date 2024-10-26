@@ -43,7 +43,12 @@ const toggleLike = async (): Promise<void> => {
   <div class="flex items-center">
     <i
       @click="toggleLike"
-      :class="['pi', 'cursor-pointer', 'like-icon', isLikedRef ? 'pi-thumbs-up-fill' : 'pi-thumbs-up']"
+      :class="[
+        'pi',
+        'cursor-pointer',
+        'like-icon',
+        isLikedRef ? 'pi-thumbs-up-fill' : 'pi-thumbs-up'
+      ]"
     />
     <span class="ml-2">{{ likesCountRef }}</span>
   </div>

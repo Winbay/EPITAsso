@@ -18,7 +18,6 @@ const props = defineProps({
 const emits = defineEmits(['start:edit-comment', 'cancel:edit-comment', 'delete:comment'])
 const userStore = useUserStore()
 
-
 const openEditComment = (comment: Comment): void => {
   unSetConfirmDelete()
   emits('start:edit-comment', comment)
@@ -44,7 +43,7 @@ const deleteComment = (commentId: number): void => {
 }
 
 const formatDate = computed(() => {
-  const date = props.comment?.publicationDate ? new Date(props.comment.publicationDate) : new Date();
+  const date = props.comment?.publicationDate ? new Date(props.comment.publicationDate) : new Date()
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'long',
     day: 'numeric',
@@ -64,8 +63,7 @@ const maxCharsToDisplay = 150
 const shouldTruncate = computed(() => {
   const lines = props.comment.content.split('\n')
   return lines.length > maxLinesToDisplay || props.comment.content.length > maxCharsToDisplay
-});
-
+})
 
 const truncatedContent = computed(() => {
   if (!shouldTruncate.value || isExpanded.value || !props.comment.content) {

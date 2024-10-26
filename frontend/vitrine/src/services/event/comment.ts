@@ -9,11 +9,17 @@ export const commentSchema = yup.object({
   login: yup.string().required(),
   content: yup.string().required(),
   publication_date: yup.string().required()
-});
+})
 
 export default class CommentService extends ApiService<yup.InferType<typeof commentSchema>> {
   constructor(toast: ToastServiceMethods, eventId: Event['id']) {
-    super(toast, `events/${eventId}/comments/`, commentSchema, null, `api/events/${eventId}/comments/`)
+    super(
+      toast,
+      `events/${eventId}/comments/`,
+      commentSchema,
+      null,
+      `api/events/${eventId}/comments/`
+    )
   }
 
   async getComments(
@@ -27,7 +33,8 @@ export default class CommentService extends ApiService<yup.InferType<typeof comm
   }> {
     const data = await this.getAllPagination(limit, offset)
     const comments: Comment[] = data.results.map((comment) =>
-      this.snakeToCamel(comment)) as Comment[]
+      this.snakeToCamel(comment)
+    ) as Comment[]
     return {
       count: data.count,
       next: data.next,

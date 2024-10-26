@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 import type { UserDetail } from '@/types/userInterfaces'
 import ApiService from '@/services/apiService'
-import type {CustomToast} from "@/types/toastInterfaces";
+import type { CustomToast } from '@/types/toastInterfaces'
 
 const userDetailSchema = yup.object({
   id: yup.string().required(),

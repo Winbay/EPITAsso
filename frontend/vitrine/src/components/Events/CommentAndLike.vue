@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import Like from '@/components/Events/Like/Like.vue'
 import { ref, defineProps, onMounted } from 'vue'
 import type { Event } from '@/types/eventInterfaces'
@@ -16,8 +15,8 @@ const props = defineProps({
       isLikedByUser: false,
       likeCount: 0
     })
-  },
-});
+  }
+})
 
 const toast = useToast()
 const commentService = new CommentService(toast, props.event.id)
@@ -43,12 +42,17 @@ onMounted(async () => {
         :likes-count="props.event.likeCount"
       />
 
-      <div v-if="totalCommentsRef > 0" class="flex items-center cursor-pointer" @click="toggleComments">
-        <span class="underline text-comment-toggle">{{ showCommentsRef ? 'Masquer les commentaires' : 'Afficher les commentaires' }} ({{ totalCommentsRef }})</span>
-        <i
-          class="pi pi-chevron-down arrow-icon"
-          :class="showCommentsRef ? 'rotate-180' : ''"
-        />
+      <div
+        v-if="totalCommentsRef > 0"
+        class="flex items-center cursor-pointer"
+        @click="toggleComments"
+      >
+        <span class="underline text-comment-toggle"
+          >{{ showCommentsRef ? 'Masquer les commentaires' : 'Afficher les commentaires' }} ({{
+            totalCommentsRef
+          }})</span
+        >
+        <i class="pi pi-chevron-down arrow-icon" :class="showCommentsRef ? 'rotate-180' : ''" />
       </div>
       <div v-else class="text-comment-toggle">Aucun commentaire</div>
     </div>
@@ -61,7 +65,6 @@ onMounted(async () => {
     />
   </div>
 </template>
-
 
 <style scoped>
 .text-comment-toggle {

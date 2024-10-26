@@ -3,7 +3,7 @@ import * as yup from 'yup'
 import ApiService from '../apiService'
 import { socialNetworkSchema } from './socialNetwork'
 import { faqSchema } from './faq'
-import type {CustomToast} from "@/types/toastInterfaces";
+import type { CustomToast } from '@/types/toastInterfaces'
 
 const socialNetworksSchema = yup.array().of(socialNetworkSchema).required()
 const faqsSchema = yup.array().of(faqSchema).required()

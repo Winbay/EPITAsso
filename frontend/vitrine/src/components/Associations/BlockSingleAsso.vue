@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {type PropType} from "vue";
-import type {AssociationWithSN} from "@/types/associationInterfaces";
-import {useFunctionsStore} from "@/stores/functions";
+import { type PropType } from 'vue'
+import type { AssociationWithSN } from '@/types/associationInterfaces'
+import { useFunctionsStore } from '@/stores/functions'
 
 defineProps({
   association: {
@@ -10,7 +10,7 @@ defineProps({
   }
 })
 
-const functionsStore = useFunctionsStore();
+const functionsStore = useFunctionsStore()
 </script>
 
 <template>
@@ -23,7 +23,10 @@ const functionsStore = useFunctionsStore();
     <div class="flex justify-center w-full gap-4">
       <div v-for="(socialNetwork, index) of association.socialNetworks" :key="index">
         <a :href="socialNetwork.link" target="_blank" rel="noopener noreferrer">
-          <i :class="functionsStore.getSocialNetworkIcon(socialNetwork.name)" class="text-3xl cursor-pointer"/>
+          <i
+            :class="functionsStore.getSocialNetworkIcon(socialNetwork.name)"
+            class="text-3xl cursor-pointer"
+          />
         </a>
       </div>
     </div>
@@ -36,12 +39,12 @@ const functionsStore = useFunctionsStore();
   border-radius: 8px;
   width: 30%;
   height: 32rem;
-  box-shadow: 0 0 20px rgba(0,0,0,.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   color: var(--blue-800);
 }
 
 .block-asso h2 {
-  color: #4482A1;
+  color: #4482a1;
 }
 
 .block-asso img {

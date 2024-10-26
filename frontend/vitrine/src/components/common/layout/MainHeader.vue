@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { usePrimeVue } from 'primevue/config';
-import {useUserStore} from "@/stores/user";
+import { ref } from 'vue'
+import { usePrimeVue } from 'primevue/config'
+import { useUserStore } from '@/stores/user'
 
-import RouterMenu from "@/components/Header/RouterMenu.vue";
-import Button from 'primevue/button';
-import Menu from 'primevue/menu';
-import Avatar from "primevue/avatar";
+import RouterMenu from '@/components/Header/RouterMenu.vue'
+import Button from 'primevue/button'
+import Menu from 'primevue/menu'
+import Avatar from 'primevue/avatar'
 
-const PrimeVue = usePrimeVue();
-const userStore = useUserStore();
+const PrimeVue = usePrimeVue()
+const userStore = useUserStore()
 
-const currentTheme = ref<string>('md-light-indigo');
-const menu = ref();
+const currentTheme = ref<string>('md-light-indigo')
+const menu = ref()
 const menuItems = [
   {
     label: 'Mes favoris',
@@ -28,25 +28,25 @@ const menuItems = [
 ]
 
 const toggleTheme = () => {
-  let nextTheme = 'md-light-indigo';
-  if (currentTheme.value === 'md-light-indigo') nextTheme = 'lara-dark-indigo';
-  else if (currentTheme.value === 'lara-dark-indigo') nextTheme = 'md-light-indigo';
-  PrimeVue.changeTheme(currentTheme.value, nextTheme, 'id-to-link', () => {});
-  currentTheme.value = nextTheme;
+  let nextTheme = 'md-light-indigo'
+  if (currentTheme.value === 'md-light-indigo') nextTheme = 'lara-dark-indigo'
+  else if (currentTheme.value === 'lara-dark-indigo') nextTheme = 'md-light-indigo'
+  PrimeVue.changeTheme(currentTheme.value, nextTheme, 'id-to-link', () => {})
+  currentTheme.value = nextTheme
 }
 
 const toggleMenu = () => {
-  menu.value.toggle(event);
+  menu.value.toggle(event)
 }
 </script>
 
 <template>
   <header class="h-14 w-full px-6 flex items-center justify-between">
     <div class="header-left h-full flex items-center justify-start gap-4">
-      <div class="logo ">
-        <img class="h-12" alt="Epita logo" src="/images/EPI.png"/>
+      <div class="logo">
+        <img class="h-12" alt="Epita logo" src="/images/EPI.png" />
       </div>
-      <RouterMenu/>
+      <RouterMenu />
       <div class="menu-icons items-center gap-4">
         <router-link to="/"><i class="pi pi-home" /></router-link>
         <router-link to="/associations"><i class="pi pi-graduation-cap" /></router-link>
@@ -55,25 +55,29 @@ const toggleMenu = () => {
     </div>
     <div class="header-right h-full w-fit flex items-center justify-end">
       <Button
-          :icon="currentTheme === 'md-light-indigo' ? 'pi pi-moon' : 'pi pi-sun'"
-          aria-label="Change theme"
-          @click="toggleTheme"
+        :icon="currentTheme === 'md-light-indigo' ? 'pi pi-moon' : 'pi pi-sun'"
+        aria-label="Change theme"
+        @click="toggleTheme"
       />
       <Button
-          v-if="!userStore.isLoggedIn"
-          class="btn-connection px-2 py-2"
-          label="Connexion"
-          @click="userStore.checkLoginAndFetchUser(true)"
+        v-if="!userStore.isLoggedIn"
+        class="btn-connection px-2 py-2"
+        label="Connexion"
+        @click="userStore.checkLoginAndFetchUser(true)"
       />
-      <div v-else-if="userStore.user" class="user-menu flex justify-center items-center" @click="toggleMenu">
+      <div
+        v-else-if="userStore.user"
+        class="user-menu flex justify-center items-center"
+        @click="toggleMenu"
+      >
         <Avatar
-            class="mr-1.5"
-            :label="userStore.user?.firstName[0] + userStore.user?.lastName[0]"
-            shape="circle"
+          class="mr-1.5"
+          :label="userStore.user?.firstName[0] + userStore.user?.lastName[0]"
+          shape="circle"
         />
-        <i class="pi pi-angle-down"/>
+        <i class="pi pi-angle-down" />
       </div>
-      <Menu ref="menu" :model="menuItems" :popup="true"/>
+      <Menu ref="menu" :model="menuItems" :popup="true" />
     </div>
   </header>
 </template>
@@ -101,7 +105,7 @@ header .menu-icons i {
 }
 
 .btn-connection {
-  background-color: #4482A1;
+  background-color: #4482a1;
   border-radius: 8px;
 }
 

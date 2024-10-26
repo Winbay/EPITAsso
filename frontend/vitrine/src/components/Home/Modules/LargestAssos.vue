@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
-import type {AssociationWithLogo} from "@/types/associationInterfaces";
-import SelectedAssoService from "@/services/association/selectedAsso";
+import { onMounted, ref } from 'vue'
+import type { AssociationWithLogo } from '@/types/associationInterfaces'
+import SelectedAssoService from '@/services/association/selectedAsso'
 
-const listLargestAssos = ref<AssociationWithLogo[]>([]);
+const listLargestAssos = ref<AssociationWithLogo[]>([])
 
 const loadLargestAssos = async () => {
-  listLargestAssos.value = await SelectedAssoService.getLargestAssociations();
+  listLargestAssos.value = await SelectedAssoService.getLargestAssociations()
 }
 
 onMounted(async () => {
-  await loadLargestAssos();
+  await loadLargestAssos()
 })
 </script>
 
@@ -19,7 +19,7 @@ onMounted(async () => {
     <span class="text-xl font-semibold">Plus grandes associations</span>
     <div class="flex flex-col items-start w-full gap-1">
       <div v-for="(asso, index) of listLargestAssos" :key="index" class="flex">
-        <img class="mr-4" :src="asso.logo" :alt="'Logo ' + asso.name"/>
+        <img class="mr-4" :src="asso.logo" :alt="'Logo ' + asso.name" />
         <span>{{ asso.name }}</span>
       </div>
     </div>

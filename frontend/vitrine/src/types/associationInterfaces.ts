@@ -32,11 +32,13 @@ export interface AssociationDetail extends Association {
   faqs: Faq[]
 }
 
-export interface AssociationWithLogo extends Pick<Association, 'id' | 'name' | 'logo' | 'category' | 'slug'> {}
+export interface AssociationWithLogo
+  extends Pick<Association, 'id' | 'name' | 'logo' | 'category' | 'slug'> {}
 
 export interface AssociationInEvent extends Pick<Association, 'id' | 'name' | 'logo' | 'slug'> {}
 
-interface AssociationWithSNTemp extends Pick<Association, 'id' | 'name' | 'content' | 'logo' | 'slug'> {}
+interface AssociationWithSNTemp
+  extends Pick<Association, 'id' | 'name' | 'content' | 'logo' | 'slug'> {}
 
 export interface AssociationWithSN extends AssociationWithSNTemp {
   socialNetworks: SocialNetwork[]

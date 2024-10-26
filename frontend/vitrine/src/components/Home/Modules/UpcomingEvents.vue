@@ -1,47 +1,51 @@
 <script setup lang="ts">
-import type {Event} from "@/types/eventInterfaces";
-import EventService from "@/services/event/event";
-import {onMounted, ref} from "vue";
+import type { Event } from '@/types/eventInterfaces'
+import EventService from '@/services/event/event'
+import { onMounted, ref } from 'vue'
 import * as toast from '@/composables/toast'
 
-const listLastEvents = ref<Event[]>([]);
+const listLastEvents = ref<Event[]>([])
 
-const eventService = new EventService(toast);
+const eventService = new EventService(toast)
 
 const loadLastEvents = async () => {
-  listLastEvents.value = await eventService.getLastEvents();
+  listLastEvents.value = await eventService.getLastEvents()
 }
 
 function formatDate(date: Date): string {
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear().toString();
+  const day = date.getDate().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const year = date.getFullYear().toString()
 
-  return `${day}/${month}/${year}`;
+  return `${day}/${month}/${year}`
 }
 
 function getInnerText(html: string): string {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-  return div.textContent || div.innerText || "";
+  const div = document.createElement('div')
+  div.innerHTML = html
+  return div.textContent || div.innerText || ''
 }
 
 onMounted(async () => {
-  await loadLastEvents();
+  await loadLastEvents()
 })
 </script>
 
 <template>
   <div class="module-last-events flex flex-col items-center gap-2">
     <span class="text-xl font-semibold">Derniers évènements</span>
-    <div v-for="(event, index) of listLastEvents" :key="index" class="event-item flex flex-col gap-2 w-full">
+    <div
+      v-for="(event, index) of listLastEvents"
+      :key="index"
+      class="event-item flex flex-col gap-2 w-full"
+    >
       <div class="header flex justify-between">
         <div class="flex gap-1 items-center">
           <span class="title font-semibold">{{ event.name }}</span>
           <span class="text-sm text-gray-500">- {{ formatDate(event.startDate) }}</span>
         </div>
         <div class="asso-info flex gap-1 items-center">
-          <img :alt="'Logo ' + event.association.name" :src="event.association.logo"/>
+          <img :alt="'Logo ' + event.association.name" :src="event.association.logo" />
           <span>{{ event.association.name }}</span>
         </div>
       </div>

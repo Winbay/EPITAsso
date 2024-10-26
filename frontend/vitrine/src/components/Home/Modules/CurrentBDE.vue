@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
-import type {Association} from "@/types/associationInterfaces";
-import AssociationService from "@/services/association/association";
-import {useToast} from "primevue/usetoast";
-import {useUserStore} from "@/stores/user";
+import { computed, onMounted, ref } from 'vue'
+import type { Association } from '@/types/associationInterfaces'
+import AssociationService from '@/services/association/association'
+import { useToast } from 'primevue/usetoast'
+import { useUserStore } from '@/stores/user'
 
-const listCurrentBde = ref<Association[]>([]);
-const currentSchoolBde = ref<Association | undefined>();
-const toast = useToast();
-const assoService = new AssociationService(toast);
-const userStore = useUserStore();
+const listCurrentBde = ref<Association[]>([])
+const currentSchoolBde = ref<Association | undefined>()
+const toast = useToast()
+const assoService = new AssociationService(toast)
+const userStore = useUserStore()
 
 const loadAssoBde = async () => {
-  listCurrentBde.value = await assoService.getBde();
-  if (listCurrentBde.value.length > 0) currentSchoolBde.value = listCurrentBde.value[0];
+  listCurrentBde.value = await assoService.getBde()
+  if (listCurrentBde.value.length > 0) currentSchoolBde.value = listCurrentBde.value[0]
 }
 
 function capitalizeFirstLetter(string: string | undefined) {
-  if (!string) return "";
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  if (!string) return ''
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 const getCurrentUserSchool = computed(() => {
-  return userStore.user?.school;
+  return userStore.user?.school
 })
 
 onMounted(async () => {
-  await loadAssoBde();
+  await loadAssoBde()
 })
 </script>
 
@@ -37,7 +37,7 @@ onMounted(async () => {
       <span class="font-semibold text-center">Connectez-vous pour voir le BDE de votre école.</span>
     </div>
     <div v-else-if="currentSchoolBde" class="flex">
-      <img :src="currentSchoolBde.logo" :alt="'Logo ' + currentSchoolBde.name"  class="mr-2" />
+      <img :src="currentSchoolBde.logo" :alt="'Logo ' + currentSchoolBde.name" class="mr-2" />
       <div class="flex flex-col">
         <div class="flex">
           <span class="text-xl font-semibold">{{ currentSchoolBde.name }}</span>
@@ -45,9 +45,7 @@ onMounted(async () => {
         <span class="bde-content text-sm">{{ currentSchoolBde.content }}</span>
       </div>
     </div>
-    <div v-else>
-      {{ capitalizeFirstLetter(getCurrentUserSchool) }} n'a actuellement aucun BDE.
-    </div>
+    <div v-else>{{ capitalizeFirstLetter(getCurrentUserSchool) }} n'a actuellement aucun BDE.</div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
-import type {ToastMessageOptions} from "primevue/toast";
+import type { ToastMessageOptions } from 'primevue/toast'
 
 export interface CustomToast {
-  add(message: ToastMessageOptions): void;
+  add(message: ToastMessageOptions): void
 }

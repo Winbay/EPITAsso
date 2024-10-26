@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import AssoCarousel from "@/components/Home/AssoCarousel.vue";
-import VideoIframe from "@/components/Home/VideoIframe.vue";
-import MyAsso from "@/components/Home/Modules/MyAsso.vue";
-import UpcomingEvents from "@/components/Home/Modules/UpcomingEvents.vue";
-import LargestAssos from "@/components/Home/Modules/LargestAssos.vue";
-import CurrentBDE from "@/components/Home/Modules/CurrentBDE.vue";
+import AssoCarousel from '@/components/Home/AssoCarousel.vue'
+import VideoIframe from '@/components/Home/VideoIframe.vue'
+import MyAsso from '@/components/Home/Modules/MyAsso.vue'
+import UpcomingEvents from '@/components/Home/Modules/UpcomingEvents.vue'
+import LargestAssos from '@/components/Home/Modules/LargestAssos.vue'
+import CurrentBDE from '@/components/Home/Modules/CurrentBDE.vue'
 </script>
 
 <template>
@@ -14,7 +14,7 @@ import CurrentBDE from "@/components/Home/Modules/CurrentBDE.vue";
     <div class="modules flex justify-center gap-4">
       <div class="modules-left flex flex-col gap-4">
         <MyAsso />
-        <UpcomingEvents/>
+        <UpcomingEvents />
       </div>
       <div class="modules-right flex flex-col gap-4">
         <LargestAssos />

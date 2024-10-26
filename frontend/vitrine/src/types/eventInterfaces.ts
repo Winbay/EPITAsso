@@ -1,5 +1,5 @@
 import type { EventTag } from './tagInterfaces'
-import type {AssociationInEvent} from "@/types/associationInterfaces";
+import type { AssociationInEvent } from '@/types/associationInterfaces'
 
 export interface Event {
   id: number
@@ -24,6 +24,7 @@ export interface Event {
   // tasks: undefined[]
 }
 
-export interface EventCreation extends Omit<Event, 'id' | 'author' | 'likeCount' | 'isLikedByUser'> {}
+export interface EventCreation
+  extends Omit<Event, 'id' | 'author' | 'likeCount' | 'isLikedByUser'> {}
 
 export interface EventModification extends Event {}

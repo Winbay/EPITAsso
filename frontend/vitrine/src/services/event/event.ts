@@ -2,17 +2,16 @@ import type { Event } from '@/types/eventInterfaces'
 import * as yup from 'yup'
 import ApiService from '../apiService'
 import { tagSchema } from '../tag'
-import type {CustomToast} from "@/types/toastInterfaces";
+import type { CustomToast } from '@/types/toastInterfaces'
 
 const tagsSchema = yup.array().of(tagSchema).required()
 
-const associationInEventSchema = yup
-  .object({
-    id: yup.number().required(),
-    name: yup.string().required(),
-    logo: yup.string().required(),
-    slug: yup.string().required()
-  })
+const associationInEventSchema = yup.object({
+  id: yup.number().required(),
+  name: yup.string().required(),
+  logo: yup.string().required(),
+  slug: yup.string().required()
+})
 
 const eventSchema = yup
   .object({
@@ -37,7 +36,9 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
     super(toast, `events/`, eventSchema)
   }
 
-  async createEvent(event: Omit<Event, 'id' | 'author' | 'likeCount' | 'isLikedByUser'>): Promise<void> {
+  async createEvent(
+    event: Omit<Event, 'id' | 'author' | 'likeCount' | 'isLikedByUser'>
+  ): Promise<void> {
     const { startDate, endDate, endRecurrence, tags, ...rest } = event
     const eventDataToValidate = {
       start_date: startDate,
@@ -70,8 +71,8 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
   }
 
   async getAssoEvents(slug: string): Promise<Event[]> {
-    const data = await this.getAllCustom(`/api/associations/slug/${slug}/events`);
-    return data.map((event) => this.converterSchemaToInterface(event));
+    const data = await this.getAllCustom(`/api/associations/slug/${slug}/events`)
+    return data.map((event) => this.converterSchemaToInterface(event))
   }
 
   async updateEvent(event: Event): Promise<void> {
@@ -86,8 +87,8 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
         background_color: tag.backgroundColor,
         text_color: tag.textColor
       })),
-      like_count : likeCount,
-      is_liked_by_user : isLikedByUser,
+      like_count: likeCount,
+      is_liked_by_user: isLikedByUser,
       ...rest
     }
     await this.update(eventDataToValidate, eventDataToValidate.id)

@@ -11,11 +11,6 @@ from drf_spectacular.utils import (
 from django.db.models import Count, Sum
 from django.utils.dateparse import parse_datetime
 from rest_framework import generics, status
-from django.utils import timezone
-from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema
-from django.db.models import Count
-from rest_framework import generics
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -32,7 +27,6 @@ from .models import (
     SocialNetwork,
     AssociationFavorite,
 )
-from .models import AssociateUserAndAssociation, Association, Faq, SocialNetwork
 from event.models import Event
 from event.serializers import EventSerializer
 from .serializers import (
@@ -86,9 +80,11 @@ class AssociationEventsView(generics.ListAPIView):
     serializer_class = EventSerializer
 
     def get_queryset(self):
-        slug = self.kwargs.get('slug')
+        slug = self.kwargs.get("slug")
         association = get_object_or_404(Association, slug=slug)
-        return Event.objects.filter(association=association, start_date__gte=timezone.now()).order_by('start_date')
+        return Event.objects.filter(
+            association=association, start_date__gte=timezone.now()
+        ).order_by("start_date")
 
     @extend_schema(summary="Retrieve upcoming events for an Association by slug")
     def get(self, request, *args, **kwargs):

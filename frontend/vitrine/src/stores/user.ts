@@ -1,17 +1,17 @@
-import {ref} from 'vue'
-import {defineStore} from 'pinia'
-import type {UserDetail} from '@/types/userInterfaces'
-import type {AuthenticationToken} from "@/types/authenticationInterface";
-import {ACCESS_TOKEN_KEY, REDIRECT_URI, REFRESH_TOKEN_KEY} from "@/services/api";
-import {useRouter} from "vue-router";
-import UserDetailService from "@/services/user/details";
-import AuthenticationService from "@/services/authentication/authentification";
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import type { UserDetail } from '@/types/userInterfaces'
+import type { AuthenticationToken } from '@/types/authenticationInterface'
+import { ACCESS_TOKEN_KEY, REDIRECT_URI, REFRESH_TOKEN_KEY } from '@/services/api'
+import { useRouter } from 'vue-router'
+import UserDetailService from '@/services/user/details'
+import AuthenticationService from '@/services/authentication/authentification'
 import * as toast from '@/composables/toast'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<UserDetail | null>(null)
-  const isLoggedIn = ref<boolean>(false);
-  const redirect_uri = ref<string>(REDIRECT_URI);
+  const isLoggedIn = ref<boolean>(false)
+  const redirect_uri = ref<string>(REDIRECT_URI)
   const router = useRouter()
 
   const userService = new UserDetailService(toast)
@@ -79,6 +79,6 @@ export const useUserStore = defineStore('user', () => {
     user,
     isLoggedIn,
     checkLoginAndFetchUser,
-    logout,
+    logout
   }
 })

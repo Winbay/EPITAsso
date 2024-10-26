@@ -1,5 +1,5 @@
 import ApiService from '@/services/apiService'
-import type {CustomToast} from "@/types/toastInterfaces";
+import type { CustomToast } from '@/types/toastInterfaces'
 import * as yup from 'yup'
 import type { AuthenticationToken } from '@/types/authenticationInterface'
 
