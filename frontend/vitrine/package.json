@@ -14,11 +14,14 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "axios": "^1.7.7",
+    "jwt-decode": "^4.0.0",
     "pinia": "^2.1.7",
     "primeicons": "^7.0.0",
-    "primevue": "^3.51.0",
+    "primevue": "^3.53.0",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",

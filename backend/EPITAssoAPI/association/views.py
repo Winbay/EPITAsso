@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from drf_spectacular.utils import (
@@ -13,6 +14,7 @@ from rest_framework import generics, status
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.exceptions import NotFound
 
 from event.serializers import EventMemberCommitmentsResumeForOneUser
 from event.models import EventMemberCommitment
@@ -23,7 +25,10 @@ from .models import (
     Faq,
     MemberCommitment,
     SocialNetwork,
+    AssociationFavorite,
 )
+from event.models import Event
+from event.serializers import EventSerializer
 from .serializers import (
     AssociationDetailsSerializer,
     AssociationListPaginationSerializer,
@@ -32,6 +37,8 @@ from .serializers import (
     FaqSerializer,
     MemberCommitmentSerializer,
     MemberSerializer,
+    AssociationFavoriteSerializer,
+    AssociationSimpleWithLogoSerializer,
 )
 from user.permissions import IsMemberOfAssociation
 
@@ -61,12 +68,27 @@ class AssociationListPaginationView(generics.ListAPIView):
 
 class AssociationSlugView(generics.RetrieveAPIView):
     queryset = Association.objects.all()
-    serializer_class = AssociationSerializer
+    serializer_class = AssociationDetailsSerializer
     lookup_field = "slug"
 
     @extend_schema(summary="Retrieve an Association by slug")
     def get(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+
+
+class AssociationEventsView(generics.ListAPIView):
+    serializer_class = EventSerializer
+
+    def get_queryset(self):
+        slug = self.kwargs.get("slug")
+        association = get_object_or_404(Association, slug=slug)
+        return Event.objects.filter(
+            association=association, start_date__gte=timezone.now()
+        ).order_by("start_date")
+
+    @extend_schema(summary="Retrieve upcoming events for an Association by slug")
+    def get(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class AssociationDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -519,3 +541,127 @@ class MemberCommitmentBulkUpdateView(generics.UpdateAPIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(updated_commitments, status=status.HTTP_200_OK)
+
+
+@extend_schema(
+    summary="Add an Association to Favorites",
+    description="This endpoint allows users to add an association to their favorites using the association ID.",
+    methods=["POST"],
+    request={
+        "application/json": {
+            "type": "object",
+            "properties": {
+                "association_id": {
+                    "type": "integer",
+                    "example": 1,
+                    "description": "The ID of the association to add to favorites.",
+                }
+            },
+            "required": ["association_id"],
+        }
+    },
+    responses={
+        status.HTTP_201_CREATED: OpenApiResponse(
+            response=OpenApiTypes.OBJECT,
+            description="Successful addition to favorites.",
+            examples=[
+                OpenApiExample(
+                    "Success",
+                    value={"detail": "Association added to favorites."},
+                )
+            ],
+        ),
+        status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+            response=OpenApiTypes.OBJECT,
+            description="Bad request due to missing or invalid parameters.",
+            examples=[
+                OpenApiExample(
+                    "Missing association_id",
+                    value={"detail": "association_id is required."},
+                )
+            ],
+        ),
+        status.HTTP_404_NOT_FOUND: OpenApiResponse(
+            response=OpenApiTypes.OBJECT,
+            description="Association not found.",
+            examples=[
+                OpenApiExample(
+                    "Association not found",
+                    value={"detail": "Association not found."},
+                )
+            ],
+        ),
+        status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+            response=OpenApiTypes.OBJECT,
+            description="Association already in favorites.",
+            examples=[
+                OpenApiExample(
+                    "Already in favorites",
+                    value={"detail": "Association is already in your favorites."},
+                )
+            ],
+        ),
+    },
+)
+class AssociationFavoriteView(generics.ListCreateAPIView):
+    def get_queryset(self):
+        return AssociationFavorite.objects.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return AssociationFavoriteSerializer
+        return AssociationSimpleWithLogoSerializer
+
+    def list(self, request, *args, **kwargs):
+        associations = Association.objects.filter(favorited_by__user=self.request.user)
+        serializer = self.get_serializer_class()(associations, many=True)
+
+        for association in serializer.data:
+            if association.get("logo"):
+                association["logo"] = request.build_absolute_uri(association["logo"])
+
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        association_id = request.data.get("association_id")
+
+        if not association_id:
+            return Response(
+                {"detail": "association_id is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            association = Association.objects.get(id=association_id)
+        except Association.DoesNotExist:
+            return Response(
+                {"detail": "Association not found."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        favorite, created = AssociationFavorite.objects.get_or_create(
+            user=request.user, association=association
+        )
+
+        if not created:
+            return Response(
+                {"detail": "Association is already in your favorites."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            {"detail": "Association added to favorites."},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class AssociationFavoriteDeleteView(generics.DestroyAPIView):
+    queryset = AssociationFavorite.objects.all()
+    serializer_class = AssociationFavoriteSerializer
+
+    def get_object(self):
+        try:
+            return AssociationFavorite.objects.get(
+                user=self.request.user, association=self.kwargs["association_id"]
+            )
+        except AssociationFavorite.DoesNotExist:
+            raise NotFound()
