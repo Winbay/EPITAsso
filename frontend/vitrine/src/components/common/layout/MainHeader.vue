@@ -1,22 +1,38 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { usePrimeVue } from 'primevue/config';
-import {useUserStore} from "@/stores/user";
+import { onMounted, ref } from 'vue'
+import { usePrimeVue } from 'primevue/config'
+import { useUserStore } from '@/stores/user'
 
-import RouterMenu from "@/components/Header/RouterMenu.vue";
-import Button from 'primevue/button';
-import Menu from 'primevue/menu';
-import Avatar from "primevue/avatar";
+import RouterMenu from '@/components/Header/RouterMenu.vue'
+import Button from 'primevue/button'
+import Avatar from 'primevue/avatar'
+import TieredMenu from 'primevue/tieredmenu'
+import router from '@/router'
+import FavoriteService from '@/services/association/favorite'
+import { useToast } from 'primevue/usetoast'
+import type { AssociationFavorite } from '@/types/associationInterfaces'
 
-const PrimeVue = usePrimeVue();
-const userStore = useUserStore();
+interface MenuItem {
+  label: string
+  icon?: string
+  isSubMenu?: boolean
+  items?: MenuItem[]
+  command?: () => void
+}
 
-const currentTheme = ref<string>('md-light-indigo');
-const menu = ref();
-const menuItems = [
+const PrimeVue = usePrimeVue()
+const userStore = useUserStore()
+
+const toast = useToast()
+const favoriteService = new FavoriteService(toast)
+
+const currentTheme = ref<string>('md-light-indigo')
+const menu = ref<TieredMenu>()
+const menuItems: MenuItem[] = [
   {
     label: 'Mes favoris',
-    icon: 'pi pi-heart'
+    icon: 'pi pi-heart',
+    items: []
   },
   {
     label: 'Déconnexion',
@@ -28,25 +44,52 @@ const menuItems = [
 ]
 
 const toggleTheme = () => {
-  let nextTheme = 'md-light-indigo';
-  if (currentTheme.value === 'md-light-indigo') nextTheme = 'lara-dark-indigo';
-  else if (currentTheme.value === 'lara-dark-indigo') nextTheme = 'md-light-indigo';
-  PrimeVue.changeTheme(currentTheme.value, nextTheme, 'id-to-link', () => {});
-  currentTheme.value = nextTheme;
+  let nextTheme = 'md-light-indigo'
+  if (currentTheme.value === 'md-light-indigo') nextTheme = 'lara-dark-indigo'
+  else if (currentTheme.value === 'lara-dark-indigo') nextTheme = 'md-light-indigo'
+  PrimeVue.changeTheme(currentTheme.value, nextTheme, 'id-to-link', () => {})
+  currentTheme.value = nextTheme
 }
 
-const toggleMenu = () => {
-  menu.value.toggle(event);
+const isLoadingFavorites = ref(false)
+
+const loadFavorites = async () => {
+  try {
+    isLoadingFavorites.value = true
+    const response = await favoriteService.getFavorites()
+    if (response) {
+      menuItems[0].items = response.map((asso: AssociationFavorite) => ({
+        label: asso.name,
+        icon: asso.logo,
+        isSubMenu: true,
+        command: () => {
+          router.push(`/associations/${asso.slug}`)
+        }
+      }))
+    }
+  } catch (e) {
+    console.error(e)
+  } finally {
+    isLoadingFavorites.value = false
+  }
 }
+
+const toggleMenu = async (event: Event) => {
+  menu.value.toggle(event)
+};
+
+onMounted(async () => {
+  await loadFavorites()
+})
 </script>
 
 <template>
   <header class="h-14 w-full px-6 flex items-center justify-between">
     <div class="header-left h-full flex items-center justify-start gap-4">
-      <div class="logo ">
-        <img class="h-12" alt="Epita logo" src="/images/EPI.png"/>
+      <div class="logo">
+        <img class="h-12" alt="Epita logo" src="/images/EPI.png" />
       </div>
-      <RouterMenu/>
+      <RouterMenu />
       <div class="menu-icons items-center gap-4">
         <router-link to="/"><i class="pi pi-home" /></router-link>
         <router-link to="/associations"><i class="pi pi-graduation-cap" /></router-link>
@@ -55,25 +98,43 @@ const toggleMenu = () => {
     </div>
     <div class="header-right h-full w-fit flex items-center justify-end">
       <Button
-          :icon="currentTheme === 'md-light-indigo' ? 'pi pi-moon' : 'pi pi-sun'"
-          aria-label="Change theme"
-          @click="toggleTheme"
+        :icon="currentTheme === 'md-light-indigo' ? 'pi pi-moon' : 'pi pi-sun'"
+        aria-label="Change theme"
+        @click="toggleTheme"
       />
       <Button
-          v-if="!userStore.isLoggedIn"
-          class="btn-connection px-2 py-2"
-          label="Connexion"
-          @click="userStore.checkLoginAndFetchUser(true)"
+        v-if="!userStore.isLoggedIn"
+        class="btn-connection px-2 py-2"
+        label="Connexion"
+        @click="userStore.checkLoginAndFetchUser(true)"
       />
-      <div v-else-if="userStore.user" class="user-menu flex justify-center items-center" @click="toggleMenu">
+      <div
+        v-else-if="userStore.user"
+        class="user-menu flex justify-center items-center"
+        @click="toggleMenu"
+      >
         <Avatar
-            class="mr-1.5"
-            :label="userStore.user?.firstName[0] + userStore.user?.lastName[0]"
-            shape="circle"
+          class="mr-1.5"
+          :label="userStore.user?.firstName[0] + userStore.user?.lastName[0]"
+          shape="circle"
         />
-        <i class="pi pi-angle-down"/>
+        <i class="pi pi-angle-down" />
       </div>
-      <Menu ref="menu" :model="menuItems" :popup="true"/>
+      <TieredMenu v-if="!isLoadingFavorites" ref="menu" :model="menuItems" :popup="true">
+        <template #item="{ item, hasSubmenu, label }">
+          <div class="tiered-menu-item flex items-center gap-2">
+            <i v-if="!item.isSubMenu" :class="item.icon" class="menu-icon"></i>
+            <img
+              v-if="item.isSubMenu && item.icon && item.icon.startsWith('http')"
+              :src="item.icon"
+              alt="logo"
+              class="menu-logo select-none"
+            />
+            <span class="menu-label select-none">{{ label }}</span>
+            <i v-if="hasSubmenu && item.items?.length !== 0" class="pi pi-angle-right submenu-icon"></i>
+          </div>
+        </template>
+      </TieredMenu>
     </div>
   </header>
 </template>
@@ -101,7 +162,7 @@ header .menu-icons i {
 }
 
 .btn-connection {
-  background-color: #4482A1;
+  background-color: #4482a1;
   border-radius: 8px;
 }
 
@@ -122,5 +183,31 @@ header .header-right .user-menu {
   header .menu-icons {
     display: flex;
   }
+}
+
+.tiered-menu-item {
+  padding: 1rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.menu-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.menu-icon {
+  font-size: 1.2rem;
+}
+
+.menu-label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.submenu-icon {
+  margin-left: auto;
+  font-size: 1rem;
 }
 </style>
