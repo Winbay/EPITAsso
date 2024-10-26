@@ -22,7 +22,7 @@ const commentTextareaRef = ref<HTMLTextAreaElement>()
 const isCommentEmpty = computed(() => !newCommentRef.value)
 
 const handleInput = () => {
-  newCommentRef.value = commentTextareaRef.value?.innerHTML ?? ''
+  newCommentRef.value = commentTextareaRef.value?.textContent ?? ''
   resizeTextarea()
 }
 
@@ -52,13 +52,11 @@ const addComment = () => {
 const editComment = () => {
   if (newCommentRef.value.trim()) {
     emits('edit:comment', newCommentRef.value)
-    cancelEditComment()
   }
 }
 
 const cancelEditComment = () => {
   emits('cancel:edit')
-  resetInput()
 }
 
 const resetInput = () => {
@@ -92,13 +90,13 @@ const setCursorToEnd = () => {
 watch(
   () => props.isEditing && props.comment,
   () => {
+    resetInput()
+    resizeTextarea()
     if (props.isEditing && props.comment && commentTextareaRef.value) {
-      commentTextareaRef.value.innerHTML = props.comment.content
+      commentTextareaRef.value.textContent = props.comment.content
       newCommentRef.value = props.comment.content
       commentTextareaRef.value?.focus()
       setCursorToEnd()
-    } else {
-      resetInput()
     }
   }
 )

@@ -5,6 +5,7 @@ import type { AssociationWithSN } from '@/types/associationInterfaces'
 import { useToast } from 'primevue/usetoast'
 import Button from 'primevue/button'
 import ListAssociationService from '@/services/association/listAsso'
+import router from '@/router'
 
 const listAllAssociations = ref<AssociationWithSN[]>([])
 const offset = ref<number>(0)
@@ -32,6 +33,7 @@ onMounted(async () => {
       v-for="(asso, index) of listAllAssociations"
       :key="index"
       :association="asso"
+      @click="router.push('associations/' + asso.slug)"
     />
     <Button
       v-show="moreResults"

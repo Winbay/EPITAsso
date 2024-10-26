@@ -75,7 +75,7 @@ const loadFavorites = async () => {
 }
 
 const toggleMenu = async (event: Event) => {
-  menu.value.toggle(event)
+  menu.value?.toggle(event)
 };
 
 onMounted(async () => {
