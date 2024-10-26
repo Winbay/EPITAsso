@@ -3,7 +3,7 @@ import {type PropType} from "vue";
 import type {AssociationWithSN} from "@/types/associationInterfaces";
 import {useFunctionsStore} from "@/stores/functions";
 
-const props = defineProps({
+defineProps({
   association: {
     type: Object as PropType<AssociationWithSN>,
     required: true

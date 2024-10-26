@@ -1,5 +1,5 @@
 import type { ToastServiceMethods } from 'primevue/toastservice'
-import type {Association, AssociationWithLogo} from '@/types/associationInterfaces'
+import type {Association} from '@/types/associationInterfaces'
 import * as yup from 'yup'
 import ApiService from '../apiService'
 

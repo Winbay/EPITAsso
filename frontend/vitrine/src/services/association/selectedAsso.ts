@@ -29,7 +29,7 @@ export default class SelectedAssoService {
       )
       return response.data.map((asso) => this.snakeToCamel(asso))
     } catch (error) {
-      this.handleError(error, `GET: An error occured.`)
+      this.handleError(error)
     }
   }
 
@@ -40,11 +40,11 @@ export default class SelectedAssoService {
       )
       return response.data.map((asso) => this.snakeToCamel(asso))
     } catch (error) {
-      this.handleError(error, `GET: An error occured.`)
+      this.handleError(error)
     }
   }
 
-  static handleError(error: any, message: string): never {
+  static handleError(error: any): never {
     console.log('API error:', error)
     throw error
   }
