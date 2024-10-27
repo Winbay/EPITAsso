@@ -21,10 +21,13 @@ onMounted(async () => {
   await loadAssociation(slug)
 })
 
-watch(() => route.params.slug, (newSlug) => {
-  const newSlugValue = Array.isArray(newSlug) ? newSlug[0] : newSlug
-  loadAssociation(newSlugValue)
-})
+watch(
+  () => route.params.slug,
+  (newSlug) => {
+    const newSlugValue = Array.isArray(newSlug) ? newSlug[0] : newSlug
+    loadAssociation(newSlugValue)
+  }
+)
 </script>
 
 <template>

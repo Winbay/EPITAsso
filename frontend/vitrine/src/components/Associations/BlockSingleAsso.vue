@@ -41,7 +41,9 @@ const functionsStore = useFunctionsStore()
   height: 32rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   color: var(--blue-800);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-5px);

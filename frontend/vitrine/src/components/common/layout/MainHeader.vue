@@ -188,7 +188,8 @@ header .header-right .user-menu {
   min-width: fit-content;
   padding: 0.5rem;
 
-  .p-menuitem-content, .p-submenu-list {
+  .p-menuitem-content,
+  .p-submenu-list {
     border-radius: 0.5rem;
     padding: 0.5rem;
   }

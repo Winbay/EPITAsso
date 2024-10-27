@@ -59,7 +59,6 @@ const formatDate = computed(() => {
 
 const maxCharsToDisplay = 150
 
-
 const truncatedContent = computed(() => {
   if (!isOverflowing.value || isExpanded.value || !props.comment.content) {
     return props.comment.content
@@ -79,11 +78,11 @@ const isOverflowing = ref(false)
 
 const checkOverflow = () => {
   if (contentRef.value) {
-    contentRef.value.style.display = 'none';
-    contentRef.value.offsetHeight;
-    contentRef.value.style.display = '';
+    contentRef.value.style.display = 'none'
+    contentRef.value.offsetHeight
+    contentRef.value.style.display = ''
 
-    isOverflowing.value = contentRef.value.scrollHeight > contentRef.value.clientHeight;
+    isOverflowing.value = contentRef.value.scrollHeight > contentRef.value.clientHeight
   }
 }
 

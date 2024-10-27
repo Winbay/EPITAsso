@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import {useSingleAssoStore} from "@/stores/singleAsso";
-import {useFunctionsStore} from "@/stores/functions";
+import { useSingleAssoStore } from '@/stores/singleAsso'
+import { useFunctionsStore } from '@/stores/functions'
 import { useToast } from 'primevue/usetoast'
 import FavoriteService from '@/services/association/favorite'
 import { ref } from 'vue'
 
-const singleAssoStore = useSingleAssoStore();
-const functionsStore = useFunctionsStore();
+const singleAssoStore = useSingleAssoStore()
+const functionsStore = useFunctionsStore()
 
-const toast = useToast();
-const favoriteService = new FavoriteService(toast);
-const isFavorite = ref(singleAssoStore.currentAsso!.isFavorite);
+const toast = useToast()
+const favoriteService = new FavoriteService(toast)
+const isFavorite = ref(singleAssoStore.currentAsso!.isFavorite)
 
 const toggleFavorite = async () => {
   try {
     if (!isFavorite.value) {
-      await favoriteService.addFavorite(singleAssoStore.currentAsso!.id);
+      await favoriteService.addFavorite(singleAssoStore.currentAsso!.id)
     } else {
-      await favoriteService.removeFavorite(singleAssoStore.currentAsso!.id);
+      await favoriteService.removeFavorite(singleAssoStore.currentAsso!.id)
     }
   } catch (error) {
-    console.error('Failed to handle favorite:', error);
+    console.error('Failed to handle favorite:', error)
   } finally {
-    isFavorite.value = !isFavorite.value;
-    functionsStore.triggerHeaderReload();
+    isFavorite.value = !isFavorite.value
+    functionsStore.triggerHeaderReload()
   }
-};
+}
 </script>
 
 <template>
@@ -43,9 +43,15 @@ const toggleFavorite = async () => {
         </div>
         <span class="text-xl text-justify">{{ singleAssoStore.currentAsso?.content }}</span>
         <div class="flex w-full gap-4">
-          <div v-for="(socialNetwork, index) of singleAssoStore.currentAsso?.socialNetworks" :key="index">
+          <div
+            v-for="(socialNetwork, index) of singleAssoStore.currentAsso?.socialNetworks"
+            :key="index"
+          >
             <a :href="socialNetwork.link" target="_blank" rel="noopener noreferrer">
-              <i :class="functionsStore.getSocialNetworkIcon(socialNetwork.name)" class="text-3xl cursor-pointer"/>
+              <i
+                :class="functionsStore.getSocialNetworkIcon(socialNetwork.name)"
+                class="text-3xl cursor-pointer"
+              />
             </a>
           </div>
         </div>
@@ -53,7 +59,12 @@ const toggleFavorite = async () => {
     </div>
     <i
       @click="toggleFavorite"
-      :class="['pi', 'cursor-pointer', 'favorite-icon absolute', isFavorite ? 'pi-heart-fill' : 'pi-heart']"
+      :class="[
+        'pi',
+        'cursor-pointer',
+        'favorite-icon absolute',
+        isFavorite ? 'pi-heart-fill' : 'pi-heart'
+      ]"
     />
   </div>
 </template>

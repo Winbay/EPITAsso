@@ -26,6 +26,7 @@ class AssociationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
 
+
 class FaqSerializer(serializers.ModelSerializer):
     class Meta:
         model = Faq
@@ -63,7 +64,7 @@ class AssociationDetailsSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
         depth = 1
-        
+
     def get_is_favorite(self, obj):
         request = self.context.get("request")
         if request and request.user.is_authenticated:
@@ -136,6 +137,7 @@ class MemberCommitmentSerializer(serializers.ModelSerializer):
         model = MemberCommitment
         fields = ["id", "hours", "member"]
         read_only_fields = ["id", "member"]
+
 
 class AssociationFavoriteSerializer(serializers.ModelSerializer):
     association = AssociationSimpleWithLogoSerializer()

@@ -6,8 +6,6 @@ from .views import (
     AssociationDetailView,
     AssociationDetailsView,
     AssociationSlugView,
-    CommitmentDetailView,
-    CommitmentListView,
     AssociationEventsView,
     CommitmentDetailView,
     CommitmentListView,
