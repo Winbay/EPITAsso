@@ -31,8 +31,7 @@ const menu = ref<TieredMenu>()
 const menuItems: MenuItem[] = [
   {
     label: 'Mes favoris',
-    icon: 'pi pi-heart',
-    items: []
+    icon: 'pi pi-heart'
   },
   {
     label: 'Déconnexion',
@@ -57,7 +56,7 @@ const loadFavorites = async () => {
   try {
     isLoadingFavorites.value = true
     const response = await favoriteService.getFavorites()
-    if (response) {
+    if (response && response.length > 0) {
       menuItems[0].items = response.map((asso: AssociationFavorite) => ({
         label: asso.name,
         icon: asso.logo,
@@ -76,7 +75,7 @@ const loadFavorites = async () => {
 
 const toggleMenu = async (event: Event) => {
   menu.value?.toggle(event)
-};
+}
 
 onMounted(async () => {
   await loadFavorites()
@@ -120,22 +119,22 @@ onMounted(async () => {
         />
         <i class="pi pi-angle-down" />
       </div>
-      <TieredMenu v-if="!isLoadingFavorites" ref="menu" :model="menuItems" :popup="true">
-        <template #item="{ item, hasSubmenu, label }">
-          <div class="tiered-menu-item flex items-center gap-2">
-            <i v-if="!item.isSubMenu" :class="item.icon" class="menu-icon"></i>
-            <img
-              v-if="item.isSubMenu && item.icon && item.icon.startsWith('http')"
-              :src="item.icon"
-              alt="logo"
-              class="menu-logo select-none"
-            />
-            <span class="menu-label select-none">{{ label }}</span>
-            <i v-if="hasSubmenu && item.items?.length !== 0" class="pi pi-angle-right submenu-icon"></i>
-          </div>
-        </template>
-      </TieredMenu>
     </div>
+    <TieredMenu v-if="!isLoadingFavorites" ref="menu" :model="menuItems" :popup="true">
+      <template #item="{ item, hasSubmenu, label }">
+        <div class="flex items-center gap-2">
+          <i v-if="!item.isSubMenu" :class="item.icon"></i>
+          <img
+            v-if="item.isSubMenu && item.icon && item.icon.startsWith('http')"
+            :src="item.icon"
+            alt="logo"
+            class="menu-logo select-none"
+          />
+          <span class="select-none">{{ label }}</span>
+          <i v-if="hasSubmenu" class="pi pi-angle-right"></i>
+        </div>
+      </template>
+    </TieredMenu>
   </header>
 </template>
 
@@ -185,29 +184,26 @@ header .header-right .user-menu {
   }
 }
 
-.tiered-menu-item {
-  padding: 1rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.p-tieredmenu {
+  min-width: fit-content;
+  padding: 0.5rem;
+
+  .p-menuitem-content, .p-submenu-list {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+  }
 }
 
 .menu-logo {
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
 }
 
-.menu-icon {
-  font-size: 1.2rem;
-}
-
-.menu-label {
-  font-weight: 500;
-  color: var(--text-color);
-}
-
-.submenu-icon {
-  margin-left: auto;
-  font-size: 1rem;
+@media (max-width: 708px) {
+  .p-tieredmenu .p-submenu-list {
+    left: auto;
+    right: 100%;
+  }
 }
 </style>

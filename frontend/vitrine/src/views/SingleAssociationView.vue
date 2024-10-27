@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSingleAssoStore } from '@/stores/singleAsso'
 import AssociationHeader from '@/components/SingleAssociation/AssociationHeader.vue'
@@ -9,9 +9,12 @@ import AssoEvents from '@/components/SingleAssociation/AssoEvents.vue'
 const route = useRoute()
 const slug = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
 const singleAssoStore = useSingleAssoStore()
+const isLoading = ref(false)
 
 const loadAssociation = async (slug: string) => {
+  isLoading.value = true
   await singleAssoStore.init(slug)
+  isLoading.value = false
 }
 
 onMounted(async () => {
@@ -25,9 +28,11 @@ watch(() => route.params.slug, (newSlug) => {
 </script>
 
 <template>
-  <AssociationHeader v-if="singleAssoStore.currentAsso" />
-  <AllFaq />
-  <AssoEvents />
+  <div v-if="!isLoading">
+    <AssociationHeader v-if="singleAssoStore.currentAsso" />
+    <AllFaq />
+    <AssoEvents />
+  </div>
 </template>
 
 <style scoped></style>
