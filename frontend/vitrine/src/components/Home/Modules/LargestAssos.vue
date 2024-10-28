@@ -2,7 +2,9 @@
 import { onMounted, ref } from 'vue'
 import type { AssociationWithLogo } from '@/types/associationInterfaces'
 import SelectedAssoService from '@/services/association/selectedAsso'
+import { useUserStore } from '@/stores/user'
 
+const userStore = useUserStore()
 const listLargestAssos = ref<AssociationWithLogo[]>([])
 
 const loadLargestAssos = async () => {
@@ -10,7 +12,9 @@ const loadLargestAssos = async () => {
 }
 
 onMounted(async () => {
-  await loadLargestAssos()
+  if (userStore.user) {
+    await loadLargestAssos()
+  }
 })
 </script>
 

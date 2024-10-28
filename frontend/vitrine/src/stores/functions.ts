@@ -1,6 +1,13 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 export const useFunctionsStore = defineStore('functions', () => {
+  const shouldReloadHeader = ref(false)
+
+  const triggerHeaderReload = () => {
+    shouldReloadHeader.value = !shouldReloadHeader.value
+  }
+
   function getSocialNetworkIcon(name: string): string {
     switch (name) {
       case 'Website': {
@@ -57,6 +64,8 @@ export const useFunctionsStore = defineStore('functions', () => {
   }
 
   return {
+    shouldReloadHeader,
+    triggerHeaderReload,
     getSocialNetworkIcon,
     formatDateRange
   }

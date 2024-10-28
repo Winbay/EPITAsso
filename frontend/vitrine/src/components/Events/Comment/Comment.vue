@@ -88,9 +88,14 @@ const editComment = async (newComment: string): Promise<void> => {
   try {
     const editedComment = editingComment.value
     editedComment.content = newComment
-    await commentService.updateComment(editedComment)
+    const response = await commentService.updateComment(editedComment)
+    commentsRef.value = commentsRef.value.map((comment) =>
+      comment.id === response.id ? response : comment
+    )
   } catch (error) {
     console.error('Error editing comment:', error)
+  } finally {
+    cancelEditComment()
   }
 }
 

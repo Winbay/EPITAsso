@@ -35,7 +35,7 @@ const functionsStore = useFunctionsStore()
 .single-event {
   border: 1px solid #aaaaaa;
   border-radius: 6px;
-  padding: 20px 40px;
+  padding: 1rem 1rem;
 }
 
 .single-event .content * {

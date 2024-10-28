@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { Comment } from '@/types/commentInterfaces'
 import { useUserStore } from '@/stores/user'
 
@@ -57,28 +57,14 @@ const formatDate = computed(() => {
   return result.charAt(0).toUpperCase() + result.slice(1)
 })
 
-const maxLinesToDisplay = 3
 const maxCharsToDisplay = 150
 
-const shouldTruncate = computed(() => {
-  const lines = props.comment.content.split('\n')
-  return lines.length > maxLinesToDisplay || props.comment.content.length > maxCharsToDisplay
-})
-
 const truncatedContent = computed(() => {
-  if (!shouldTruncate.value || isExpanded.value || !props.comment.content) {
+  if (!isOverflowing.value || isExpanded.value || !props.comment.content) {
     return props.comment.content
   }
 
-  const lines = props.comment.content.split('\n')
-
-  if (lines.length > maxLinesToDisplay) {
-    return lines.slice(0, maxLinesToDisplay).join('\n') + '...'
-  } else if (props.comment.content.length > maxCharsToDisplay) {
-    return props.comment.content.slice(0, maxCharsToDisplay) + '...'
-  }
-
-  return props.comment.content
+  return props.comment.content.slice(0, maxCharsToDisplay) + '...'
 })
 
 const isExpanded = ref(false)
@@ -86,6 +72,28 @@ const isExpanded = ref(false)
 const toggleExpand = (): void => {
   isExpanded.value = !isExpanded.value
 }
+
+const contentRef = ref<HTMLElement>()
+const isOverflowing = ref(false)
+
+const checkOverflow = () => {
+  if (contentRef.value) {
+    contentRef.value.style.display = 'none'
+    contentRef.value.offsetHeight
+    contentRef.value.style.display = ''
+
+    isOverflowing.value = contentRef.value.scrollHeight > contentRef.value.clientHeight
+  }
+}
+
+onMounted(() => {
+  checkOverflow()
+  window.addEventListener('resize', checkOverflow)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkOverflow)
+})
 </script>
 
 <template>
@@ -107,12 +115,14 @@ const toggleExpand = (): void => {
         <i v-else class="pi pi-times" @click="unSetConfirmDelete" />
       </div>
     </div>
-    <p :class="['comment mt-2', isExpanded ? 'expanded' : 'collapsed']">
+    <p ref="contentRef" :class="['comment mt-2', isExpanded ? 'expanded' : 'collapsed']">
       {{ truncatedContent }}
     </p>
-    <div v-if="shouldTruncate">
-      <button v-if="!isExpanded" @click="toggleExpand" class="mt-2 see-more">Lire la suite</button>
-      <button v-if="isExpanded" @click="toggleExpand" class="mt-2 see-more">Moins</button>
+    <div v-if="isOverflowing && !isExpanded">
+      <button @click="toggleExpand" class="mt-2 see-more">Lire la suite</button>
+    </div>
+    <div v-else-if="isExpanded">
+      <button @click="toggleExpand" class="mt-2 see-more">Moins</button>
     </div>
     <button v-if="showConfirmDeleteRef" @click="deleteComment(comment.id)" class="btn-route mt-4">
       Supprimer mon commentaire

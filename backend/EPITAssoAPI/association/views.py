@@ -1,4 +1,6 @@
 from django.utils import timezone
+from event.models import Event, EventMemberCommitment
+from event.serializers import EventSerializer, EventMemberCommitmentsResumeForOneUser
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from drf_spectacular.utils import (
@@ -16,8 +18,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 
-from event.serializers import EventMemberCommitmentsResumeForOneUser
-from event.models import EventMemberCommitment
 from .models import (
     AssociateUserAndAssociation,
     Association,
@@ -27,8 +27,6 @@ from .models import (
     SocialNetwork,
     AssociationFavorite,
 )
-from event.models import Event
-from event.serializers import EventSerializer
 from .serializers import (
     AssociationDetailsSerializer,
     AssociationListPaginationSerializer,

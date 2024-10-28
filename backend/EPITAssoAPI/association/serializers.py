@@ -11,8 +11,6 @@ from .models import (
 
 
 class AssociationSerializer(serializers.ModelSerializer):
-    is_favorite = serializers.SerializerMethodField()
-
     class Meta:
         model = Association
         fields = [
@@ -25,17 +23,8 @@ class AssociationSerializer(serializers.ModelSerializer):
             "category",
             "type",
             "slug",
-            "is_favorite",
         ]
         read_only_fields = ["id"]
-
-    def get_is_favorite(self, obj):
-        request = self.context.get("request")
-        if request and request.user.is_authenticated:
-            return AssociationFavorite.objects.filter(
-                user=request.user, association=obj
-            ).exists()
-        return False
 
 
 class FaqSerializer(serializers.ModelSerializer):
@@ -55,6 +44,7 @@ class SocialNetworkSerializer(serializers.ModelSerializer):
 class AssociationDetailsSerializer(serializers.ModelSerializer):
     faqs = FaqSerializer(many=True, read_only=True)
     social_networks = SocialNetworkSerializer(many=True, read_only=True)
+    is_favorite = serializers.SerializerMethodField()
 
     class Meta:
         model = Association
@@ -70,9 +60,18 @@ class AssociationDetailsSerializer(serializers.ModelSerializer):
             "category",
             "type",
             "slug",
+            "is_favorite",
         ]
         read_only_fields = ["id"]
         depth = 1
+
+    def get_is_favorite(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return AssociationFavorite.objects.filter(
+                user=request.user, association=obj
+            ).exists()
+        return False
 
 
 class AssociationSimpleSerializer(serializers.ModelSerializer):

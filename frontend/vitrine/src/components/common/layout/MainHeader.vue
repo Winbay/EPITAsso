@@ -1,19 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { usePrimeVue } from 'primevue/config'
 import { useUserStore } from '@/stores/user'
 
 import RouterMenu from '@/components/Header/RouterMenu.vue'
 import Button from 'primevue/button'
-import Menu from 'primevue/menu'
 import Avatar from 'primevue/avatar'
+import TieredMenu from 'primevue/tieredmenu'
+import router from '@/router'
+import FavoriteService from '@/services/association/favorite'
+import { useToast } from 'primevue/usetoast'
+import type { AssociationFavorite } from '@/types/associationInterfaces'
+
+interface MenuItem {
+  label: string
+  icon?: string
+  isSubMenu?: boolean
+  items?: MenuItem[]
+  disabled?: boolean
+  command?: () => void
+}
 
 const PrimeVue = usePrimeVue()
 const userStore = useUserStore()
 
+const toast = useToast()
+const favoriteService = new FavoriteService(toast)
+
 const currentTheme = ref<string>('md-light-indigo')
-const menu = ref()
-const menuItems = [
+const menu = ref<TieredMenu>()
+const menuItems: MenuItem[] = [
   {
     label: 'Mes favoris',
     icon: 'pi pi-heart'
@@ -35,9 +51,39 @@ const toggleTheme = () => {
   currentTheme.value = nextTheme
 }
 
-const toggleMenu = () => {
-  menu.value.toggle(event)
+const isLoadingFavorites = ref(false)
+
+const loadFavorites = async () => {
+  try {
+    isLoadingFavorites.value = true
+    const response = await favoriteService.getFavorites()
+    menuItems[0].disabled = !(response && response.length > 0)
+    if (response && response.length > 0) {
+      menuItems[0].items = response.map((asso: AssociationFavorite) => ({
+        label: asso.name,
+        icon: asso.logo,
+        isSubMenu: true,
+        command: () => {
+          router.push(`/associations/${asso.slug}`)
+        }
+      }))
+    }
+  } catch (e) {
+    console.error(e)
+  } finally {
+    isLoadingFavorites.value = false
+  }
 }
+
+const toggleMenu = async (event: Event) => {
+  menu.value?.toggle(event)
+}
+
+onMounted(async () => {
+  if (userStore.user) {
+    await loadFavorites()
+  }
+})
 </script>
 
 <template>
@@ -77,8 +123,22 @@ const toggleMenu = () => {
         />
         <i class="pi pi-angle-down" />
       </div>
-      <Menu ref="menu" :model="menuItems" :popup="true" />
     </div>
+    <TieredMenu v-if="!isLoadingFavorites" ref="menu" :model="menuItems" :popup="true">
+      <template #item="{ item, hasSubmenu, label }">
+        <div :class="{ disabled: item.disabled }" class="flex items-center gap-2">
+          <i v-if="!item.isSubMenu" :class="item.icon"></i>
+          <img
+            v-if="item.isSubMenu && item.icon && item.icon.startsWith('http')"
+            :src="item.icon"
+            alt="logo"
+            class="menu-logo select-none"
+          />
+          <span class="select-none">{{ label }}</span>
+          <i v-if="hasSubmenu" class="pi pi-angle-right"></i>
+        </div>
+      </template>
+    </TieredMenu>
   </header>
 </template>
 
@@ -125,6 +185,40 @@ header .header-right .user-menu {
 
   header .menu-icons {
     display: flex;
+  }
+}
+
+.p-tieredmenu {
+  min-width: fit-content;
+  padding: 0.5rem;
+
+  .p-menuitem-content,
+  .p-submenu-list {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+
+    .disabled {
+      color: #b0b0b0;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+  }
+  .p-menuitem-content:hover {
+    background-color: var(--surface-300);
+  }
+}
+
+.menu-logo {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+}
+
+@media (max-width: 708px) {
+  .p-tieredmenu .p-submenu-list {
+    left: auto;
+    right: 100%;
   }
 }
 </style>

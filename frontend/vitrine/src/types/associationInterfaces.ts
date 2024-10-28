@@ -30,10 +30,20 @@ export interface Association {
 export interface AssociationDetail extends Association {
   socialNetworks: SocialNetwork[]
   faqs: Faq[]
+  isFavorite: boolean
 }
 
 export interface AssociationWithLogo
   extends Pick<Association, 'id' | 'name' | 'logo' | 'category' | 'slug'> {}
+
+export interface AssociationInEvent extends Pick<Association, 'id' | 'name' | 'logo' | 'slug'> {}
+
+interface AssociationWithSNTemp
+  extends Pick<Association, 'id' | 'name' | 'content' | 'logo' | 'slug'> {}
+
+export interface AssociationWithSN extends AssociationWithSNTemp {
+  socialNetworks: SocialNetwork[]
+}
 
 export interface AssociationInEvent extends Pick<Association, 'id' | 'name' | 'logo' | 'slug'> {}
 
@@ -52,3 +62,5 @@ export interface AssociationCarousel {
   banner: string
   socialNetworks: SocialNetwork[]
 }
+
+export interface AssociationFavorite extends Pick<Association, 'id' | 'name' | 'logo' | 'slug'> {}
