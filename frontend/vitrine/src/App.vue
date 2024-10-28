@@ -8,9 +8,11 @@ import { useFunctionsStore } from '@/stores/functions'
 
 const userStore = useUserStore()
 const functionsStore = useFunctionsStore()
+const isLoading = ref(true)
 
 onMounted(async () => {
   await userStore.checkLoginAndFetchUser()
+  isLoading.value = false
 })
 
 const reloadHeader = ref(false)
@@ -26,10 +28,12 @@ watch(
 </script>
 
 <template>
-  <MainHeader v-if="!reloadHeader" />
-  <router-view />
-  <MainFooter />
-  <Toast />
+  <div v-if="!isLoading">
+    <MainHeader v-if="!reloadHeader" />
+    <router-view />
+    <MainFooter />
+    <Toast />
+  </div>
 </template>
 
 <style></style>

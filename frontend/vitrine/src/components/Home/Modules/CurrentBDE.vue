@@ -26,7 +26,9 @@ const getCurrentUserSchool = computed(() => {
 })
 
 onMounted(async () => {
-  await loadAssoBde()
+  if (userStore.user) {
+    await loadAssoBde()
+  }
 })
 </script>
 

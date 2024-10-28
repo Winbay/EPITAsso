@@ -17,6 +17,7 @@ interface MenuItem {
   icon?: string
   isSubMenu?: boolean
   items?: MenuItem[]
+  disabled?: boolean
   command?: () => void
 }
 
@@ -56,6 +57,7 @@ const loadFavorites = async () => {
   try {
     isLoadingFavorites.value = true
     const response = await favoriteService.getFavorites()
+    menuItems[0].disabled = !(response && response.length > 0);
     if (response && response.length > 0) {
       menuItems[0].items = response.map((asso: AssociationFavorite) => ({
         label: asso.name,
@@ -78,7 +80,9 @@ const toggleMenu = async (event: Event) => {
 }
 
 onMounted(async () => {
-  await loadFavorites()
+  if (userStore.user) {
+    await loadFavorites()
+  }
 })
 </script>
 
@@ -122,7 +126,9 @@ onMounted(async () => {
     </div>
     <TieredMenu v-if="!isLoadingFavorites" ref="menu" :model="menuItems" :popup="true">
       <template #item="{ item, hasSubmenu, label }">
-        <div class="flex items-center gap-2">
+        <div
+          :class="{ 'disabled': item.disabled }"
+          class="flex items-center gap-2">
           <i v-if="!item.isSubMenu" :class="item.icon"></i>
           <img
             v-if="item.isSubMenu && item.icon && item.icon.startsWith('http')"
@@ -192,6 +198,16 @@ header .header-right .user-menu {
   .p-submenu-list {
     border-radius: 0.5rem;
     padding: 0.5rem;
+    cursor: pointer;
+
+    .disabled {
+      color: #b0b0b0;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+  }
+  .p-menuitem-content:hover {
+    background-color: var(--surface-300);
   }
 }
 
