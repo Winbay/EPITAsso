@@ -48,7 +48,8 @@ onMounted(async () => {
     />
     <div v-else class="flex flex-col justify-center items-center gap-2">
       <span class="text-xl font-semibold text-center"
-        >Connectez-vous avec le compte Microsoft de votre école pour voir vos associations.</span>
+        >Connectez-vous avec le compte Microsoft de votre école pour voir vos associations.</span
+      >
       <Button
         class="btn-connection p-2 w-1/4"
         label="Connexion"

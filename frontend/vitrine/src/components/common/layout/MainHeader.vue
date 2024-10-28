@@ -57,7 +57,7 @@ const loadFavorites = async () => {
   try {
     isLoadingFavorites.value = true
     const response = await favoriteService.getFavorites()
-    menuItems[0].disabled = !(response && response.length > 0);
+    menuItems[0].disabled = !(response && response.length > 0)
     if (response && response.length > 0) {
       menuItems[0].items = response.map((asso: AssociationFavorite) => ({
         label: asso.name,
@@ -126,9 +126,7 @@ onMounted(async () => {
     </div>
     <TieredMenu v-if="!isLoadingFavorites" ref="menu" :model="menuItems" :popup="true">
       <template #item="{ item, hasSubmenu, label }">
-        <div
-          :class="{ 'disabled': item.disabled }"
-          class="flex items-center gap-2">
+        <div :class="{ disabled: item.disabled }" class="flex items-center gap-2">
           <i v-if="!item.isSubMenu" :class="item.icon"></i>
           <img
             v-if="item.isSubMenu && item.icon && item.icon.startsWith('http')"
