@@ -26,6 +26,7 @@ services:
       ENV_FILE: .env.prod
     volumes:
       - static:/app/static
+      - media:/app/media
     depends_on:
       - db
       - redis
@@ -62,6 +63,7 @@ services:
     restart: always
     volumes:
       - static:/app/static
+      - media:/app/media
     ports:
       - "80:80"
       - "443:443"
@@ -74,4 +76,5 @@ services:
 volumes:
   db_data:
   static:
+  media:
   redis_cache:
