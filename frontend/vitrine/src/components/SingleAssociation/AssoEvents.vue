@@ -85,7 +85,9 @@ const functionsStore = useFunctionsStore()
     border-radius: 8px;
     padding: 5px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   &.button-style:hover {
@@ -93,7 +95,6 @@ const functionsStore = useFunctionsStore()
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
   }
 }
-
 
 @media (max-width: 708px) {
   .all-events {
