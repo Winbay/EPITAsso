@@ -26,13 +26,13 @@ class AssociationAdmin(admin.ModelAdmin):
 
 @admin.register(Faq)
 class FaqAdmin(admin.ModelAdmin):
-    list_display = ("id", "question", "association")
+    list_display = ("id", "question", "answer", "association")
     search_fields = ("question", "association")
 
 
 @admin.register(SocialNetwork)
 class SocialNetworkAdmin(admin.ModelAdmin):
-    list_display = ("name", "link", "association")
+    list_display = ("association", "name", "link")
     search_fields = ("name", "link", "association")
 
 

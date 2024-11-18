@@ -1,0 +1,39 @@
+[
+{
+  "model": "messaging.conversation",
+  "pk": 2,
+  "fields": {
+    "name": "La MTI",
+    "last_sent_at": "2024-06-20T10:35:08.961Z",
+    "associations": [
+      8,
+      1,
+      7
+    ]
+  }
+},
+{
+  "model": "messaging.message",
+  "pk": 2,
+  "fields": {
+    "conversation": 2,
+    "content": "Vous pouvez échanger ici c:",
+    "author": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association_sender": 1,
+    "sent_at": "2024-06-20T10:35:16.509Z",
+    "updated_at": null
+  }
+},
+{
+  "model": "messaging.message",
+  "pk": 3,
+  "fields": {
+    "conversation": 2,
+    "content": "(F5) pour reload, rip nos websockets",
+    "author": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association_sender": 1,
+    "sent_at": "2024-06-20T10:35:46.312Z",
+    "updated_at": null
+  }
+}
+]

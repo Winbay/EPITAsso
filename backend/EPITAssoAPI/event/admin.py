@@ -4,7 +4,7 @@ from .models import Event, EventMemberCommitment
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "start_date", "end_date")
+    list_display = ("id", "name", "start_date", "end_date", "association")
     search_fields = ("name", "start_date")
     list_filter = ("start_date",)
 
