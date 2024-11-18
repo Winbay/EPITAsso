@@ -3,13 +3,17 @@ import type { Event } from '@/types/eventInterfaces'
 import EventService from '@/services/event/event'
 import { onMounted, ref } from 'vue'
 import * as toast from '@/composables/toast'
+import router from '@/router'
+import { useUserStore } from '@/stores/user'
 
+const userStore = useUserStore()
 const listLastEvents = ref<Event[]>([])
 
 const eventService = new EventService(toast)
 
 const loadLastEvents = async () => {
-  listLastEvents.value = await eventService.getLastEvents()
+  const response = await eventService.getLastEvents()
+  listLastEvents.value = response.results
 }
 
 function formatDate(date: Date): string {
@@ -44,7 +48,10 @@ onMounted(async () => {
           <span class="title font-semibold">{{ event.name }}</span>
           <span class="text-sm text-gray-500">- {{ formatDate(event.startDate) }}</span>
         </div>
-        <div class="asso-info flex gap-1 items-center">
+        <div
+          :class="['asso-info-btn flex gap-1 items-center', { 'button-style': userStore.user }]"
+          @click="userStore.user && router.push(`/associations/${event.association.slug}`)"
+        >
           <img :alt="'Logo ' + event.association.name" :src="event.association.logo" />
           <span>{{ event.association.name }}</span>
         </div>
@@ -71,12 +78,6 @@ onMounted(async () => {
   text-decoration: underline;
 }
 
-.module-last-events .asso-info img {
-  width: 32px;
-  height: 32px;
-  border-radius: 100px;
-}
-
 .module-last-events .title {
   white-space: nowrap;
   overflow: hidden;
@@ -93,7 +94,7 @@ onMounted(async () => {
   text-align: justify;
 }
 
-.module-last-events .event-item:not(:last-child) {
+.module-last-events .event-item:not(:nth-last-child(2)) {
   border-bottom: solid 1px var(--surface-300);
   padding-bottom: 5px;
 }

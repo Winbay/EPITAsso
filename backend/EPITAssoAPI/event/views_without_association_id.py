@@ -15,33 +15,30 @@ from .serializers import (
 
 class UpcomingEventsView(generics.ListAPIView):
     serializer_class = EventSerializer
-    queryset = Event.objects.all()
     permission_classes = [AllowAny]
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
-        limit = self.request.query_params.get("limit", 3)
-        try:
-            limit = int(limit)
-            if limit <= 0:
-                limit = 3
-        except ValueError:
-            limit = 3
-        return Event.objects.filter(start_date__gte=now()).order_by("start_date")[
-            :limit
-        ]
+        return Event.objects.filter(start_date__gte=now()).order_by("start_date")
 
     @extend_schema(
-        summary="Retrieve the 'limit' upcoming events (all associations) (default: 3)",
-        description="Retrieve the 'limit' upcoming events, sorted by start date.",
+        summary="Retrieve upcoming events with limit-offset pagination",
+        description="Retrieve upcoming events, sorted by start date, with limit-offset pagination.",
         parameters=[
             OpenApiParameter(
                 name="limit",
                 type=int,
                 required=False,
                 location=OpenApiParameter.QUERY,
-                description="Number of events to retrieve (default: 3)",
-                default=3,
-            )
+                description="Maximum number of events to retrieve per page (default: 3)",
+            ),
+            OpenApiParameter(
+                name="offset",
+                type=int,
+                required=False,
+                location=OpenApiParameter.QUERY,
+                description="The starting position of the query (default: 0)",
+            ),
         ],
     )
     def get(self, request, *args, **kwargs):

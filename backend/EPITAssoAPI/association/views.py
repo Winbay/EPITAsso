@@ -17,6 +17,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import AllowAny
 
 from .models import (
     AssociateUserAndAssociation,
@@ -58,6 +59,7 @@ class AssociationListPaginationView(generics.ListAPIView):
     queryset = Association.objects.all()
     serializer_class = AssociationListPaginationSerializer
     pagination_class = LimitOffsetPagination
+    permission_classes = [AllowAny]
 
     @extend_schema(summary="List all Associations with pagination (limit, offset)")
     def get(self, request, *args, **kwargs):

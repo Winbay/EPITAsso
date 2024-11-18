@@ -13,6 +13,7 @@ const singleAssoStore = useSingleAssoStore()
       :header="faq.question"
       toggleable
       collapsed
+      class="panel"
     >
       <p class="text-justify">{{ faq.answer }}</p>
     </Panel>
@@ -24,5 +25,17 @@ const singleAssoStore = useSingleAssoStore()
   .all-faq {
     padding: 2rem 3rem;
   }
+}
+
+.panel .p-panel-header {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+p.text-justify {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 </style>
