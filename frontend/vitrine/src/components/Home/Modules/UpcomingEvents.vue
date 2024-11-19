@@ -33,7 +33,7 @@ onMounted(async () => {
 
 <template>
   <div class="module-last-events flex flex-col items-center gap-2">
-    <span class="text-xl font-semibold">Derniers évènements</span>
+    <span class="text-xl font-semibold">Évènements à venir</span>
     <div
       v-for="(event, index) of listLastEvents"
       :key="index"
