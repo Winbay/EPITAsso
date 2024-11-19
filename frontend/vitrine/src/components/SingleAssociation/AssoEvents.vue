@@ -2,10 +2,11 @@
 import { useSingleAssoStore } from '@/stores/singleAsso'
 import { useFunctionsStore } from '@/stores/functions'
 import CommentAndLike from '@/components/Events/CommentAndLike.vue'
-import type { PropType } from 'vue'
+import { nextTick, onMounted, type PropType } from 'vue'
 import type { Event } from '@/types/eventInterfaces'
 import router from '@/router'
 import { useUserStore } from '@/stores/user'
+import { useRoute } from 'vue-router'
 
 defineProps({
   lastEvents: {
@@ -15,9 +16,30 @@ defineProps({
 })
 
 const userStore = useUserStore()
-
 const singleAssoStore = useSingleAssoStore()
 const functionsStore = useFunctionsStore()
+
+const route = useRoute()
+
+onMounted(async () => {
+  if (route.hash) {
+    await nextTick()
+    const element = document.querySelector(route.hash) as HTMLElement
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+})
+
+const handleEventClick = (event: Event) => {
+  const eventSlug = event.association.slug
+  const eventId = event.id
+  const currentSlug = route.params.slug
+
+  if (currentSlug !== eventSlug) {
+    userStore.user && router.push(`/associations/${eventSlug}#event-${eventId}`)
+  }
+}
 </script>
 
 <template>
@@ -26,29 +48,28 @@ const functionsStore = useFunctionsStore()
       class="single-event flex flex-col gap-4"
       v-for="(event, index) of lastEvents ?? singleAssoStore.assoEvents"
       :key="index"
+      :id="'event-' + event.id"
+      @click="handleEventClick(event)"
+      :class="{'hover-enabled cursor-pointer': lastEvents}"
     >
-      <div class="header flex justify-between items-center">
-        <div class="flex items-center gap-4">
-          <h2 class="text-2xl font-semibold">{{ event.name }}</h2>
-          <span class="font-semibold text-gray-400">{{
+    <div class="header flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <h2 class="text-2xl font-semibold">{{ event.name }}</h2>
+        <span class="font-semibold text-gray-400">{{
             functionsStore.formatDateRange(event.startDate, event.endDate)
           }}</span>
-        </div>
-        <div
-          v-if="lastEvents"
-          :class="['asso-info-btn flex gap-1 items-center', { 'button-style': userStore.user }]"
-          @click="userStore.user && router.push(`/associations/${event.association.slug}`)"
-        >
-          <img :alt="'Logo ' + event.association.name" :src="event.association.logo" />
-          <span>{{ event.association.name }}</span>
-        </div>
       </div>
-      <div class="flex gap-4">
-        <div class="tag" v-for="(tag, index) of event.tags" :key="index">
-          {{ tag.name }}
-        </div>
+      <div v-if="lastEvents" :class="['asso-info-btn flex gap-1 items-center', { 'button-style': userStore.user }]">
+        <img :alt="'Logo ' + event.association.name" :src="event.association.logo" />
+        <span>{{ event.association.name }}</span>
       </div>
-      <div class="content" v-html="event.content"></div>
+    </div>
+    <div class="flex gap-4">
+      <div class="tag" v-for="(tag, index) of event.tags" :key="index">
+        {{ tag.name }}
+      </div>
+    </div>
+    <div class="content" v-html="event.content"></div>
       <CommentAndLike v-if="!lastEvents" :event="event" />
     </div>
   </div>
@@ -59,6 +80,14 @@ const functionsStore = useFunctionsStore()
   border: 1px solid #aaaaaa;
   border-radius: 6px;
   padding: 1rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.single-event.hover-enabled:hover {
+  cursor: pointer;
+  border-color: #4A90E2;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #f7f9fc;
 }
 
 .single-event .content * {
@@ -77,22 +106,6 @@ const functionsStore = useFunctionsStore()
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
-  }
-
-  &.button-style {
-    cursor: pointer;
-    border: 1px solid #aaaaaa;
-    border-radius: 8px;
-    padding: 5px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
-  }
-
-  &.button-style:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
   }
 }
 
