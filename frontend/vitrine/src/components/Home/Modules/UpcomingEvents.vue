@@ -57,21 +57,21 @@ const handleEventClick = (event: Event) => {
       class="event-item flex flex-col gap-2 w-full cursor-pointer hover-enabled"
       @click="handleEventClick(event)"
     >
-    <div class="header flex justify-between">
-      <div class="flex gap-1 items-center">
-        <span class="title font-semibold">{{ event.name }}</span>
-        <span class="text-sm text-gray-500">- {{ formatDate(event.startDate) }}</span>
+      <div class="header flex justify-between">
+        <div class="flex gap-1 items-center">
+          <span class="title font-semibold">{{ event.name }}</span>
+          <span class="text-sm text-gray-500">- {{ formatDate(event.startDate) }}</span>
+        </div>
+        <div
+          :class="['asso-info-btn flex gap-1 items-center', { 'button-style': userStore.user }]"
+          @click="userStore.user && router.push(`/associations/${event.association.slug}`)"
+        >
+          <img :alt="'Logo ' + event.association.name" :src="event.association.logo" />
+          <span>{{ event.association.name }}</span>
+        </div>
       </div>
-      <div
-        :class="['asso-info-btn flex gap-1 items-center', { 'button-style': userStore.user }]"
-        @click="userStore.user && router.push(`/associations/${event.association.slug}`)"
-      >
-        <img :alt="'Logo ' + event.association.name" :src="event.association.logo" />
-        <span>{{ event.association.name }}</span>
-      </div>
-    </div>
-    <span class="event-content">{{ getInnerText(event.content) }}</span>
-    <!-- TODO: "Voir plus" avec lien vers l'asso avec fragment vers events -->
+      <span class="event-content">{{ getInnerText(event.content) }}</span>
+      <!-- TODO: "Voir plus" avec lien vers l'asso avec fragment vers events -->
     </div>
     <a class="btn-route" v-if="listLastEvents.length > 0" href="/events">Tous les évènements</a>
     <div v-if="listLastEvents.length === 0" class="font-semibold text-center">

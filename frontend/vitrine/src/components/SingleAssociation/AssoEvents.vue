@@ -50,26 +50,29 @@ const handleEventClick = (event: Event) => {
       :key="index"
       :id="'event-' + event.id"
       @click="handleEventClick(event)"
-      :class="{'hover-enabled cursor-pointer': lastEvents}"
+      :class="{ 'hover-enabled cursor-pointer': lastEvents }"
     >
-    <div class="header flex justify-between items-center">
-      <div class="flex items-center gap-4">
-        <h2 class="text-2xl font-semibold">{{ event.name }}</h2>
-        <span class="font-semibold text-gray-400">{{
+      <div class="header flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <h2 class="text-2xl font-semibold">{{ event.name }}</h2>
+          <span class="font-semibold text-gray-400">{{
             functionsStore.formatDateRange(event.startDate, event.endDate)
           }}</span>
+        </div>
+        <div
+          v-if="lastEvents"
+          :class="['asso-info-btn flex gap-1 items-center', { 'button-style': userStore.user }]"
+        >
+          <img :alt="'Logo ' + event.association.name" :src="event.association.logo" />
+          <span>{{ event.association.name }}</span>
+        </div>
       </div>
-      <div v-if="lastEvents" :class="['asso-info-btn flex gap-1 items-center', { 'button-style': userStore.user }]">
-        <img :alt="'Logo ' + event.association.name" :src="event.association.logo" />
-        <span>{{ event.association.name }}</span>
+      <div class="flex gap-4">
+        <div class="tag" v-for="(tag, index) of event.tags" :key="index">
+          {{ tag.name }}
+        </div>
       </div>
-    </div>
-    <div class="flex gap-4">
-      <div class="tag" v-for="(tag, index) of event.tags" :key="index">
-        {{ tag.name }}
-      </div>
-    </div>
-    <div class="content" v-html="event.content"></div>
+      <div class="content" v-html="event.content"></div>
       <CommentAndLike v-if="!lastEvents" :event="event" />
     </div>
   </div>
@@ -85,7 +88,7 @@ const handleEventClick = (event: Event) => {
 
 .single-event.hover-enabled:hover {
   cursor: pointer;
-  border-color: #4A90E2;
+  border-color: #4a90e2;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   background-color: #f7f9fc;
 }
