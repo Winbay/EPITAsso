@@ -22,8 +22,12 @@ const functionsStore = useFunctionsStore()
     </div>
     <div class="flex justify-center w-full gap-4">
       <div v-for="(socialNetwork, index) of association.socialNetworks" :key="index">
-        <a :href="(socialNetwork.name === 'Mail' ? 'mailto:' : '') + socialNetwork.link"
-           target="_blank" rel="noopener noreferrer" @click.stop>
+        <a
+          :href="(socialNetwork.name === 'Mail' ? 'mailto:' : '') + socialNetwork.link"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click.stop
+        >
           <i
             :class="functionsStore.getSocialNetworkIcon(socialNetwork.name)"
             class="text-3xl cursor-pointer"
