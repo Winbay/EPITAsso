@@ -21,7 +21,7 @@ export interface Association {
   name: string
   content: string
   location: string
-  logo: string
+  logo: File | null
   webhook: string
 }
 

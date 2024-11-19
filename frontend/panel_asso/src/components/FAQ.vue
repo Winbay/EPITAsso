@@ -31,9 +31,9 @@ const selectedFaqItemRef = ref<Faq>(getDefaultFaqItem())
 
 const visibleDialogRef = ref(false)
 
-const closeDialog = (faqItem: Faq | null): void => {
+const closeDialog = (faqItem: Faq | null, isEditing: boolean = false): void => {
   if (faqItem) {
-    if (selectedFaqItemRef.value.id !== -1) {
+    if (isEditing) {
       const index = faqItemsRef.value.findIndex((item) => item.id === faqItem.id)
       faqItemsRef.value[index] = faqItem
     } else {
@@ -43,7 +43,9 @@ const closeDialog = (faqItem: Faq | null): void => {
   visibleDialogRef.value = false
 }
 
+const isEditingQuestion = ref(false)
 const editQuestion = (index: number): void => {
+  isEditingQuestion.value = true
   selectedFaqItemRef.value = faqItemsRef.value[index]
   visibleDialogRef.value = true
 }
@@ -108,6 +110,7 @@ const deleteQuestion = (index: number): void => {
       v-model:visible="visibleDialogRef"
       :set-hidden="closeDialog"
       :faq-item="{ ...selectedFaqItemRef }"
+      :editing="isEditingQuestion"
     />
   </div>
 </template>

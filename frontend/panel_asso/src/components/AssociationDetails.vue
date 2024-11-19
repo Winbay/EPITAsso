@@ -60,6 +60,7 @@ const closeDialog = async (): Promise<void> => {
       </div>
     </div>
     <DialogAssociation
+      v-if="visibleDialogRef"
       v-model:visible="visibleDialogRef"
       :set-hidden="closeDialog"
       :association="associationDetails"

@@ -46,9 +46,9 @@ const socialNetworksRef = ref<SocialNetwork[]>(props.socialNetworks)
 const visibleDialogRef = ref(false)
 const selectedSocialNetworkRef = ref<SocialNetwork>(getDefaultSocialNetwork())
 
-const closeDialog = (socialNetwork: SocialNetwork | null = null): void => {
+const closeDialog = (socialNetwork: SocialNetwork | null = null, isEditing: boolean = false): void => {
   if (socialNetwork) {
-    if (selectedSocialNetworkRef.value.id !== -1) {
+    if (isEditing) {
       const index = socialNetworksRef.value.findIndex((item) => item.id === socialNetwork.id)
       socialNetworksRef.value[index] = socialNetwork
     } else {
@@ -58,7 +58,10 @@ const closeDialog = (socialNetwork: SocialNetwork | null = null): void => {
   visibleDialogRef.value = false
 }
 
+const isEditingSocialNetwork = ref<boolean>(false)
+
 const editSocialNetwork = (index: number): void => {
+  isEditingSocialNetwork.value = true
   selectedSocialNetworkRef.value = socialNetworksRef.value[index]
   visibleDialogRef.value = true
 }
@@ -115,6 +118,7 @@ const deleteSocialNetwork = (index: number): void => {
         v-model:visible="visibleDialogRef"
         :set-hidden="closeDialog"
         :social-network="JSON.parse(JSON.stringify(selectedSocialNetworkRef))"
+        :editing="isEditingSocialNetwork"
       />
     </div>
   </div>

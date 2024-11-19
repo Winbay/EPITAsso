@@ -14,7 +14,7 @@ const associationDetailSchema = yup
     name: yup.string().required(),
     content: yup.string().required(),
     location: yup.string().required(),
-    logo: yup.string().required(),
+    logo: yup.mixed().required(),
     webhook: yup.string(),
     social_networks: socialNetworksSchema,
     faqs: faqsSchema
@@ -39,25 +39,42 @@ export default class AssociationDetailService extends ApiService<
     return this.converterSchemaToInterface(data)
   }
 
+  async patchAssociationDetail(associationDetail: AssociationDetail): Promise<void> {
+    const formData = new FormData();
+
+    formData.append("id", associationDetail.id.toString());
+    formData.append("name", associationDetail.name);
+    formData.append("content", associationDetail.content);
+    formData.append("location", associationDetail.location);
+
+    if (associationDetail.logo) {
+      formData.append("logo", associationDetail.logo);
+    }
+
+    if (associationDetail.webhook) {
+      formData.append("webhook", associationDetail.webhook);
+    }
+
+    associationDetail.socialNetworks.forEach((sn, index) => {
+      formData.append(`social_networks[${index}][id]`, sn.id.toString());
+      formData.append(`social_networks[${index}][name]`, sn.name);
+      formData.append(`social_networks[${index}][link]`, sn.link);
+    });
+
+    associationDetail.faqs.forEach((faq, index) => {
+      formData.append(`faqs[${index}][id]`, faq.id.toString());
+      formData.append(`faqs[${index}][question]`, faq.question);
+      formData.append(`faqs[${index}][answer]`, faq.answer);
+    });
+
+    await this.patchFormData(formData);
+  }
+
+
   /**
    *
    * @param associationDetail without members beacause they are update in another endpoint
    */
-  async updateAssociationDetail(
-    associationDetail: Omit<AssociationDetail, 'members'>
-  ): Promise<void> {
-    const data = {
-      id: associationDetail.id,
-      name: associationDetail.name,
-      content: associationDetail.content,
-      location: associationDetail.location,
-      logo: associationDetail.logo,
-      webhook: associationDetail.webhook,
-      social_networks: associationDetail.socialNetworks,
-      faqs: associationDetail.faqs
-    }
-    await this.update(data)
-  }
 
   protected converterSchemaToInterface(
     associationDetails: yup.InferType<typeof associationDetailSchema>
