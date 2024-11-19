@@ -28,6 +28,15 @@ export const useFunctionsStore = defineStore('functions', () => {
       case 'Discord': {
         return 'pi pi-discord'
       }
+      case 'Linkedin': {
+        return 'pi pi-linkedin'
+      }
+      case 'Github': {
+        return 'pi pi-github'
+      }
+      case 'Youtube': {
+        return 'pi pi-youtube'
+      }
       default: {
         return 'pi pi-external-link\n'
       }
