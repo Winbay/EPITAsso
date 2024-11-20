@@ -117,7 +117,6 @@ const handleEventClick = (event: Event) => {
   cursor: pointer;
   border-radius: 6px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: #f7f9fc;
   transform: scale(1.01);
 }
 

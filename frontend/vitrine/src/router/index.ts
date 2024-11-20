@@ -12,7 +12,7 @@ const router = createRouter({
     { path: '/associations', component: AssociationsView },
     { path: '/associations/:slug', component: SingleAssociationView },
     { path: '/events', component: EventsView },
-    { path: '/:pathMatch(.*)*', component: NotFoundView }
+    { path: '/:pathMatch(.*)*', component: NotFoundView },
   ]
 })
 

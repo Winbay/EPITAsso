@@ -90,7 +90,7 @@ const handleEventClick = (event: Event) => {
   cursor: pointer;
   border-color: #4a90e2;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: #f7f9fc;
+  transform: scale(1.01);
 }
 
 .single-event .content * {
