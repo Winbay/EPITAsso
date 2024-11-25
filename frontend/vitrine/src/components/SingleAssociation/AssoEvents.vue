@@ -55,7 +55,7 @@ const handleEventClick = (event: Event) => {
       <div class="header flex justify-between items-center">
         <div class="flex items-center gap-4">
           <h2 class="text-2xl font-semibold">{{ event.name }}</h2>
-          <span class="font-semibold text-gray-400">{{
+          <span class="date">{{
             functionsStore.formatDateRange(event.startDate, event.endDate)
           }}</span>
         </div>
@@ -67,7 +67,7 @@ const handleEventClick = (event: Event) => {
           <span>{{ event.association.name }}</span>
         </div>
       </div>
-      <div class="flex gap-4">
+      <div class="flex flex-wrap gap-4">
         <div class="tag" v-for="(tag, index) of event.tags" :key="index">
           {{ tag.name }}
         </div>
@@ -112,6 +112,12 @@ const handleEventClick = (event: Event) => {
   }
 }
 
+.date {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #4482a1;
+}
+
 @media (max-width: 708px) {
   .all-events {
     padding: 2rem 3rem;
@@ -119,6 +125,9 @@ const handleEventClick = (event: Event) => {
   .header {
     flex-direction: column;
     display: contents;
+  }
+  .date {
+    font-size: 1rem;
   }
 }
 </style>

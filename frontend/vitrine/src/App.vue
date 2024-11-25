@@ -28,12 +28,19 @@ watch(
 </script>
 
 <template>
-  <div v-if="!isLoading">
+  <div v-if="!isLoading" class="flex flex-col min-h-screen">
     <MainHeader v-if="!reloadHeader" />
-    <router-view />
+    <div class="content">
+      <router-view />
+    </div>
     <MainFooter />
     <Toast />
   </div>
 </template>
 
-<style></style>
+<style>
+.content {
+  flex: 1;
+  place-content: center;
+}
+</style>
