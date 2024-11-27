@@ -37,9 +37,7 @@ onMounted(async () => {
         @click="loadMoreEvents"
       />
     </div>
-    <div v-else class="no-events">
-      Aucun évènement n'est prévu prochainement.
-    </div>
+    <div v-else class="no-events">Aucun évènement n'est prévu prochainement.</div>
   </main>
 </template>
 
