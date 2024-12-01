@@ -117,7 +117,7 @@ const openMessageMenu = (event: MouseEvent): void => {
       <div class="message-content">
         {{ message.content }}
         <span
-          v-if="isMessageModified"
+          v-if="isMessageModified && !isUserMessage"
           class="modified-text"
           :class="{ 'left-align': isUserMessage, 'right-align': !isUserMessage }"
         >
