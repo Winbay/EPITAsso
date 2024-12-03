@@ -34,6 +34,10 @@ const timestampToString = (timestamp: number) => {
 
   return `${day}/${month}/${year} ${hours}:${minutes}`
 }
+
+const getImageUrl = (logo: File | null): string => {
+  return logo ? URL.createObjectURL(logo) : ''
+}
 </script>
 
 <template>
@@ -54,9 +58,7 @@ const timestampToString = (timestamp: number) => {
       }}</label>
       <div class="flex items-center">
         <Avatar
-          :image="
-            props.received ? equipmentRequest.assoBorrower.logo : equipmentRequest.assoOwner.logo
-          "
+          :image="getImageUrl(props.received ? equipmentRequest.assoBorrower.logo : equipmentRequest.assoOwner.logo)"
           size="xlarge"
           class="flex align-items-center justify-content-center mr-2"
         />

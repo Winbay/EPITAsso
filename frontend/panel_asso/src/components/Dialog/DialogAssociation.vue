@@ -5,7 +5,7 @@ import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import Dialog from 'primevue/dialog'
 
-import { defineProps, type PropType, ref } from 'vue'
+import { computed, defineProps, type PropType, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type { AssociationDetail } from '@/types/associationInterfaces'
 import FAQ from '@/components/FAQ.vue'
@@ -34,7 +34,7 @@ const getDefaultAssociation = (): AssociationDetail => ({
   name: '',
   content: '',
   location: '',
-  logo: '',
+  logo: new File([], ''),
   webhook: '',
   socialNetworks: [],
   faqs: []
@@ -84,9 +84,16 @@ const handleImageChange = (event: Event): void => {
   if (input.files && input.files[0]) {
     const file = input.files[0]
     newLogo.value = file
-    currAssociationRef.value.logo = URL.createObjectURL(file)
+    currAssociationRef.value.logo = file
   }
 }
+
+const imageUrl = computed(() => {
+  if (currAssociationRef.value.logo instanceof File) {
+    return URL.createObjectURL(currAssociationRef.value.logo)
+  }
+  return currAssociationRef.value.logo || ''
+})
 </script>
 
 <template>
@@ -101,7 +108,7 @@ const handleImageChange = (event: Event): void => {
       <div class="mb-6 mt-6 flex items-center justify-center">
         <div class="relative">
           <Avatar
-            :image="currAssociationRef.logo"
+            :image="imageUrl as string"
             shape="circle"
             style="width: 10rem; height: 10rem"
           />

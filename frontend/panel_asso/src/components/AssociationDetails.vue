@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Image from 'primevue/image'
-import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
 
 import { type PropType, ref } from 'vue'
@@ -47,13 +46,11 @@ const closeDialog = async (): Promise<void> => {
         <div class="flex pt-5">
           <div v-for="socialNetwork in associationDetails.socialNetworks" :key="socialNetwork.name">
             <a :href="socialNetwork.link" target="_blank">
-              <Avatar
-                :image="getSocialNetworkImage(socialNetwork.name)"
-                class="mr-2 avatar"
-                size="large"
-                shape="circle"
+              <i
+                :class="getSocialNetworkImage(socialNetwork.name)"
+                class="text-3xl avatar mr-2 cursor-pointer"
                 :title="socialNetwork.name"
-              ></Avatar>
+              />
             </a>
           </div>
         </div>

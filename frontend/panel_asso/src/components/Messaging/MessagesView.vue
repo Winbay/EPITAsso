@@ -4,7 +4,6 @@ import { computed, nextTick, onBeforeMount, onMounted, type PropType, ref } from
 import ProgressSpinner from 'primevue/progressspinner'
 import Divider from 'primevue/divider'
 import Chip from 'primevue/chip'
-import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
 import ContextMenu from 'primevue/contextmenu'
@@ -148,9 +147,7 @@ const handleScrollTop = async (event: Event): Promise<void> => {
   lastScrollTop = currentScrollTop
 
   const lastScrollHeight = target.scrollHeight
-  console.log('scrollTop:', target.scrollTop)
   if (target.scrollTop === 0) {
-    console.log('fetching more messages')
     await loadMessages()
     await nextTick(() => {
       target.scrollTop = target.scrollHeight - lastScrollHeight

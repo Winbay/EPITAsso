@@ -14,7 +14,7 @@ const associationDetailSchema = yup
     name: yup.string().required(),
     content: yup.string().required(),
     location: yup.string().required(),
-    logo: yup.mixed().required(),
+    logo: yup.mixed<File>().required(),
     webhook: yup.string(),
     social_networks: socialNetworksSchema,
     faqs: faqsSchema
@@ -73,7 +73,7 @@ export default class AssociationDetailService extends ApiService<
 
   /**
    *
-   * @param associationDetail without members beacause they are update in another endpoint
+   * @param associationDetails
    */
 
   protected converterSchemaToInterface(
