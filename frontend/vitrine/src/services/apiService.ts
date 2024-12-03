@@ -160,16 +160,16 @@ export default class ApiService<SchemaType> {
       const response = await djangoApi[method]<ReturnType>(fullUrl, data)
       return response.data
     } catch (error) {
-      this.handleError(error, `${method.toUpperCase()}: An error occured.`)
+      this.handleError(error)
     }
   }
 
-  private handleError(error: any, message: string): never {
+  private handleError(error: any): never {
     if (this.toast) {
       this.toast.add({
         severity: 'error',
-        summary: 'Associations',
-        detail: message,
+        summary: 'Une erreur est survenue',
+        detail: 'Un problème est survenu. Vous pouvez essayer de rafraîchir la page',
         life: 5000
       })
     }
@@ -178,14 +178,6 @@ export default class ApiService<SchemaType> {
   }
 
   private catchValidationError(error: any): never {
-    if (this.toast) {
-      this.toast.add({
-        severity: 'error',
-        summary: 'Erreur de validation',
-        detail: 'Les données ne correspondent pas au schéma de validation: ' + error,
-        life: 5000
-      })
-    }
     throw error
   }
 
