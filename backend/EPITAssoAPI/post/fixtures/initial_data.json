@@ -1,0 +1,37 @@
+[
+  {
+    "model": "post.tag",
+    "pk": 5,
+    "fields": {
+      "name": "Soir├®e",
+      "text_color": "#ffffff",
+      "background_color": "#ff0000"
+    }
+  },
+  {
+    "model": "post.tag",
+    "pk": 6,
+    "fields": {
+      "name": "AW",
+      "text_color": null,
+      "background_color": null
+    }
+  },
+  {
+    "model": "post.post",
+    "pk": 1,
+    "fields": {
+      "title": "Recrutement !",
+      "association": 1,
+      "author": "00659af3-0c0f-4b25-a9e9-d9d53410e8b4",
+      "last_author": "00659af3-0c0f-4b25-a9e9-d9d53410e8b4",
+      "created_at": "2024-06-03T15:25:21.433Z",
+      "updated_at": "2024-06-05T12:17:21.293Z",
+      "content": "venez c'est trop bien !",
+      "tags": [
+        6
+      ]
+    }
+  }
+  ]
+  

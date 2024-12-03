@@ -1,0 +1,91 @@
+[
+{
+  "model": "association.association",
+  "pk": 1,
+  "fields": {
+    "name": "BDE",
+    "content": "a",
+    "logo": null,
+    "location": "ici"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 2,
+  "fields": {
+    "name": "VJN",
+    "content": "a",
+    "logo": "",
+    "location": "par la bas"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 3,
+  "fields": {
+    "name": "Lateb",
+    "content": "Lateb se donne pour mission de faire découvrir des bières de qualité au sein du campus. A ce titre, elle organise des évènements proposant diverses activités autour de dégustations de bières sous forme de buffets, projections ou concerts. L’abus d’alcool est dangereux pour la santé, à consommer avec modération.",
+    "logo": "https://www.epita.fr/wp-content/uploads/lateb-association-epita.png",
+    "location": "under"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 4,
+  "fields": {
+    "name": "La Paillote",
+    "content": "La Paillote est l’association des amoureux des mélanges de saveurs. Experts en l’art de titiller les papilles, ses membres proposent un large panel de cocktails, du plus classique à l’unique, spécialement inventé pour vous. L’abus d’alcool est dangereux pour la santé, à consommer avec modération.",
+    "logo": "https://www.epita.fr/wp-content/uploads/la-paillote-association-epita.png",
+    "location": "under"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 5,
+  "fields": {
+    "name": "EPTV",
+    "content": "EPTV réunit depuis plus de 30 ans, les passionnés de vidéo qui capturent les événements marquants de la vie étudiante tout au long de l’année. L’association est accessible à tous et réalise en interne des formations sur le matériel et le montage vidéo.",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1n89yd_FEFrVZp4nI29hmq1yLuBgpnW0q1w&s",
+    "location": "under"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 6,
+  "fields": {
+    "name": "Unisson",
+    "content": "Unisson a pour but de promouvoir la musique électronique. Elle participe tout au long de l’année à la préparation des soirées étudiantes sur le campus. Elle s’organise autour de 3 pôles : MAO (musique assistée par ordinateur), MIX/Live, Scratch.",
+    "logo": "https://res.cloudinary.com/shotgun/image/upload/v1692983608/production/artworks/tiny_logo_unisson_ectn6c.png",
+    "location": "Under"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 7,
+  "fields": {
+    "name": "MTI frontend",
+    "content": "MTI frontend est la branche dédiée au développement des interfaces utilisateur des applications web et mobiles. Les membres se concentrent sur la création de designs intuitifs et réactifs, utilisant les dernières technologies pour améliorer l'expérience utilisateur.",
+    "logo": "https://www.epita.fr/wp-content/uploads/2017/08/logo_MTI-1-1024x700.png",
+    "location": "501"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 8,
+  "fields": {
+    "name": "MTI backend",
+    "content": "MTI backend s'occupe de l'infrastructure et de la logique serveur des applications. Les membres gèrent les bases de données, les serveurs et les API, assurant la performance, la sécurité et la scalabilité des services.",
+    "logo": "https://www.epita.fr/wp-content/uploads/2017/08/logo_MTI-1-1024x700.png",
+    "location": "501"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1,
+  "fields": {
+    "user": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association": 1,
+    "role": "Président"
+  }
+}
+]

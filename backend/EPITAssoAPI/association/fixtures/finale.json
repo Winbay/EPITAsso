@@ -1,0 +1,1576 @@
+[
+{
+  "model": "association.association",
+  "pk": 1,
+  "fields": {
+    "name": "Kraken (BDE)",
+    "slug": "bde",
+    "category": "Le BDE de l'école Epita pour l'année 2024",
+    "content": "Le BDE est l’association fédératrice des associations de l’école. Il organise les weekends d’intégration en SUP et après la piscine, le Gala, les soirées comme Halloween ou Christmas. Il est également présent pour animer les événements pédagogiques phares comme la piscine en ING1, les rushs ou les hackathons.",
+    "logo": "kraken.png",
+    "webhook": "",
+    "location": "Under",
+    "type": "BDE"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 2,
+  "fields": {
+    "name": "VJN",
+    "slug": "vjn",
+    "category": "Nourriture et organisateurs des soirées à Villejuif",
+    "content": "Cette association a pour but l'organisation d’évènements étudiants, les Villejuif Nights (VJN), au sein du pôle éducatif de IONIS, et plus particulièrement sur le pôle de Villejuif.",
+    "logo": "vjn.png",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 3,
+  "fields": {
+    "name": "Lateb",
+    "slug": "lateb",
+    "category": "Association de bières",
+    "content": "Lateb se donne pour mission de faire découvrir des bières de qualité au sein du campus. A ce titre, elle organise des évènements proposant diverses activités autour de dégustations de bières sous forme de buffets, projections ou concerts. L’abus d’alcool est dangereux pour la santé, à consommer avec modération.",
+    "logo": "lateb-association-epita.png",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 4,
+  "fields": {
+    "name": "La Paillote",
+    "slug": "la-paillote",
+    "category": "Association de cocktails",
+    "content": "La Paillote est l’association des amoureux des mélanges de saveurs. Experts en l’art de titiller les papilles, ses membres proposent un large panel de cocktails, du plus classique à l’unique, spécialement inventé pour vous. L’abus d’alcool est dangereux pour la santé, à consommer avec modération.",
+    "logo": "la-paillote-association-epita.png",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 5,
+  "fields": {
+    "name": "EPTV",
+    "slug": "eptv",
+    "category": "Association de photographie",
+    "content": "EPTV réunit depuis plus de 30 ans, les passionnés de vidéo qui capturent les événements marquants de la vie étudiante tout au long de l’année. L’association est accessible à tous et réalise en interne des formations sur le matériel et le montage vidéo.",
+    "logo": "logos/eptv.jpg",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 6,
+  "fields": {
+    "name": "Unisson",
+    "slug": "unisson",
+    "category": "Organisateur de soirées techno",
+    "content": "Unisson a pour but de promouvoir la musique électronique. Elle participe tout au long de l’année à la préparation des soirées étudiantes sur le campus. Elle s’organise autour de 3 pôles : MAO (musique assistée par ordinateur), MIX/Live, Scratch.",
+    "logo": "tiny_logo_unisson_ectn6c.png",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 7,
+  "fields": {
+    "name": "MTI frontend",
+    "slug": "mti-frontend",
+    "category": "",
+    "content": "MTI frontend est la branche dédiée au développement des interfaces utilisateur des applications web et mobiles. Les membres se concentrent sur la création de designs intuitifs et réactifs, utilisant les dernières technologies pour améliorer l'expérience utilisateur.",
+    "logo": "logo-mti.png",
+    "webhook": "",
+    "location": "MTI Lab",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 8,
+  "fields": {
+    "name": "MTI backend",
+    "slug": "mti-backend",
+    "category": "",
+    "content": "MTI backend s'occupe de l'infrastructure et de la logique serveur des applications. Les membres gèrent les bases de données, les serveurs et les API, assurant la performance, la sécurité et la scalabilité des services.",
+    "logo": "logo-mti.png",
+    "webhook": "",
+    "location": "MTI Lab",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 9,
+  "fields": {
+    "name": "Episport",
+    "slug": "episport",
+    "category": "Sport",
+    "content": "Venez faire du sport !",
+    "logo": "episport-association-epita.png",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 10,
+  "fields": {
+    "name": "Epita",
+    "slug": "epita",
+    "category": "école",
+    "content": "Les responsables de vie associatives de l'Epita et Epitech.",
+    "logo": "logos/epita.png",
+    "webhook": "",
+    "location": "Paritalie 3ème",
+    "type": "Admin"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 11,
+  "fields": {
+    "name": "EpiMac",
+    "slug": "epimac",
+    "category": "Acteurs de l'éducation et de l'enseignement",
+    "content": "Lancée il y a plus de 20 ans dans l'optique d'intégrer les technologies Apple dans le monde de l'éducation, EpiMac propose des sessions d'apprentissage à la programmation, des conférences, des workshops thématiques, des soirées dédiées et accompagne les étudiants et professeurs dans les projets professionnels.",
+    "logo": "logos/epimac-association-epita.png",
+    "webhook": "",
+    "location": "Under voltaire",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 12,
+  "fields": {
+    "name": "Epit’as",
+    "slug": "epitas",
+    "category": "Association de poker et de jeux de casino",
+    "content": "L’association de Poker, organise tout au long de l’année des tournois pour tous les étudiants.",
+    "logo": "logos/epitas.jpg",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 13,
+  "fields": {
+    "name": "Epitanime",
+    "slug": "epitanime",
+    "category": "Culture japonaise",
+    "content": "Epitanime est l’association pour la promotion de la culture japonaise sous toutes ses formes (karaoké, conventions, projections de films, dessin, jeux vidéo musicaux, retro-jamming, VSG Pokémon, Cartes TCG, jeu de Go…) au sein des étudiants et en Europe.",
+    "logo": "logos/epitanime-association-epita.jpg",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 14,
+  "fields": {
+    "name": "L'Atelier",
+    "slug": "latelier",
+    "category": "Lieu de collaboration, de fabrication et d'innovation.",
+    "content": "Lieu d'innovation collaborative: création de prototypes et concepts informatiques et physiques:\r\n- Mise à disposition pour les entreprises et les élèves de l'Epita et l'Epitech d'équipements informatiques, électroniques, d'outillage et machines industrielles (CNC, Imprimantes...)\r\n- Aide technique et logistique: ateliers d'initiation et de découverte\r\n- Projets pédagogiques et développements de nouveaux concepts liants mondes numérique et réel",
+    "logo": "logos/latelier.png",
+    "webhook": "",
+    "location": "Under voltaire",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 15,
+  "fields": {
+    "name": "Cristal",
+    "slug": "cristal",
+    "category": "Junior entreprise de l'EPITA",
+    "content": "Cristal est une association proposant aux étudiants de Ionis/Campus du matériel informatique d’occasion ou reconditionné par l’association.",
+    "logo": "logos/logo-association-cristal.jpg",
+    "webhook": "",
+    "location": "0 Batiment voltaire",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.association",
+  "pk": 16,
+  "fields": {
+    "name": "Gotta Go Hack",
+    "slug": "ggh",
+    "category": "Hackaton, talks entrenariat et innovation",
+    "content": "Gotta Go Hack est une association qui organise des hackathons et des talks dans le but de faire découvrir l’entreprenariat et l’innovation aux étudiants. Les Hackathons sont des événements dont l’objectif est d’imaginer et de prototyper un projet innovant en groupe le temps d’un week-end. Ces projets sont coaches et juges par des professionnels. Les talks ont pour objectifs d’échanger avec des entrepreneurs sur des sujets varies.",
+    "logo": "logos/gotta-go-hack-association-epita.jpg",
+    "webhook": "",
+    "location": "Under",
+    "type": "Normal"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1,
+  "fields": {
+    "user": "0186ee99-788b-4a92-b52d-302f74e38ad5",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 6,
+  "fields": {
+    "user": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 7,
+  "fields": {
+    "user": "a9d1a4e1-44de-4d65-8443-3f0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 8,
+  "fields": {
+    "user": "d9a3b5e1-29de-4e76-8344-7b2c0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 9,
+  "fields": {
+    "user": "c1a2b3e4-59ae-4d65-9344-8f0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 10,
+  "fields": {
+    "user": "b3e2a1d4-39de-4d65-7344-9f0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 11,
+  "fields": {
+    "user": "b3d2a1c4-39ce-4d65-9344-2f0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 12,
+  "fields": {
+    "user": "f9a3b5e1-29de-4e76-8344-4b2c0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 13,
+  "fields": {
+    "user": "a3d1a4e1-44de-4d65-7344-5f0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 14,
+  "fields": {
+    "user": "d1a2b3e4-59ae-4d65-9344-6f0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 15,
+  "fields": {
+    "user": "e1b2a3c4-69de-4d65-8344-8f0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 16,
+  "fields": {
+    "user": "e4a9b0e1-19de-4d65-9244-1b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 17,
+  "fields": {
+    "user": "a2b9c1e4-29de-4d65-9344-2b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 18,
+  "fields": {
+    "user": "b2a3d4c1-59de-4d65-8344-3b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 19,
+  "fields": {
+    "user": "c3b9d1e4-39ae-4d65-9244-4b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 101,
+  "fields": {
+    "user": "d4b2a3c1-69de-4d65-8344-5b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 102,
+  "fields": {
+    "user": "e3b9d1a4-29de-4d65-9244-6b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 103,
+  "fields": {
+    "user": "a4b3c2d1-39de-4d65-8344-7b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 104,
+  "fields": {
+    "user": "b4c3d2a1-49de-4d65-9244-8b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 105,
+  "fields": {
+    "user": "c4d3b2a1-59ae-4d65-8344-9b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 106,
+  "fields": {
+    "user": "d3c4a2b1-69de-4d65-9244-0b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 107,
+  "fields": {
+    "user": "e2b3c4d1-79de-4d65-8344-1b0a0b2e70cb",
+    "association": 7,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 108,
+  "fields": {
+    "user": "87a9b637-45cd-4d35-a08b-4a94a274d908",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 109,
+  "fields": {
+    "user": "3cf9a86f-bd23-43a9-9467-8b38d9b1655d",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 201,
+  "fields": {
+    "user": "85c6780e-fb65-4fe6-8211-b20f2e15192f",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 202,
+  "fields": {
+    "user": "c8f92e1a-1b4f-4a70-8426-f5f1a6e71689",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 203,
+  "fields": {
+    "user": "d9cb6270-dbf4-486a-88a7-27bb32cf264f",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 204,
+  "fields": {
+    "user": "6c9b77d2-46d6-44d6-b2c1-9a5c2d7e3ed2",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 205,
+  "fields": {
+    "user": "e7e457b9-3f68-45f4-ace6-0b07fcdfd7d2",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 206,
+  "fields": {
+    "user": "214a68b8-18e7-48d3-91de-5b7d23a6f7d6",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 207,
+  "fields": {
+    "user": "b5c86b4e-5f6d-4a4e-baa2-f8bde58d6d64",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 208,
+  "fields": {
+    "user": "a3a6a74e-ef92-4d0f-8129-e9c1c751b742",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 209,
+  "fields": {
+    "user": "9cd237db-56d7-4c7f-b2db-9c62b8bbfb38",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1010,
+  "fields": {
+    "user": "fd4f65a4-3eaf-4c87-9a55-36b8cb432f2f",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1011,
+  "fields": {
+    "user": "67f40d7f-3cc3-4233-bd26-df5dba1dcbd5",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1012,
+  "fields": {
+    "user": "f6cb19be-59c7-40a4-8c8c-5b7c2d2e7b3a",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1013,
+  "fields": {
+    "user": "58f6f626-b41d-4c67-a57e-1c93941b1cc2",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1014,
+  "fields": {
+    "user": "6d5e4b92-46f4-47a8-8dd7-6e72e4c957f1",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1015,
+  "fields": {
+    "user": "82620490-15f0-4df4-9ef0-d0d1c2ebd3fa",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1016,
+  "fields": {
+    "user": "93f72c9b-5f4a-4648-8e25-3e3dff18cb51",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 1017,
+  "fields": {
+    "user": "51985b9d-9831-4fa5-b97a-9e5820b87cb7",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2010,
+  "fields": {
+    "user": "5c0b34b1-0f59-4bfc-9185-991364f97a68",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2011,
+  "fields": {
+    "user": "137568b3-f146-4e2e-9b68-5d2b7b1e5cf3",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2012,
+  "fields": {
+    "user": "8ad45f7e-7491-44b0-b17c-8164f2889e09",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2013,
+  "fields": {
+    "user": "925b7542-8f19-4e6c-a704-12e32f0b2d36",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2014,
+  "fields": {
+    "user": "192b7c0b-df3b-4a4c-beb6-3650f7d9b40b",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2015,
+  "fields": {
+    "user": "6ac707ea-1ae8-4fd5-a0a7-e5561f5a58f5",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2016,
+  "fields": {
+    "user": "8f35b58d-23b8-4f93-bb66-fd7f13e75e5e",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2017,
+  "fields": {
+    "user": "de9b0783-dcee-4a4c-b68f-e8e9aee5e78b",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2018,
+  "fields": {
+    "user": "a89db75e-b740-4d72-8b16-03e21c52d8e1",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2019,
+  "fields": {
+    "user": "a16585b3-2e63-43d2-8d7c-afeccf3e6160",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2020,
+  "fields": {
+    "user": "07f302b9-b877-4a8d-8a0f-2d7623eaeec0",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2021,
+  "fields": {
+    "user": "01a57134-f8b1-4f9b-a9b1-b6d2e5c84c12",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2022,
+  "fields": {
+    "user": "3a0b1cbe-8c64-4d77-bc7a-24a7f5455a6d",
+    "association": 8,
+    "role": "Member"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2023,
+  "fields": {
+    "user": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association": 1,
+    "role": "Président"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2024,
+  "fields": {
+    "user": "c3b9d1e4-39ae-4d65-9244-4b0a0b2e70cb",
+    "association": 1,
+    "role": "Président"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2025,
+  "fields": {
+    "user": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association": 2,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2026,
+  "fields": {
+    "user": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association": 3,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2027,
+  "fields": {
+    "user": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association": 4,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2028,
+  "fields": {
+    "user": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association": 6,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2029,
+  "fields": {
+    "user": "0186ee99-788b-4a92-b52d-302f74e38ad5",
+    "association": 3,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2030,
+  "fields": {
+    "user": "0186ee99-788b-4a92-b52d-302f74e38ad5",
+    "association": 4,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2031,
+  "fields": {
+    "user": "0186ee99-788b-4a92-b52d-302f74e38ad5",
+    "association": 6,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2032,
+  "fields": {
+    "user": "0186ee99-788b-4a92-b52d-302f74e38ad5",
+    "association": 2,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2033,
+  "fields": {
+    "user": "87a9b637-45cd-4d35-a08b-4a94a274d908",
+    "association": 3,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2034,
+  "fields": {
+    "user": "87a9b637-45cd-4d35-a08b-4a94a274d908",
+    "association": 4,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2035,
+  "fields": {
+    "user": "87a9b637-45cd-4d35-a08b-4a94a274d908",
+    "association": 6,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2036,
+  "fields": {
+    "user": "87a9b637-45cd-4d35-a08b-4a94a274d908",
+    "association": 1,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2037,
+  "fields": {
+    "user": "c3b9d1e4-39ae-4d65-9244-4b0a0b2e70cb",
+    "association": 3,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2038,
+  "fields": {
+    "user": "c3b9d1e4-39ae-4d65-9244-4b0a0b2e70cb",
+    "association": 4,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2039,
+  "fields": {
+    "user": "c3b9d1e4-39ae-4d65-9244-4b0a0b2e70cb",
+    "association": 6,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2040,
+  "fields": {
+    "user": "c3b9d1e4-39ae-4d65-9244-4b0a0b2e70cb",
+    "association": 9,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2041,
+  "fields": {
+    "user": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "association": 9,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2042,
+  "fields": {
+    "user": "0186ee99-788b-4a92-b52d-302f74e38ad5",
+    "association": 9,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.associateuserandassociation",
+  "pk": 2043,
+  "fields": {
+    "user": "87a9b637-45cd-4d35-a08b-4a94a274d908",
+    "association": 9,
+    "role": "Membre"
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 1,
+  "fields": {
+    "association": 14,
+    "question": "Quand est-ce que je peux venir à l'Atelier ?",
+    "answer": "L'Atelier propose des permanences où vous êtes libre de venir. Elles sont annoncées sur discord."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 2,
+  "fields": {
+    "association": 1,
+    "question": "Comment rejoindre le BDE ?",
+    "answer": "Rendez-vous sur discord."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 3,
+  "fields": {
+    "association": 15,
+    "question": "Faut-il avoir un statut particulier pour répondre aux missions de Cristal ?",
+    "answer": "Non, être étudiant de l'EPITA suffit."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 4,
+  "fields": {
+    "association": 11,
+    "question": "Comment accéder à la salle Mac ?",
+    "answer": "Vous pouvez faire la demande sur notre discord."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 5,
+  "fields": {
+    "association": 6,
+    "question": "Puis-je venir à vos soirées si je ne suis pas encore majeur ?",
+    "answer": "Non désolé, toutes nos soirées sont exclusivement réservées à des personnes majeurs."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 6,
+  "fields": {
+    "association": 9,
+    "question": "Quels sports proposez-vous ?",
+    "answer": "La liste des sports évolue souvent, vous pouvez la retrouver sur notre discord."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 7,
+  "fields": {
+    "association": 2,
+    "question": "Quels événements organisez-vous chaque année ?",
+    "answer": "Nous organisons les Villejuif Nights, ainsi que d'autres événements étudiants sur le campus."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 8,
+  "fields": {
+    "association": 3,
+    "question": "Puis-je participer aux dégustations de bière sans être membre ?",
+    "answer": "Oui, nos événements sont ouverts à tous les étudiants majeurs."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 9,
+  "fields": {
+    "association": 4,
+    "question": "Quels types de cocktails proposez-vous ?",
+    "answer": "Nous proposons une variété de cocktails, allant des classiques aux créations uniques adaptées à vos goûts."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 10,
+  "fields": {
+    "association": 5,
+    "question": "Est-ce que je peux apprendre la photographie ou le montage vidéo avec vous ?",
+    "answer": "Oui, nous offrons des formations sur le matériel et le montage vidéo à tous nos membres."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 11,
+  "fields": {
+    "association": 6,
+    "question": "Proposez-vous des cours de mixage pour débutants ?",
+    "answer": "Oui, nous avons un pôle dédié aux débutants pour apprendre le mixage et la musique assistée par ordinateur."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 12,
+  "fields": {
+    "association": 7,
+    "question": "Quelles technologies utilisez-vous pour le développement frontend ?",
+    "answer": "Nous utilisons les dernières technologies comme React, Angular et Vue.js pour développer des interfaces intuitives."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 13,
+  "fields": {
+    "association": 8,
+    "question": "Quelles compétences puis-je acquérir en rejoignant MTI backend ?",
+    "answer": "Vous apprendrez à gérer des bases de données, concevoir des API et sécuriser des serveurs."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 14,
+  "fields": {
+    "association": 10,
+    "question": "Quels sont les services offerts par l'équipe administrative ?",
+    "answer": "Nous aidons les associations avec la gestion de projets, les relations inter-campus et le support logistique."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 15,
+  "fields": {
+    "association": 11,
+    "question": "Puis-je utiliser les outils Apple même si je ne suis pas expert ?",
+    "answer": "Oui, nous proposons des formations pour tous les niveaux sur les produits et logiciels Apple."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 16,
+  "fields": {
+    "association": 13,
+    "question": "Organisez-vous des conventions ouvertes au public ?",
+    "answer": "Oui, nos conventions sur la culture japonaise sont ouvertes à tous les passionnés."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 17,
+  "fields": {
+    "association": 16,
+    "question": "Comment puis-je soumettre un projet pour un hackathon ?",
+    "answer": "Les inscriptions et soumissions de projets se font sur notre site web avant chaque événement."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 18,
+  "fields": {
+    "association": 15,
+    "question": "Quels sont les avantages de devenir membre de Cristal ?",
+    "answer": "Vous aurez accès à des formations, des événements exclusifs et des opportunités de networking."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 19,
+  "fields": {
+    "association": 14,
+    "question": "Comment puis-je proposer un projet à l'Atelier ?",
+    "answer": "Vous pouvez soumettre votre projet sur notre discord ou lors de nos permanences."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 20,
+  "fields": {
+    "association": 13,
+    "question": "Quels sont les événements phares d'Epitanime ?",
+    "answer": "Nous organisons une convention annuelle, des soirées à thème et des projections de films d'animation."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 21,
+  "fields": {
+    "association": 12,
+    "question": "Comment puis-je rejoindre l'équipe d'Epitas ?",
+    "answer": "Vous pouvez postuler pour un poste sur notre site web ou lors de nos événements de recrutement."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 22,
+  "fields": {
+    "association": 15,
+    "question": "Quels sont les projets en cours chez Cristal ?",
+    "answer": "Nous travaillons actuellement sur un projet de réalité virtuelle et un projet de machine learning."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 23,
+  "fields": {
+    "association": 16,
+    "question": "Quels sont les critères de sélection pour un hackathon ?",
+    "answer": "Les projets sont sélectionnés en fonction de leur originalité, de leur faisabilité et de leur impact."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 24,
+  "fields": {
+    "association": 1,
+    "question": "Quels sont les avantages de rejoindre le BDE ?",
+    "answer": "Rejoindre le BDE vous permet de participer à l'organisation d'événements étudiants et de bénéficier de nombreux avantages."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 25,
+  "fields": {
+    "association": 2,
+    "question": "Comment puis-je m'inscrire aux Villejuif Nights ?",
+    "answer": "Vous pouvez vous inscrire aux Villejuif Nights via notre site web ou en nous contactant directement."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 26,
+  "fields": {
+    "association": 3,
+    "question": "Quels types de bières proposez-vous lors des dégustations ?",
+    "answer": "Nous proposons une variété de bières artisanales et commerciales pour satisfaire tous les goûts."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 27,
+  "fields": {
+    "association": 4,
+    "question": "Comment puis-je devenir membre de La Paillote ?",
+    "answer": "Vous pouvez devenir membre de La Paillote en remplissant le formulaire d'adhésion disponible sur notre site web."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 28,
+  "fields": {
+    "association": 5,
+    "question": "Quels sont les prochains ateliers de photographie ?",
+    "answer": "Les prochains ateliers de photographie sont annoncés sur notre site web et notre page Facebook."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 29,
+  "fields": {
+    "association": 6,
+    "question": "Quels sont les horaires des cours de mixage ?",
+    "answer": "Les cours de mixage ont lieu tous les mercredis et vendredis de 18h à 20h."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 30,
+  "fields": {
+    "association": 7,
+    "question": "Quels frameworks utilisez-vous pour le développement frontend ?",
+    "answer": "Nous utilisons principalement React, Angular et Vue.js pour le développement frontend."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 31,
+  "fields": {
+    "association": 8,
+    "question": "Quels sont les critères pour participer aux dégustations de cocktails ?",
+    "answer": "Pour participer aux dégustations de cocktails, vous devez être majeur et vous inscrire à l'avance."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 32,
+  "fields": {
+    "association": 9,
+    "question": "Quels sports sont proposés cette année ?",
+    "answer": "Cette année, nous proposons du football, du basketball, du volleyball et du tennis."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 33,
+  "fields": {
+    "association": 10,
+    "question": "Comment puis-je obtenir de l'aide pour la gestion de mon association ?",
+    "answer": "Vous pouvez obtenir de l'aide en contactant notre équipe administrative via notre site web."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 34,
+  "fields": {
+    "association": 11,
+    "question": "Quels sont les avantages de rejoindre l'équipe Apple ?",
+    "answer": "Rejoindre l'équipe Apple vous permet de bénéficier de formations exclusives et de réductions sur les produits Apple."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 35,
+  "fields": {
+    "association": 12,
+    "question": "Quels sont les avantages de rejoindre l'équipe d'Epitas ?",
+    "answer": "Rejoindre l'équipe d'Epitas vous permet de participer à l'organisation d'événements étudiants et de bénéficier de formations exclusives."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 36,
+  "fields": {
+    "association": 13,
+    "question": "Quels sont les événements à venir chez Epitanime ?",
+    "answer": "Les prochains événements sont la convention annuelle, les soirées à thème et les projections de films d'animation."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 37,
+  "fields": {
+    "association": 14,
+    "question": "Comment puis-je proposer un projet à l'Atelier Maker ?",
+    "answer": "Vous pouvez proposer un projet en remplissant le formulaire de proposition disponible sur notre site web."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 38,
+  "fields": {
+    "association": 15,
+    "question": "Quels sont les projets en cours chez Cristal ?",
+    "answer": "Nous travaillons actuellement sur un projet de réalité virtuelle et un projet de machine learning."
+  }
+},
+{
+  "model": "association.faq",
+  "pk": 39,
+  "fields": {
+    "association": 16,
+    "question": "Quels sont les critères de sélection pour un hackathon ?",
+    "answer": "Les projets sont sélectionnés en fonction de leur originalité, de leur faisabilité et de leur impact."
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 1,
+  "fields": {
+    "association": 4,
+    "name": "Facebook",
+    "link": "https://www.facebook.com/lapaillote.apero/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 2,
+  "fields": {
+    "association": 1,
+    "name": "Instagram",
+    "link": "https://www.instagram.com/kraken_bde_epita/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 3,
+  "fields": {
+    "association": 4,
+    "name": "Instagram",
+    "link": "https://www.instagram.com/asso_paillote/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 4,
+  "fields": {
+    "association": 9,
+    "name": "Discord",
+    "link": "https://discord.com/invite/PwtSn2mMHU"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 5,
+  "fields": {
+    "association": 6,
+    "name": "Facebook",
+    "link": "https://www.facebook.com/unisson/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 6,
+  "fields": {
+    "association": 6,
+    "name": "X",
+    "link": "https://x.com/asso_unisson"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 7,
+  "fields": {
+    "association": 9,
+    "name": "X",
+    "link": "https://x.com/episport"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 8,
+  "fields": {
+    "association": 9,
+    "name": "Facebook",
+    "link": "https://www.facebook.com/Episport/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 9,
+  "fields": {
+    "association": 6,
+    "name": "Instagram",
+    "link": "https://www.instagram.com/unisson.asso/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 10,
+  "fields": {
+    "association": 12,
+    "name": "Linkedin",
+    "link": "https://www.linkedin.com/company/epit-as/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 11,
+  "fields": {
+    "association": 12,
+    "name": "X",
+    "link": "https://x.com/epitas42"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 12,
+  "fields": {
+    "association": 12,
+    "name": "Instagram",
+    "link": "https://www.instagram.com/epitas42"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 13,
+  "fields": {
+    "association": 13,
+    "name": "Website",
+    "link": "https://www.epitanime.com/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 14,
+  "fields": {
+    "association": 13,
+    "name": "Facebook",
+    "link": "https://www.facebook.com/ConventionEpitanime/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 15,
+  "fields": {
+    "association": 13,
+    "name": "X",
+    "link": "https://x.com/epitanime"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 16,
+  "fields": {
+    "association": 14,
+    "name": "Linkedin",
+    "link": "https://www.linkedin.com/company/l-atelier-maker/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 17,
+  "fields": {
+    "association": 14,
+    "name": "Github",
+    "link": "https://github.com/Atelier-Epita"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 18,
+  "fields": {
+    "association": 15,
+    "name": "Website",
+    "link": "https://www.cristal.je/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 19,
+  "fields": {
+    "association": 15,
+    "name": "Facebook",
+    "link": "https://www.facebook.com/assoCristal/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 20,
+  "fields": {
+    "association": 2,
+    "name": "Mail",
+    "link": "bureauvjn@googlegroups.com"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 21,
+  "fields": {
+    "association": 3,
+    "name": "Mail",
+    "link": "contact@lateb.eu"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 22,
+  "fields": {
+    "association": 4,
+    "name": "Mail",
+    "link": "lapaillote@googlegroups.com"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 23,
+  "fields": {
+    "association": 3,
+    "name": "Facebook",
+    "link": "https://www.facebook.com/latebb/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 24,
+  "fields": {
+    "association": 3,
+    "name": "X",
+    "link": "https://x.com/epilateb"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 25,
+  "fields": {
+    "association": 3,
+    "name": "Instagram",
+    "link": "https://www.instagram.com/latebb/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 26,
+  "fields": {
+    "association": 16,
+    "name": "Website",
+    "link": "https://www.gottagohack.fr/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 27,
+  "fields": {
+    "association": 16,
+    "name": "Linkedin",
+    "link": "https://fr.linkedin.com/company/gotta-go-hack"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 28,
+  "fields": {
+    "association": 16,
+    "name": "Facebook",
+    "link": "https://www.facebook.com/gottagohack"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 29,
+  "fields": {
+    "association": 16,
+    "name": "Mail",
+    "link": "info@gottagohack.fr"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 30,
+  "fields": {
+    "association": 5,
+    "name": "Facebook",
+    "link": "https://www.facebook.com/eptvasso/"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 31,
+  "fields": {
+    "association": 5,
+    "name": "X",
+    "link": "https://x.com/eptv_asso"
+  }
+},
+{
+  "model": "association.socialnetwork",
+  "pk": 32,
+  "fields": {
+    "association": 5,
+    "name": "Youtube",
+    "link": "https://www.youtube.com/channel/UCkAiFtuV8emN60Bvc7gnfkQ"
+  }
+},
+{
+  "model": "association.commitment",
+  "pk": 1,
+  "fields": {
+    "association": 1,
+    "start_date": "2024-03-17T23:00:00Z",
+    "end_date": "2024-11-17T23:00:00Z"
+  }
+},
+{
+  "model": "association.membercommitment",
+  "pk": 1,
+  "fields": {
+    "member": 2023,
+    "hours": 1,
+    "commitment": 1
+  }
+},
+{
+  "model": "association.membercommitment",
+  "pk": 2,
+  "fields": {
+    "member": 2024,
+    "hours": 1,
+    "commitment": 1
+  }
+},
+{
+  "model": "association.membercommitment",
+  "pk": 3,
+  "fields": {
+    "member": 2036,
+    "hours": 1,
+    "commitment": 1
+  }
+}
+]

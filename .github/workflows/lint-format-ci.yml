@@ -1,0 +1,67 @@
+name: Lint and format CI
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+jobs:
+  lint_and_format:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: backend - Lint with ruff
+      uses: chartboost/ruff-action@v1
+      with:
+        args: check --fix
+        src: backend/EPITAssoAPI
+    - name: backend - Format with ruff
+      uses: chartboost/ruff-action@v1
+      with:
+        args: format
+        src: backend/EPITAssoAPI
+        
+    - name: panel_asso - Checkout code
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: panel_asso - Install dependencies
+      run: |
+        cd frontend/panel_asso
+        npm ci
+    - name: panel_asso - Lint code
+      run: |
+        cd frontend/panel_asso
+        npm run lint
+    - name: panel_asso - Format code
+      run: |
+        cd frontend/panel_asso
+        npm run format
+
+    - name: vitrine - Checkout code
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: vitrine - Install dependencies
+      run: |
+        cd frontend/vitrine
+        npm ci
+    - name: vitrine - Lint code
+      run: |
+        cd frontend/vitrine
+        npm run lint
+    - name: vitrine - Format code
+      run: |
+        cd frontend/vitrine
+        npm run format
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: "ci: Format and lint code"
+        author_name: "GitHub Action CI"
+    

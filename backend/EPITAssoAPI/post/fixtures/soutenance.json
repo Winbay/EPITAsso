@@ -1,0 +1,38 @@
+[
+{
+  "model": "post.tag",
+  "pk": 1,
+  "fields": {
+    "name": "Recrutement",
+    "text_color": null,
+    "background_color": null,
+    "type": "post"
+  }
+},
+{
+  "model": "post.tag",
+  "pk": 2,
+  "fields": {
+    "name": "Projets",
+    "text_color": null,
+    "background_color": null,
+    "type": "post"
+  }
+},
+{
+  "model": "post.post",
+  "pk": 1,
+  "fields": {
+    "title": "Recrutement !",
+    "association": 1,
+    "author": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "last_author": "9f98ae50-4ade-4662-8559-85c205f99df9",
+    "created_at": "2024-06-20T07:42:20.822Z",
+    "updated_at": "2024-06-20T07:44:26.236Z",
+    "content": "<p>Bonjour à tous !</p><p><br></p><p>Le BDE recrute !</p>",
+    "tags": [
+      1
+    ]
+  }
+}
+]

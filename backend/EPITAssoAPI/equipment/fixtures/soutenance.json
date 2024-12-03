@@ -1,0 +1,178 @@
+[
+{
+  "model": "equipment.equipment",
+  "pk": 1,
+  "fields": {
+    "name": "Cable HDMI",
+    "asso_owner": 1,
+    "quantity": 2,
+    "equipment_request": null,
+    "photo": "hdmi.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 2,
+  "fields": {
+    "name": "Crépière",
+    "asso_owner": 2,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "crepiere.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 3,
+  "fields": {
+    "name": "Ballon",
+    "asso_owner": 9,
+    "quantity": 5,
+    "equipment_request": null,
+    "photo": "ballon.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 4,
+  "fields": {
+    "name": "Panier de basket",
+    "asso_owner": 9,
+    "quantity": 2,
+    "equipment_request": null,
+    "photo": "panier_basket.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 5,
+  "fields": {
+    "name": "Table de ping-pong",
+    "asso_owner": 9,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "table_ping.png"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 6,
+  "fields": {
+    "name": "Raquette de tennis",
+    "asso_owner": 9,
+    "quantity": 6,
+    "equipment_request": null,
+    "photo": "raquette_tennis.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 7,
+  "fields": {
+    "name": "Balle de tennis",
+    "asso_owner": 9,
+    "quantity": 10,
+    "equipment_request": null,
+    "photo": "balles-de-tennis.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 8,
+  "fields": {
+    "name": "Plot",
+    "asso_owner": 9,
+    "quantity": 20,
+    "equipment_request": null,
+    "photo": "plots.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 9,
+  "fields": {
+    "name": "Filets de tennis",
+    "asso_owner": 9,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "filet.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 10,
+  "fields": {
+    "name": "Crépière",
+    "asso_owner": 2,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 11,
+  "fields": {
+    "name": "Crépière",
+    "asso_owner": 2,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 12,
+  "fields": {
+    "name": "Crépière",
+    "asso_owner": 2,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 13,
+  "fields": {
+    "name": "Crépière",
+    "asso_owner": 2,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "Crepiere-electrique-pro-krampouz-CTRO4AA-.png"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 14,
+  "fields": {
+    "name": "Machine à gaufres",
+    "asso_owner": 2,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "gaufrier.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 15,
+  "fields": {
+    "name": "Machine à gaufres",
+    "asso_owner": 2,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "gaufrier.jpg"
+  }
+},
+{
+  "model": "equipment.equipment",
+  "pk": 16,
+  "fields": {
+    "name": "Machine à gaufres",
+    "asso_owner": 2,
+    "quantity": 1,
+    "equipment_request": null,
+    "photo": "gaufrier.jpg"
+  }
+}
+]
