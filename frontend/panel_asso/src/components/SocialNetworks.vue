@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { getSocialNetworkImage } from '@/utils/associationUtils'
+import { getSocialNetworkIcon } from '@/utils/associationUtils'
 import type { SocialNetwork } from '@/types/associationInterfaces'
 import { type PropType, ref } from 'vue'
 import SpeedDial from 'primevue/speeddial'
-import Avatar from 'primevue/avatar'
 import DialogSocialNetwork from '@/components/Dialog/DialogSocialNetwork.vue'
 import Button from 'primevue/button'
 import Divider from 'primevue/divider'
@@ -46,9 +45,12 @@ const socialNetworksRef = ref<SocialNetwork[]>(props.socialNetworks)
 const visibleDialogRef = ref(false)
 const selectedSocialNetworkRef = ref<SocialNetwork>(getDefaultSocialNetwork())
 
-const closeDialog = (socialNetwork: SocialNetwork | null = null): void => {
+const closeDialog = (
+  socialNetwork: SocialNetwork | null = null,
+  isEditing: boolean = false
+): void => {
   if (socialNetwork) {
-    if (selectedSocialNetworkRef.value.id !== -1) {
+    if (isEditing) {
       const index = socialNetworksRef.value.findIndex((item) => item.id === socialNetwork.id)
       socialNetworksRef.value[index] = socialNetwork
     } else {
@@ -58,7 +60,10 @@ const closeDialog = (socialNetwork: SocialNetwork | null = null): void => {
   visibleDialogRef.value = false
 }
 
+const isEditingSocialNetwork = ref<boolean>(false)
+
 const editSocialNetwork = (index: number): void => {
+  isEditingSocialNetwork.value = true
   selectedSocialNetworkRef.value = socialNetworksRef.value[index]
   visibleDialogRef.value = true
 }
@@ -94,12 +99,10 @@ const deleteSocialNetwork = (index: number): void => {
       >
         <SpeedDial :model="items(index)" direction="down" class="relative">
           <template #button="{ toggleCallback }">
-            <Avatar
+            <i
               @click="toggleCallback"
-              :image="getSocialNetworkImage(socialNetwork.name)"
-              class="avatar cursor-pointer"
-              style="width: 4rem; height: 4rem"
-              shape="circle"
+              :class="getSocialNetworkIcon(socialNetwork.name)"
+              class="text-3xl avatar cursor-pointer"
               :title="socialNetwork.name"
             />
           </template>
@@ -115,6 +118,7 @@ const deleteSocialNetwork = (index: number): void => {
         v-model:visible="visibleDialogRef"
         :set-hidden="closeDialog"
         :social-network="JSON.parse(JSON.stringify(selectedSocialNetworkRef))"
+        :editing="isEditingSocialNetwork"
       />
     </div>
   </div>
@@ -126,7 +130,7 @@ const deleteSocialNetwork = (index: number): void => {
 }
 .p-speeddial-list {
   position: absolute;
-  top: 4rem;
+  top: 2rem;
   z-index: 10;
 }
 .speeddial-list {

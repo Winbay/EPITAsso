@@ -1,3 +1,6 @@
+import os
+from collections import defaultdict
+
 from django.utils import timezone
 from event.models import Event, EventMemberCommitment
 from event.serializers import EventSerializer, EventMemberCommitmentsResumeForOneUser
@@ -109,6 +112,17 @@ class AssociationDetailView(generics.RetrieveUpdateDestroyAPIView):
         return super().destroy(request, *args, **kwargs)
 
 
+def parse_form_data_list(data, prefix):
+    parsed_data = defaultdict(dict)
+    for key, value in data.items():
+        if key.startswith(prefix):
+            parts = key[len(prefix) :].strip("[]").split("][")
+            index = int(parts[0])
+            field = parts[1]
+            parsed_data[index][field] = value
+    return list(parsed_data.values())
+
+
 class AssociationDetailsView(generics.RetrieveUpdateAPIView):
     queryset = Association.objects.all()
     serializer_class = AssociationDetailsSerializer
@@ -126,20 +140,49 @@ class AssociationDetailsView(generics.RetrieveUpdateAPIView):
         self.__update_social_networks(social_networks, self.get_object())
         return super().update(request, *args, **kwargs)
 
+    def patch(self, request, *args, **kwargs):
+        association = self.get_object()
+        old_logo = association.logo.path if association.logo else None
+
+        data = request.data.copy()
+
+        if "logo" in request.FILES:
+            association.logo = request.FILES["logo"]
+
+        new_faqs = parse_form_data_list(data, "faqs")
+        social_networks = parse_form_data_list(data, "social_networks")
+
+        self.__update_faqs(new_faqs, association)
+
+        self.__update_social_networks(social_networks, association)
+
+        serializer = self.get_serializer(association, data=data, partial=True)
+
+        if serializer.is_valid():
+            if old_logo and "logo" in request.FILES:
+                if os.path.exists(old_logo):
+                    os.remove(old_logo)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def __update_faqs(self, faqs_data, instance):
         existing_faqs = list(instance.faqs.all())
         existing_faq_ids = [faq.id for faq in existing_faqs]
 
         for faq_data in faqs_data:
-            if faq_data["id"] is None or faq_data["id"] == -1:
+            faq_id = (
+                int(faq_data["id"]) if faq_data["id"] not in [None, -1, "-1"] else None
+            )
+            if faq_id is None:
                 faq_data.pop("id", None)
                 Faq.objects.create(association=instance, **faq_data)
-            elif faq_data["id"] in existing_faq_ids:
-                faq = Faq.objects.get(id=faq_data["id"])
+            elif faq_id in existing_faq_ids:
+                faq = Faq.objects.get(id=faq_id)
                 for attr, value in faq_data.items():
                     setattr(faq, attr, value)
                 faq.save()
-                existing_faq_ids.remove(faq_data["id"])
+                existing_faq_ids.remove(faq_id)
 
         for faq_id in existing_faq_ids:
             Faq.objects.get(id=faq_id).delete()
@@ -151,17 +194,23 @@ class AssociationDetailsView(generics.RetrieveUpdateAPIView):
         ]
 
         for social_network_data in social_networks_data:
-            if social_network_data["id"] is None or social_network_data["id"] == -1:
+            social_network_id = (
+                int(social_network_data["id"])
+                if social_network_data["id"] not in [None, -1, "-1"]
+                else None
+            )
+
+            if social_network_id is None:
                 social_network_data.pop("id", None)
                 SocialNetwork.objects.create(
                     association=instance, **social_network_data
                 )
-            elif social_network_data["id"] in existing_social_network_ids:
-                social_network = SocialNetwork.objects.get(id=social_network_data["id"])
+            elif social_network_id in existing_social_network_ids:
+                social_network = SocialNetwork.objects.get(id=social_network_id)
                 for attr, value in social_network_data.items():
                     setattr(social_network, attr, value)
                 social_network.save()
-                existing_social_network_ids.remove(social_network_data["id"])
+                existing_social_network_ids.remove(social_network_id)
 
         for social_network_id in existing_social_network_ids:
             SocialNetwork.objects.get(id=social_network_id).delete()

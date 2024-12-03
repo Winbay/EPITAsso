@@ -14,6 +14,11 @@ const props = defineProps({
   faqItem: {
     type: Object as PropType<Faq>,
     required: true
+  },
+  editing: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 })
 
@@ -30,7 +35,7 @@ const isFormValid = computed(() => {
 })
 
 const editOrCreate = (): void => {
-  props.setHidden(faqItemRef.value)
+  props.setHidden(faqItemRef.value, props.editing)
 }
 
 const cancelDialog = () => {
@@ -57,7 +62,7 @@ const cancelDialog = () => {
       <div class="flex justify-start mt-5 gap-4">
         <Button label="Annuler" icon="pi pi-times" @click="cancelDialog" severity="secondary" />
         <Button
-          :label="faqItemRef.id === -1 ? 'Ajouter' : 'Modifier'"
+          :label="editing ? 'Modifier' : 'Ajouter'"
           icon="pi pi-check"
           @click="editOrCreate"
           :disabled="!isFormValid"

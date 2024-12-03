@@ -14,6 +14,10 @@ import { type ArticleModification } from '@/types/articleInterfaces'
 import type { ArticleTag } from '@/types/tagInterfaces'
 import TagService from '@/services/tag'
 import PostService from '@/services/post/post'
+import ProgressSpinner from 'primevue/progressspinner'
+import { on } from '@/utils/eventBus'
+
+const isLoading = ref(false)
 
 const tagsRef = ref<ArticleTag[]>([])
 const articlesRef = ref<ArticleModification[]>([])
@@ -68,6 +72,13 @@ const deleteArticle = async (articleId: number) => {
 onMounted(async () => {
   await loadTags()
   await reloadArticles()
+
+  on('association-changed', async () => {
+    isLoading.value = true
+    await loadTags()
+    await reloadArticles()
+    isLoading.value = false
+  })
 })
 
 const handlePageChange = (event: { page: number; rows: number }) => {
@@ -78,7 +89,10 @@ const handlePageChange = (event: { page: number; rows: number }) => {
 </script>
 
 <template>
-  <div class="articles-list w-full h-full px-10 py-8">
+  <div v-if="isLoading" class="content-center text-center h-full">
+    <ProgressSpinner />
+  </div>
+  <div v-else class="articles-list w-full h-full px-10 py-8">
     <div class="articles-list-header h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Articles</span>
       <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="visibleDialogRef = true" />

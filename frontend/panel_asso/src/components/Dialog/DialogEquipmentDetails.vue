@@ -30,6 +30,10 @@ const timestampToString = (timestamp: number) => {
 
   return `${day}/${month}/${year} ${hours}:${minutes}`
 }
+
+const getImageUrl = (logo: File | null): string => {
+  return logo ? URL.createObjectURL(logo) : ''
+}
 </script>
 
 <template>
@@ -60,7 +64,7 @@ const timestampToString = (timestamp: number) => {
       <label class="mb-2 text-xl font-bold text-wrap underline">Association propriétaire</label>
       <div class="flex items-center">
         <Avatar
-          :image="props.equipment.assoOwner.logo"
+          :image="getImageUrl(props.equipment.assoOwner.logo)"
           size="xlarge"
           class="flex align-items-center justify-content-center mr-2"
         />
@@ -77,7 +81,7 @@ const timestampToString = (timestamp: number) => {
       <label class="mb-2 text-xl font-bold text-wrap underline">Association emprunteuse</label>
       <div class="flex items-center">
         <Avatar
-          :image="props.equipment.equipmentRequest.assoBorrower.logo"
+          :image="getImageUrl(props.equipment.equipmentRequest.assoBorrower.logo)"
           size="xlarge"
           class="flex align-items-center justify-content-center mr-2"
         />

@@ -8,14 +8,15 @@ export const associationSchema = yup.object({
   name: yup.string().required(),
   content: yup.string().required(),
   location: yup.string().required(),
-  logo: yup.string().required()
+  logo: yup.mixed().notRequired(),
+  webhook: yup.string()
 })
 
 export default class AssociationService extends ApiService<
   yup.InferType<typeof associationSchema>
 > {
   constructor(toast: ToastServiceMethods) {
-    super(toast, 'associations/', associationSchema, null, `api/associations`)
+    super(toast, 'associations/', associationSchema, null, `api/associations/`)
   }
 
   async getAssociations(): Promise<Association[]> {
@@ -26,10 +27,5 @@ export default class AssociationService extends ApiService<
   async getAssociationById(id: Association['id']): Promise<Association> {
     const data = await this.getById(id)
     return this.converterSchemaToInterface(data) as Association
-  }
-
-  async updateAssociation(association: Association): Promise<void> {
-    const { ...data } = association
-    await this.update(data, data.id)
   }
 }

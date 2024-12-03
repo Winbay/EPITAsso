@@ -10,7 +10,10 @@ import DataTableEquipmentCurrAsso from '@/components/DataTable/DataTableEquipmen
 import DataTableEquipmentOtherAssos from '@/components/DataTable/DataTableEquipmentOtherAssos.vue'
 import DataTableEquipmentRequestsReceived from '@/components/DataTable/DataTableEquipmentRequestsReceived.vue'
 import DataTableEquipmentRequestsSent from '@/components/DataTable/DataTableEquipmentRequestsSent.vue'
+import { on } from '@/utils/eventBus'
+import ProgressSpinner from 'primevue/progressspinner'
 
+const isLoading = ref(false)
 const assoEquipments = ref<Equipment[]>([])
 const otherAssoEquipments = ref<Equipment[]>([])
 const equipmentRequestsReceived = ref<EquipmentRequest[]>([])
@@ -122,11 +125,22 @@ onMounted(async () => {
   await reloadAssociationEquipments()
   await reloadOtherAssociationEquipments()
   await reloadEquipmentRequests()
+
+  on('association-changed', async () => {
+    isLoading.value = true
+    await reloadAssociationEquipments()
+    await reloadOtherAssociationEquipments()
+    await reloadEquipmentRequests()
+    isLoading.value = false
+  })
 })
 </script>
 
 <template>
-  <div class="equipment-list w-full h-full px-10 py-8 flex flex-col">
+  <div v-if="isLoading" class="content-center text-center h-full">
+    <ProgressSpinner />
+  </div>
+  <div v-else class="equipment-list w-full h-full px-10 py-8 flex flex-col">
     <DataTableEquipmentCurrAsso
       :curr-asso-equipment="assoEquipments"
       :reload-equipments="reloadAssociationEquipments"

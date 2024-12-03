@@ -4,7 +4,6 @@ import { computed, nextTick, onBeforeMount, onMounted, type PropType, ref } from
 import ProgressSpinner from 'primevue/progressspinner'
 import Divider from 'primevue/divider'
 import Chip from 'primevue/chip'
-import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
 import ContextMenu from 'primevue/contextmenu'
@@ -58,6 +57,7 @@ const limit = 10
 const nextRef = ref<string | null | undefined>(undefined)
 
 const messageContainerRef = ref<HTMLElement | null>(null)
+const editableDivRef = ref<HTMLElement | null>(null)
 
 const loadMessages = async (): Promise<void> => {
   if (nextRef.value === null) return // Already fetched all messages
@@ -161,6 +161,18 @@ const scrollToEnd = async (): Promise<void> => {
       messagesContainer.scrollTop = messagesContainer.scrollHeight
     })
   }
+  const editableDiv = editableDivRef.value
+  if (editableDiv) {
+    editableDiv.focus()
+  }
+}
+
+const updateMessageContent = (event: Event): void => {
+  const target = event.target as HTMLElement
+  if (target.innerHTML === '<br>') {
+    target.innerHTML = ''
+  }
+  newMessageContentRef.value = target.innerText.trim()
 }
 
 const handleTextAreaKeyDown = async (event: KeyboardEvent): Promise<void> => {
@@ -211,6 +223,10 @@ const fillMessageContentForEditing = (): void => {
 
   try {
     modifiedMessageRef.value = selectedMessageRef.value
+    const editableDiv = editableDivRef.value
+    if (editableDiv) {
+      editableDiv.innerText = modifiedMessageRef.value.content
+    }
     newMessageContentRef.value = modifiedMessageRef.value.content
     buttonLabelTextRef.value = 'Modifier'
   } catch (err) {
@@ -222,6 +238,10 @@ const resetMessageContent = (): void => {
   selectedMessageRef.value = null
   newMessageContentRef.value = ''
   buttonLabelTextRef.value = 'Envoyer'
+  const editableDiv = editableDivRef.value
+  if (editableDiv) {
+    editableDiv.innerText = ''
+  }
 }
 
 const deleteMessage = async () => {
@@ -246,7 +266,6 @@ const handleWebSocketMessage = (event: MessageEvent): void => {
       message.associationSender.id !== +SelectedAssoService.getAssociationId()
     ) {
       messagesRef.value.push(message)
-      scrollToEnd()
     }
   } else if (data.type === 'message_deleted') {
     messagesRef.value = messagesRef.value.filter((msg) => msg.id !== messageData.id)
@@ -255,6 +274,7 @@ const handleWebSocketMessage = (event: MessageEvent): void => {
     const index = messagesRef.value.findIndex((msg) => msg.id === message.id)
     if (index !== -1) {
       messagesRef.value[index].content = message.content
+      messagesRef.value[index].updatedAt = new Date()
     }
   }
 }
@@ -281,45 +301,70 @@ onBeforeMount(() => {
     }
   }
 })
+
+const showAllAssociations = ref(false)
+const limitAssociations = 5
+
+const limitedAssociations = computed(() => {
+  return showAllAssociations.value
+    ? associationsRef.value
+    : associationsRef.value.slice(0, limitAssociations)
+})
+
+const toggleShowAllAssociations = () => {
+  showAllAssociations.value = !showAllAssociations.value
+}
 </script>
 
 <template>
-  <div class="message-view flex flex-col h-full p-4 rounded-lg shadow-md">
+  <div class="message-view flex flex-col p-4 rounded-lg shadow-md">
     <div v-show="isLoading" class="content-center text-center h-full">
       <ProgressSpinner />
     </div>
     <div v-show="!isLoading" class="flex flex-col h-full">
-      <div class="flex-grow">
+      <div>
         <h1 class="text-lg font-semibold">{{ conversation!.name }}</h1>
-        <div class="flex flex-wrap mt-2">
+        <div class="flex flex-wrap gap-2 mt-2">
           <Chip
-            class="mr-2"
-            v-for="association in associationsRef"
+            v-for="association in limitedAssociations"
             :key="association.id"
             :label="association.name"
           />
-        </div>
-        <Divider />
-        <div id="messagesContainer" ref="messageContainerRef" @scroll="handleScrollTop">
-          <div v-for="message in messagesRef" :key="message.content">
-            <MessageComponent
-              :message="message"
-              :isEditing="modifiedMessageRef?.id === message.id && isMessageEditing"
-              class="mb-2"
-              @on-right-click="onMessageRightClick"
-            />
-          </div>
-          <ContextMenu ref="menuMessageRef" :model="menuMessageItemsRef" />
+          <Button
+            v-if="!showAllAssociations && associationsRef.length > limitAssociations"
+            label="Voir plus"
+            class="p-button-text p-button-sm"
+            @click="toggleShowAllAssociations"
+          />
+          <Button
+            v-else-if="showAllAssociations"
+            label="Voir moins"
+            class="p-button-text p-button-sm"
+            @click="toggleShowAllAssociations"
+          />
         </div>
       </div>
+      <Divider />
+      <div id="messagesContainer" ref="messageContainerRef" @scroll="handleScrollTop">
+        <div v-for="message in messagesRef" :key="message.content">
+          <MessageComponent
+            :message="message"
+            :isEditing="modifiedMessageRef?.id === message.id && isMessageEditing"
+            class="mb-2"
+            @on-right-click="onMessageRightClick"
+          />
+        </div>
+        <ContextMenu ref="menuMessageRef" :model="menuMessageItemsRef" />
+      </div>
       <form @submit.prevent="sendOrModifyMessage" class="mt-3 flex items-center">
-        <Textarea
-          v-model="newMessageContentRef"
+        <div
+          ref="editableDivRef"
+          class="flex-grow p-2 border rounded resize-none bg-[#111827] text-white focus:outline-none"
+          contenteditable="true"
           placeholder="Écrivez un message"
-          class="flex-grow p-inputtextarea-sm"
-          rows="1"
+          @input="updateMessageContent"
           @keydown="handleTextAreaKeyDown"
-        />
+        ></div>
         <Button
           v-if="isMessageEditing"
           type="button"
@@ -341,49 +386,67 @@ onBeforeMount(() => {
 <style>
 .message-view {
   background-color: #1f2937;
+  display: flex;
+  flex-direction: column;
   height: 90vh;
+  padding-bottom: 0;
 }
 
 #messagesContainer {
   background-color: #171f2c;
   width: 100%;
-  height: calc(90vh - 190px);
-  max-height: calc(90vh - 190px);
   padding: 25px 10px 10px;
   display: flex;
   overflow-y: auto;
   flex-direction: column;
+  flex: 1;
   border-radius: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--surface-50);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--surface-300);
+    border-radius: 0;
+    opacity: 1;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--surface-200);
+    cursor: pointer;
+  }
 }
 
-#messagesContainer::-webkit-scrollbar {
-  width: 10px;
+form {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
-#messagesContainer::-webkit-scrollbar-track {
-  background: var(--surface-50);
-}
-
-#messagesContainer::-webkit-scrollbar-thumb {
-  background: var(--surface-300);
-  border-radius: 0;
-  opacity: 1;
-}
-
-#messagesContainer::-webkit-scrollbar-thumb:hover {
-  background: var(--surface-200);
-  cursor: pointer;
-}
-
-textarea {
-  width: 100%;
-  height: 100%;
+form div[contenteditable='true'] {
+  flex-grow: 1;
   resize: none;
-  overflow-y: hidden;
   padding: 0.5rem;
   border: 1px solid var(--surface-300);
   border-radius: 0.25rem;
   background-color: #111827;
+  min-height: 2rem;
+  color: white;
+  outline: none;
+}
+
+form div[contenteditable='true']:empty::before {
+  content: attr(placeholder);
+  color: #9ca3af;
+  pointer-events: none;
 }
 
 .p-contextmenu {

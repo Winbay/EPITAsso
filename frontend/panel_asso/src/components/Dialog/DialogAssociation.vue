@@ -5,13 +5,13 @@ import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
 import Dialog from 'primevue/dialog'
 
-import { ref, defineProps, type PropType } from 'vue'
+import { computed, defineProps, type PropType, ref } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import type { AssociationDetail } from '@/types/associationInterfaces'
 import FAQ from '@/components/FAQ.vue'
 import SocialNetworks from '@/components/SocialNetworks.vue'
-import AssociationDetailService from '@/services/association/details'
 import DiscordWebhookService from '@/services/discordWebhook'
+import AssociationDetailService from '@/services/association/details'
 import { emit } from '@/utils/eventBus'
 
 const props = defineProps({
@@ -37,13 +37,14 @@ const getDefaultAssociation = (): AssociationDetail => ({
   name: '',
   content: '',
   location: '',
-  logo: '',
+  logo: new File([], ''),
   webhook: '',
   socialNetworks: [],
   faqs: []
 })
 
 const currAssociationRef = ref<AssociationDetail>(props.association)
+const newLogo = ref<File | null>(null)
 
 const saveUpdate = async (): Promise<void> => {
   if (currAssociationRef.value) {
@@ -56,7 +57,8 @@ const saveUpdate = async (): Promise<void> => {
       })
       return
     }
-    await associationDetailService.updateAssociationDetail(currAssociationRef.value).then(() => {
+    currAssociationRef.value.logo = newLogo.value
+    await associationDetailService.patchAssociationDetail(currAssociationRef.value).then(() => {
       emit('association-changed', currAssociationRef.value.id)
     })
   }
@@ -82,22 +84,19 @@ const handleImageClick = (): void => {
 
 const handleImageChange = (event: Event): void => {
   const input = event.target as HTMLInputElement
-  if (!input || !input.files || input.files.length === 0) {
-    return
-  }
-  const file = input.files[0]
-  const reader = new FileReader()
-
-  reader.onload = () => {
-    if (reader.result && currAssociationRef.value) {
-      currAssociationRef.value.logo = reader.result.toString()
-    }
-  }
-
-  if (file) {
-    reader.readAsDataURL(file)
+  if (input.files && input.files[0]) {
+    const file = input.files[0]
+    newLogo.value = file
+    currAssociationRef.value.logo = file
   }
 }
+
+const imageUrl = computed(() => {
+  if (currAssociationRef.value.logo instanceof File) {
+    return URL.createObjectURL(currAssociationRef.value.logo)
+  }
+  return currAssociationRef.value.logo || ''
+})
 </script>
 
 <template>
@@ -111,11 +110,7 @@ const handleImageChange = (event: Event): void => {
     <div v-if="currAssociationRef">
       <div class="mb-6 mt-6 flex items-center justify-center">
         <div class="relative">
-          <Avatar
-            :image="currAssociationRef.logo"
-            shape="circle"
-            style="width: 10rem; height: 10rem"
-          />
+          <Avatar :image="imageUrl as string" shape="circle" style="width: 10rem; height: 10rem" />
           <div class="edit-overlay" @click="handleImageClick" style="width: 10rem; height: 10rem">
             <i class="pi pi-pencil" style="font-size: 2rem"></i>
           </div>

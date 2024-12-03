@@ -8,7 +8,7 @@ export const initAssociation = (): Association => {
     name: 'Null',
     content: '',
     location: '',
-    logo: '',
+    logo: new File([], ''),
     webhook: ''
   }
 }
