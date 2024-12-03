@@ -81,14 +81,15 @@ export default class ApiService<SchemaType> {
 
   protected async getAllPagination(
     limit: number,
-    offset: number
+    offset: number,
+    customUrl?: string
   ): Promise<{
     count: number
     next: string | null
     previous: string | null
     results: SchemaType[]
   }> {
-    const url = `${this.getFullPath()}?limit=${limit}&offset=${offset}`
+    const url = `${customUrl ?? this.getFullPath()}?limit=${limit}&offset=${offset}`
     const data = await this.request<{
       count: number
       next: string | null

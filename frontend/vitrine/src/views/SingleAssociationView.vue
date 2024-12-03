@@ -33,8 +33,8 @@ watch(
 <template>
   <div v-if="!isLoading">
     <AssociationHeader v-if="singleAssoStore.currentAsso" />
-    <AllFaq />
-    <AssoEvents />
+    <AllFaq v-if="singleAssoStore.currentAsso && singleAssoStore.currentAsso.faqs?.length > 0" />
+    <AssoEvents v-if="singleAssoStore.assoEvents.length > 0" />
   </div>
 </template>
 

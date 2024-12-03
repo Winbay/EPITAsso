@@ -60,9 +60,25 @@ export default class EventService extends ApiService<yup.InferType<typeof eventS
     return data.map((event) => this.converterSchemaToInterface(event))
   }
 
-  async getLastEvents(): Promise<Event[]> {
-    const data = await this.getAllCustom('/api/events/upcoming/')
-    return data.map((event) => this.converterSchemaToInterface(event))
+  async getLastEvents(
+    limit: number = 2,
+    offset: number = 0
+  ): Promise<{
+    count: number
+    next: string | null
+    previous: string | null
+    results: Event[]
+  }> {
+    const data = await this.getAllPagination(limit, offset, `/api/events/upcoming/`)
+    const lastEvents: Event[] = data.results.map((event) =>
+      this.converterSchemaToInterface(event)
+    ) as Event[]
+    return {
+      count: data.count,
+      next: data.next,
+      previous: data.previous,
+      results: lastEvents
+    }
   }
 
   async getEventById(id: Event['id']): Promise<Event> {
