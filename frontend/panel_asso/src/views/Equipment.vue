@@ -126,7 +126,6 @@ onMounted(async () => {
   await reloadOtherAssociationEquipments()
   await reloadEquipmentRequests()
 
-
   on('association-changed', async () => {
     isLoading.value = true
     await reloadAssociationEquipments()

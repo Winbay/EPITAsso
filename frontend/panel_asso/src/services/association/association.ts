@@ -9,7 +9,7 @@ export const associationSchema = yup.object({
   content: yup.string().required(),
   location: yup.string().required(),
   logo: yup.mixed().notRequired(),
-  webhook: yup.string(),
+  webhook: yup.string()
 })
 
 export default class AssociationService extends ApiService<

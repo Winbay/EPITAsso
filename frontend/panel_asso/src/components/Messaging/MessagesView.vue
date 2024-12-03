@@ -59,7 +59,6 @@ const nextRef = ref<string | null | undefined>(undefined)
 const messageContainerRef = ref<HTMLElement | null>(null)
 const editableDivRef = ref<HTMLElement | null>(null)
 
-
 const loadMessages = async (): Promise<void> => {
   if (nextRef.value === null) return // Already fetched all messages
   try {
@@ -169,12 +168,12 @@ const scrollToEnd = async (): Promise<void> => {
 }
 
 const updateMessageContent = (event: Event): void => {
-  const target = event.target as HTMLElement;
+  const target = event.target as HTMLElement
   if (target.innerHTML === '<br>') {
-    target.innerHTML = '';
+    target.innerHTML = ''
   }
-  newMessageContentRef.value = target.innerText.trim();
-};
+  newMessageContentRef.value = target.innerText.trim()
+}
 
 const handleTextAreaKeyDown = async (event: KeyboardEvent): Promise<void> => {
   if (event.key === 'Enter' && !event.shiftKey) {
@@ -380,7 +379,6 @@ const toggleShowAllAssociations = () => {
           class="ml-2 p-button-sm p-button-primary justify-center"
         />
       </form>
-
     </div>
   </div>
 </template>
@@ -433,7 +431,7 @@ form {
   padding-bottom: 0.5rem;
 }
 
-form div[contenteditable="true"] {
+form div[contenteditable='true'] {
   flex-grow: 1;
   resize: none;
   padding: 0.5rem;
@@ -445,7 +443,7 @@ form div[contenteditable="true"] {
   outline: none;
 }
 
-form div[contenteditable="true"]:empty::before {
+form div[contenteditable='true']:empty::before {
   content: attr(placeholder);
   color: #9ca3af;
   pointer-events: none;

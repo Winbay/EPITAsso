@@ -45,7 +45,10 @@ const socialNetworksRef = ref<SocialNetwork[]>(props.socialNetworks)
 const visibleDialogRef = ref(false)
 const selectedSocialNetworkRef = ref<SocialNetwork>(getDefaultSocialNetwork())
 
-const closeDialog = (socialNetwork: SocialNetwork | null = null, isEditing: boolean = false): void => {
+const closeDialog = (
+  socialNetwork: SocialNetwork | null = null,
+  isEditing: boolean = false
+): void => {
   if (socialNetwork) {
     if (isEditing) {
       const index = socialNetworksRef.value.findIndex((item) => item.id === socialNetwork.id)

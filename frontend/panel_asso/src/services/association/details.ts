@@ -40,36 +40,35 @@ export default class AssociationDetailService extends ApiService<
   }
 
   async patchAssociationDetail(associationDetail: AssociationDetail): Promise<void> {
-    const formData = new FormData();
+    const formData = new FormData()
 
-    formData.append("id", associationDetail.id.toString());
-    formData.append("name", associationDetail.name);
-    formData.append("content", associationDetail.content);
-    formData.append("location", associationDetail.location);
+    formData.append('id', associationDetail.id.toString())
+    formData.append('name', associationDetail.name)
+    formData.append('content', associationDetail.content)
+    formData.append('location', associationDetail.location)
 
     if (associationDetail.logo) {
-      formData.append("logo", associationDetail.logo);
+      formData.append('logo', associationDetail.logo)
     }
 
     if (associationDetail.webhook) {
-      formData.append("webhook", associationDetail.webhook);
+      formData.append('webhook', associationDetail.webhook)
     }
 
     associationDetail.socialNetworks.forEach((sn, index) => {
-      formData.append(`social_networks[${index}][id]`, sn.id.toString());
-      formData.append(`social_networks[${index}][name]`, sn.name);
-      formData.append(`social_networks[${index}][link]`, sn.link);
-    });
+      formData.append(`social_networks[${index}][id]`, sn.id.toString())
+      formData.append(`social_networks[${index}][name]`, sn.name)
+      formData.append(`social_networks[${index}][link]`, sn.link)
+    })
 
     associationDetail.faqs.forEach((faq, index) => {
-      formData.append(`faqs[${index}][id]`, faq.id.toString());
-      formData.append(`faqs[${index}][question]`, faq.question);
-      formData.append(`faqs[${index}][answer]`, faq.answer);
-    });
+      formData.append(`faqs[${index}][id]`, faq.id.toString())
+      formData.append(`faqs[${index}][question]`, faq.question)
+      formData.append(`faqs[${index}][answer]`, faq.answer)
+    })
 
-    await this.patchFormData(formData);
+    await this.patchFormData(formData)
   }
-
 
   /**
    *

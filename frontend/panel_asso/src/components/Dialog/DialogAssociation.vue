@@ -27,7 +27,10 @@ const props = defineProps({
 
 const toast = useToast()
 
-const associationDetailService: AssociationDetailService = new AssociationDetailService(toast, props.association.id)
+const associationDetailService: AssociationDetailService = new AssociationDetailService(
+  toast,
+  props.association.id
+)
 
 const getDefaultAssociation = (): AssociationDetail => ({
   id: -1,
@@ -107,11 +110,7 @@ const imageUrl = computed(() => {
     <div v-if="currAssociationRef">
       <div class="mb-6 mt-6 flex items-center justify-center">
         <div class="relative">
-          <Avatar
-            :image="imageUrl as string"
-            shape="circle"
-            style="width: 10rem; height: 10rem"
-          />
+          <Avatar :image="imageUrl as string" shape="circle" style="width: 10rem; height: 10rem" />
           <div class="edit-overlay" @click="handleImageClick" style="width: 10rem; height: 10rem">
             <i class="pi pi-pencil" style="font-size: 2rem"></i>
           </div>

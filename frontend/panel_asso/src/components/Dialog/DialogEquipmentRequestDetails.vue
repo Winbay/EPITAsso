@@ -58,7 +58,11 @@ const getImageUrl = (logo: File | null): string => {
       }}</label>
       <div class="flex items-center">
         <Avatar
-          :image="getImageUrl(props.received ? equipmentRequest.assoBorrower.logo : equipmentRequest.assoOwner.logo)"
+          :image="
+            getImageUrl(
+              props.received ? equipmentRequest.assoBorrower.logo : equipmentRequest.assoOwner.logo
+            )
+          "
           size="xlarge"
           class="flex align-items-center justify-content-center mr-2"
         />

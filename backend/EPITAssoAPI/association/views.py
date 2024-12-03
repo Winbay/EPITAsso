@@ -111,11 +111,12 @@ class AssociationDetailView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
 
+
 def parse_form_data_list(data, prefix):
     parsed_data = defaultdict(dict)
     for key, value in data.items():
         if key.startswith(prefix):
-            parts = key[len(prefix):].strip("[]").split("][")
+            parts = key[len(prefix) :].strip("[]").split("][")
             index = int(parts[0])
             field = parts[1]
             parsed_data[index][field] = value
@@ -170,7 +171,9 @@ class AssociationDetailsView(generics.RetrieveUpdateAPIView):
         existing_faq_ids = [faq.id for faq in existing_faqs]
 
         for faq_data in faqs_data:
-            faq_id = int(faq_data["id"]) if faq_data["id"] not in [None, -1, '-1'] else None
+            faq_id = (
+                int(faq_data["id"]) if faq_data["id"] not in [None, -1, "-1"] else None
+            )
             if faq_id is None:
                 faq_data.pop("id", None)
                 Faq.objects.create(association=instance, **faq_data)
