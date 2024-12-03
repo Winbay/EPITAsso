@@ -17,6 +17,10 @@ import TagService from '@/services/tag'
 import DiscordWebhookService from '@/services/discordWebhook'
 import { useGlobalStore } from '@/stores/globalStore'
 import DialogEventCommitment from '@/components/Dialog/DialogEventCommitment.vue'
+import { on } from '@/utils/eventBus'
+import ProgressSpinner from 'primevue/progressspinner'
+
+const isLoading = ref(false)
 
 const tagsRef = ref<EventTag[]>([])
 const eventsRef = ref<EventModification[]>([])
@@ -125,6 +129,13 @@ const sendWebhookEvent = async (event: EventModification) => {
 onMounted(async () => {
   await loadTags()
   await reloadEvents()
+
+  on('association-changed', async () => {
+    isLoading.value = true
+    await loadTags()
+    await reloadEvents()
+    isLoading.value = false
+  })
 })
 
 const formatDate = (date: Date): string => {
@@ -147,7 +158,10 @@ const handlePageChange = (event: { page: number; rows: number }) => {
 </script>
 
 <template>
-  <div class="events-list w-full h-full px-10 py-8">
+  <div v-if="isLoading" class="content-center text-center h-full">
+    <ProgressSpinner />
+  </div>
+  <div v-else class="events-list w-full h-full px-10 py-8">
     <div class="events-list-header h-10 mb-6 flex justify-start items-center">
       <span class="mr-4 text-2xl font-bold text-wrap">Évènements</span>
       <Button label="Ajouter" class="add-btn py-0 px-4 h-full" @click="openNewEventDialog" />
