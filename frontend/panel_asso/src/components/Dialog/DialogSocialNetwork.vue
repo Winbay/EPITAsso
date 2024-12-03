@@ -2,9 +2,11 @@
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
+import Dropdown from 'primevue/dropdown'
 
 import { computed, defineProps, type PropType, ref } from 'vue'
 import type { SocialNetwork } from '@/types/associationInterfaces'
+import { getSocialNetworkIcon, socialNetworkTypes } from '@/utils/associationUtils'
 
 const props = defineProps({
   setHidden: {
@@ -47,12 +49,29 @@ const cancelDialog = () => {
 <template>
   <Dialog :visible="true" modal @update:visible="cancelDialog" header="Ajouter un réseau social">
     <div>
-      <InputText
+      <Dropdown
         id="socialNetworkName"
         v-model="socialNetworksRef.name"
-        placeholder="Nom du réseau social"
+        :options="socialNetworkTypes"
+        option-label="label"
+        option-value="value"
+        placeholder="Sélectionner un type"
         class="w-full mb-2 h-12"
-      />
+      >
+        <template #value="slotProps">
+          <div v-if="slotProps.value" class="flex align-items-center gap-4">
+            <i :class="getSocialNetworkIcon(slotProps.value)" class="text-2xl"></i>
+            {{ slotProps.value }}
+          </div>
+          <div v-else>Choisissez un réseau social</div>
+        </template>
+        <template #option="slotProps">
+          <div class="flex align-items-center gap-4">
+            <i :class="slotProps.option.icon" class="text-2xl"></i>
+            {{ slotProps.option.label }}
+          </div>
+        </template>
+      </Dropdown>
       <InputText
         id="socialNetworkLink"
         v-model="socialNetworksRef.link"
@@ -73,4 +92,8 @@ const cancelDialog = () => {
   </Dialog>
 </template>
 
-<style scoped></style>
+<style>
+#socialNetworkName span.p-dropdown-label {
+  align-content: center;
+}
+</style>

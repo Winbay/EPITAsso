@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSocialNetworkImage } from '@/utils/associationUtils'
+import { getSocialNetworkIcon } from '@/utils/associationUtils'
 import type { SocialNetwork } from '@/types/associationInterfaces'
 import { type PropType, ref } from 'vue'
 import SpeedDial from 'primevue/speeddial'
@@ -101,7 +101,7 @@ const deleteSocialNetwork = (index: number): void => {
           <template #button="{ toggleCallback }">
             <i
               @click="toggleCallback"
-              :class="getSocialNetworkImage(socialNetwork.name)"
+              :class="getSocialNetworkIcon(socialNetwork.name)"
               class="text-3xl avatar cursor-pointer"
               :title="socialNetwork.name"
             />
@@ -130,7 +130,7 @@ const deleteSocialNetwork = (index: number): void => {
 }
 .p-speeddial-list {
   position: absolute;
-  top: 4rem;
+  top: 2rem;
   z-index: 10;
 }
 .speeddial-list {

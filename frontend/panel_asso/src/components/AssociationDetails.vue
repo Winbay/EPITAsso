@@ -6,7 +6,7 @@ import { type PropType, ref } from 'vue'
 import DialogAssociation from '@/components/Dialog/DialogAssociation.vue'
 import FAQ from '@/components/FAQ.vue'
 import type { AssociationDetail } from '@/types/associationInterfaces'
-import { getSocialNetworkImage } from '@/utils/associationUtils'
+import { getSocialNetworkIcon } from '@/utils/associationUtils'
 
 const props = defineProps({
   associationDetails: {
@@ -47,7 +47,7 @@ const closeDialog = async (): Promise<void> => {
           <div v-for="socialNetwork in associationDetails.socialNetworks" :key="socialNetwork.name">
             <a :href="socialNetwork.link" target="_blank">
               <i
-                :class="getSocialNetworkImage(socialNetwork.name)"
+                :class="getSocialNetworkIcon(socialNetwork.name)"
                 class="text-3xl avatar mr-2 cursor-pointer"
                 :title="socialNetwork.name"
               />
