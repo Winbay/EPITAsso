@@ -1,7 +1,7 @@
 export interface SocialNetworkType {
-  label: string;
-  value: string;
-  icon: string;
+  label: string
+  value: string
+  icon: string
 }
 
 export const socialNetworkTypes: SocialNetworkType[] = [
@@ -13,10 +13,10 @@ export const socialNetworkTypes: SocialNetworkType[] = [
   { label: 'Discord', value: 'Discord', icon: 'pi pi-discord' },
   { label: 'Linkedin', value: 'Linkedin', icon: 'pi pi-linkedin' },
   { label: 'Github', value: 'Github', icon: 'pi pi-github' },
-  { label: 'Youtube', value: 'Youtube', icon: 'pi pi-youtube' },
-];
+  { label: 'Youtube', value: 'Youtube', icon: 'pi pi-youtube' }
+]
 
 export function getSocialNetworkIcon(name: string): string {
-  const network = socialNetworkTypes.find((type) => type.value === name);
-  return network ? network.icon : 'pi pi-external-link';
+  const network = socialNetworkTypes.find((type) => type.value === name)
+  return network ? network.icon : 'pi pi-external-link'
 }
