@@ -1,0 +1,12 @@
+version: "3"
+services:
+  vue-app:
+    image: node:18 # Utilise une image Node.js compatible
+    working_dir: /app
+    volumes:
+      - .:/app # Monte le répertoire courant dans le conteneur
+      - /app/node_modules # Évite les conflits de node_modules
+    ports:
+      - "5173:5173" # Expose le port 8080 pour accéder à l'application
+    command: >
+      sh -c "npm install && npm run dev"
