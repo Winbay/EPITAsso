@@ -19,8 +19,8 @@ You need to have a `.env.dev` file which contains the following environment vari
 
 After verified you have the environment file, you can run the following commands:
 ```sh
-docker-compose -f docker-compose.dev.yml build 
-docker-compose -f docker-compose.dev.yml up
+docker-compose -f docker-compose.yml build 
+docker-compose -f docker-compose.yml up
 ```
 
 This configuration supports live reloading.
