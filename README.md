@@ -1,5 +1,10 @@
 # EPITAsso
 
+## Project Overview
+
+This web platform centralizes all student associations in one place. Associations can communicate with each other, post announcements, lend equipment, and manage volunteer engagement.
+For students, no more juggling between different communication tools — everything is now accessible through a single, unified website.
+
 ## Architecture
 
 The project is divided into 4 parts:
